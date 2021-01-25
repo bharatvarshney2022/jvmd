@@ -413,6 +413,69 @@ class FormCompany extends Form
 		}
 	}
 
+	public function select_statebkp($selected = '', $htmlname = 'state_id')
+	{
+		// phpcs:enable
+		global $conf, $langs;
+		$langs->load("dict");
+
+		$sql = "SELECT d.rowid, d.code_departement as code, d.nom as label, d.active, r.rowid as regionid, r.code_region as region_code, r.nom as region_label, r.active, c.code as country_code, c.label as country";
+		$sql .= " FROM  ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c";
+		$sql .= " WHERE r.fk_pays=c.rowid AND r.active = 1 and c.active = 1";
+		$sql .= " ORDER BY c.code, c.label ASC";
+
+		dol_syslog(get_class($this)."::select_region", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				$country = '';
+				$region = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+					if ($obj->code == 0) {
+						print '<option value="0">&nbsp;</option>';
+					} else {
+						if ($country == '' || $country != $obj->country)
+						{
+							// Show break
+							$key = $langs->trans("Country".strtoupper($obj->country_code));
+							$valuetoshow = ($key != "Country".strtoupper($obj->country_code)) ? $obj->country_code." - ".$key : $obj->country;
+							print '<option value="-1" disabled>----- '.$valuetoshow." -----</option>\n";
+							$country = $obj->country;
+						}
+
+						if ($region == '' || $region != $obj->region_label)
+						{
+							// Show break
+							$key = $langs->trans("Region".strtoupper($obj->region_code));
+							$valuetoshow1 = ($key != "Region".strtoupper($obj->region_code)) ? $obj->region_code." - ".$key : $obj->region_label;
+							print '<option value="-1" disabled>----- '.$valuetoshow1." -----</option>\n";
+							$country = $obj->region_label;
+						}
+
+						if ($selected > 0 && $selected == $obj->code)
+						{
+							print '<option value="'.$obj->code.'" selected>'.$obj->label.'</option>';
+						} else {
+							print '<option value="'.$obj->code.'">'.$obj->label.'</option>';
+						}
+					}
+					$i++;
+				}
+			}
+			print '</select>';
+			print ajax_combobox($htmlname);
+		} else {
+			dol_print_error($this->db);
+		}
+	}
+
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Return combo list with people title
@@ -1047,5 +1110,103 @@ class FormCompany extends Form
 
 		if ($nooutput) return $out;
 		else print $out;
+	}
+
+	public function select_city($selected = '', $country_codeid = 0, $htmlname = 'city')
+	{
+		// phpcs:enable
+		print $this->select_allcity($selected, $country_codeid, $htmlname);
+	}
+
+	public function select_allcity($selected = 0, $country_codeid = 0, $htmlname = 'city')
+	{
+		// phpcs:enable
+		global $conf, $langs, $user;
+
+		dol_syslog(get_class($this)."::select_departement selected=".$selected.", country_codeid=".$country_codeid, LOG_DEBUG);
+
+		$langs->load("dict");
+
+		$out = '';
+
+		// Serch departements/cantons/province active d'une region et pays actif
+		$sql = "SELECT ct.rowid, ct.code_city as code, ct.nom as name, d.code_departement as state_code, d.nom as state_name, ct.active, c.label as country, c.code as country_code, r.nom as region_name FROM";
+		$sql .= " ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r,".MAIN_DB_PREFIX."c_country as c";
+		$sql .= " WHERE ct.fk_state=d.rowid and d.fk_region=r.code_region and r.fk_pays=c.rowid";
+		$sql .= " AND ct.active = 1 AND d.active = 1 AND r.active = 1 AND c.active = 1";
+		if ($country_codeid && is_numeric($country_codeid))   $sql .= " AND c.rowid = '".$this->db->escape($country_codeid)."'";
+		if ($country_codeid && !is_numeric($country_codeid)) $sql .= " AND c.code = '".$this->db->escape($country_codeid)."'";
+		$sql .= " ORDER BY c.code, d.code_departement";
+
+		$result = $this->db->query($sql);
+		if ($result)
+		{
+			if (!empty($htmlname)) $out .= '<select id="'.$htmlname.'" class="flat maxwidth200onsmartphone minwidth300" name="'.$htmlname.'">';
+			if ($country_codeid) $out .= '<option value="0">&nbsp;</option>';
+			$num = $this->db->num_rows($result);
+			$i = 0;
+			dol_syslog(get_class($this)."::select_departement num=".$num, LOG_DEBUG);
+			if ($num)
+			{
+				$country = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($result);
+					if ($obj->code == '0')		// Le code peut etre une chaine
+					{
+						$out .= '<option value="0">&nbsp;</option>';
+					} else {
+						if (!$country || $country != $obj->state_name)
+						{
+							// Affiche la rupture si on est en mode liste multipays
+							if (!$country_codeid && $obj->state_code)
+							{
+								$out .= '<option value="-1" disabled>----- '.$obj->state_name." -----</option>\n";
+								$country = $obj->state_name;
+							}
+						}
+
+						if (!empty($selected) && $selected == $obj->rowid)
+						{
+							$out .= '<option value="'.$obj->rowid.'" selected>';
+						} else {
+							$out .= '<option value="'.$obj->rowid.'">';
+						}
+
+						// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+						if (!empty($conf->global->MAIN_SHOW_STATE_CODE) &&
+						($conf->global->MAIN_SHOW_STATE_CODE == 1 || $conf->global->MAIN_SHOW_STATE_CODE == 2 || $conf->global->MAIN_SHOW_STATE_CODE === 'all')) {
+							if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1) {
+								$out .= $obj->region_name.' - '.$obj->code.' - '.($langs->trans($obj->code) != $obj->code ? $langs->trans($obj->code) : ($obj->name != '-' ? $obj->name : ''));
+							} else {
+								$out .= $obj->code.' - '.($langs->trans($obj->code) != $obj->code ? $langs->trans($obj->code) : ($obj->name != '-' ? $obj->name : ''));
+							}
+						} else {
+							if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1) {
+								$out .= $obj->region_name.' - '.($langs->trans($obj->code) != $obj->code ? $langs->trans($obj->code) : ($obj->name != '-' ? $obj->name : ''));
+							} else {
+								$out .= ($langs->trans($obj->code) != $obj->code ? $langs->trans($obj->code) : ($obj->name != '-' ? $obj->name : ''));
+							}
+						}
+
+						$out .= '</option>';
+					}
+					$i++;
+				}
+			}
+			if (!empty($htmlname)) $out .= '</select>';
+			if (!empty($htmlname) && $user->admin) $out .= ' '.info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
+		} else {
+			dol_print_error($this->db);
+		}
+
+		// Make select dynamic
+		if (!empty($htmlname))
+		{
+			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			$out .= ajax_combobox($htmlname);
+		}
+
+		return $out;
 	}
 }
