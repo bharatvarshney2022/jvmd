@@ -138,7 +138,7 @@ $tabname[40] = MAIN_DB_PREFIX."c_stcommcontact";
 $tabname[41] = MAIN_DB_PREFIX."c_transport_mode";
 $tabname[42] = MAIN_DB_PREFIX."c_product_nature";
 $tabname[43] = MAIN_DB_PREFIX."c_cities";
-$tabname[44] = MAIN_DB_PREFIX."c_citie_pincode";
+$tabname[44] = MAIN_DB_PREFIX."c_pincodes";
 
 // Dictionary labels
 $tablib = array();
@@ -235,7 +235,7 @@ $tabsql[42] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX.
 //$tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libelle, d.fk_region as region_id, r.nom as region, c.code as country_code, c.label as country, d.active FROM ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE d.fk_region=r.code_region and r.fk_pays=c.rowid and r.active=1 and c.active=1";
 $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle, ct.fk_state as state_id, d.nom as state, d.fk_region, r.nom as region, c.code as country_code, c.label as country, ct.active FROM ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE ct.fk_state = d.rowid and d.fk_region=r.code_region and r.fk_pays=c.rowid and d.active=1 and r.active=1 and c.active=1";
 
-$tabsql[44] = "SELECT p.rowid as rowid, p.code_pincode as code, p.nom as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_state as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_citie_pincode as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_state = d.rowid and ct.fk_state = d.rowid and d.active=1 and ct.active=1";
+$tabsql[44] = "SELECT p.rowid as rowid, p.code_pincode as code, p.nom as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_state as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_state = d.rowid and ct.fk_state = d.rowid and d.active=1 and ct.active=1";
 
 
 // Criteria to sort dictionaries
