@@ -327,7 +327,13 @@ if ($reshook > 0) {
 }
 if ($socid > 0) $sql .= " AND u.fk_soc = ".$socid;
 //if ($search_user != '')       $sql.=natural_search(array('u.login', 'u.lastname', 'u.firstname'), $search_user);
-if ($search_supervisor > 0)   $sql .= " AND u.fk_user IN (".$db->sanitize($db->escape($search_supervisor)).")";
+if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->escape($search_supervisor)).")";
+}else{ 
+	if(!$user->admin){
+		
+		$sql .= " AND u.fk_user IN (select fk_usergroup from ".MAIN_DB_PREFIX."usergroup_user where fk_user = '".$user->id."')";
+	}
+}
 if ($search_thirdparty != '') $sql .= natural_search(array('s.nom'), $search_thirdparty);
 if ($search_login != '')      $sql .= natural_search("u.login", $search_login);
 if ($search_lastname != '')   $sql .= natural_search("u.lastname", $search_lastname);
@@ -355,6 +361,7 @@ $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
 
 // Count total nb of records
+echo $sql;
 $nbtotalofrecords = '';
 if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
 {
