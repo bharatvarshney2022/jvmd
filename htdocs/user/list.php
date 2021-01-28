@@ -735,7 +735,11 @@ while ($i < ($limit ? min($num, $limit) : $num))
 	        $user2->email = $obj->email2;
 	        $user2->socid = $obj->fk_soc2;
 	        $user2->statut = $obj->statut2;
-	        print $user2->getNomUrl(-1, '', 0, 0, 24, 0, '', '', 1);
+	        if($user->admin){
+		        print $user2->getNomUrl(-1, '', 0, 0, 24, 0, '', '', 1);
+		    }else{
+		    	print $user2->firstname." ".$user2->lastname;
+		    }
 	        if (!empty($conf->multicompany->enabled) && $obj->admin2 && !$obj->entity2)
 	        {
 	            print img_picto($langs->trans("SuperAdministrator"), 'redstar', 'class="valignmiddle paddingleft"');
