@@ -542,7 +542,9 @@ if (!empty($arrayfields['u.employee']['checked']))
 if (!empty($arrayfields['u.fk_user']['checked']))
 {
     print '<td class="liste_titre">';
-    print $form->select_dolusers($search_supervisor, 'search_supervisor', 1, array(), 0, '', 0, 0, 0, 0, '', 0, '', 'maxwidth200');
+    if($user->admin){
+	    print $form->select_dolusers($search_supervisor, 'search_supervisor', 1, array(), 0, '', 0, 0, 0, 0, '', 0, '', 'maxwidth200');
+	}
     print '</td>';
 }
 if (!empty($arrayfields['u.accountancy_code']['checked']))
