@@ -956,7 +956,14 @@ if ($action == 'create' || $action == 'adduserldap')
 	// Hierarchy
 	print '<tr><td class="titlefieldcreate">'.$langs->trans("HierarchicalResponsible").'</td>';
 	print '<td>';
-	print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth300');
+	if($user->admin){
+
+		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth300');
+	}else{
+		$object->fk_user = $user->id;
+		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth300');	
+	}	
+	
 	print '</td>';
 	print "</tr>\n";
 
