@@ -2249,8 +2249,9 @@ if ($action == 'create' || $action == 'adduserldap')
 		   		if($user->admin){
 		   			print $form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $object->entity, 0, 0, '', 0, '', 'maxwidth300');
 		   		}else{
-		   			
+
 		   			print $form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $object->entity, 0, 0, '', 0, '', 'maxwidth300');
+		   			print '<input type="hidden" name="fk_user" value="'.$object->fk_user.'">';
 		   		}
 		   	} else {
 		   		print '<input type="hidden" name="fk_user" value="'.$object->fk_user.'">';
