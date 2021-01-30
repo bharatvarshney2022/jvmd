@@ -85,6 +85,7 @@ class FormFile
 	public function form_attach_new_file($url, $title = '', $addcancel = 0, $sectionid = 0, $perm = 1, $size = 50, $object = '', $options = '', $useajax = 1, $savingdocmask = '', $linkfiles = 1, $htmlname = 'formuserfile', $accept = '', $sectiondir = '', $usewithoutform = 0, $capture = 0, $disablemulti = 0)
 	{
 		// phpcs:enable
+
 		global $conf, $langs, $hookmanager;
 		$hookmanager->initHooks(array('formfile'));
 
