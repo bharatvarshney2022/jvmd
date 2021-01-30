@@ -638,7 +638,11 @@ if (!empty($arrayfields['u.datec']['checked']))  print_liste_field_titre("DateCr
 if (!empty($arrayfields['u.tms']['checked']))    print_liste_field_titre("DateModificationShort", $_SERVER["PHP_SELF"], "u.tms", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
 if (!empty($arrayfields['u.statut']['checked'])) print_liste_field_titre("Status", $_SERVER["PHP_SELF"], "u.statut", "", $param, '', $sortfield, $sortorder, 'center ');
 // Action column
+if($user->admin){
 print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+}else{
+	print '<th>&nbsp;</th>';
+}
 print '</tr>'."\n";
 
 

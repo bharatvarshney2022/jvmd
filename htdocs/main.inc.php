@@ -2557,7 +2557,7 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
 			$bugbaseurl .= urlencode("[*Short description*]\n");
 			$bugbaseurl .= urlencode("\n");
 			$bugbaseurl .= urlencode("## Environment\n");
-			$bugbaseurl .= urlencode("- **Version**: ".DOL_VERSION."\n");
+			//$bugbaseurl .= urlencode("- **Version**: ".DOL_VERSION."\n");
 			$bugbaseurl .= urlencode("- **OS**: ".php_uname('s')."\n");
 			$bugbaseurl .= urlencode("- **Web server**: ".$_SERVER["SERVER_SOFTWARE"]."\n");
 			$bugbaseurl .= urlencode("- **PHP**: ".php_sapi_name().' '.phpversion()."\n");

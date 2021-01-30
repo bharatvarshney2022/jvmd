@@ -820,24 +820,25 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 		/*
 		 * Menu THIRDPARTIES
 		 */
+
 		if ($mainmenu == 'companies') {
 			// Societes
 			if (!empty($conf->societe->enabled)) {
 				$langs->load("companies");
 				$newmenu->add("/societe/index.php?leftmenu=thirdparties", $langs->trans("ThirdParty"), 0, $user->rights->societe->lire, '', $mainmenu, 'thirdparties');
 
-				if ($user->rights->societe->creer) {
+				if ($user->rights->societe->creer && $user->admin) {
 					$newmenu->add("/societe/card.php?action=create", $langs->trans("MenuNewThirdParty"), 1);
 					if (!$conf->use_javascript_ajax) {
 						$newmenu->add("/societe/card.php?action=create&amp;private=1", $langs->trans("MenuNewPrivateIndividual"), 1);
 					}
 				}
 			}
-
-			$newmenu->add("/societe/list.php?leftmenu=thirdparties", $langs->trans("List"), 1);
-
+			if($user->admin){
+				$newmenu->add("/societe/list.php?leftmenu=thirdparties", $langs->trans("List"), 1);
+			}
 			// Prospects
-			if (!empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS)) {
+			if (!empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && $user->admin) {
 				$langs->load("commercial");
 				$newmenu->add("/societe/list.php?type=p&amp;leftmenu=prospects", $langs->trans("ListProspectsShort"), 2, $user->rights->societe->lire, '', $mainmenu, 'prospects');
 				/* no more required, there is a filter that can do more
@@ -847,7 +848,9 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				if ($usemenuhider || empty($leftmenu) || $leftmenu=="prospects") $newmenu->add("/societe/list.php?type=p&amp;sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;search_stcomm=2", $langs->trans("LastProspectContactInProcess"), 2, $user->rights->societe->lire);
 				if ($usemenuhider || empty($leftmenu) || $leftmenu=="prospects") $newmenu->add("/societe/list.php?type=p&amp;sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;search_stcomm=3", $langs->trans("LastProspectContactDone"), 2, $user->rights->societe->lire);
 				*/
-				$newmenu->add("/societe/card.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 3, $user->rights->societe->creer);
+				if($user->admin){
+					$newmenu->add("/societe/card.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 3, $user->rights->societe->creer);
+				}
 			}
 
 			// Customers/Prospects

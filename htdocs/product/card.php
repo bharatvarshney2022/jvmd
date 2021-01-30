@@ -992,7 +992,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$object->country_code = $tmparray['code'];
 			$object->country = $tmparray['label'];
 		}
-
+		print "<h3>Product Information</h3>";
 		print dol_get_fiche_head('');
 
 		print '<table class="border centpercent">';
@@ -1000,24 +1000,67 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<tr>';
 		$tmpcode = '';
 		if (!empty($modCodeProduct->code_auto)) $tmpcode = $modCodeProduct->getNextValue($object, $type);
-		print '<td class="titlefieldcreate fieldrequired">'.$langs->trans("Ref").'</td><td colspan="3"><input id="ref" name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag(GETPOSTISSET('ref') ? GETPOST('ref', 'alphanohtml') : $tmpcode).'">';
+		print '<td class="titlefieldcreate fieldrequired">'.$langs->trans("Registration no").'</td><td><input id="ref" name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag(GETPOSTISSET('ref') ? GETPOST('ref', 'alphanohtml') : $tmpcode).'">';
 		if ($refalreadyexists)
 		{
 			print $langs->trans("RefAlreadyExists");
 		}
-		print '</td></tr>';
+		print '</td>';
 
 		// Label
-		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td colspan="3"><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+
+		// Brand
+		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+		$brandsarray = array('1' => $langs->trans("Blue Star"), '2' => $langs->trans("Hitachi"));
+		print $form->selectarray('brand', $brandsarray, GETPOST('brand'));
+		print '</td>';
+
+		// Model
+		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		$modelarray = array('1' => $langs->trans("4CDU121YA"), '2' => $langs->trans("5CDU121YA"));
+		print $form->selectarray('model', $modelarray, GETPOST('model'));
+		print '</td></tr>';
+
+		// Product Family
+		print '<tr><td>'.$langs->trans("Product Family").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
+
+		// Product Family
+		print '<td>'.$langs->trans("Product Sub Family").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+
+		// ERP Invoice No
+		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
+
+		// Component No.
+		print '<td>'.$langs->trans("Component No.").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+
+		// Invoice Date
+		print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
+		print $form->selectDate($invoicedate, 'invoicedate', 0, 0, 1, 'createproduct', 1, 0);
+		print '</td>';
+
+		// Ship Date.
+		print '<td>'.$langs->trans("Ship Date").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+
+		// Customer Sale
+		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
+		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
+		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
+		print '</td>';
+		// NAMO
+		print '<td>'.$langs->trans("Is NAMO?").'</td><td>';
+		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
+		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
+		print '</td></tr>';
 
 		// On sell
-		print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("OnSell"), '0' => $langs->trans("NotOnSell"));
 		print $form->selectarray('statut', $statutarray, GETPOST('statut'));
 		print '</td></tr>';
 
 		// To buy
-		print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
+		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("ProductStatusOnBuy"), '0' => $langs->trans("ProductStatusNotOnBuy"));
 		print $form->selectarray('statut_buy', $statutarray, GETPOST('statut_buy'));
 		print '</td></tr>';
@@ -1025,7 +1068,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Batch number management
 		if (!empty($conf->productbatch->enabled))
 		{
-			print '<tr><td>'.$langs->trans("ManageLotSerial").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$langs->trans("ManageLotSerial").'</td><td colspan="3">';
 			$statutarray = array('0' => $langs->trans("ProductStatusNotOnBatch"), '1' => $langs->trans("ProductStatusOnBatch"));
 			print $form->selectarray('status_batch', $statutarray, GETPOST('status_batch'));
 			print '</td></tr>';
@@ -1036,7 +1079,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		if ($showbarcode)
 		{
- 			print '<tr><td>'.$langs->trans('BarcodeType').'</td><td>';
+ 			print '<tr style="display:none;" ><td>'.$langs->trans('BarcodeType').'</td><td>';
  			if (GETPOSTISSET('fk_barcode_type')) {
 			 	$fk_barcode_type = GETPOST('fk_barcode_type');
 			} else {
@@ -1055,7 +1098,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Description (used in invoice, propal...)
-		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
+		print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
 
 		$doleditor = new DolEditor('desc', GETPOST('desc', 'restricthtml'), '', 160, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_4, '90%');
 		$doleditor->Create();
@@ -1063,14 +1106,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print "</td></tr>";
 
 		// Public URL
-		print '<tr><td>'.$langs->trans("PublicUrl").'</td><td colspan="3">';
+		print '<tr style="display:none;"><td>'.$langs->trans("PublicUrl").'</td><td colspan="3">';
 		print '<input type="text" name="url" class="quatrevingtpercent" value="'.GETPOST('url').'">';
 		print '</td></tr>';
 
 		if ($type != 1 && !empty($conf->stock->enabled))
 		{
 			// Default warehouse
-			print '<tr><td>'.$langs->trans("DefaultWarehouse").'</td><td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("DefaultWarehouse").'</td><td>';
 			print $formproduct->selectWarehouses(GETPOST('fk_default_warehouse'), 'fk_default_warehouse', 'warehouseopen', 1);
 			print ' <a href="'.DOL_URL_ROOT.'/product/stock/card.php?action=create&amp;backtopage='.urlencode($_SERVER['PHP_SELF'].'?id='.$object->id.'&action=edit').'">';
 			print '<span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddWarehouse").'"></span>';
@@ -1079,7 +1122,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</tr>';
 
 			// Stock min level
-			print '<tr><td>'.$form->textwithpicto($langs->trans("StockLimit"), $langs->trans("StockLimitDesc"), 1).'</td><td>';
+			print '<tr style="display:none;"><td>'.$form->textwithpicto($langs->trans("StockLimit"), $langs->trans("StockLimitDesc"), 1).'</td><td>';
 			print '<input name="seuil_stock_alerte" class="maxwidth50" value="'.GETPOST('seuil_stock_alerte').'">';
 			print '</td>';
 			if ($conf->browser->layout == 'phone') print '</tr><tr>';
@@ -1095,7 +1138,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Duration
 		if ($type == 1)
 		{
-			print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$langs->trans("Duration").'</td><td colspan="3">';
 			print '<input name="duration_value" size="4" value="'.GETPOST('duration_value', 'int').'">';
 			print $formproduct->selectMeasuringUnits("duration_unit", "time", GETPOST('duration_value', 'alpha'), 0, 1);
 			print '</td></tr>';
@@ -1104,13 +1147,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		if ($type != 1)	// Nature, Weight and volume only applies to products and not to services
 		{
 			// Nature
-			print '<tr><td>'.$form->textwithpicto($langs->trans("NatureOfProductShort"), $langs->trans("NatureOfProductDesc")).'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$form->textwithpicto($langs->trans("NatureOfProductShort"), $langs->trans("NatureOfProductDesc")).'</td><td colspan="3">';
 			$statutarray = array('1' => $langs->trans("Finished"), '0' => $langs->trans("RowMaterial"));
 			print $form->selectarray('finished', $statutarray, GETPOST('finished', 'alpha'), 1);
 			print '</td></tr>';
 
 			// Brut Weight
-			print '<tr><td>'.$langs->trans("Weight").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$langs->trans("Weight").'</td><td colspan="3">';
 			print '<input name="weight" size="4" value="'.GETPOST('weight').'">';
 			print $formproduct->selectMeasuringUnits("weight_units", "weight", GETPOSTISSET('weight_units') ?GETPOST('weight_units', 'alpha') : (empty($conf->global->MAIN_WEIGHT_DEFAULT_UNIT) ? 0 : $conf->global->MAIN_WEIGHT_DEFAULT_UNIT), 0, 2);
 			print '</td></tr>';
@@ -1118,7 +1161,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Brut Length
 			if (empty($conf->global->PRODUCT_DISABLE_SIZE))
 			{
-				print '<tr><td>'.$langs->trans("Length").' x '.$langs->trans("Width").' x '.$langs->trans("Height").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Length").' x '.$langs->trans("Width").' x '.$langs->trans("Height").'</td><td colspan="3">';
 				print '<input name="size" class="width50" value="'.GETPOST('size').'"> x ';
 				print '<input name="sizewidth" class="width50" value="'.GETPOST('sizewidth').'"> x ';
 				print '<input name="sizeheight" class="width50" value="'.GETPOST('sizeheight').'">';
@@ -1128,7 +1171,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if (empty($conf->global->PRODUCT_DISABLE_SURFACE))
 			{
 				// Brut Surface
-				print '<tr><td>'.$langs->trans("Surface").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Surface").'</td><td colspan="3">';
 				print '<input name="surface" size="4" value="'.GETPOST('surface').'">';
 				print $formproduct->selectMeasuringUnits("surface_units", "surface", GETPOSTISSET('surface_units') ?GETPOST('surface_units', 'alpha') : '0', 0, 2);
 				print '</td></tr>';
@@ -1136,7 +1179,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if (empty($conf->global->PRODUCT_DISABLE_VOLUME))
 			{
 				// Brut Volume
-				print '<tr><td>'.$langs->trans("Volume").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Volume").'</td><td colspan="3">';
 				print '<input name="volume" size="4" value="'.GETPOST('volume').'">';
 				print $formproduct->selectMeasuringUnits("volume_units", "volume", GETPOSTISSET('volume_units') ?GETPOST('volume_units', 'alpha') : '0', 0, 2);
 				print '</td></tr>';
@@ -1145,7 +1188,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if (!empty($conf->global->PRODUCT_ADD_NET_MEASURE))
 			{
 				// Net Measure
-				print '<tr><td>'.$langs->trans("NetMeasure").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("NetMeasure").'</td><td colspan="3">';
 				print '<input name="net_measure" size="4" value="'.GETPOST('net_measure').'">';
 				print $formproduct->selectMeasuringUnits("net_measure_units", '', GETPOSTISSET('net_measure_units') ?GETPOST('net_measure_units', 'alpha') : (empty($conf->global->MAIN_WEIGHT_DEFAULT_UNIT) ? 0 : $conf->global->MAIN_WEIGHT_DEFAULT_UNIT), 0, 0);
 				print '</td></tr>';
@@ -1155,7 +1198,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Units
 		if (!empty($conf->global->PRODUCT_USE_UNITS))
 		{
-			print '<tr><td>'.$langs->trans('DefaultUnitToShow').'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans('DefaultUnitToShow').'</td>';
 			print '<td colspan="3">';
 			print $form->selectUnits(empty($line->fk_unit) ? $conf->global->PRODUCT_USE_UNITS : $line->fk_unit, 'units');
 			print '</td></tr>';
@@ -1164,10 +1207,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Custom code
 		if (empty($conf->global->PRODUCT_DISABLE_CUSTOM_INFO) && empty($type))
 		{
-			print '<tr><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" class="maxwidth100onsmartphone" value="'.GETPOST('customcode').'"></td></tr>';
+			print '<tr style="display:none;"><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" class="maxwidth100onsmartphone" value="'.GETPOST('customcode').'"></td></tr>';
 
 			// Origin country
-			print '<td>'.$langs->trans("CountryOrigin").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("CountryOrigin").'</td>';
 			print '<td>';
 			print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 			print $form->select_country((GETPOSTISSET('country_id') ? GETPOST('country_id') : $object->country_id), 'country_id', '', 0, 'minwidth300 widthcentpercentminusx');
@@ -1177,7 +1220,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// State
 			if (empty($conf->global->PRODUCT_DISABLE_STATE))
 			{
-				if ($conf->browser->layout == 'phone') print '</tr><tr>';
+				if ($conf->browser->layout == 'phone') print '</tr><tr style="display:none;">';
 				if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
 				{
 					print '<td>'.$form->editfieldkey('RegionStateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3">';
@@ -1204,7 +1247,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Note (private, no output on invoices, propales...)
 		//if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))       available in create mode
 		//{
-			print '<tr><td class="tdtop">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="3">';
 
 			// We use dolibarr_details as type of DolEditor here, because we must not accept images as description is included into PDF and not accepted by TCPDF.
 			$doleditor = new DolEditor('note_private', GETPOST('note_private', 'restricthtml'), '', 140, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_8, '90%');
@@ -1215,7 +1258,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		if ($conf->categorie->enabled) {
 			// Categories
-			print '<tr><td>'.$langs->trans("Categories").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$langs->trans("Categories").'</td><td colspan="3">';
 			$cate_arbo = $form->select_all_categories(Categorie::TYPE_PRODUCT, '', 'parent', 64, 0, 1);
 			print img_picto('', 'category').$form->multiselectarray('categories', $cate_arbo, GETPOST('categories', 'array'), '', 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
 			print "</td></tr>";
@@ -1229,7 +1272,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		{
 			// We do no show price array on create when multiprices enabled.
 			// We must set them on prices tab.
-			print '<table class="border centpercent">';
+			print '<table class="border centpercent" style="display:none;">';
 			// VAT
 			print '<tr><td class="titlefieldcreate">'.$langs->trans("VATRate").'</td><td>';
 			$defaultva = get_default_tva($mysoc, $mysoc);
@@ -1239,7 +1282,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print '<br>';
 		} else {
-			print '<table class="border centpercent">';
+			print '<table class="border centpercent" style="display:none;">';
 
 			// Price
 			print '<tr><td class="titlefieldcreate">'.$langs->trans("SellingPrice").'</td>';
@@ -1264,7 +1307,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Accountancy codes
-		print '<table class="border centpercent">';
+		print '<table class="border centpercent" style="display:none;">';
 
 		if (!empty($conf->accounting->enabled))
 		{

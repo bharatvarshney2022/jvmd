@@ -91,7 +91,7 @@ $hookmanager->initHooks(array('admin'));
 // Put here declaration of dictionaries properties
 
 // Sort order to show dictionary (0 is space). All other dictionaries (added by modules) will be at end of this.
-$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
+$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,  0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
 
 // Name of SQL tables of dictionaries
 $tabname = array();
@@ -139,6 +139,11 @@ $tabname[41] = MAIN_DB_PREFIX."c_transport_mode";
 $tabname[42] = MAIN_DB_PREFIX."c_product_nature";
 $tabname[43] = MAIN_DB_PREFIX."c_cities";
 $tabname[44] = MAIN_DB_PREFIX."c_pincodes";
+$tabname[45] = MAIN_DB_PREFIX."p_brands";
+$tabname[46] = MAIN_DB_PREFIX."product_family";
+$tabname[47] = MAIN_DB_PREFIX."product_subfamily";
+//$tabname[48] = MAIN_DB_PREFIX."product_model";
+
 
 // Dictionary labels
 $tablib = array();
@@ -186,6 +191,10 @@ $tablib[41] = "DictionaryTransportMode";
 $tablib[42] = "DictionaryProductNature";
 $tablib[43] = "DictionaryCity";
 $tablib[44] = "DictionaryPincode";
+$tablib[45] = "DictionaryProductBrands";
+$tablib[46] = "DictionaryProductFamily";
+$tablib[47] = "DictionaryProductSubFamily";
+//$tablib[48] = "DictionaryProductModel";
 
 // Requests to extract data
 $tabsql = array();
@@ -237,6 +246,11 @@ $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle
 
 $tabsql[44] = "SELECT p.rowid as rowid, p.code_pincode as code, p.nom as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_state as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_state = d.rowid and ct.fk_state = d.rowid and d.active=1 and ct.active=1";
 
+$tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."p_brands";
+$tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."product_family";
+$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as sfamily, f.nom as family, sf.active FROM ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f WHERE sf.fk_family = f.rowid ";
+
+
 
 // Criteria to sort dictionaries
 $tabsqlsort = array();
@@ -284,6 +298,9 @@ $tabsqlsort[41] = "code ASC";
 $tabsqlsort[42] = "code ASC";
 $tabsqlsort[43] = "state ASC, country ASC, code ASC";
 $tabsqlsort[44] = "libelle ASC";
+$tabsqlsort[45] = "nom ASC";
+$tabsqlsort[46] = "nom ASC";
+$tabsqlsort[47] = "sfamily ASC";
 
 // Field names in select result for dictionary display
 $tabfield = array();
@@ -331,6 +348,9 @@ $tabfield[41] = "code,label";
 $tabfield[42] = "code,label";
 $tabfield[43] = "code,libelle,state,region_id,region";
 $tabfield[44] = "code,libelle,city,state";
+$tabfield[45] = "code,nom";
+$tabfield[46] = "code,nom";
+$tabfield[47] = "family,code,sfamily";
 
 // Edit field names for editing a record
 $tabfieldvalue = array();
@@ -378,6 +398,9 @@ $tabfieldvalue[41] = "code,label";
 $tabfieldvalue[42] = "code,label";
 $tabfieldvalue[43] = "code,libelle,state,region"; // 
 $tabfieldvalue[44] = "code,libelle,city,state";
+$tabfieldvalue[45] = "code,nom";
+$tabfieldvalue[46] = "code,nom";
+$tabfieldvalue[47] = "code,nom,family";
 
 // Field names in the table for inserting a record
 $tabfieldinsert = array();
@@ -426,6 +449,9 @@ $tabfieldinsert[41] = "code,label";
 $tabfieldinsert[42] = "code,label";
 $tabfieldinsert[43] = "code_city,nom,fk_state";
 $tabfieldinsert[44] = "code_pincode,nom,fk_city,fk_state";
+$tabfieldinsert[45] = "code,nom";
+$tabfieldinsert[46] = "code,nom";
+$tabfieldinsert[47] = "code,nom,fk_family";
 
 // Rowid name of field depending if field is autoincrement on or off..
 // Use "" if id field is "rowid" and has autoincrement on
@@ -475,6 +501,9 @@ $tabrowid[41] = "";
 $tabrowid[42] = "rowid";
 $tabrowid[43] = "";
 $tabrowid[44] = "";
+$tabrowid[45] = "";
+$tabrowid[46] = "";
+$tabrowid[47] = "";
 
 // Condition to show dictionary in setup page
 $tabcond = array();
@@ -522,6 +551,9 @@ $tabcond[41] = !empty($conf->intracommreport->enabled);
 $tabcond[42] = !empty($conf->product->enabled);
 $tabcond[43] = true;
 $tabcond[44] = true;
+$tabcond[45] = true;
+$tabcond[46] = true;
+$tabcond[47] = true;
 // List of help for fields
 $tabhelp = array();
 $tabhelp[1]  = array('code'=>$langs->trans("EnterAnyCode"));
@@ -568,6 +600,9 @@ $tabhelp[41] = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[42] = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[43]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[44]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[45]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[46]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[47]  = array('code'=>$langs->trans("EnterAnyCode"));
 
 // List of check for fields (NOT USED YET)
 $tabfieldcheck = array();
@@ -615,6 +650,9 @@ $tabfieldcheck[41] = array();
 $tabfieldcheck[42] = array();
 $tabfieldcheck[43]  = array();
 $tabfieldcheck[44]  = array();
+$tabfieldcheck[45]  = array();
+$tabfieldcheck[46]  = array();
+$tabfieldcheck[47]  = array();
 
 // Complete all arrays with entries found into modules
 complete_dictionary_with_modules($taborder, $tabname, $tablib, $tabsql, $tabsqlsort, $tabfield, $tabfieldvalue, $tabfieldinsert, $tabrowid, $tabcond, $tabhelp, $tabfieldcheck);
@@ -1894,7 +1932,12 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 		{
 			print '<td>';
 			$formcompany->select_city($state_id, '0' ,'city');
-			print '</td>';		
+			print '</td>';	
+		}elseif ($fieldlist[$field] == 'family')
+		{
+			print '<td>';
+			$formcompany->select_family($family_id, '0' ,'family');
+			print '</td>';			
 		} elseif ($fieldlist[$field] == 'region_id')
 		{
 			$region_id = (!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:0);
