@@ -794,23 +794,12 @@ if ($action == 'create' || $action == 'adduserldap')
 	print '<table class="border centpercent">';
 
 	// Civility
-	print '<tr><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td colspan="3">';
+	print '<tr style="display:none;"><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td colspan="3">';
 	print $formcompany->select_civility(GETPOSTISSET("civility_code") ? GETPOST("civility_code", 'aZ09') : $object->civility_code, 'civility_code');
+	
 	print '</td></tr>';
 
-	// Lastname
-	print '<tr>';
-	print '<td class="titlefieldcreate"><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td>';
-	print '<td>';
-	if (!empty($ldap_lastname))
-	{
-		print '<input type="hidden" id="lastname" name="lastname" value="'.dol_escape_htmltag($ldap_lastname).'">';
-		print $ldap_lastname;
-	} else {
-		print '<input class="minwidth100" type="text" id="lastname" name="lastname" value="'.dol_escape_htmltag(GETPOST('lastname', 'alphanohtml')).'">';
-	}
-	print '</td></tr>';
-
+	
 	// Firstname
 	print '<tr><td>'.$langs->trans("Firstname").'</td>';
 	print '<td>';
@@ -820,6 +809,15 @@ if ($action == 'create' || $action == 'adduserldap')
 		print $ldap_firstname;
 	} else {
 		print '<input class="minwidth100" type="text" name="firstname" value="'.dol_escape_htmltag(GETPOST('firstname', 'alphanohtml')).'">';
+	}
+	print '</td><td class="titlefieldcreate"><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td>';
+	print '<td>';
+	if (!empty($ldap_lastname))
+	{
+		print '<input type="hidden" id="lastname" name="lastname" value="'.dol_escape_htmltag($ldap_lastname).'">';
+		print $ldap_lastname;
+	} else {
+		print '<input class="minwidth100" type="text" id="lastname" name="lastname" value="'.dol_escape_htmltag(GETPOST('lastname', 'alphanohtml')).'">';
 	}
 	print '</td></tr>';
 
@@ -837,7 +835,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	} else {
 		print '<input class="maxwidth200" maxsize="24" type="text" name="login" value="'.dol_escape_htmltag(GETPOST('login', 'alphanohtml')).'">';
 	}
-	print '</td></tr>';
+	print '</td>';
 
 	$generated_password = '';
 	if (empty($ldap_sid))    // ldap_sid is for activedirectory
@@ -847,7 +845,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	$password = (GETPOSTISSET('password') ?GETPOST('password') : $generated_password);
 
 	// Password
-	print '<tr><td class="fieldrequired">'.$langs->trans("Password").'</td>';
+	print '<td class="fieldrequired">'.$langs->trans("Password").'</td>';
 	print '<td>';
 	$valuetoshow = '';
 	if (preg_match('/ldap/', $dolibarr_main_authentication))
@@ -877,6 +875,32 @@ if ($action == 'create' || $action == 'adduserldap')
 	else $valuetoshow .= $hookmanager->resPrint; // to add
 
 	print $valuetoshow;
+	print '</td></tr>';
+
+	// Tel portable
+	print '<tr><td>'.$langs->trans("PhoneMobile").'</td>';
+	print '<td>';
+	print img_picto('', 'object_phoning_mobile');
+	if (!empty($ldap_mobile))
+	{
+		print '<input type="hidden" name="user_mobile" value="'.dol_escape_htmltag($ldap_mobile).'">';
+		print $ldap_mobile;
+	} else {
+		print '<input type="text" name="user_mobile" value="'.dol_escape_htmltag(GETPOST('user_mobile', 'alphanohtml')).'">';
+	}
+	print '</td>';
+
+	// EMail
+	print '<td'.(!empty($conf->global->USER_MAIL_REQUIRED) ? ' class="fieldrequired"' : '').'>'.$langs->trans("EMail").'</td>';
+	print '<td>';
+	print img_picto('', 'object_email');
+	if (!empty($ldap_mail))
+	{
+		print '<input type="hidden" name="email" value="'.dol_escape_htmltag($ldap_mail).'">';
+		print $ldap_mail;
+	} else {
+		print '<input type="text" name="email" class="maxwidth500 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOST('email', 'alphanohtml')).'">';
+	}
 	print '</td></tr>';
 
 	if (!empty($conf->api->enabled))
@@ -940,15 +964,15 @@ if ($action == 'create' || $action == 'adduserldap')
 	}
 
 	// Gender
-	print '<tr><td>'.$langs->trans("Gender").'</td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("Gender").'</td>';
 	print '<td>';
 	$arraygender = array('man'=>$langs->trans("Genderman"), 'woman'=>$langs->trans("Genderwoman"), 'other'=>$langs->trans("Genderother"));
 	print $form->selectarray('gender', $arraygender, GETPOST('gender'), 1);
-	print '</td></tr>';
+	print '</td>';
 
 	// Employee
 	$defaultemployee = 1;
-	print '<tr>';
+	//print '<tr>';
 	print '<td>'.$langs->trans('Employee').'</td><td>';
 	print $form->selectyesno("employee", (GETPOST('employee') != '' ?GETPOST('employee') : $defaultemployee), 1);
 	print '</td></tr>';
@@ -958,14 +982,19 @@ if ($action == 'create' || $action == 'adduserldap')
 	print '<td>';
 	if($user->admin){
 
-		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth300');
+		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');
 	}else{
 		$object->fk_user = $user->id;
-		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth300');	
+		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');	
 	}	
 	
 	print '</td>';
 	print "</tr>\n";
+	// External user
+	print '<tr style="display:none;"><td>'.$langs->trans("ExternalUser").' ?</td>';
+	print '<td>';
+	print $form->textwithpicto($langs->trans("Internal"), $langs->trans("InternalExternalDesc"), 1, 'help', '', 0, 2);
+	print '</td></tr>';
 
 	// Expense report validator
 	if (!empty($conf->expensereport->enabled))
@@ -979,7 +1008,7 @@ if ($action == 'create' || $action == 'adduserldap')
 		print '</td>';
 		print "</tr>\n";
 	}
-
+	
 	// Holiday request validator
 	if (!empty($conf->holiday->enabled))
 	{
@@ -993,28 +1022,23 @@ if ($action == 'create' || $action == 'adduserldap')
 		print "</tr>\n";
 	}
 
-	// External user
-	print '<tr><td>'.$langs->trans("ExternalUser").' ?</td>';
-	print '<td>';
-	print $form->textwithpicto($langs->trans("Internal"), $langs->trans("InternalExternalDesc"), 1, 'help', '', 0, 2);
-	print '</td></tr>';
-
+	
 	print '</table><hr><table class="border centpercent">';
 
 
 	// Address
 	print '<tr><td class="tdtop titlefieldcreate">'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
-	print '<td><textarea name="address" id="address" class="quatrevingtpercent" rows="3" wrap="soft">';
+	print '<td colspan="3"><textarea name="address" id="address" class="quatrevingtpercent" rows="3" wrap="soft">';
 	print $object->address;
 	print '</textarea></td></tr>';
 
 	// Zip
 	print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
 	print $formcompany->select_ziptown($object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6);
-	print '</td></tr>';
+	print '</td>';
 
 	// Town
-	print '<tr><td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
+	print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
 	print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 	print '</td></tr>';
 
@@ -1022,18 +1046,18 @@ if ($action == 'create' || $action == 'adduserldap')
 	print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 	print $form->select_country((GETPOST('country_id') != '' ?GETPOST('country_id') : $object->country_id));
 	if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
-	print '</td></tr>';
+	print '</td>';
 
 	// State
 	if (empty($conf->global->USER_DISABLE_STATE))
 	{
-		print '<tr><td>'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
+		print '<td>'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 		print $formcompany->select_state($object->state_id, $object->country_code, 'state_id');
 		print '</td></tr>';
 	}
 
 	// Tel
-	print '<tr><td>'.$langs->trans("PhonePro").'</td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("PhonePro").'</td>';
 	print '<td>';
 	print img_picto('', 'object_phoning');
 	if (!empty($ldap_phone))
@@ -1045,21 +1069,10 @@ if ($action == 'create' || $action == 'adduserldap')
 	}
 	print '</td></tr>';
 
-	// Tel portable
-	print '<tr><td>'.$langs->trans("PhoneMobile").'</td>';
-	print '<td>';
-	print img_picto('', 'object_phoning_mobile');
-	if (!empty($ldap_mobile))
-	{
-		print '<input type="hidden" name="user_mobile" value="'.dol_escape_htmltag($ldap_mobile).'">';
-		print $ldap_mobile;
-	} else {
-		print '<input type="text" name="user_mobile" value="'.dol_escape_htmltag(GETPOST('user_mobile', 'alphanohtml')).'">';
-	}
-	print '</td></tr>';
+	
 
 	// Fax
-	print '<tr><td>'.$langs->trans("Fax").'</td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("Fax").'</td>';
 	print '<td>';
 	print img_picto('', 'object_phoning_fax');
 	if (!empty($ldap_fax))
@@ -1071,23 +1084,12 @@ if ($action == 'create' || $action == 'adduserldap')
 	}
 	print '</td></tr>';
 
-	// EMail
-	print '<tr><td'.(!empty($conf->global->USER_MAIL_REQUIRED) ? ' class="fieldrequired"' : '').'>'.$langs->trans("EMail").'</td>';
-	print '<td>';
-	print img_picto('', 'object_email');
-	if (!empty($ldap_mail))
-	{
-		print '<input type="hidden" name="email" value="'.dol_escape_htmltag($ldap_mail).'">';
-		print $ldap_mail;
-	} else {
-		print '<input type="text" name="email" class="maxwidth500 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOST('email', 'alphanohtml')).'">';
-	}
-	print '</td></tr>';
+	
 
 	if (!empty($conf->socialnetworks->enabled)) {
 		foreach ($socialnetworks as $key => $value) {
 			if ($value['active']) {
-				print '<tr><td>'.$langs->trans($value['label']).'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans($value['label']).'</td>';
 				print '<td>';
 				if (!empty($ldap_social[$key])) {
 					print '<input type="hidden" name="'.$key.'" value="'.$ldap_social[$key].'">';
@@ -1110,7 +1112,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	// Accountancy code
 	if ($conf->accounting->enabled)
 	{
-		print '<tr><td>'.$langs->trans("AccountancyCode").'</td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("AccountancyCode").'</td>';
 		print '<td>';
 		print '<input type="text" name="accountancy_code" value="'.dol_escape_htmltag(GETPOST('accountancy_code', 'alphanohtml')).'">';
 		print '</td></tr>';
@@ -1119,7 +1121,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	// User color
 	if (!empty($conf->agenda->enabled))
 	{
-		print '<tr><td>'.$langs->trans("ColorUser").'</td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("ColorUser").'</td>';
 		print '<td>';
 		print $formother->selectColor(GETPOSTISSET('color') ?GETPOST('color', 'alphanohtml') : $object->color, 'color', null, 1, '', 'hideifnotset');
 		print '</td></tr>';
@@ -1128,7 +1130,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	// Categories
 	if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
 	{
-		print '<tr><td>'.$form->editfieldkey('Categories', 'usercats', '', $object, 0).'</td><td colspan="3">';
+		print '<tr style="display:none;" ><td>'.$form->editfieldkey('Categories', 'usercats', '', $object, 0).'</td><td colspan="3">';
 		$cate_arbo = $form->select_all_categories('user', null, 'parent', null, null, 1);
 		print $form->multiselectarray('usercats', $cate_arbo, GETPOST('usercats', 'array'), null, null, null, null, '90%');
 		print "</td></tr>";
@@ -1136,7 +1138,7 @@ if ($action == 'create' || $action == 'adduserldap')
 
 	if (!empty($conf->global->MAIN_MULTILANGS))
 	{
-		print '<tr><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">'."\n";
+		print '<tr style="display:none;"><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">'."\n";
 		print $formadmin->select_language(GETPOST('default_lang', 'alpha') ?GETPOST('default_lang', 'alpha') : ($object->lang ? $object->lang : ''), 'default_lang', 0, 0, 1, 0, 0, 'maxwidth200onsmartphone');
 		print '</td>';
 		print '</tr>';
@@ -1150,7 +1152,7 @@ if ($action == 'create' || $action == 'adduserldap')
 		{
 			if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && !$user->entity)	// condition must be same for create and edit mode
 			{
-				 print "<tr>".'<td>'.$langs->trans("Entity").'</td>';
+				 print "<tr >".'<td>'.$langs->trans("Entity").'</td>';
 				 print "<td>".$mc->select_entities($conf->entity);
 				 print "</td></tr>\n";
 			} else {
@@ -1164,16 +1166,16 @@ if ($action == 'create' || $action == 'adduserldap')
 	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
 
 	// Note
-	print '<tr><td class="tdtop">';
+	print '<tr ><td class="tdtop">';
 	print $langs->trans("Note");
-	print '</td><td>';
+	print '</td><td colspan="4">';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 	$doleditor = new DolEditor('note', GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : '', '', 120, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
 	$doleditor->Create();
 	print "</td></tr>\n";
 
 	// Signature
-	print '<tr><td class="tdtop">'.$langs->trans("Signature").'</td>';
+	print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Signature").'</td>';
 	print '<td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 	$doleditor = new DolEditor('signature', GETPOST('signature', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, true, empty($conf->global->FCKEDITOR_ENABLE_USERSIGN) ? 0 : 1, ROWS_4, '90%');
@@ -1181,7 +1183,7 @@ if ($action == 'create' || $action == 'adduserldap')
 	print '</td></tr>';
 
 
-	print '</table><hr><table class="border centpercent">';
+	print '</table><hr style="display:none;"><table class="border centpercent" style="display:none;">';
 
 
 	// TODO Move this into tab RH (HierarchicalResponsible must be on both tab)
@@ -1399,7 +1401,9 @@ if ($action == 'create' || $action == 'adduserldap')
          */
 		if ($action != 'edit')
 		{
+			
 			print dol_get_fiche_head($head, 'user', $title, -1, 'user');
+			
 
 			dol_banner_tab($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
 
@@ -1420,7 +1424,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '</tr>'."\n";
 
 			// Password
-			print '<tr><td>'.$langs->trans("Password").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Password").'</td>';
 
 			print '<td class="wordbreak">';
 			$valuetoshow = '';
@@ -1487,20 +1491,22 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Administrator
-			print '<tr><td>'.$langs->trans("Administrator").'</td><td>';
-			if (!empty($conf->multicompany->enabled) && $object->admin && !$object->entity)
-			{
-				print $form->textwithpicto(yn($object->admin), $langs->trans("SuperAdministratorDesc"), 1, "superadmin");
-			} elseif ($object->admin)
-			{
-				print $form->textwithpicto(yn($object->admin), $langs->trans("AdministratorDesc"), 1, "admin");
-			} else {
-				print yn($object->admin);
+			if($user->admin){
+				print '<tr><td>'.$langs->trans("Administrator").'</td><td>';
+				if (!empty($conf->multicompany->enabled) && $object->admin && !$object->entity)
+				{
+					print $form->textwithpicto(yn($object->admin), $langs->trans("SuperAdministratorDesc"), 1, "superadmin");
+				} elseif ($object->admin)
+				{
+					print $form->textwithpicto(yn($object->admin), $langs->trans("AdministratorDesc"), 1, "admin");
+				} else {
+					print yn($object->admin);
+				}
+				print '</td></tr>'."\n";
 			}
-			print '</td></tr>'."\n";
 
 			// Type
-			print '<tr><td>';
+			print '<tr style="display:none;"><td>';
 			$text = $langs->trans("Type");
 			print $form->textwithpicto($text, $langs->trans("InternalExternalDesc"));
 			print '</td><td>';
@@ -1519,13 +1525,13 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Gender
-			print '<tr><td>'.$langs->trans("Gender").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Gender").'</td>';
 			print '<td>';
 			if ($object->gender) print $langs->trans("Gender".$object->gender);
 			print '</td></tr>';
 
 			// Employee
-			print '<tr><td>'.$langs->trans("Employee").'</td><td colspan="2">';
+			print '<tr style="display:none;"><td>'.$langs->trans("Employee").'</td><td colspan="2">';
 			print yn($object->employee);
 			print '</td></tr>'."\n";
 
@@ -1539,7 +1545,10 @@ if ($action == 'create' || $action == 'adduserldap')
 			} else {
 				$huser = new User($db);
 				$huser->fetch($object->fk_user);
+				if($user->admin)
 				print $huser->getNomUrl(1);
+				else
+				print $huser->firstname." ".$huser->lastname;
 			}
 			print '</td>';
 			print "</tr>\n";
@@ -1590,7 +1599,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Position/Job
-			print '<tr><td>'.$langs->trans("PostOrFunction").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("PostOrFunction").'</td>';
 			print '<td>'.dol_escape_htmltag($object->job).'</td>';
 			print '</tr>'."\n";
 
@@ -1604,7 +1613,7 @@ if ($action == 'create' || $action == 'adduserldap')
 				$langs->load("salaries");
 
 				// THM
-				print '<tr><td>';
+				print '<tr style="display:none;"><td>';
 				$text = $langs->trans("THM");
 				print $form->textwithpicto($text, $langs->trans("THMDescription"), 1, 'help', 'classthm');
 				print '</td>';
@@ -1632,14 +1641,14 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Weeklyhours
-			print '<tr><td>'.$langs->trans("WeeklyHours").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("WeeklyHours").'</td>';
 			print '<td>';
 			print price2num($object->weeklyhours);
 			print '</td>';
 			print "</tr>\n";
 
 			// Date employment
-			print '<tr><td>'.$langs->trans("DateOfEmployment").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("DateOfEmployment").'</td>';
 			print '<td>';
 			if ($object->dateemployment) {
 				print '<span class="opacitymedium">'.$langs->trans("FromDate").'</span> ';
@@ -1653,7 +1662,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			print "</tr>\n";
 
 			// Date login validity
-			print '<tr><td>'.$langs->trans("RangeOfLoginValidity").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("RangeOfLoginValidity").'</td>';
 			print '<td>';
 			if ($object->datestartvalidity) {
 				print '<span class="opacitymedium">'.$langs->trans("FromDate").'</span> ';
@@ -1667,7 +1676,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			print "</tr>\n";
 
 			// Date of birth
-			print '<tr><td>'.$langs->trans("DateOfBirth").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("DateOfBirth").'</td>';
 			print '<td>';
 			print dol_print_date($object->birth, 'day');
 			print '</td>';
@@ -1691,17 +1700,35 @@ if ($action == 'create' || $action == 'adduserldap')
 			// Color user
 			if (!empty($conf->agenda->enabled))
 			{
-				print '<tr><td>'.$langs->trans("ColorUser").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("ColorUser").'</td>';
 				print '<td>';
 				print $formother->showColor($object->color, '');
 				print '</td>';
 				print "</tr>\n";
 			}
 
+			//print_r($object);
+			// firstname
+			print '<tr><td class="tdtop">'.$langs->trans('Full name').'</td><td>';
+			print dol_htmlentitiesbr($object->firstname)." ".dol_htmlentitiesbr($object->lastname);
+			print "</td></tr>\n";
+
+			//Email
+			print '<tr><td class="tdtop">'.$langs->trans('Email').'</td><td>';
+			print dol_htmlentitiesbr($object->email);
+			print "</td></tr>\n";
+
+			// Mobile
+			print '<tr><td class="tdtop">'.$langs->trans('PhoneMobile').'</td><td>';
+			print dol_htmlentitiesbr($object->user_mobile);
+			print "</td></tr>\n";
+
+
+
 			// Categories
 			if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
 			{
-				print '<tr><td>'.$langs->trans("Categories").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("Categories").'</td>';
 				print '<td colspan="3">';
 				print $form->showCategories($object->id, Categorie::TYPE_USER, 1);
 				print '</td></tr>';
@@ -1711,7 +1738,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			if (!empty($conf->global->MAIN_MULTILANGS))
 			{
 				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-				print '<tr><td>'.$langs->trans("DefaultLang").'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("DefaultLang").'</td><td>';
 				//$s=picto_from_langcode($object->default_lang);
 				//print ($s?$s.' ':'');
 				$langs->load("languages");
@@ -1727,11 +1754,11 @@ if ($action == 'create' || $action == 'adduserldap')
 				print "</tr>\n";
 			}
 
-			print '<tr><td class="titlefield">'.$langs->trans("LastConnexion").'</td>';
+			print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("LastConnexion").'</td>';
 			print '<td>'.dol_print_date($object->datelastlogin, "dayhour").'</td>';
 			print "</tr>\n";
 
-			print '<tr><td>'.$langs->trans("PreviousConnexion").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("PreviousConnexion").'</td>';
 			print '<td>'.dol_print_date($object->datepreviouslogin, "dayhour").'</td>';
 			print "</tr>\n";
 
@@ -1761,7 +1788,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			// Company / Contact
 			if (!empty($conf->societe->enabled))
 			{
-				print '<tr><td>'.$langs->trans("LinkToCompanyContact").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("LinkToCompanyContact").'</td>';
 				print '<td>';
 				$s = '';
 				if (isset($object->socid) && $object->socid > 0)
@@ -1793,7 +1820,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			if (!empty($conf->adherent->enabled))
 			{
 				$langs->load("members");
-				print '<tr><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
 				print '<td>';
 				if ($object->fk_member)
 				{
@@ -1809,12 +1836,12 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Signature
-			print '<tr><td class="tdtop">'.$langs->trans('Signature').'</td><td>';
+			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans('Signature').'</td><td>';
 			print dol_htmlentitiesbr($object->signature);
 			print "</td></tr>\n";
 
 			//VCard
-			print '<tr><td class="tdtop">'.$langs->trans("VCard").'</td>';
+			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("VCard").'</td>';
 			print '<td>';
 			print '<a href="'.DOL_URL_ROOT.'/user/vcard.php?id='.$object->id.'">';
 			print img_picto($langs->trans("Download"), 'vcard.png', 'class="paddingrightonly"');
@@ -1940,7 +1967,7 @@ if ($action == 'create' || $action == 'adduserldap')
                  * List of groups of user
                  */
 
-				if ($canreadgroup)
+				if ($canreadgroup && $user->admin)
 				{
 					print '<!-- Group section -->'."\n";
 
@@ -2044,7 +2071,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			// Ref/ID
 			if (!empty($conf->global->MAIN_SHOW_TECHNICAL_ID))
 			{
-				print '<tr><td class="titlefield">'.$langs->trans("Ref").'</td>';
+				print '<tr ><td class="titlefield">'.$langs->trans("Ref").'</td>';
 				print '<td>';
 				print $object->id;
 				print '</td>';
@@ -2052,12 +2079,22 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Civility
-			print '<tr><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td colspan="3">';
+			print '<tr style="display:none;"><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td colspan="3">';
 			print $formcompany->select_civility(GETPOSTISSET("civility_code") ? GETPOST("civility_code", 'aZ09') : $object->civility_code, 'civility_code');
 			print '</td></tr>';
-
+			// Firstname
+			print "<tr>".'<td>'.$langs->trans("Firstname").'</td>';
+			print '<td>';
+			if ($caneditfield && !$object->ldap_sid)
+			{
+				print '<input class="minwidth100" type="text" class="flat" name="firstname" value="'.$object->firstname.'">';
+			} else {
+				print '<input type="hidden" name="firstname" value="'.$object->firstname.'">';
+				print $object->firstname;
+			}
+			print '</td>';
 			// Lastname
-			print "<tr>";
+			//print "<tr>";
 			print '<td class="titlefield fieldrequired">'.$langs->trans("Lastname").'</td>';
 			print '<td>';
 			if ($caneditfield && !$object->ldap_sid)
@@ -2070,17 +2107,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '</td>';
 			print '</tr>';
 
-			// Firstname
-			print "<tr>".'<td>'.$langs->trans("Firstname").'</td>';
-			print '<td>';
-			if ($caneditfield && !$object->ldap_sid)
-			{
-				print '<input class="minwidth100" type="text" class="flat" name="firstname" value="'.$object->firstname.'">';
-			} else {
-				print '<input type="hidden" name="firstname" value="'.$object->firstname.'">';
-				print $object->firstname;
-			}
-			print '</td></tr>';
+			
 
 			// Login
 			print "<tr>".'<td><span class="fieldrequired">'.$langs->trans("Login").'</span></td>';
@@ -2093,10 +2120,11 @@ if ($action == 'create' || $action == 'adduserldap')
 				print $object->login;
 			}
 			print '</td>';
-			print '</tr>';
+			//print '</tr>';
 
 			// Pass
-			print '<tr><td>'.$langs->trans("Password").'</td>';
+			//print '<tr>';
+			print '<td>'.$langs->trans("Password").'</td>';
 			print '<td>';
 			$valuetoshow = '';
 			if (preg_match('/ldap/', $dolibarr_main_authentication))
@@ -2138,7 +2166,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Administrator
-			print '<tr><td>'.$langs->trans("Administrator").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Administrator").'</td>';
 			if ($object->socid > 0)
 			{
 				$langs->load("admin");
@@ -2217,7 +2245,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 		   	// Gender
-		   	print '<tr><td>'.$langs->trans("Gender").'</td>';
+		   	print '<tr style="display:none;"><td>'.$langs->trans("Gender").'</td>';
 		   	print '<td>';
 		   	$arraygender = array('man'=>$langs->trans("Genderman"), 'woman'=>$langs->trans("Genderwoman"), 'other'=>$langs->trans("Genderother"));
 		   	if ($caneditfield) {
@@ -2228,7 +2256,7 @@ if ($action == 'create' || $action == 'adduserldap')
 		   	print '</td></tr>';
 
 			// Employee
-			print '<tr>';
+			print '<tr style="display:none;">';
 			print '<td>'.$form->editfieldkey('Employee', 'employee', '', $object, 0).'</td><td>';
 			if ($caneditfield) {
 				 print $form->selectyesno("employee", $object->employee, 1);
@@ -2241,8 +2269,33 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 			print '</td></tr>';
 
+			// Tel mobile
+			print "<tr>".'<td>'.$langs->trans("PhoneMobile").'</td>';
+			print '<td>';
+			print img_picto('', 'object_phoning_mobile');
+			if ($caneditfield && empty($object->ldap_sid))
+			{
+				print '<input type="text" name="user_mobile" class="flat maxwidth200" value="'.$object->user_mobile.'">';
+			} else {
+				print '<input type="hidden" name="user_mobile" value="'.$object->user_mobile.'">';
+				print $object->user_mobile;
+			}
+			print '</td>';
+
+			// EMail
+			print '<td'.(!empty($conf->global->USER_MAIL_REQUIRED) ? ' class="fieldrequired"' : '').'>'.$langs->trans("EMail").'</td>';
+			print '<td>';
+			print img_picto('', 'object_email');
+			if ($caneditfield && empty($object->ldap_sid))
+			{
+				print '<input class="minwidth100 maxwidth500 widthcentpercentminusx" type="text" name="email" class="flat" value="'.$object->email.'">';
+			} else {
+				print '<input type="hidden" name="email" value="'.$object->email.'">';
+				print $object->email;
+			}
+			print '</td></tr>';
 			// Hierarchy
-		   	print '<tr><td class="titlefield">'.$langs->trans("HierarchicalResponsible").'</td>';
+		   	print '<tr ><td class="titlefield">'.$langs->trans("HierarchicalResponsible").'</td>';
 		   	print '<td>';
 		   	if ($caneditfield)
 		   	{
@@ -2303,7 +2356,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// External user ?
-			print '<tr><td>'.$langs->trans("ExternalUser").' ?</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("ExternalUser").' ?</td>';
 			print '<td>';
 			if ($user->id == $object->id || !$user->admin)
 			{
@@ -2337,7 +2390,7 @@ if ($action == 'create' || $action == 'adduserldap')
 
 			// Address
 			print '<tr><td class="tdtop titlefield">'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
-			print '<td>';
+			print '<td colspan="4">';
 			if ($caneditfield) print '<textarea name="address" id="address" class="quatrevingtpercent" rows="3" wrap="soft">';
 			print $object->address;
 			if ($caneditfield) print '</textarea>';
@@ -2350,10 +2403,10 @@ if ($action == 'create' || $action == 'adduserldap')
 			} else {
 				print $object->zip;
 			}
-			print '</td></tr>';
+			print '</td>';
 
 			// Town
-			print '<tr><td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
+			print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
 			if ($caneditfield) {
 				print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 			} else {
@@ -2370,12 +2423,12 @@ if ($action == 'create' || $action == 'adduserldap')
 				$countrylabel = getCountry($object->country_id, '0');
 				print $countrylabel;
 			}
-			print '</td></tr>';
+			print '</td>';
 
 			// State
 			if (empty($conf->global->USER_DISABLE_STATE))
 			{
-				print '<tr><td class="tdoverflow">'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td>';
+				print '<td class="tdoverflow">'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td>';
 				if ($caneditfield) {
 					print $formcompany->select_state($object->state_id, $object->country_code, 'state_id');
 				} else {
@@ -2385,7 +2438,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Tel pro
-			print "<tr>".'<td>'.$langs->trans("PhonePro").'</td>';
+			print "<tr style='display:none;'>".'<td>'.$langs->trans("PhonePro").'</td>';
 			print '<td>';
 			print img_picto('', 'object_phoning');
 			if ($caneditfield && empty($object->ldap_sid))
@@ -2397,21 +2450,10 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 			print '</td></tr>';
 
-			// Tel mobile
-			print "<tr>".'<td>'.$langs->trans("PhoneMobile").'</td>';
-			print '<td>';
-			print img_picto('', 'object_phoning_mobile');
-			if ($caneditfield && empty($object->ldap_sid))
-			{
-				print '<input type="text" name="user_mobile" class="flat maxwidth200" value="'.$object->user_mobile.'">';
-			} else {
-				print '<input type="hidden" name="user_mobile" value="'.$object->user_mobile.'">';
-				print $object->user_mobile;
-			}
-			print '</td></tr>';
+			
 
 			// Fax
-			print "<tr>".'<td>'.$langs->trans("Fax").'</td>';
+			print "<tr style='display:none;'>".'<td>'.$langs->trans("Fax").'</td>';
 			print '<td>';
 			print img_picto('', 'object_phoning_fax');
 			if ($caneditfield && empty($object->ldap_sid))
@@ -2423,18 +2465,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 			print '</td></tr>';
 
-			// EMail
-			print "<tr>".'<td'.(!empty($conf->global->USER_MAIL_REQUIRED) ? ' class="fieldrequired"' : '').'>'.$langs->trans("EMail").'</td>';
-			print '<td>';
-			print img_picto('', 'object_email');
-			if ($caneditfield && empty($object->ldap_sid))
-			{
-				print '<input class="minwidth100 maxwidth500 widthcentpercentminusx" type="text" name="email" class="flat" value="'.$object->email.'">';
-			} else {
-				print '<input type="hidden" name="email" value="'.$object->email.'">';
-				print $object->email;
-			}
-			print '</td></tr>';
+			
 
 			if (!empty($conf->socialnetworks->enabled)) {
 				foreach ($socialnetworks as $key => $value) {
@@ -2492,7 +2523,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			// User color
 			if (!empty($conf->agenda->enabled))
 			{
-				print '<tr><td>'.$langs->trans("ColorUser").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("ColorUser").'</td>';
 				print '<td>';
 				if ($caneditfield)
 				{
@@ -2509,12 +2540,20 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '<td>';
 			print $form->showphoto('userphoto', $object, 60, 0, $caneditfield, 'photowithmargin', 'small', 1, 0, 'user', 1);
 			print '</td>';
-			print '</tr>';
+			//print '</tr>';
+
+
+			// Status
+			//print '<tr>';
+			print '<td>'.$langs->trans("Status").'</td>';
+			print '<td>';
+			print $object->getLibStatut(4);
+			print '</td></tr>';
 
 			// Categories
 			if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
 			{
-				print '<tr><td>'.$form->editfieldkey('Categories', 'usercats', '', $object, 0).'</td>';
+				print '<tr style="display:none;"><td>'.$form->editfieldkey('Categories', 'usercats', '', $object, 0).'</td>';
 				print '<td>';
 				$cate_arbo = $form->select_all_categories(Categorie::TYPE_USER, null, null, null, null, 1);
 				$c = new Categorie($db);
@@ -2534,22 +2573,17 @@ if ($action == 'create' || $action == 'adduserldap')
 			// Default language
 			if (!empty($conf->global->MAIN_MULTILANGS))
 			{
-				print '<tr><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3">'."\n";
+				print '<tr style="display:none;"><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3">'."\n";
 				print $formadmin->select_language($object->lang, 'default_lang', 0, 0, 1);
 				print '</td>';
 				print '</tr>';
 			}
 
-			// Status
-			print '<tr><td>'.$langs->trans("Status").'</td>';
-			print '<td>';
-			print $object->getLibStatut(4);
-			print '</td></tr>';
 
 			// Company / Contact
 			if (!empty($conf->societe->enabled))
 			{
-				print '<tr><td>'.$langs->trans("LinkToCompanyContact").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("LinkToCompanyContact").'</td>';
 				print '<td>';
 				if ($object->socid > 0)
 				{
@@ -2574,7 +2608,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			if (!empty($conf->adherent->enabled))
 			{
 				$langs->load("members");
-				print '<tr><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
 				print '<td>';
 				if ($object->fk_member)
 				{
@@ -2622,7 +2656,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 
 			// Signature
-			print '<tr><td class="tdtop">'.$langs->trans("Signature").'</td>';
+			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Signature").'</td>';
 			print '<td>';
 			if ($caneditfield)
 			{
@@ -2635,7 +2669,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '</td></tr>';
 
 
-			print '</table><hr><table class="border centpercent">';
+			print '</table><hr style="display:none;"><table class="border centpercent" style="display:none;">';
 
 
 			// TODO Move this into tab RH (HierarchicalResponsible must be on both tab)

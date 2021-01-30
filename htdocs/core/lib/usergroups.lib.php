@@ -59,19 +59,20 @@ function user_prepare_head($object)
 		$h++;
 	}
 
-	if ($canreadperms) {
+	if ($canreadperms && $user->admin) {
 		$head[$h][0] = DOL_URL_ROOT.'/user/perms.php?id='.$object->id;
 		$head[$h][1] = $langs->trans("Rights").(empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) ? '<span class="badge marginleftonlyshort">'.($object->nb_rights).'</span>' : '');
 		$head[$h][2] = 'rights';
 		$h++;
 	}
+	if($user->admin){
+		$head[$h][0] = DOL_URL_ROOT.'/user/param_ihm.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("UserGUISetup");
+		$head[$h][2] = 'guisetup';
+		$h++;
+	}	
 
-	$head[$h][0] = DOL_URL_ROOT.'/user/param_ihm.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("UserGUISetup");
-	$head[$h][2] = 'guisetup';
-	$h++;
-
-	if (!empty($conf->agenda->enabled)) {
+	if (!empty($conf->agenda->enabled) && $user->admin) {
 		if (empty($conf->global->AGENDA_EXT_NB)) $conf->global->AGENDA_EXT_NB = 5;
 		$MAXAGENDA = $conf->global->AGENDA_EXT_NB;
 
@@ -168,7 +169,7 @@ function user_prepare_head($object)
 		if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 		$head[$h][2] = 'document';
 		$h++;
-
+		
 		$head[$h][0] = DOL_URL_ROOT.'/user/info.php?id='.$object->id;
 		$head[$h][1] = $langs->trans("Info");
 		$head[$h][2] = 'info';

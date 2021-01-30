@@ -1,0 +1,19 @@
+2021-01-22 07:35:36 DEBUG   183.83.176.10    admin.lib::dolibarr_del_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10    sql=DELETE FROM jvm_const WHERE (name = 'SYSLOG_FACILITY')
+2021-01-22 07:35:36 DEBUG   183.83.176.10     admin.lib::dolibarr_set_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10     sql=DELETE FROM jvm_const WHERE name = 'SYSLOG_FACILITY' AND entity = 0
+2021-01-22 07:35:36 DEBUG   183.83.176.10     admin.lib::dolibarr_set_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10     sql=INSERT INTO jvm_const(name,value,type,visible,note,entity) VALUES ('SYSLOG_FACILITY', 'DOL_DATA_ROOT/jvmd.log','chaine',0,'',0)
+2021-01-22 07:35:36 DEBUG   183.83.176.10    admin.lib::dolibarr_del_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10    sql=DELETE FROM jvm_const WHERE (name = 'SYSLOG_HANDLERS')
+2021-01-22 07:35:36 DEBUG   183.83.176.10     admin.lib::dolibarr_set_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10     sql=DELETE FROM jvm_const WHERE name = 'SYSLOG_HANDLERS' AND entity = 0
+2021-01-22 07:35:36 DEBUG   183.83.176.10     admin.lib::dolibarr_set_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10     sql=INSERT INTO jvm_const(name,value,type,visible,note,entity) VALUES ('SYSLOG_HANDLERS', '[\"mod_syslog_file\",\"mod_syslog_syslog\"]','chaine',0,'',0)
+2021-01-22 07:35:36 INFO    183.83.176.10    admin/syslog: file /home/microcrm/jvmd.microcrm.in/documents/jvmd.log
+2021-01-22 07:35:36 DEBUG   183.83.176.10   ROLLBACK Transaction
+2021-01-22 07:35:36 DEBUG   183.83.176.10   admin.lib::dolibarr_get_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10   sql=SELECT value as value FROM jvm_const WHERE name = 'SYSLOG_FACILITY' AND entity = 0
+2021-01-22 07:35:36 DEBUG   183.83.176.10   admin.lib::dolibarr_get_const
+2021-01-22 07:35:36 DEBUG   183.83.176.10   sql=SELECT value as value FROM jvm_const WHERE name = 'SYSLOG_FILE' AND entity = 0
+2021-01-22 07:35:36 INFO    183.83.176.10   --- End access to /htdocs/admin/syslog.php
