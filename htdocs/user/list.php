@@ -107,6 +107,7 @@ if (!empty($conf->api->enabled))
 	$fieldstosearchall['u.api_key'] = "ApiKey";
 }
 
+
 // Definition of fields for list
 $arrayfields = array(
 	'u.login'=>array('label'=>"Login", 'checked'=>1, 'position'=>10),
