@@ -373,8 +373,7 @@ if (empty($reshook))
 
 			if (!$error)
 			{
-				echo $id = $object->create($user);
-				exit;
+				 $id = $object->create($user);
 			}
 
 			if ($id > 0)
