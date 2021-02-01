@@ -1118,6 +1118,52 @@ class FormCompany extends Form
 		print $this->select_allcity($selected, $country_codeid, $htmlname);
 	}
 
+	public function select_modelName($selected = '', $country_codeid = 0, $htmlname = 'family')
+	{
+				// phpcs:enable
+		global $conf, $langs;
+		$langs->load("dict");
+
+		$sql = "SELECT rowid, code";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_model ";
+		$sql .= " WHERE active = 1";
+		$sql .= " ORDER BY nom ASC";
+
+		dol_syslog(get_class($this)."::select_model", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<option value="0">Select any</option>';
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				$country = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+					if ($obj->rowid == 0) {
+						//print '<option value="0">&nbsp;</option>';
+					} else {
+						
+						if ($selected > 0 && $selected == $obj->rowid)
+						{
+							print '<option value="'.$obj->rowid.'" selected>'.$obj->code.'</option>';
+						} else {
+							print '<option value="'.$obj->rowid.'">'.$obj->code.'</option>';
+						}
+					}
+					$i++;
+				}
+			}
+			print '</select>';
+			print ajax_combobox($htmlname);
+		} else {
+			dol_print_error($this->db);
+		}
+	}
+
 	public function select_brand($selected = '', $country_codeid = 0, $htmlname = 'family')
 	{
 				// phpcs:enable

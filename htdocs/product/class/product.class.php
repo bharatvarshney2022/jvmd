@@ -495,7 +495,7 @@ class Product extends CommonObject
 		global $conf, $langs;
 
 			$error = 0;
-
+		
 		// Clean parameters
 		$this->ref = dol_sanitizeFileName(dol_string_nospecial(trim($this->ref)));
 		$this->label = trim($this->label);
@@ -1562,7 +1562,7 @@ class Product extends CommonObject
 		$sql .= " VALUES(".($level ? $level : 1).", '".$this->db->idate($now)."',".$this->id.",".$user->id.",".$this->price.",".$this->price_ttc.",'".$this->db->escape($this->price_base_type)."',".$this->status.",".$this->tva_tx.", ".($this->default_vat_code ? ("'".$this->db->escape($this->default_vat_code)."'") : "null").",".$this->tva_npr.",";
 		$sql .= " ".$this->localtax1_tx.", ".$this->localtax2_tx.", '".$this->db->escape($this->localtax1_type)."', '".$this->db->escape($this->localtax2_type)."', ".$this->price_min.",".$this->price_min_ttc.",".$this->price_by_qty.",".$conf->entity.",".($this->fk_price_expression > 0 ? $this->fk_price_expression : 'null');
 		$sql .= ")";
-
+		
 		dol_syslog(get_class($this)."::_log_price", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if (!$resql) {
@@ -5674,6 +5674,25 @@ class Product extends CommonObject
 		} else {
 			dol_print_error($this->db);
 		}
+	}
+
+	/* Get model info by model id*/
+	public function getProductModel($model_id)
+	{
+		$outjson = array();
+		$sql = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."product_model as pm, ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f,".MAIN_DB_PREFIX."p_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid AND pm.rowid = '".$model_id."' ";
+
+		$result = $this->db->query($sql);
+		if ($result) {
+			if ($this->db->num_rows($result)) {
+				$obj = $this->db->fetch_object($result);
+
+				$id = $obj->rowid;
+
+				$outjson = array('id' => $obj->rowid, 'brand' => $obj->brand, 'family' => $obj->family, 'subfamily' => $obj->subfamily, 'name' => $obj->name, 'model' => $obj->modelno);
+			}
+		}	
+		return json_encode($outjson);
 	}
 }
 

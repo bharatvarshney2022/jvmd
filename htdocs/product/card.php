@@ -203,7 +203,7 @@ if (empty($reshook))
 	if ($action == 'add' && $usercancreate)
 	{
 		$error = 0;
-
+		
         if (!GETPOST('label', $label_security_check))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Label')), null, 'errors');
@@ -373,7 +373,8 @@ if (empty($reshook))
 
 			if (!$error)
 			{
-				$id = $object->create($user);
+				echo $id = $object->create($user);
+				exit;
 			}
 
 			if ($id > 0)
@@ -948,6 +949,23 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
                         	document.formprod.submit();
                         });
                      });';
+
+                print '$(document).ready(function () {
+                        $("#modelname").change(function() {
+                        	var model = $(this).val();
+                        	$.ajax({
+								  dataType: "json",
+								  url: "productmodeldata.php",
+								  data: { model: model},
+								  success: function(data) {
+									$("#label").val(data.name);
+									$("#brand").val(data.brand);
+									$("#product_family").val(data.family);
+									$("#product_subfamily").val(data.subfamily);
+								  }
+							});
+                        });
+                     });';     
 				print '</script>'."\n";
 
 		// Load object modCodeProduct
@@ -1007,32 +1025,31 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 		print '</td>';
 
-		// Label
-		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
-
-		// Brand
-		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
-		$brandsarray = array('1' => $langs->trans("Blue Star"), '2' => $langs->trans("Hitachi"));
-		print $form->selectarray('brand', $brandsarray, GETPOST('brand'));
-		print '</td>';
-
 		// Model
 		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-		$modelarray = array('1' => $langs->trans("4CDU121YA"), '2' => $langs->trans("5CDU121YA"));
-		print $form->selectarray('model', $modelarray, GETPOST('model'));
+		print $formcompany->select_modelName($family_id, '0' ,'modelname');
+		//print $form->selectarray('model', $modelarray, GETPOST('model'));
+		print '</td></tr>';
+		// Label
+		print '<tr><td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
+
+		// Brand
+		print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
 		print '</td></tr>';
 
-		// Product Family
-		print '<tr><td>'.$langs->trans("Product Family").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
+		
 
 		// Product Family
-		print '<td>'.$langs->trans("Product Sub Family").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+		print '<tr><td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td>';
+
+		// Product Family
+		print '<td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('product_subfamily')).'"></td></tr>';
 
 		// ERP Invoice No
-		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
+		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td>';
 
 		// Component No.
-		print '<td>'.$langs->trans("Component No.").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+		print '<td>'.$langs->trans("Component No.").'</td><td><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
 
 		// Invoice Date
 		print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
@@ -1040,7 +1057,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td>';
 
 		// Ship Date.
-		print '<td>'.$langs->trans("Ship Date").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+		print '<td>'.$langs->trans("Ship Date").'</td><td><input name="ship_date" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ship_date')).'"></td></tr>';
 
 		// Customer Sale
 		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
@@ -1054,13 +1071,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// On sell
-		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+		print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("OnSell"), '0' => $langs->trans("NotOnSell"));
 		print $form->selectarray('statut', $statutarray, GETPOST('statut'));
 		print '</td></tr>';
 
 		// To buy
-		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
+		print '<tr ><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("ProductStatusOnBuy"), '0' => $langs->trans("ProductStatusNotOnBuy"));
 		print $form->selectarray('statut_buy', $statutarray, GETPOST('statut_buy'));
 		print '</td></tr>';
@@ -1452,11 +1469,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print '<script type="text/javascript">';
 				print '$(document).ready(function () {
-                        $("#selectcountry_id").change(function () {
-                        	document.formprod.action.value="edit";
-                        	document.formprod.submit();
-                        });
-		});';
+	                        $("#selectcountry_id").change(function () {
+	                        	document.formprod.action.value="edit";
+	                        	document.formprod.submit();
+	                        });
+						});';
 				print '</script>'."\n";
 
 			// We set country_id, country_code and country for the selected country
