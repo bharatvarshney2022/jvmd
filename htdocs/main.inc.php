@@ -1639,7 +1639,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		print "</div>\n";
 
 		// Define link to login card
-		$appli = constant('DOL_APPLICATION_TITLE');
+		/*$appli = constant('DOL_APPLICATION_TITLE');
 		if (!empty($conf->global->MAIN_APPLICATION_TITLE))
 		{
 			$appli = $conf->global->MAIN_APPLICATION_TITLE;
@@ -1648,7 +1648,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 				if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) $appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
 			} else $appli .= " ".DOL_VERSION;
 		} else $appli .= " ".DOL_VERSION;
-
+*/
 		if (!empty($conf->global->MAIN_FEATURES_LEVEL)) $appli .= "<br>".$langs->trans("LevelOfFeature").': '.$conf->global->MAIN_FEATURES_LEVEL;
 
 		$logouttext = '';
@@ -1717,7 +1717,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		}
 
 		// Link to Dolibarr wiki pages
-		if (empty($conf->global->MAIN_HELP_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+		/*if (empty($conf->global->MAIN_HELP_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
 		{
 			$langs->load("help");
 
@@ -1763,7 +1763,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 				$langs->load('admin');
 				$appli .= '<br>'.$langs->trans("Database").': '.$db->database_name;
 			}
-		}
+		}*/
 
 		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
 			$text = '<span class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
@@ -2531,7 +2531,7 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
 			print '<div id="blockvmenuhelpapp" class="blockvmenuhelp">';
 			if ($doliurl) print '<a class="help" target="_blank" rel="noopener" href="'.$doliurl.'">';
 			else print '<span class="help">';
-			print $appli;
+			//print $appli;
 			if ($doliurl) print '</a>';
 			else print '</span>';
 			print '</div>'."\n";
