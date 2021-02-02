@@ -105,6 +105,16 @@ class Product extends CommonObject
 	 */
 	public $label;
 
+	public $fk_model;
+
+	public $erpinvoice_no;
+
+	public $component_no;
+
+	public $invoicedate;
+
+	public $ship_date;
+
 	/**
 	 * Product description
 	 *
@@ -499,6 +509,12 @@ class Product extends CommonObject
 		// Clean parameters
 		$this->ref = dol_sanitizeFileName(dol_string_nospecial(trim($this->ref)));
 		$this->label = trim($this->label);
+		$this->fk_model = trim($this->fk_model);
+		$this->erpinvoice_no = trim($this->erpinvoice_no);
+		$this->component_no = trim($this->component_no);
+		$this->invoicedate = trim($this->invoicedate);
+		$this->ship_date = trim($this->ship_date);
+
 		$this->price_ttc = price2num($this->price_ttc);
 		$this->price = price2num($this->price);
 		$this->price_min_ttc = price2num($this->price_min_ttc);
@@ -641,6 +657,11 @@ class Product extends CommonObject
 					$sql .= ", price_min";
 					$sql .= ", price_min_ttc";
 					$sql .= ", label";
+					$sql .= ", fk_model";
+					$sql .= ", erpinvoice_no";
+					$sql .= ", component_no";
+					$sql .= ", invoicedate";
+					$sql .= ", ship_date";
 					$sql .= ", fk_user_author";
 					$sql .= ", fk_product_type";
 					$sql .= ", price";
@@ -666,6 +687,11 @@ class Product extends CommonObject
 					$sql .= ", ".price2num($price_min_ht);
 					$sql .= ", ".price2num($price_min_ttc);
 					$sql .= ", ".(!empty($this->label) ? "'".$this->db->escape($this->label)."'" : "null");
+					$sql .= ", ".(!empty($this->fk_model) ? "'".$this->db->escape($this->fk_model)."'" : "0");
+					$sql .= ", ".(!empty($this->erpinvoice_no) ? "'".$this->db->escape($this->erpinvoice_no)."'" : "null");
+					$sql .= ", ".(!empty($this->component_no) ? "'".$this->db->escape($this->component_no)."'" : "null");
+					$sql .= ", ".(!empty($this->invoicedate) ? "'".$this->db->escape($this->invoicedate)."'" : "0");
+					$sql .= ", ".(!empty($this->ship_date) ? "'".$this->db->escape($this->ship_date)."'" : "0");
 					$sql .= ", ".$user->id;
 					$sql .= ", ".$this->type;
 					$sql .= ", ".price2num($price_ht);
