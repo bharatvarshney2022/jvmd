@@ -1292,7 +1292,84 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		print '</table>';
 
+		
+		print "<h3>Registration Information</h3>";
 		print '<hr>';
+		print '<table class="border centpercent">';
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Registration Type").'</td><td>';
+		print '<input name="registration_type" class="maxwidth150" value="'.$object->registration_type.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Installation Date").'</td><td>';
+		
+		print $form->selectDate($installation_date, 'installation_date', 0, 0, 1, '', 1, 0);
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Equipment Location").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Vendor Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$user->firstname.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("SDE No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("SDE Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Branch No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Branch Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Department No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Department Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+		print '</table>';
+
+		print "<h3>Registration Information</h3>";
+		print '<hr>';
+		print '<table class="border centpercent">';
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Registration Type").'</td><td>';
+		print '<input name="registration_type" class="maxwidth150" value="'.$object->registration_type.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Installation Date").'</td><td>';
+		
+		print $form->selectDate($installation_date, 'installation_date', 0, 0, 1, '', 1, 0);
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Equipment Location").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Vendor Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$user->firstname.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("SDE No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("SDE Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Branch No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Branch Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Department No").'</td><td>';
+		print '<input name="equipment_location" class="maxwidth150" value="'.$object->equipment_location.'">';
+		print '</td><td class="titlefieldcreate">'.$langs->trans("Department Name").'</td><td>';
+		print '<input name="sde" class="maxwidth150" value="'.$object->sde.'">';
+		 
+		print '</td></tr>';
+		print '</table>';
 
 		if (!empty($conf->global->PRODUIT_MULTIPRICES))
 		{
@@ -1483,6 +1560,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        	document.formprod.submit();
 	                        });
 						});';
+				print '$(document).ready(function () {
+                        $("#modelname").change(function() {
+                        	var model = $(this).val();
+                        	$.ajax({
+								  dataType: "json",
+								  url: "productmodeldata.php",
+								  data: { model: model},
+								  success: function(data) {
+									$("#label").val(data.name);
+									$("#brand").val(data.brand);
+									$("#product_family").val(data.family);
+									$("#product_subfamily").val(data.subfamily);
+								  }
+							});
+                        });
+                     });';   		
 				print '</script>'."\n";
 
 			// We set country_id, country_code and country for the selected country
@@ -1511,17 +1604,64 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
 			print dol_get_fiche_head($head, 'card', $titre, 0, $picto);
 
-
+			print "<h3>Product Information</h3>";
 			print '<table class="border allwidth">';
 
 			// Ref
-			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td colspan="3"><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td></tr>';
+			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td colspan="3"><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
 
+		   // Model
+			print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+			print $formcompany->select_modelName($object->fk_model, '0' ,'modelname');
+			//print $form->selectarray('model', $modelarray, GETPOST('model'));
+			print '</td></tr>';
+			
 			// Label
-			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td colspan="3"><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
+			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td colspan="3"><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
+
+			// Brand
+			print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="">';
+			print '</td></tr>';
+
+		
+
+			// Product Family
+			print '<tr><td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td>';
+
+			// Product Family
+			print '<td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td></tr>';
+
+			// ERP Invoice No
+			print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td>';
+
+			// Component No.
+			print '<td>'.$langs->trans("Component No.").'</td><td><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
+
+			// Invoice Date
+			print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
+			print $form->selectDate($invoicedate, 'invoicedate', 0, 0, 1, '', 1, 0);
+			print '</td>';
+
+			// Ship Date.
+			print '<td>'.$langs->trans("Ship Date").'</td><td>';
+			print $form->selectDate($ship_date, 'ship_date', 0, 0, 1, '', 1, 0);
+			print '</td></tr>';
+
+		// Customer Sale
+		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
+		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
+		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
+		print '</td>';
+		// NAMO
+		print '<td>'.$langs->trans("Is NAMO?").'</td><td>';
+		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
+		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
+		print '</td></tr>';
+
+			
 
 			// Status To sell
-			print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+			print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 			print '<select class="flat" name="statut">';
 			if ($object->status)
 			{
@@ -1535,7 +1675,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 			// Status To Buy
-			print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
+			print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 			print '<select class="flat" name="statut_buy">';
 			if ($object->status_buy)
 			{
@@ -1553,7 +1693,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			{
 				if ($object->isProduct() || !empty($conf->global->STOCK_SUPPORTS_SERVICES))
 				{
-					print '<tr><td>'.$langs->trans("ManageLotSerial").'</td><td colspan="3">';
+					print '<tr style="display:none;"><td>'.$langs->trans("ManageLotSerial").'</td><td colspan="3">';
 					$statutarray = array('0' => $langs->trans("ProductStatusNotOnBatch"), '1' => $langs->trans("ProductStatusOnBatch"));
 					print $form->selectarray('status_batch', $statutarray, $object->status_batch);
 					print '</td></tr>';
@@ -1566,7 +1706,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			if ($showbarcode)
 			{
-				print '<tr><td>'.$langs->trans('BarcodeType').'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->trans('BarcodeType').'</td><td>';
 				if (GETPOSTISSET('fk_barcode_type')) {
 				 	$fk_barcode_type = GETPOST('fk_barcode_type');
 				} else {
@@ -1584,7 +1724,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			// Description (used in invoice, propal...)
-			print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
 
 			// We use dolibarr_details as type of DolEditor here, because we must not accept images as description is included into PDF and not accepted by TCPDF.
 			$doleditor = new DolEditor('desc', $object->description, '', 160, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_4, '90%');
@@ -1594,7 +1734,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print "\n";
 
 			// Public Url
-			print '<tr><td>'.$langs->trans("PublicUrl").'</td><td colspan="3">';
+			print '<tr style="display:none;"><td>'.$langs->trans("PublicUrl").'</td><td colspan="3">';
 			print '<input type="text" name="url" class="quatrevingtpercent" value="'.$object->url.'">';
 			print '</td></tr>';
 
@@ -1602,7 +1742,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($object->isProduct() && !empty($conf->stock->enabled))
 			{
 				// Default warehouse
-				print '<tr><td>'.$langs->trans("DefaultWarehouse").'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("DefaultWarehouse").'</td><td>';
 				print $formproduct->selectWarehouses($object->fk_default_warehouse, 'fk_default_warehouse', 'warehouseopen', 1);
 				print ' <a href="'.DOL_URL_ROOT.'/product/stock/card.php?action=create&amp;backtopage='.urlencode($_SERVER['PHP_SELF'].'?action=create&type='.GETPOST('type', 'int')).'"><span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddWarehouse").'"></span></a>';
 				print '</td>';
@@ -1626,18 +1766,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($object->isService())
 			{
 				// Duration
-				print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Duration").'</td><td colspan="3">';
 				print '<input name="duration_value" size="5" value="'.$object->duration_value.'"> ';
 				print $formproduct->selectMeasuringUnits("duration_unit", "time", $object->duration_unit, 0, 1);
 				print '</td></tr>';
 			} else {
 				// Nature
-				print '<tr><td>'.$form->textwithpicto($langs->trans("NatureOfProductShort"), $langs->trans("NatureOfProductDesc")).'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$form->textwithpicto($langs->trans("NatureOfProductShort"), $langs->trans("NatureOfProductDesc")).'</td><td colspan="3">';
 				print $formproduct->selectProductNature('finished', $object->finished);
 				print '</td></tr>';
 
 				// Brut Weight
-				print '<tr><td>'.$langs->trans("Weight").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Weight").'</td><td colspan="3">';
 				print '<input name="weight" size="5" value="'.$object->weight.'"> ';
 				print $formproduct->selectMeasuringUnits("weight_units", "weight", $object->weight_units, 0, 2);
 				print '</td></tr>';
@@ -1645,7 +1785,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if (empty($conf->global->PRODUCT_DISABLE_SIZE))
 				{
 					// Brut Length
-					print '<tr><td>'.$langs->trans("Length").' x '.$langs->trans("Width").' x '.$langs->trans("Height").'</td><td colspan="3">';
+					print '<tr style="display:none;"><td>'.$langs->trans("Length").' x '.$langs->trans("Width").' x '.$langs->trans("Height").'</td><td colspan="3">';
 					print '<input name="size" size="5" value="'.$object->length.'">x';
 					print '<input name="sizewidth" size="5" value="'.$object->width.'">x';
 					print '<input name="sizeheight" size="5" value="'.$object->height.'"> ';
@@ -1655,7 +1795,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if (empty($conf->global->PRODUCT_DISABLE_SURFACE))
 				{
 					// Brut Surface
-					print '<tr><td>'.$langs->trans("Surface").'</td><td colspan="3">';
+					print '<tr style="display:none;"><td>'.$langs->trans("Surface").'</td><td colspan="3">';
 					print '<input name="surface" size="5" value="'.$object->surface.'"> ';
 					print $formproduct->selectMeasuringUnits("surface_units", "surface", $object->surface_units, 0, 2);
 					print '</td></tr>';
@@ -1663,7 +1803,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if (empty($conf->global->PRODUCT_DISABLE_VOLUME))
 				{
 					// Brut Volume
-					print '<tr><td>'.$langs->trans("Volume").'</td><td colspan="3">';
+					print '<tr style="display:none;"><td>'.$langs->trans("Volume").'</td><td colspan="3">';
 					print '<input name="volume" size="5" value="'.$object->volume.'"> ';
 					print $formproduct->selectMeasuringUnits("volume_units", "volume", $object->volume_units, 0, 2);
 					print '</td></tr>';
@@ -1672,7 +1812,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if (!empty($conf->global->PRODUCT_ADD_NET_MEASURE))
 				{
 					// Net Measure
-					print '<tr><td>'.$langs->trans("NetMeasure").'</td><td colspan="3">';
+					print '<tr style="display:none;"><td>'.$langs->trans("NetMeasure").'</td><td colspan="3">';
 					print '<input name="net_measure" size="5" value="'.$object->net_measure.'"> ';
 					print $formproduct->selectMeasuringUnits("net_measure_units", "", $object->net_measure_units, 0, 0);
 					print '</td></tr>';
@@ -1681,7 +1821,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Units
 			if (!empty($conf->global->PRODUCT_USE_UNITS))
 			{
-				print '<tr><td>'.$langs->trans('DefaultUnitToShow').'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans('DefaultUnitToShow').'</td>';
 				print '<td colspan="3">';
 				print $form->selectUnits($object->fk_unit, 'units');
 				print '</td></tr>';
@@ -1690,7 +1830,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Custom code
 			if (!$object->isService() && empty($conf->global->PRODUCT_DISABLE_CUSTOM_INFO))
 			{
-				print '<tr><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" class="maxwidth100onsmartphone" value="'.$object->customcode.'"></td></tr>';
+				print '<tr style="display:none;"><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" class="maxwidth100onsmartphone" value="'.$object->customcode.'"></td></tr>';
 				// Origin country
 				print '<td>'.$langs->trans("CountryOrigin").'</td>';
 				print '<td>';
@@ -1727,7 +1867,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Tags-Categories
 			if ($conf->categorie->enabled)
 			{
-				print '<tr><td>'.$langs->trans("Categories").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td>'.$langs->trans("Categories").'</td><td colspan="3">';
 				$cate_arbo = $form->select_all_categories(Categorie::TYPE_PRODUCT, '', 'parent', 64, 0, 1);
 				$c = new Categorie($db);
 				$cats = $c->containing($object->id, Categorie::TYPE_PRODUCT);
@@ -1744,7 +1884,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Note private
 			if (!empty($conf->global->MAIN_DISABLE_NOTES_TAB))
 			{
-				print '<tr><td class="tdtop">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="3">';
+				print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="3">';
 
 				$doleditor = new DolEditor('note_private', $object->note_private, '', 140, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_4, '90%');
 				$doleditor->Create();
