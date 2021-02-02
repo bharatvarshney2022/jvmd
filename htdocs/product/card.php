@@ -229,6 +229,13 @@ if (empty($reshook))
 
             $object->ref                   = $ref;
             $object->label                 = GETPOST('label', $label_security_check);
+            $object->fk_model              = GETPOST('modelname');
+            $object->erpinvoice_no         = GETPOST('erpinvoice_no');
+            $object->component_no          = GETPOST('component_no');
+            $object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedate', 'int'), GETPOST('invoicedate', 'int'), GETPOST('invoicedate', 'int'));
+
+            $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_date', 'int'), GETPOST('ship_date', 'int'), GETPOST('ship_date', 'int'));
+            
             $object->price_base_type       = GETPOST('price_base_type', 'aZ09');
 
 			if ($object->price_base_type == 'TTC')
@@ -1070,13 +1077,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// On sell
-		print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("OnSell"), '0' => $langs->trans("NotOnSell"));
 		print $form->selectarray('statut', $statutarray, GETPOST('statut'));
 		print '</td></tr>';
 
 		// To buy
-		print '<tr ><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
+		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("ProductStatusOnBuy"), '0' => $langs->trans("ProductStatusNotOnBuy"));
 		print $form->selectarray('statut_buy', $statutarray, GETPOST('statut_buy'));
 		print '</td></tr>';
