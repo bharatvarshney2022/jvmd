@@ -1896,7 +1896,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print '<br>';
 
-			print '<table class="border centpercent">';
+			print '<table class="border centpercent" style="display:none;">';
 
 			if (!empty($conf->accounting->enabled))
 			{
