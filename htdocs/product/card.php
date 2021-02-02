@@ -232,9 +232,10 @@ if (empty($reshook))
             $object->fk_model              = GETPOST('modelname');
             $object->erpinvoice_no         = GETPOST('erpinvoice_no');
             $object->component_no          = GETPOST('component_no');
-            $object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedate', 'int'), GETPOST('invoicedate', 'int'), GETPOST('invoicedate', 'int'));
+          	$object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedatemonth', 'int'), GETPOST('invoicedateday', 'int'), GETPOST('invoicedateyear', 'int'));
+          
 
-            $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_date', 'int'), GETPOST('ship_date', 'int'), GETPOST('ship_date', 'int'));
+            $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_datemonth', 'int'), GETPOST('ship_dateday', 'int'), GETPOST('ship_dateyear', 'int'));
             
             $object->price_base_type       = GETPOST('price_base_type', 'aZ09');
 
@@ -1059,11 +1060,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		// Invoice Date
 		print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
-		print $form->selectDate($invoicedate, 'invoicedate', 0, 0, 1, 'createproduct', 1, 0);
+		print $form->selectDate($invoicedate, 'invoicedate', 0, 0, 1, '', 1, 0);
 		print '</td>';
 
 		// Ship Date.
-		print '<td>'.$langs->trans("Ship Date").'</td><td><input name="ship_date" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ship_date')).'"></td></tr>';
+		print '<td>'.$langs->trans("Ship Date").'</td><td>';
+		print $form->selectDate($ship_date, 'ship_date', 0, 0, 1, '', 1, 0);
+		print '</td></tr>';
 
 		// Customer Sale
 		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
