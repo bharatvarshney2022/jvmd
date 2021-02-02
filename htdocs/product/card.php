@@ -1561,6 +1561,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        });
 						});';
 				print '$(document).ready(function () {
+						 $("#modelname").val(<?php echo $object->fk_model?>);
                         $("#modelname").change(function() {
                         	var model = $(this).val();
                         	$.ajax({
@@ -1841,7 +1842,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// State
 				if (empty($conf->global->PRODUCT_DISABLE_STATE))
 				{
-					if ($conf->browser->layout == 'phone') print '</tr><tr>';
+					if ($conf->browser->layout == 'phone') print '</tr><tr style="display:none;">';
 					if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
 					{
 						print '<td>'.$form->editfieldkey('RegionStateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3">';
