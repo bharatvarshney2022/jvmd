@@ -1613,7 +1613,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
 
 		   // Model
-			print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+			print '<td class="fieldrequired">'.$langs->trans("Model No.").'-'.$object->fk_model.'</td><td>';
 			print $formcompany->select_modelName($object->fk_model, '0' ,'modelname');
 			//print $form->selectarray('model', $modelarray, GETPOST('model'));
 			print '</td></tr>';
