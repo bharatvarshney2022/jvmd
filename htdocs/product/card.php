@@ -1574,6 +1574,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 						 $("modelname").val("<?php print $object->fk_model; ?>").trigger("change");
                         $("#modelname").change(function() {
                         	var model = $(this).val();
+							getmodelinfo(model);
+							return false;                        	
+                        });
+                     });
+
+                     	function getmodelinfo(id){
+                     		var model = $(this).val();
                         	$.ajax({
 								  dataType: "json",
 								  url: "productmodeldata.php",
@@ -1585,8 +1592,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 									$("#product_subfamily").val(data.subfamily);
 								  }
 							});
-                        });
-                     });';   		
+                     	}
+                     ';  
+
+
 				print '</script>'."\n";
 
 			// We set country_id, country_code and country for the selected country
