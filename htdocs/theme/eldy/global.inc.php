@@ -2436,8 +2436,8 @@ table.login_table_securitycode tr td {
 	border: 1px solid #DDDDDD;
 }
 #img_logo, .img_logo {
-	max-width: 170px;
-	max-height: 90px;
+	max-width: 240px;
+	max-height: 54px;
 }
 
 div.backgroundsemitransparent {

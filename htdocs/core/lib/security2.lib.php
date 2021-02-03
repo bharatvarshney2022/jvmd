@@ -288,7 +288,7 @@ if (!function_exists('dol_loginfunction'))
 		$dol_use_jmobile = GETPOST('dol_use_jmobile', 'int');
 
 		// Include login page template
-		include $template_dir.'login.tpl.php';
+		include $template_dir.'login-jmvd.tpl.php';
 
 		// Global html output events ($mesgs, $errors, $warnings)
 		dol_htmloutput_events(0);
