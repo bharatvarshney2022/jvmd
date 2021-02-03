@@ -1575,12 +1575,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
                         $("#modelname").change(function() {
                         	var model = $(this).val();
 							getmodelinfo(model);
-							return false;                        	
+
                         });
                      });
 
                      	function getmodelinfo(id){
-                     		var model = $(this).val();
+                     		var model = id;
                         	$.ajax({
 								  dataType: "json",
 								  url: "productmodeldata.php",
