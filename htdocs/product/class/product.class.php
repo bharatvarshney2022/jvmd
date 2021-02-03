@@ -1035,6 +1035,13 @@ class Product extends CommonObject
 				$sql .= ", fk_product_type = ".$this->type;
 			}
 
+			$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+			$sql .= ", erpinvoice_no = '".$this->db->escape($this->erpinvoice_no)."'";
+			$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
+			$sql .= ", invoicedate = '".$this->db->escape($this->invoicedate)."'";
+			$sql .= ", ship_date = '".$this->db->escape($this->ship_date)."'";
+			$sql .= ", custsale = '".$this->db->escape($this->custsale)."'";
+
 			$sql .= ", ref = '".$this->db->escape($this->ref)."'";
 			$sql .= ", ref_ext = ".(!empty($this->ref_ext) ? "'".$this->db->escape($this->ref_ext)."'" : "null");
 			$sql .= ", default_vat_code = ".($this->default_vat_code ? "'".$this->db->escape($this->default_vat_code)."'" : "null");
