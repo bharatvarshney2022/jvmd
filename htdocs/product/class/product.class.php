@@ -115,6 +115,7 @@ class Product extends CommonObject
 
 	public $ship_date;
 
+	public $custsale;
 	/**
 	 * Product description
 	 *
@@ -514,6 +515,7 @@ class Product extends CommonObject
 		$this->component_no = trim($this->component_no);
 		$this->invoicedate = trim($this->invoicedate);
 		$this->ship_date = trim($this->ship_date);
+		$this->custsale = trim($this->custsale);
 
 		$this->price_ttc = price2num($this->price_ttc);
 		$this->price = price2num($this->price);
@@ -662,6 +664,7 @@ class Product extends CommonObject
 					$sql .= ", component_no";
 					$sql .= ", invoicedate";
 					$sql .= ", ship_date";
+					$sql .= ", custsale";
 					$sql .= ", fk_user_author";
 					$sql .= ", fk_product_type";
 					$sql .= ", price";
@@ -692,6 +695,7 @@ class Product extends CommonObject
 					$sql .= ", ".(!empty($this->component_no) ? "'".$this->db->escape($this->component_no)."'" : "null");
 					$sql .= ", ".(!empty($this->invoicedate) ? "'".$this->db->escape($this->invoicedate)."'" : "0");
 					$sql .= ", ".(!empty($this->ship_date) ? "'".$this->db->escape($this->ship_date)."'" : "0");
+					$sql .= ", ".(!empty($this->custsale) ? "'".$this->db->escape($this->custsale)."'" : "0");
 					$sql .= ", ".$user->id;
 					$sql .= ", ".$this->type;
 					$sql .= ", ".price2num($price_ht);
@@ -2084,7 +2088,7 @@ class Product extends CommonObject
 			return -1;
 		}
 
-		$sql = "SELECT rowid, ref, ref_ext, label, fk_model, component_no, erpinvoice_no, invoicedate, ship_date, description, url, note_public, note as note_private, customcode, fk_country, fk_state, price, price_ttc,";
+		$sql = "SELECT rowid, ref, ref_ext, label, fk_model, component_no, erpinvoice_no, invoicedate, ship_date,custsale, description, url, note_public, note as note_private, customcode, fk_country, fk_state, price, price_ttc,";
 		$sql .= " price_min, price_min_ttc, price_base_type, cost_price, default_vat_code, tva_tx, recuperableonly as tva_npr, localtax1_tx, localtax2_tx, localtax1_type, localtax2_type, tosell,";
 		$sql .= " tobuy, fk_product_type, duration, fk_default_warehouse, seuil_stock_alerte, canvas, net_measure, net_measure_units, weight, weight_units,";
 		$sql .= " length, length_units, width, width_units, height, height_units,";
@@ -2123,6 +2127,7 @@ class Product extends CommonObject
 				$this->erpinvoice_no                          = $obj->erpinvoice_no;
 				$this->invoicedate                          = $obj->invoicedate;
 				$this->ship_date                          = $obj->ship_date;
+				$this->custsale                          = $obj->custsale;
 				$this->description                    = $obj->description;
 				$this->url                            = $obj->url;
 				$this->note_public                    = $obj->note_public;

@@ -236,7 +236,7 @@ if (empty($reshook))
           
 
             $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_datemonth', 'int'), GETPOST('ship_dateday', 'int'), GETPOST('ship_dateyear', 'int'));
-            
+            $object->custsale          = GETPOST('custsale');
             $object->price_base_type       = GETPOST('price_base_type', 'aZ09');
 
 			if ($object->price_base_type == 'TTC')
@@ -428,7 +428,7 @@ if (empty($reshook))
 	          
 
 	            $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_datemonth', 'int'), GETPOST('ship_dateday', 'int'), GETPOST('ship_dateyear', 'int'));
-
+	            $object->custsale          = GETPOST('custsale');
 				$object->description            = dol_htmlcleanlastbr(GETPOST('desc', 'restricthtml'));
 				$object->url = GETPOST('url');
 				if (!empty($conf->global->MAIN_DISABLE_NOTES_TAB))
@@ -1082,7 +1082,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
 		print '</td>';
 		// NAMO
-		print '<td>'.$langs->trans("Is NAMO?").'</td><td>';
+		print '<td style="display:none;">'.$langs->trans("Is NAMO?").'</td><td>';
 		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
 		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
 		print '</td></tr>';
@@ -1670,19 +1670,24 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Ship Date.
 			print '<td>'.$langs->trans("Ship Date").'</td><td>';
-			print $form->selectDate($ship_date ? $ship_date : date("m/d/Y",$object->ship_date), 'ship_date', 0, 0, 1, 'updateproduct', 1, 0);
+			print $form->selectDate($ship_date ? $ship_date : $object->ship_date, 'ship_date', 0, 0, 1, 'updateproduct', 1, 0);
 			print '</td></tr>';
 
 		// Customer Sale
 		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
-		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
-		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
-		print '</td>';
-		// NAMO
-		print '<td>'.$langs->trans("Is NAMO?").'</td><td>';
-		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
-		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
-		print '</td></tr>';
+		
+		print '<select class="flat" name="custsale">';
+			if ($object->custsale)
+			{
+				print '<option value="1" selected>'.$langs->trans("Yes").'</option>';
+				print '<option value="0">'.$langs->trans("No").'</option>';
+			} else {
+				print '<option value="1">'.$langs->trans("Yes").'</option>';
+				print '<option value="0" selected>'.$langs->trans("No").'</option>';
+			}
+			print '</select>';
+			print '</td>';
+		
 
 			
 
