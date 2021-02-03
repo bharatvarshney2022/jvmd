@@ -28,8 +28,8 @@ if (empty($conf) || !is_object($conf)) {
 	exit;
 }
 
-
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+
 
 header('Cache-Control: Public, must-revalidate');
 header("Content-type: text/html; charset=".$conf->file->character_set_client);
@@ -57,7 +57,7 @@ $arrayofjs = array(
 if (!empty($conf->global->MAIN_APPLICATION_TITLE)) {
 	$titleofloginpage = $conf->global->MAIN_APPLICATION_TITLE;
 } else {
-	$titleofloginpage = $langs->trans('Login');
+	$titleofloginpage = constant('DOL_APPLICATION_TITLE'). " | ".$langs->trans('Login');
 }
 //$titleofloginpage .= ' @ '.$titletruedolibarrversion; // $titletruedolibarrversion is defined by dol_loginfunction in security2.lib.php. We must keep the @, some tools use it to know it is login page and find true dolibarr version.
 

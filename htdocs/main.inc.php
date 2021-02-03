@@ -1287,9 +1287,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		// Displays meta
 		print '<meta charset="utf-8">'."\n";
-		print '<meta name="robots" content="noindex'.($disablenofollow ? '' : ',nofollow').'">'."\n"; // Do not index
+		print '<meta name="robots" content="index'.($disablenofollow ? '' : ', follow').'">'."\n"; // not index
 		print '<meta name="viewport" content="width=device-width, initial-scale=1.0">'."\n"; // Scale for mobile device
-		print '<meta name="author" content="Dolibarr Development Team">'."\n";
+		print '<meta name="author" content="Microprixs Development Team">'."\n";
 
 		// Favicon
 		$favicon = DOL_URL_ROOT.'/theme/dolibarr_256x256_color.png';
@@ -1299,7 +1299,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="top" title="'.$langs->trans("Home").'" href="'.(DOL_URL_ROOT?DOL_URL_ROOT:'/').'">'."\n";
 		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="copyright" title="GNU General Public License" href="https://www.gnu.org/copyleft/gpl.html#SEC1">'."\n";
-		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="Dolibarr Development Team" href="https://www.dolibarr.org">'."\n";
+		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="Microprixs Development Team" href="https://www.dolibarr.org">'."\n";
 
 		// Mobile appli like icon
 		$manifest = DOL_URL_ROOT.'/theme/'.$conf->theme.'/manifest.json.php';
@@ -1321,9 +1321,14 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		print '<title>';
 		$titletoshow = '';
-		if ($title && !empty($conf->global->MAIN_HTML_TITLE) && preg_match('/noapp/', $conf->global->MAIN_HTML_TITLE)) $titletoshow = dol_htmlentities($title);
-		elseif ($title) $titletoshow = dol_htmlentities($appli.' - '.$title);
+		if ($title && !empty($conf->global->MAIN_HTML_TITLE) && preg_match('/noapp/', $conf->global->MAIN_HTML_TITLE)) {
+			$titletoshow = dol_htmlentities($title);
+		}
+		elseif ($title) {
+			$titletoshow = dol_htmlentities($appli.' - '.$title);
+		}
 		else $titletoshow = dol_htmlentities($appli);
+
 
 		$parameters = array('title'=>$titletoshow);
 		$result = $hookmanager->executeHooks('setHtmlTitle', $parameters); // Note that $action and $object may have been modified by some hooks
@@ -1375,7 +1380,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/v4-shims.min.css'.($ext ? '?'.$ext : '').'">'."\n";
 		}
 
-		print '<!-- Includes CSS for Dolibarr theme -->'."\n";
+		print '<!-- Includes CSS for JMVD theme -->'."\n";
 		// Output style sheets (optioncss='print' or ''). Note: $conf->css looks like '/theme/eldy/style.css.php'
 		$themepath = dol_buildpath($conf->css, 1);
 		$themesubdir = '';
@@ -1527,13 +1532,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				if ($conf->browser->layout == 'phone') $enablebrowsernotif = false;
 				if ($enablebrowsernotif)
 				{
-					print '<!-- Includes JS of Dolibarr (browser layout = '.$conf->browser->layout.')-->'."\n";
+					print '<!-- Includes JS of JMVD (browser layout = '.$conf->browser->layout.')-->'."\n";
 					print '<script src="'.DOL_URL_ROOT.'/core/js/lib_notification.js.php'.($ext ? '?'.$ext : '').'"></script>'."\n";
 				}
 			}
 
 			// Global js function
-			print '<!-- Includes JS of Dolibarr -->'."\n";
+			print '<!-- Includes JS of JMVD -->'."\n";
 			print '<script src="'.DOL_URL_ROOT.'/core/js/lib_head.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n";
 
 			// JS forced by modules (relative url starting with /)
@@ -1716,7 +1721,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 			$toprightmenu .= $form->textwithtooltip('', $langs->trans("PrintContentArea"), 2, 1, $text, 'login_block_elem', 2);
 		}
 
-		// Link to Dolibarr wiki pages
+		// Link to JMVD wiki pages
 		/*if (empty($conf->global->MAIN_HELP_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
 		{
 			$langs->load("help");
@@ -2503,7 +2508,7 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
 		$menumanager->menu_array_after = $menu_array_after;
 		$menumanager->showmenu('left', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // output menu_array and menu found in database
 
-		// Dolibarr version + help + bug report link
+		// JMVD version + help + bug report link
 		print "\n";
 		print "<!-- Begin Help Block-->\n";
 		print '<div id="blockvmenuhelp" class="blockvmenuhelp">'."\n";
@@ -2847,7 +2852,7 @@ if (!function_exists("llxFooter"))
 
 		if (!empty($conf->use_javascript_ajax))
 		{
-			print "\n".'<!-- Includes JS Footer of Dolibarr -->'."\n";
+			print "\n".'<!-- Includes JS Footer of JMVD -->'."\n";
 			print '<script src="'.DOL_URL_ROOT.'/core/js/lib_foot.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n";
 		}
 
@@ -2911,7 +2916,7 @@ if (!function_exists("llxFooter"))
 					} else {
 						include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
-						print "\n".'<!-- Includes JS for Ping of Dolibarr forceping='.$forceping.' MAIN_FIRST_PING_OK_DATE='.$conf->global->MAIN_FIRST_PING_OK_DATE.' MAIN_FIRST_PING_OK_ID='.$conf->global->MAIN_FIRST_PING_OK_ID.' MAIN_LAST_PING_KO_DATE='.$conf->global->MAIN_LAST_PING_KO_DATE.' -->'."\n";
+						print "\n".'<!-- Includes JS for Ping of JMVD forceping='.$forceping.' MAIN_FIRST_PING_OK_DATE='.$conf->global->MAIN_FIRST_PING_OK_DATE.' MAIN_FIRST_PING_OK_ID='.$conf->global->MAIN_FIRST_PING_OK_ID.' MAIN_LAST_PING_KO_DATE='.$conf->global->MAIN_LAST_PING_KO_DATE.' -->'."\n";
 						print "\n<!-- JS CODE TO ENABLE the anonymous Ping -->\n";
 						$url_for_ping = (empty($conf->global->MAIN_URL_FOR_PING) ? "https://ping.dolibarr.org/" : $conf->global->MAIN_URL_FOR_PING);
 						// Try to guess the distrib used
