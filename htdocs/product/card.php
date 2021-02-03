@@ -421,6 +421,14 @@ if (empty($reshook))
 
 				$object->ref                    = $ref;
 				$object->label                  = GETPOST('label', $label_security_check);
+				$object->fk_model              = GETPOST('modelname');
+	            $object->erpinvoice_no         = GETPOST('erpinvoice_no');
+	            $object->component_no          = GETPOST('component_no');
+	          	$object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedatemonth', 'int'), GETPOST('invoicedateday', 'int'), GETPOST('invoicedateyear', 'int'));
+	          
+
+	            $object->ship_date           = dol_mktime(0, 0, 0, GETPOST('ship_datemonth', 'int'), GETPOST('ship_dateday', 'int'), GETPOST('ship_dateyear', 'int'));
+
 				$object->description            = dol_htmlcleanlastbr(GETPOST('desc', 'restricthtml'));
 				$object->url = GETPOST('url');
 				if (!empty($conf->global->MAIN_DISABLE_NOTES_TAB))
