@@ -2634,8 +2634,7 @@ div.blockvmenulogo
     margin-left: 12px;
     margin-right: 6px;
     padding: 0;
-    height: <?php echo $disableimages ? '20' : '32'; ?>px;
-    /* width: 100px; */
+    height: <?php echo $disableimages ? '20' : '27'; ?>px;
     max-width: 100px;
     vertical-align: middle;
 }

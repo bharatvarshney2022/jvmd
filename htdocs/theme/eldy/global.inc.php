@@ -1597,11 +1597,11 @@ div.blockvmenulogo
 	border-bottom: 0 !important;
 }
 .menulogocontainer {
-    margin: <?php echo $disableimages ? '0' : '6'; ?>px;
+    margin: 10px <?php echo $disableimages ? '0' : '7'; ?>px;
     margin-left: 11px;
     margin-right: 9px;
     padding: 0;
-    height: <?php echo $disableimages ? '20' : '32'; ?>px;
+    height: <?php echo $disableimages ? '20' : '27'; ?>px;
     /* width: 100px; */
     max-width: 100px;
     vertical-align: middle;
