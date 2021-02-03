@@ -1864,7 +1864,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print '<tr style="display:none;"><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" class="maxwidth100onsmartphone" value="'.$object->customcode.'"></td></tr>';
 				// Origin country
 				print '<td style="display:none;">'.$langs->trans("CountryOrigin").'</td>';
-				print '<td>';
+				print '<td style="display:none;">';
 				print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 				print $form->select_country($object->country_id, 'country_id', '', 0, 'minwidth100 maxwidthonsmartphone');
 				if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
@@ -1875,7 +1875,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 					if ($conf->browser->layout == 'phone') print '</tr><tr style="display:none;">';
 					if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
 					{
-						print '<td style="display:none;">'.$form->editfieldkey('RegionStateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3">';
+						print '<td style="display:none;">'.$form->editfieldkey('RegionStateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3" style="display:none;">';
 					} else {
 						print '<td>'.$form->editfieldkey('StateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3">';
 					}
