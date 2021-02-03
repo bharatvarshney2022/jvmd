@@ -1082,7 +1082,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
 		print '</td>';
 		// NAMO
-		print '<td style="display:none;">'.$langs->trans("Is NAMO?").'</td><td>';
+		print '<td style="display:none;">'.$langs->trans("Is NAMO?").'</td><td style="display:none;">';
 		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
 		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
 		print '</td></tr>';
@@ -1301,9 +1301,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</table>';
 
 		
-		print "<h3>Registration Information</h3>";
-		print '<hr>';
-		print '<table class="border centpercent">';
+		//print "<h3>Registration Information</h3>";
+		//print '<hr>';
+		print '<table class="border centpercent" style="display:none;">';
 		print '<tr><td class="titlefieldcreate">'.$langs->trans("Registration Type").'</td><td>';
 		print '<input name="registration_type" class="maxwidth150" value="'.$object->registration_type.'">';
 		print '</td><td class="titlefieldcreate">'.$langs->trans("Installation Date").'</td><td>';
@@ -1340,9 +1340,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 		print '</table>';
 
-		print "<h3>Registration Information</h3>";
-		print '<hr>';
-		print '<table class="border centpercent">';
+		//print "<h3>Registration Information</h3>";
+		//print '<hr>';
+		print '<table class="border centpercent" style="display:none;">';
 		print '<tr><td class="titlefieldcreate">'.$langs->trans("Registration Type").'</td><td>';
 		print '<input name="registration_type" class="maxwidth150" value="'.$object->registration_type.'">';
 		print '</td><td class="titlefieldcreate">'.$langs->trans("Installation Date").'</td><td>';
@@ -2029,7 +2029,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$head = product_prepare_head($object);
 			$titre = $langs->trans("CardProduct".$object->type);
 			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
-
+			/*echo '<pre>';
+			print_r($head);*/
 			print dol_get_fiche_head($head, 'card', $titre, -1, $picto);
 
 			$linkback = '<a href="'.DOL_URL_ROOT.'/product/list.php?restore_lastsearch_values=1&type='.$object->type.'">'.$langs->trans("BackToList").'</a>';
@@ -2041,11 +2042,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			dol_banner_tab($object, 'ref', $linkback, $shownav, 'ref');
 
 
-			print '<div class="fichecenter">';
+			print '<div class="fichecenter" style="display:none;">';
 			print '<div class="fichehalfleft">';
 
 			print '<div class="underbanner clearboth"></div>';
-			print '<table class="border tableforfield" width="100%">';
+			print '<table class="border tableforfield" width="100%" style="display:none;">';
 
 			// Type
 			if (!empty($conf->product->enabled) && !empty($conf->service->enabled))
@@ -2085,7 +2086,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 				// Barcode value
 				print '<tr><td class="nowrap">';
-				print '<table width="100%" class="nobordernopadding"><tr><td class="nowrap">';
+				print '<table width="100%" class="nobordernopadding" ><tr><td class="nowrap">';
 				print $langs->trans("BarcodeValue");
 				print '</td>';
 				if (($action != 'editbarcode') && $usercancreate && $createbarcode) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editbarcode&amp;id='.$object->id.'">'.img_edit($langs->trans('Edit'), 1).'</a></td>';
@@ -2277,7 +2278,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<div class="fichehalfright"><div class="ficheaddleft">';
 
 			print '<div class="underbanner clearboth"></div>';
-			print '<table class="border tableforfield" width="100%">';
+			print '<table class="border tableforfield" width="100%" style="display:none;">';
 
 			if ($object->isService())
 			{
@@ -2409,6 +2410,89 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print '</div></div>';
 			print '<div style="clear:both"></div>';
+
+			print '<div class="fichecenter" >';
+			print '<div class="fichehalfleft">';
+
+			print '<div class="underbanner clearboth"></div>';
+			print '<table class="border tableforfield" width="100%" >';
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("Registration No").'</td><td colspan="3">';
+				print $object->ref;	
+			print "</td></tr>";
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("Name").'</td><td colspan="3">';
+				print $object->label;	
+			print "</td></tr>";
+			if($object->fk_model > 0){
+				$prdmodel = $object->getProductModel($object->fk_model);
+				$prdmodeldata = json_decode($prdmodel);
+				//print_r($prdmodeldata);
+				print '<tr><td class="valignmiddle">'.$langs->trans("Model No.").'</td><td colspan="3">';
+					print $prdmodeldata->model;	
+				print "</td></tr>";
+
+				print '<tr><td class="valignmiddle">'.$langs->trans("Brand").'</td><td colspan="3">';
+					print $prdmodeldata->brand;	
+				print "</td></tr>";
+
+				print '<tr><td class="valignmiddle">'.$langs->trans("Product Family").'</td><td colspan="3">';
+					print $prdmodeldata->family;	
+				print "</td></tr>";
+
+				print '<tr><td class="valignmiddle">'.$langs->trans("Product Sub Family").'</td><td colspan="3">';
+					print $prdmodeldata->subfamily;	
+				print "</td></tr>";
+			}
+
+			print "</table>\n";
+			print '</div>';
+
+			print '<div class="fichehalfright">';
+
+			print '<div class="underbanner clearboth"></div>';
+			print '<table class="border tableforfield" width="100%" >';
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("ERP Invoice No").'</td><td colspan="3">';
+				print $object->erpinvoice_no;	
+			print "</td></tr>";
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("Component No.").'</td><td colspan="3">';
+				print $object->component_no;	
+			print "</td></tr>";
+			
+			print '<tr><td class="valignmiddle">'.$langs->trans("Invoice Date").'</td><td colspan="3">';
+				if($object->invoicedate > 0){
+					print date("d-m-Y H:i:s",$object->invoicedate);	
+				}else{
+					print 'N/A';
+				}
+			print "</td></tr>";
+
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("Ship Date").'</td><td colspan="3">';
+				if($object->ship_date > 0){
+					print date("d-m-Y H:i:s",$object->ship_date);	
+				}else{
+					print 'N/A';
+				}	
+			print "</td></tr>";
+
+			print '<tr><td class="valignmiddle">'.$langs->trans("Is Direct Customer Sale").'</td><td colspan="3">';
+				if($object->custsale === 1){
+					print 'Yes';
+				}else{
+					print 'No';
+				}	
+			print "</td></tr>";
+			
+
+			print "</table>\n";
+			print '</div>';
+
+			print '</div>';
+			print '<div style="clear:both"></div>';
+
 
 			print dol_get_fiche_end();
 		}
