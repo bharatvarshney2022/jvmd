@@ -1570,8 +1570,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        });
 						});';
 				print '$(document).ready(function () {
-						
-						 $("modelname").val("<?php print $object->fk_model; ?>").trigger("change");
+						<?php if($object->fk_model > 0){?>
+						 $("modelname").val("<?php print $object->fk_model; ?>");
+						 getmodelinfo("<?php print $object->fk_model; ?>");
+						 <?php }?>
                         $("#modelname").change(function() {
                         	var model = $(this).val();
 							getmodelinfo(model);
@@ -1638,7 +1640,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 			
 			// Label
-			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
+			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
 
 			// Brand
 			print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="">';
