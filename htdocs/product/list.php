@@ -327,7 +327,7 @@ if ($search_type != '' && $search_type != '-1')
 	$texte = $langs->trans("ProductsAndServices");
 }
 
-$sql = 'SELECT DISTINCT p.rowid, p.ref, p.label, p.fk_product_type, p.barcode, p.price, p.tva_tx, p.price_ttc, p.price_base_type, p.entity,';
+$sql = 'SELECT DISTINCT p.rowid, p.ref, p.label, p.fk_model, p.component_no, p.erpinvoice_no, p.invoicedate, p.ship_date,p.custsale, p.fk_product_type, p.barcode, p.price, p.tva_tx, p.price_ttc, p.price_base_type, p.entity,';
 $sql .= ' p.fk_product_type, p.duration, p.finished, p.tosell, p.tobuy, p.seuil_stock_alerte, p.desiredstock,';
 $sql .= ' p.tobatch, p.accountancy_code_sell, p.accountancy_code_sell_intra, p.accountancy_code_sell_export,';
 $sql .= ' p.accountancy_code_buy, p.accountancy_code_buy_intra, p.accountancy_code_buy_export,';
@@ -760,8 +760,9 @@ if ($resql)
 	// Sell price
 	if (!empty($arrayfields['p.sellprice']['checked']))
 	{
-		print '<td class="liste_titre right">';
-		print '</td>';
+		/*print '<td class="liste_titre right">';
+		print '</td>';*/
+		
 	}
 
 	// Multiprice
@@ -793,9 +794,9 @@ if ($resql)
 	// Sell price
 	if (!empty($arrayfields['p.tva_tx']['checked']))
 	{
-		print '<td class="liste_titre right">';
+		/*print '<td class="liste_titre right">';
 		print '<input class="right flat maxwidth50" placeholder="%" type="text" name="search_vatrate" size="1" value="'.dol_escape_htmltag($search_vatrate).'">';
-		print '</td>';
+		print '</td>';*/
 	}
 	// WAP
 	if (!empty($arrayfields['p.pmp']['checked']))
@@ -863,15 +864,15 @@ if ($resql)
 	}
 	if (!empty($arrayfields['p.tosell']['checked']))
 	{
-		print '<td class="liste_titre right">';
+		/*print '<td class="liste_titre right">';
 		print $form->selectarray('search_tosell', array('0'=>$langs->trans('ProductStatusNotOnSellShort'), '1'=>$langs->trans('ProductStatusOnSellShort')), $search_tosell, 1);
-		print '</td >';
+		print '</td >';*/
 	}
 	if (!empty($arrayfields['p.tobuy']['checked']))
 	{
-		print '<td class="liste_titre right">';
+		/*print '<td class="liste_titre right">';
 		print $form->selectarray('search_tobuy', array('0'=>$langs->trans('ProductStatusNotOnBuyShort'), '1'=>$langs->trans('ProductStatusOnBuyShort')), $search_tobuy, 1);
-		print '</td>';
+		print '</td>';*/
 	}
 	print '<td class="liste_titre center maxwidthsearch">';
 	$searchpicto = $form->showFilterButtons();
@@ -880,7 +881,7 @@ if ($resql)
 
 	print '</tr>';
 
-	print '<tr class="liste_titre">';
+	print '<tr class="liste_titre" style="display:">';
 	if (!empty($arrayfields['p.ref']['checked'])) {
 		print_liste_field_titre($arrayfields['p.ref']['label'], $_SERVER["PHP_SELF"], "p.ref", "", $param, "", $sortfield, $sortorder);
 	}
@@ -917,7 +918,7 @@ if ($resql)
 	if (!empty($arrayfields['p.volume_units']['checked']))  print_liste_field_titre($arrayfields['p.volume_units']['label'], $_SERVER['PHP_SELF'], 'p.volume_units', '', $param, '', $sortfield, $sortorder, 'center ');
 	if (!empty($arrayfields['cu.label']['checked']))  		print_liste_field_titre($arrayfields['cu.label']['label'], $_SERVER['PHP_SELF'], '', '', $param, '', $sortfield, $sortorder, 'center ');
 	if (!empty($arrayfields['p.sellprice']['checked'])) {
-		print_liste_field_titre($arrayfields['p.sellprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, 'right ');
+		//print_liste_field_titre($arrayfields['p.sellprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, 'right ');
 	}
 
 	// Multiprices
@@ -998,10 +999,10 @@ if ($resql)
 		print_liste_field_titre($arrayfields['p.tms']['label'], $_SERVER["PHP_SELF"], "p.tms", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
 	}
 	if (!empty($arrayfields['p.tosell']['checked'])) {
-		print_liste_field_titre($arrayfields['p.tosell']['label'], $_SERVER["PHP_SELF"], "p.tosell", "", $param, '', $sortfield, $sortorder, 'right ');
+		//print_liste_field_titre($arrayfields['p.tosell']['label'], $_SERVER["PHP_SELF"], "p.tosell", "", $param, '', $sortfield, $sortorder, 'right ');
 	}
 	if (!empty($arrayfields['p.tobuy']['checked'])) {
-		print_liste_field_titre($arrayfields['p.tobuy']['label'], $_SERVER["PHP_SELF"], "p.tobuy", "", $param, '', $sortfield, $sortorder, 'right ');
+		//print_liste_field_titre($arrayfields['p.tobuy']['label'], $_SERVER["PHP_SELF"], "p.tobuy", "", $param, '', $sortfield, $sortorder, 'right ');
 	}
 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
 	print "</tr>\n";
@@ -1275,17 +1276,25 @@ if ($resql)
 		// Sell price
 		if (!empty($arrayfields['p.sellprice']['checked']))
 		{
-			print '<td class="right nowraponall">';
+			/*print '<td class="right nowraponall">';
 			if ($obj->tosell)
 			{
 				if ($obj->price_base_type == 'TTC') print price($obj->price_ttc).' '.$langs->trans("TTC");
 				else print price($obj->price).' '.$langs->trans("HT");
 			}
-			print '</td>';
-			if (!$i) $totalarray['nbfield']++;
+			print '</td>';*/
+			//if (!$i) $totalarray['nbfield']++;
 		}
 
-
+		// invoice date
+		if ($obj->invoicedate > 0)
+		{
+		/*print '<td class="right nowraponall">';
+			
+			 print date('d/m/Y',$obj->invoicedate);
+				print '</td>';
+				if (!$i) $totalarray['nbfield']++;*/
+		}		
 		// Multiprices
 		if (! empty($conf->global->PRODUIT_MULTIPRICES)) {
 			if (! isset($productpricescache)) {
@@ -1536,25 +1545,25 @@ if ($resql)
 		// Status (to sell)
 		if (!empty($arrayfields['p.tosell']['checked']))
 		{
-			print '<td class="right nowrap">';
+			/*print '<td class="right nowrap">';
 			if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
 				print ajax_object_onoff($product_static, 'status', 'tosell', 'ProductStatusOnSell', 'ProductStatusNotOnSell');
 			} else {
 				print $product_static->LibStatut($obj->tosell, 5, 0);
 			}
-			print '</td>';
+			print '</td>';*/
 			if (!$i) $totalarray['nbfield']++;
 		}
 		// Status (to buy)
 		if (!empty($arrayfields['p.tobuy']['checked']))
 		{
-			print '<td class="right nowrap">';
+			/*print '<td class="right nowrap">';
 			if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
 				print ajax_object_onoff($product_static, 'status_buy', 'tobuy', 'ProductStatusOnBuy', 'ProductStatusNotOnBuy');
 			} else {
 				print $product_static->LibStatut($obj->tobuy, 5, 1);
 			}
-			print '</td>';
+			print '</td>';*/
 			if (!$i) $totalarray['nbfield']++;
 		}
 
