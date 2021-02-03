@@ -1569,12 +1569,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        	document.formprod.submit();
 	                        });
 						});';
-				print '$(document).ready(function () {
-						<?php if($object->fk_model > 0){?>
-						 $("modelname").val("<?php print $object->fk_model; ?>");
-						 getmodelinfo("<?php print $object->fk_model; ?>");
-						 <?php }?>
-                        $("#modelname").change(function() {
+				print '$(document).ready(function () {'
+						if($object->fk_model > 0){
+						print '$("modelname").val("'.$object->fk_model.'");';
+						 
+						 }
+                        print '$("#modelname").change(function() {
                         	var model = $(this).val();
 							getmodelinfo(model);
 
