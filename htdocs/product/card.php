@@ -1664,7 +1664,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Invoice Date
 			print '<tr><td>'.$langs->trans("Invoice Date").'-'.date("m/d/Y",$object->invoicedate).'</td><td>';
-			print $form->selectDate($invoicedate ? $invoicedate : date("m/d/Y",$object->invoicedate), 'invoicedate', 0, 0, 1, 'updateproduct', 1, 0);
+			print $form->selectDate($invoicedate ? $invoicedate : date("m/d/Y H:i:s",$object->invoicedate), 'invoicedate', 0, 0, 1, 'updateproduct', 1, 0);
 			
 			print '</td>';
 
