@@ -122,7 +122,7 @@ $(document).ready(function () {
 <!-- Title with version -->
 <div class="login_table_title center" title="<?php echo dol_escape_htmltag($title); ?>">
 <?php
-i/*f ($disablenofollow) echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank">';
+/*if ($disablenofollow) echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank">';
 echo dol_escape_htmltag($title);
 if ($disablenofollow) echo '</a>';*/
 ?>
