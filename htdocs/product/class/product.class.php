@@ -874,6 +874,14 @@ class Product extends CommonObject
 		// Clean parameters
 		$this->ref = dol_string_nospecial(trim($this->ref));
 		$this->label = trim($this->label);
+
+		$this->fk_model = trim($this->fk_model);
+		$this->erpinvoice_no = trim($this->erpinvoice_no);
+		$this->component_no = trim($this->component_no);
+		$this->invoicedate = trim($this->invoicedate);
+		$this->ship_date = trim($this->ship_date);
+		$this->custsale = trim($this->custsale);
+
 		$this->description = trim($this->description);
 		$this->note = (isset($this->note) ? trim($this->note) : null);
 		$this->net_measure = price2num($this->net_measure);
