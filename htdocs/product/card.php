@@ -1664,12 +1664,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Invoice Date
 			print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
-			print $form->selectDate(date("m/d/Y",$object->invoicedate), 'invoicedate', 0, 0, 1, '', 1, 0);
+			print $form->selectDate($invoicedate ? $invoicedate : date("m/d/Y",$object->invoicedate), 'invoicedate', 0, 0, 1, 'updateproduct', 1, 0);
+			
 			print '</td>';
 
 			// Ship Date.
 			print '<td>'.$langs->trans("Ship Date").'</td><td>';
-			print $form->selectDate(date("m/d/Y",$object->ship_date), 'ship_date', 0, 0, 1, '', 1, 0);
+			print $form->selectDate($ship_date ? $ship_date : date("m/d/Y",$object->ship_date), 'ship_date', 0, 0, 1, 'updateproduct', 1, 0);
 			print '</td></tr>';
 
 		// Customer Sale
