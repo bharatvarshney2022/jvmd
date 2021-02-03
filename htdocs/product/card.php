@@ -1609,7 +1609,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<table class="border allwidth">';
 
 			// Ref
-			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td colspan="3"><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
+			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
 
 		   // Model
 			print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
@@ -1618,7 +1618,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 			
 			// Label
-			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td colspan="3"><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
+			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
 
 			// Brand
 			print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="">';
