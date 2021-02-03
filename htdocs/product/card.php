@@ -1561,7 +1561,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        });
 						});';
 				print '$(document).ready(function () {
-						 $("#modelname").val(<?php echo $object->fk_model?>);
+						 $("#modelname").val("1");
                         $("#modelname").change(function() {
                         	var model = $(this).val();
                         	$.ajax({
