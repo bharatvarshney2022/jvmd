@@ -1877,7 +1877,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 					{
 						print '<td style="display:none;">'.$form->editfieldkey('RegionStateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3" style="display:none;">';
 					} else {
-						print '<td>'.$form->editfieldkey('StateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3">';
+						print '<td style="display:none;">'.$form->editfieldkey('StateOrigin', 'state_id', '', $object, 0).'</td><td colspan="3" style="display:none;">';
 					}
 
 					print $formcompany->select_state($object->state_id, $object->country_code);
