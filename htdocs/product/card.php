@@ -1569,7 +1569,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        	document.formprod.submit();
 	                        });
 						});';
-				print '$(document).ready(function () {'
+				print '$(document).ready(function () {';
 						if($object->fk_model > 0){
 						print '$("modelname").val("'.$object->fk_model.'");';
 						 
