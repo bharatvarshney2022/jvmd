@@ -1553,6 +1553,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			//WYSIWYG Editor
 			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
+			$object->fk_model = GETPOST('modelname') ? GETPOST('modelname') : $object->fk_model;
 			print '<script type="text/javascript">';
 				print '$(document).ready(function () {
 	                        $("#selectcountry_id").change(function () {
@@ -1561,7 +1562,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	                        });
 						});';
 				print '$(document).ready(function () {
-						 $("#modelname").val("1");
+						 $("#modelname").val("<?php print $object->fk_model; ?>");
                         $("#modelname").change(function() {
                         	var model = $(this).val();
                         	$.ajax({
