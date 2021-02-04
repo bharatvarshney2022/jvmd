@@ -1821,7 +1821,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				} else {
 					print '<input type="text" size="5" maxlength="5" name="prefix_comm" id="prefix" value="'.dol_escape_htmltag($object->prefix_comm).'">';
 				}
-				print '</td>';
+				print '</td> </tr>';
 			}
 
 			// Prospect/Customer
@@ -1923,7 +1923,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 			// Country
-			print '<tr><td>'.$form->editfieldkey('Country', 'selectcounty_id', '', $object, 0).'</td><td colspan="3">';
+			print '<tr><td>'.$form->editfieldkey('Country', 'selectcounty_id', '', $object, 0).'</td><td>';
 			print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 			print $form->select_country((GETPOSTISSET('country_id') ? GETPOST('country_id') : $object->country_id), 'country_id', '', 0, 'minwidth300 widthcentpercentminusx');
 			if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
