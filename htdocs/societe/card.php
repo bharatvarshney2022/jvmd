@@ -2325,7 +2325,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($idprof != '-')
 			{
 				//if (($j % 2) == 0) print '<tr>';
-				print '<tr>';
+				print '<tr style="display:none;">';
 				print '<td>'.$idprof.'</td><td>';
 				$key = 'idprof'.$i;
 				print $object->$key;
@@ -2351,7 +2351,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		if ($object->fournisseur)
 		{
 			// VAT is used
-			print '<tr><td>';
+			print '<tr style="display:none;"><td>';
 			print $form->textwithpicto($langs->trans('VATIsUsed'), $langs->trans('VATIsUsedWhenSelling'));
 			print '</td><td>';
 			print yn($object->tva_assuj);
@@ -2364,7 +2364,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		{
 			if ($mysoc->localtax1_assuj == "1" && $mysoc->localtax2_assuj == "1")
 			{
-				print '<tr><td>'.$langs->transcountry("LocalTax1IsUsed", $mysoc->country_code).'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->transcountry("LocalTax1IsUsed", $mysoc->country_code).'</td><td>';
 				print yn($object->localtax1_assuj);
 				print '</td></tr><tr><td>'.$langs->transcountry("LocalTax2IsUsed", $mysoc->country_code).'</td><td>';
 				print yn($object->localtax2_assuj);
@@ -2372,10 +2372,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 				if ($object->localtax1_assuj == "1" && (!isOnlyOneLocalTax(1)))
 				{
-					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'">';
+					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'" style="display:none;">';
 					print '<input type="hidden" name="action" value="set_localtax1">';
 					print '<input type="hidden" name="token" value="'.newToken().'">';
-					print '<tr><td>'.$langs->transcountry("Localtax1", $mysoc->country_code).' <a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editRE&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</td>';
+					print '<tr ><td>'.$langs->transcountry("Localtax1", $mysoc->country_code).' <a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editRE&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</td>';
 					if ($action == 'editRE')
 					{
 						print '<td class="left">';
@@ -2388,7 +2388,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				}
 				if ($object->localtax2_assuj == "1" && (!isOnlyOneLocalTax(2)))
 				{
-					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'">';
+					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'" style="display:none;">';
 					print '<input type="hidden" name="action" value="set_localtax2">';
 					print '<input type="hidden" name="token" value="'.newToken().'">';
 					print '<tr><td>'.$langs->transcountry("Localtax2", $mysoc->country_code).'<a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editIRPF&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</td>';
@@ -2403,12 +2403,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				}
 			} elseif ($mysoc->localtax1_assuj == "1" && $mysoc->localtax2_assuj != "1")
 			{
-				print '<tr><td>'.$langs->transcountry("LocalTax1IsUsed", $mysoc->country_code).'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->transcountry("LocalTax1IsUsed", $mysoc->country_code).'</td><td>';
 				print yn($object->localtax1_assuj);
 				print '</td></tr>';
 				if ($object->localtax1_assuj == "1" && (!isOnlyOneLocalTax(1)))
 				{
-					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'">';
+					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'" style="display:none;">';
 					print '<input type="hidden" name="action" value="set_localtax1">';
 					print '<input type="hidden" name="token" value="'.newToken().'">';
 					print '<tr><td> '.$langs->transcountry("Localtax1", $mysoc->country_code).'<a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editRE&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</td>';
@@ -2423,12 +2423,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				}
 			} elseif ($mysoc->localtax2_assuj == "1" && $mysoc->localtax1_assuj != "1")
 			{
-				print '<tr><td>'.$langs->transcountry("LocalTax2IsUsed", $mysoc->country_code).'</td><td>';
+				print '<tr style="display:none;"><td>'.$langs->transcountry("LocalTax2IsUsed", $mysoc->country_code).'</td><td>';
 				print yn($object->localtax2_assuj);
 				print '</td></tr>';
 				if ($object->localtax2_assuj == "1" && (!isOnlyOneLocalTax(2)))
 				{
-					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'">';
+					print '<form method="post" action="'.$_SERVER['PHP_SELF'].'?socid='.$object->id.'" style="display:none;">';
 					print '<input type="hidden" name="action" value="set_localtax2">';
 					print '<input type="hidden" name="token" value="'.newToken().'">';
 					print '<tr><td> '.$langs->transcountry("Localtax2", $mysoc->country_code).' <a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editIRPF&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</td>';
@@ -2445,7 +2445,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Sale tax code (VAT code)
-		print '<tr>';
+		print '<tr style="display:none;">';
 		print '<td class="nowrap">'.$langs->trans('VATIntra').'</td><td>';
 		if ($object->tva_intra)
 		{
@@ -2500,14 +2500,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<div class="fichehalfright"><div class="ficheaddleft">';
 
 		print '<div class="underbanner clearboth"></div>';
-		print '<table class="border tableforfield" width="100%">';
+		print '<table class="border tableforfield" width="100%" >';
+
+		// phone
+		print '<tr><td class="titlefield">'.$langs->trans('phone').'</td><td>'.$object->phone.'</td></tr>';
+
+		print '<tr><td class="titlefield">'.$langs->trans('email').'</td><td>'.$object->email.'</td></tr>';
 
 		// Tags / categories
 		if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
 		{
 			// Customer
 			if ($object->prospect || $object->client || (!$object->fournisseur && !empty($conf->global->THIRDPARTY_CAN_HAVE_CATEGORY_EVEN_IF_NOT_CUSTOMER_PROSPECT_SUPPLIER))) {
-				print '<tr><td>'.$langs->trans("CustomersCategoriesShort").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("CustomersCategoriesShort").'</td>';
 				print '<td>';
 				print $form->showCategories($object->id, Categorie::TYPE_CUSTOMER, 1);
 				print "</td></tr>";
@@ -2515,7 +2520,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Supplier
 			if (!empty($conf->fournisseur->enabled) && $object->fournisseur) {
-				print '<tr><td>'.$langs->trans("SuppliersCategoriesShort").'</td>';
+				print '<tr style="display:none;"><td>'.$langs->trans("SuppliersCategoriesShort").'</td>';
 				print '<td>';
 				print $form->showCategories($object->id, Categorie::TYPE_SUPPLIER, 1);
 				print "</td></tr>";
@@ -2523,10 +2528,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Legal
-		print '<tr><td class="titlefield">'.$langs->trans('JuridicalStatus').'</td><td>'.$object->forme_juridique.'</td></tr>';
+		print '<tr style="display:none;"><td class="titlefield">'.$langs->trans('JuridicalStatus').'</td><td>'.$object->forme_juridique.'</td></tr>';
 
 		// Capital
-		print '<tr><td>'.$langs->trans('Capital').'</td><td>';
+		print '<tr style="display:none;"><td>'.$langs->trans('Capital').'</td><td>';
 		if ($object->capital) print price($object->capital, '', $langs, 0, -1, -1, $conf->currency);
 		else print '&nbsp;';
 		print '</td></tr>';
@@ -2535,7 +2540,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		if (!empty($conf->global->MAIN_MULTILANGS))
 		{
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-			print '<tr><td>'.$langs->trans("DefaultLang").'</td><td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("DefaultLang").'</td><td>';
 			//$s=picto_from_langcode($object->default_lang);
 			//print ($s?$s.' ':'');
 			$langs->load("languages");
@@ -2547,7 +2552,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Incoterms
 		if (!empty($conf->incoterm->enabled))
 		{
-			print '<tr><td>';
+			print '<tr style="display:none;"><td>';
 			print '<table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans('IncotermLabel').'</td>';
 			if ($action != 'editincoterm' && $user->rights->societe->creer) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?socid='.$object->id.'&action=editincoterm">'.img_edit('', 1).'</a></td>';
 			print '</tr></table>';
@@ -2564,7 +2569,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Multicurrency
 		if (!empty($conf->multicurrency->enabled))
 		{
-			print '<tr>';
+			print '<tr style="display:none;">';
 			print '<td>'.$form->editfieldkey('Currency', 'multicurrency_code', '', $object, 0).'</td>';
 			print '<td>';
 			print !empty($object->multicurrency_code) ? currency_name($object->multicurrency_code, 1) : '';
@@ -2578,7 +2583,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Parent company
 		if (empty($conf->global->SOCIETE_DISABLE_PARENTCOMPANY))
 		{
-			print '<tr><td>';
+			print '<tr style="display:none;"><td>';
 			print '<table class="nobordernopadding" width="100%"><tr><td>'.$langs->trans('ParentCompany').'</td>';
 			if ($action != 'editparentcompany' && $user->rights->societe->creer) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editparentcompany&amp;socid='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('Edit'), 1).'</a></td>';
 			print '</tr></table>';
@@ -2595,7 +2600,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		if (!empty($conf->adherent->enabled))
 		{
 			$langs->load("members");
-			print '<tr><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("LinkedToDolibarrMember").'</td>';
 			print '<td>';
 			$adh = new Adherent($db);
 			$result = $adh->fetch('', '', $object->id);
@@ -2611,7 +2616,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		// Webservices url/key
 		if (!empty($conf->syncsupplierwebservices->enabled)) {
-			print '<tr><td>'.$langs->trans("WebServiceURL").'</td><td>'.dol_print_url($object->webservices_url).'</td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("WebServiceURL").'</td><td>'.dol_print_url($object->webservices_url).'</td>';
 			print '<td class="nowrap">'.$langs->trans('WebServiceKey').'</td><td>'.$object->webservices_key.'</td></tr>';
 		}
 
