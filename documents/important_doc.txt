@@ -1,0 +1,23 @@
+Admin 
+jvmd_admin
+jvmdadmin@123456
+------------------------------------
+Sub Admin 
+jvmd_sub_admin
+12345678
+--------------------------------
+RM Login
+jvmd_rm
+12345678
+-------------------------------------
+Vendor login
+usr_vendor
+12345678
+
+
+https://starserv.bluestarindia.com/login.html
+
+LJ00538-00
+pwd: JMVD@538
+
+
