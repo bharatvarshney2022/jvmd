@@ -158,13 +158,13 @@ function societe_prepare_head(Societe $object)
 	}
 
 	// Related items
-	if ((!empty($conf->commande->enabled) || !empty($conf->propal->enabled) || !empty($conf->facture->enabled) || !empty($conf->ficheinter->enabled) || !empty($conf->fournisseur->enabled) && empty($conf->global->MAIN_USE_NEW_SUPPLIERMOD) || !empty($conf->supplier_order->enabled) || !empty($conf->supplier_invoice->enabled))
+	/*if ((!empty($conf->commande->enabled) || !empty($conf->propal->enabled) || !empty($conf->facture->enabled) || !empty($conf->ficheinter->enabled) || !empty($conf->fournisseur->enabled) && empty($conf->global->MAIN_USE_NEW_SUPPLIERMOD) || !empty($conf->supplier_order->enabled) || !empty($conf->supplier_invoice->enabled))
 		&& empty($conf->global->THIRPARTIES_DISABLE_RELATED_OBJECT_TAB)) {
 		$head[$h][0] = DOL_URL_ROOT.'/societe/consumption.php?socid='.$object->id;
 		$head[$h][1] = $langs->trans("Referers");
 		$head[$h][2] = 'consumption';
 		$h++;
-	}
+	}*/
 
 	// Bank accounts
 	if (empty($conf->global->SOCIETE_DISABLE_BANKACCOUNT)) {
@@ -212,12 +212,12 @@ function societe_prepare_head(Societe $object)
 
 		//if (! empty($conf->stripe->enabled) && $nbBankAccount > 0) $nbBankAccount = '...';	// No way to know exact number
 
-		$head[$h][0] = DOL_URL_ROOT.'/societe/paymentmodes.php?socid='.$object->id;
+		/*$head[$h][0] = DOL_URL_ROOT.'/societe/paymentmodes.php?socid='.$object->id;
 		$head[$h][1] = $title;
 		if ($foundonexternalonlinesystem) $head[$h][1] .= '<span class="badge marginleftonlyshort">...</span>';
 	   	elseif ($nbBankAccount > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbBankAccount.'</span>';
 		$head[$h][2] = 'rib';
-		$h++;
+		$h++;*/
 	}
 
 	if (!empty($conf->website->enabled) && (!empty($conf->global->WEBSITE_USE_WEBSITE_ACCOUNTS)) && (!empty($user->rights->societe->lire))) {
@@ -301,14 +301,14 @@ function societe_prepare_head(Societe $object)
 		$h++;
 	}
 
-	$head[$h][0] = DOL_URL_ROOT.'/societe/agenda.php?socid='.$object->id;
+	/*$head[$h][0] = DOL_URL_ROOT.'/societe/agenda.php?socid='.$object->id;
 	$head[$h][1] .= $langs->trans("Events");
 	if (!empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read))) {
 		$head[$h][1] .= '/';
 		$head[$h][1] .= $langs->trans("Agenda");
 	}
 	$head[$h][2] = 'agenda';
-	$h++;
+	$h++;*/
 
 	// Log
 	/*$head[$h][0] = DOL_URL_ROOT.'/societe/info.php?socid='.$object->id;
