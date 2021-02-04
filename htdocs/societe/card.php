@@ -2503,9 +2503,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<table class="border tableforfield" width="100%" >';
 
 		// phone
-		print '<tr><td class="titlefield">'.$langs->trans('phone').'</td><td>'.$object->phone.'</td></tr>';
+		print '<tr><td class="titlefield">'.$langs->trans('Phone').'</td><td>'.$object->phone.'</td></tr>';
 
-		print '<tr><td class="titlefield">'.$langs->trans('email').'</td><td>'.$object->email.'</td></tr>';
+		print '<tr><td class="titlefield">'.$langs->trans('Email').'</td><td>'.$object->email.'</td></tr>';
+
+		print '<tr><td class="titlefield">'.$langs->trans('Zip Code').'</td><td>'.$object->zip.'</td></tr>';
+		print '<tr><td class="titlefield">'.$langs->trans('City').'</td><td>'.$object->town.'</td></tr>';
 
 		// Tags / categories
 		if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
@@ -2594,7 +2597,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Sales representative
-		include DOL_DOCUMENT_ROOT.'/societe/tpl/linesalesrepresentative.tpl.php';
+		//include DOL_DOCUMENT_ROOT.'/societe/tpl/linesalesrepresentative.tpl.php';
 
 		// Module Adherent
 		if (!empty($conf->adherent->enabled))
