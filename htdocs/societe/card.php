@@ -933,6 +933,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		/*
          *  Creation
          */
+
 		$private = GETPOST("private", "int");
 		if (!empty($conf->global->THIRDPARTY_DEFAULT_CREATE_CONTACT) && !GETPOSTISSET('private')) $private = 1;
 		if (empty($private)) $private = 0;
@@ -1326,20 +1327,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// Country
-		print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">';
+		print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 		print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 		print $form->select_country((GETPOSTISSET('country_id') ? GETPOST('country_id') : $object->country_id), 'country_id', '', 0, 'minwidth300 maxwidth500 widthcentpercentminusx');
 		if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
-		print '</td></tr>';
+		print '</td>';
 
 		// State
 		if (empty($conf->global->SOCIETE_DISABLE_STATE))
 		{
 			if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
 			{
-				print '<tr><td>'.$form->editfieldkey('Region-State', 'state_id', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">';
+				print '<td>'.$form->editfieldkey('Region-State', 'state_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 			} else {
-				print '<tr><td>'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">';
+				print '<td>'.$form->editfieldkey('State', 'state_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 			}
 
 			if ($object->country_id) print $formcompany->select_state($object->state_id, $object->country_code);
@@ -1351,13 +1352,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<tr><td>'.$form->editfieldkey('Phone', 'phone', '', $object, 0).'</td>';
 		print '<td'.($conf->browser->layout == 'phone' ? ' colspan="3"' : '').'>'.img_picto('', 'object_phoning').' <input type="text" name="phone" id="phone" class="maxwidth200 widthcentpercentminusx" value="'.(GETPOSTISSET('phone') ?GETPOST('phone', 'alpha') : $object->phone).'"></td>';
 		if ($conf->browser->layout == 'phone') print '</tr><tr>';
-		print '<td>'.$form->editfieldkey('Fax', 'fax', '', $object, 0).'</td>';
-		print '<td'.($conf->browser->layout == 'phone' ? ' colspan="3"' : '').'>'.img_picto('', 'object_phoning_fax').' <input type="text" name="fax" id="fax" class="maxwidth200 widthcentpercentminusx" value="'.(GETPOSTISSET('fax') ?GETPOST('fax', 'alpha') : $object->fax).'"></td></tr>';
-
+		print '<td style="display:none;">'.$form->editfieldkey('Fax', 'fax', '', $object, 0).'</td>';
+		/*print '<td'.($conf->browser->layout == 'phone' ? ' colspan="3"' : '').' style="display:none;">'.img_picto('', 'object_phoning_fax').' <input type="text" name="fax" id="fax" class="maxwidth200 widthcentpercentminusx" value="'.(GETPOSTISSET('fax') ?GETPOST('fax', 'alpha') : $object->fax).'"></td></tr>';
+*/
 		// Email / Web
-		print '<tr><td>'.$form->editfieldkey('EMail', 'email', '', $object, 0, 'string', '', empty($conf->global->SOCIETE_EMAIL_MANDATORY) ? '' : $conf->global->SOCIETE_EMAIL_MANDATORY).'</td>';
-		print '<td colspan="3">'.img_picto('', 'object_email').' <input type="text" class="maxwidth500 widthcentpercentminusx" name="email" id="email" value="'.$object->email.'"></td></tr>';
-		print '<tr><td>'.$form->editfieldkey('Web', 'url', '', $object, 0).'</td>';
+		print '<td>'.$form->editfieldkey('EMail', 'email', '', $object, 0, 'string', '', empty($conf->global->SOCIETE_EMAIL_MANDATORY) ? '' : $conf->global->SOCIETE_EMAIL_MANDATORY).'</td>';
+		print '<td>'.img_picto('', 'object_email').' <input type="text" class="maxwidth500 widthcentpercentminusx" name="email" id="email" value="'.$object->email.'"></td></tr>';
+		print '<tr style="display:none;"><td>'.$form->editfieldkey('Web', 'url', '', $object, 0).'</td>';
 		print '<td colspan="3">'.img_picto('', 'globe').' <input type="text" class="maxwidth500 widthcentpercentminusx" name="url" id="url" value="'.$object->url.'"></td></tr>';
 
 		if (!empty($conf->socialnetworks->enabled)) {
@@ -1376,7 +1377,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Prof ids
-		$i = 1; $j = 0; $NBCOLS = ($conf->browser->layout == 'phone' ? 1 : 2);
+		/*$i = 1; $j = 0; $NBCOLS = ($conf->browser->layout == 'phone' ? 1 : 2);
 		while ($i <= 6) {
 			$idprof = $langs->transcountry('ProfId'.$i, $object->country_code);
 			if ($idprof != '-')	{
@@ -1394,10 +1395,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 			$i++;
 		}
-		if ($NBCOLS > 1 && ($j % 2 == 1)) print '<td colspan="2"></td></tr>';
+		if ($NBCOLS > 1 && ($j % 2 == 1)) print '<td colspan="2"></td></tr>';*/
 
 		// Vat is used
-		print '<tr><td>'.$form->editfieldkey('VATIsUsed', 'assujtva_value', '', $object, 0).'</td>';
+		print '<tr  style="display:none;"><td>'.$form->editfieldkey('VATIsUsed', 'assujtva_value', '', $object, 0).'</td>';
 		print '<td>';
 		print $form->selectyesno('assujtva_value', GETPOSTISSET('assujtva_value') ?GETPOST('assujtva_value', 'int') : 1, 1); // Assujeti par defaut en creation
 		print '</td>';
@@ -1466,7 +1467,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// Legal Form
-		print '<tr><td>'.$form->editfieldkey('JuridicalStatus', 'forme_juridique_code', '', $object, 0).'</td>';
+		print '<tr style="display:none;"><td>'.$form->editfieldkey('JuridicalStatus', 'forme_juridique_code', '', $object, 0).'</td>';
 		print '<td colspan="3" class="maxwidthonsmartphone">';
 		if ($object->country_id)
 		{
@@ -1477,13 +1478,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// Capital
-		print '<tr><td>'.$form->editfieldkey('Capital', 'capital', '', $object, 0).'</td>';
+		print '<tr style="display:none;"><td>'.$form->editfieldkey('Capital', 'capital', '', $object, 0).'</td>';
 		print '<td colspan="3"><input type="text" name="capital" id="capital" class="maxwidth100" value="'.$object->capital.'"> ';
 		print '<span class="hideonsmartphone">'.$langs->trans("Currency".$conf->currency).'</span></td></tr>';
 
 		if (!empty($conf->global->MAIN_MULTILANGS))
 		{
-			print '<tr><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">'."\n";
+			print '<tr style="display:none;"><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0).'</td><td colspan="3" class="maxwidthonsmartphone">'."\n";
 			print $formadmin->select_language(GETPOST('default_lang', 'alpha') ? GETPOST('default_lang', 'alpha') : ($object->default_lang ? $object->default_lang : ''), 'default_lang', 0, 0, 1, 0, 0, 'maxwidth200onsmartphone');
 			print '</td>';
 			print '</tr>';
@@ -1492,7 +1493,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Incoterms
 		if (!empty($conf->incoterm->enabled))
 		{
-			print '<tr>';
+			print '<tr style="display:none;">';
 			print '<td>'.$form->editfieldkey('IncotermLabel', 'incoterm_id', '', $object, 0).'</td>';
 			print '<td colspan="3" class="maxwidthonsmartphone">';
 			print $form->select_incoterms((!empty($object->fk_incoterms) ? $object->fk_incoterms : ''), (!empty($object->location_incoterms) ? $object->location_incoterms : ''));
@@ -1524,7 +1525,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Multicurrency
 		if (!empty($conf->multicurrency->enabled))
 		{
-			print '<tr>';
+			print '<tr style="display:none;">';
 			print '<td>'.$form->editfieldkey('Currency', 'multicurrency_code', '', $object, 0).'</td>';
 			print '<td colspan="3" class="maxwidthonsmartphone">';
 			print $form->selectMultiCurrency(($object->multicurrency_code ? $object->multicurrency_code : $conf->currency), 'multicurrency_code', 1);
@@ -1536,7 +1537,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
 
 		// Assign a sale representative
-		print '<tr>';
+		print '<tr style="display:none;">';
 		print '<td>'.$form->editfieldkey('AllocateCommercial', 'commercial_id', '', $object, 0).'</td>';
 		print '<td colspan="3" class="maxwidthonsmartphone">';
 		$userlist = $form->select_dolusers('', '', 0, null, 0, '', '', 0, 0, 0, 'AND u.statut = 1', 0, '', '', 0, 1);
