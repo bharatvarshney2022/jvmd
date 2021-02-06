@@ -1593,7 +1593,7 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 
 	top_httphead();
 
-	if (empty($conf->css)) $conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
+	if (empty($conf->css)) $conf->css = '/theme/md/style.css.php'; // If not defined, eldy by default
 	
 	print '<!doctype html>'."\n";
 
@@ -1673,7 +1673,7 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 		print "\n\n";
 
 		print "		<!--begin::Page Custom Styles(used by this page)-->\n";
-		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/eldy/css/login-3.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/md/css/login-3.css'.($ext ? '?'.$ext : '').'">'."\n";
 		//print_r($themepath); exit;
 
 		if (GETPOST('version', 'int')) $ext = 'version='.GETPOST('version', 'int'); // usefull to force no cache on css/js
