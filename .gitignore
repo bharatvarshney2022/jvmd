@@ -1,3 +1,4 @@
 *.agdai
 MAlonzo/**
-documents/dolibarr.log
+/documents
+/documents/dolibarr.log
