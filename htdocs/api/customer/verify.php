@@ -9,13 +9,14 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	$user_otp = GETPOST('user_otp', 'alpha');
 	
 	$json = array();
 	
-	$object = new User($db);
+	$object = new Contact($db);
 	
 	$object->fetch($id);
 	

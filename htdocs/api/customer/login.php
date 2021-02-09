@@ -12,19 +12,20 @@
 	
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
-	$mobile = GETPOST('email', 'alpha');
-	$password = GETPOST('password', 'alpha');
+	$mobile = GETPOST('mobile', 'alpha');
+	//$password = GETPOST('password', 'alpha');
 	
 	$json = array();
 	
 	$object = new User($db);
 	
-	$isExist = check_user_password($mobile, $password);
+	//$isExist = check_user_password($mobile, $password);
+	$isExist = check_user_mobile($mobile);
 	
-	if($isExist->login != $mobile)
+	if($isExist->phone_mobile != $mobile)
 	{
 		$status_code = '0';
-		$message = 'Incorrect Mobile or Password!!';
+		$message = 'Incorrect Mobile Or Mobile not exist in our system !!';
 		
 		$json = array('status_code' => $status_code, 'message' => $message);
 	}
@@ -32,32 +33,30 @@
 	{
 		if($isExist)
 		{
-			$status_code = '1';
-			$message = 'User logged-in successfully';
-			
-			$user_profile = $object->userProfileExists($isExist->rowid);
-			//$isExist->user_profile = $user_profile;
-			
-			// Last Question answer
-			$answered = $object->lastAnswered($isExist->rowid);
-			//$isExist->question_completed = $answered;
-			
-			$isExist->user_id = $isExist->rowid;
-			
-			$isExist->user_image = $subpe_main_url_root.'/showimage?modulepart=userphoto&file='.$isExist->rowid.'/'.$isExist->photo;
-			unset($isExist->rowid);
-			
-			$userGroupData = $object->usergrouplisting($isExist->user_id);
-			
-			//print_r($userGroupData); exit;
-			
-			$token = dol_hash(uniqid(mt_rand(), true));
-			
-			$object->insertUserToken($isExist->user_id, $token);
-			
-			$newToken = $object->userToken($isExist->user_id);
-			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => $isExist->user_id, 'email' => $isExist->login, 'firstname' => $isExist->firstname, 'lastname' => $isExist->lastname, 'usergroup_id' => $userGroupData[0], 'user_token' => $newToken);
+			if($isExist->statut)
+			{		
+				$status_code = '1';
+				$message = 'Customer verified successfully';
+				
+				$otp = rand(111111, 999999);
+                $smsmessage = str_replace(" ", "%20", "Your OTP is ".$otp);
+              	$table = MAIN_DB_PREFIX."socpeople";
+                $updateSql ="UPDATE ".$table." SET";
+				$updateSql.= " otp = '".$otp."' ";
+				$updateSql.= " WHERE rowid = '".$isExist->rowid."' ";
+		
+				//echo $sql;
+				$resql=$db->query($updateSql);
+
+               //$this->httpGet("http://opensms.microprixs.com/api/mt/SendSMS?user=rahul100gm&password=rahul100gm&senderid=IOOGMS&channel=trans&DCS=0&flashsms=0&number=".$mobile."&text=".$smsmessage."&route=35");
+				
+				$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => $isExist->rowid, 'email' => $isExist->email, 'firstname' => $isExist->firstname, 'lastname' => $isExist->lastname, 'user_otp' => $otp);
+			}else{
+				$status_code = '0';
+				$message = 'Customer not active please contact support!!';
+		
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}	
 		}
 		else
 		{

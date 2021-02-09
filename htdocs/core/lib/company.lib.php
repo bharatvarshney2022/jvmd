@@ -46,7 +46,7 @@ function societe_prepare_head(Societe $object)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/societe/card.php?socid='.$object->id;
-	$head[$h][1] = $langs->trans("ThirdParty");
+	$head[$h][1] = $langs->trans("Customer Info");
 	$head[$h][2] = 'card';
 	$h++;
 
@@ -71,12 +71,12 @@ function societe_prepare_head(Societe $object)
 			$h++;
 		}
 	} else {
-		$head[$h][0] = DOL_URL_ROOT.'/societe/societecontact.php?socid='.$object->id;
+		/*$head[$h][0] = DOL_URL_ROOT.'/societe/societecontact.php?socid='.$object->id;
 		$nbContact = count($object->liste_contact(-1, 'internal')) + count($object->liste_contact(-1, 'external'));
 		$head[$h][1] = $langs->trans("ContactsAddresses");
 		if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 		$head[$h][2] = 'contact';
-		$h++;
+		$h++;*/
 	}
 
 	if ($object->client == 1 || $object->client == 2 || $object->client == 3) {
@@ -84,9 +84,9 @@ function societe_prepare_head(Societe $object)
 		$head[$h][1] = '';
 		if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && ($object->client == 2 || $object->client == 3)) $head[$h][1] .= $langs->trans("Prospect");
 		if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && $object->client == 3) $head[$h][1] .= ' | ';
-		if (empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && ($object->client == 1 || $object->client == 3)) $head[$h][1] .= $langs->trans("Customer");
+		if (empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && ($object->client == 1 || $object->client == 3))/* $head[$h][1] .= $langs->trans("Customer");
 		$head[$h][2] = 'customer';
-		$h++;
+		$h++;*/
 
 		if (!empty($conf->global->PRODUIT_CUSTOMER_PRICES)) {
 			$langs->load("products");

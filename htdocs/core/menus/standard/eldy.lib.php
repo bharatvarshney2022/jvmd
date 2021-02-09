@@ -828,7 +828,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				$newmenu->add("/societe/index.php?leftmenu=thirdparties", $langs->trans("ThirdParty"), 0, $user->rights->societe->lire, '', $mainmenu, 'thirdparties');
 
 				if ($user->rights->societe->creer && $user->admin) {
-					$newmenu->add("/societe/card.php?action=create", $langs->trans("MenuNewThirdParty"), 1);
+					//$newmenu->add("/societe/card.php?action=create", $langs->trans("MenuNewThirdParty"), 1);
 					if (!$conf->use_javascript_ajax) {
 						$newmenu->add("/societe/card.php?action=create&amp;private=1", $langs->trans("MenuNewPrivateIndividual"), 1);
 					}
@@ -840,7 +840,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 			// Prospects
 			if (!empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && $user->admin) {
 				$langs->load("commercial");
-				$newmenu->add("/societe/list.php?type=p&amp;leftmenu=prospects", $langs->trans("ListProspectsShort"), 2, $user->rights->societe->lire, '', $mainmenu, 'prospects');
+				//$newmenu->add("/societe/list.php?type=p&amp;leftmenu=prospects", $langs->trans("ListProspectsShort"), 2, $user->rights->societe->lire, '', $mainmenu, 'prospects');
 				/* no more required, there is a filter that can do more
 				if ($usemenuhider || empty($leftmenu) || $leftmenu=="prospects") $newmenu->add("/societe/list.php?type=p&amp;sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;search_stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
 				if ($usemenuhider || empty($leftmenu) || $leftmenu=="prospects") $newmenu->add("/societe/list.php?type=p&amp;sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;search_stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -849,7 +849,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				if ($usemenuhider || empty($leftmenu) || $leftmenu=="prospects") $newmenu->add("/societe/list.php?type=p&amp;sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;search_stcomm=3", $langs->trans("LastProspectContactDone"), 2, $user->rights->societe->lire);
 				*/
 				if($user->admin){
-					$newmenu->add("/societe/card.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 3, $user->rights->societe->creer);
+					//$newmenu->add("/societe/card.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 3, $user->rights->societe->creer);
 				}
 			}
 
@@ -889,7 +889,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 			}
 
 			// Contacts
-			$newmenu->add("/societe/index.php?leftmenu=thirdparties", (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses")), 0, $user->rights->societe->contact->lire, '', $mainmenu, 'contacts');
+			/*$newmenu->add("/societe/index.php?leftmenu=thirdparties", (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses")), 0, $user->rights->societe->contact->lire, '', $mainmenu, 'contacts');
 			$newmenu->add("/contact/card.php?leftmenu=contacts&amp;action=create", (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("NewContact") : $langs->trans("NewContactAddress")), 1, $user->rights->societe->contact->creer);
 			$newmenu->add("/contact/list.php?leftmenu=contacts", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
 			if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS)) {
@@ -902,7 +902,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				$newmenu->add("/contact/list.php?leftmenu=contacts&type=f", $langs->trans("Suppliers"), 2, $user->rights->societe->contact->lire);
 			}
 			$newmenu->add("/contact/list.php?leftmenu=contacts&type=o", $langs->trans("ContactOthers"), 2, $user->rights->societe->contact->lire);
-			//$newmenu->add("/contact/list.php?userid=$user->id", $langs->trans("MyContacts"), 1, $user->rights->societe->contact->lire);
+			//$newmenu->add("/contact/list.php?userid=$user->id", $langs->trans("MyContacts"), 1, $user->rights->societe->contact->lire);*/
 
 			// Categories
 			if (!empty($conf->categorie->enabled)) {
