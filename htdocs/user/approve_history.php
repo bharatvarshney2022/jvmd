@@ -39,14 +39,33 @@ $object->fetch($id, '', '', 1);
 $object->getrights();
 
 // If user is not user read and no permission to read other users, we stop
-if (($object->id != $user->id) && (!$user->rights->user->user->lire)) accessforbidden();
+//echo '<pre>';print_r($user->rights->user->user); exit;
+if (($object->id != $user->id) && (!$user->rights->user->user->approval)) {
+	accessforbidden();
+}
 
 // Security check
 $socid = 0;
 if ($user->socid > 0) $socid = $user->socid;
-$feature2 = (($socid && $user->rights->user->self->creer) ? '' : 'user');
+$feature2 = $user->rights->user->user->approval ? 'user' : '';
 
-$result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+$user_group = 0;
+$is_display = 0;
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group = $groupforuser->id;
+	}
+}
+
+if($user->admin == 1) // || ($user_group == 3 || $user_group == 11 || $user_group == 12 || $user_group == 13))
+{
+	$result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
+}
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('usercard', 'userapprove', 'globalcard'));
@@ -105,7 +124,6 @@ if ($id)
 
 	print '<div class="fichecenter">';
 	print '<table class="border centpercent tableforfield">';
-
 	// Login
 	print '<tr><td class="titlefield">'.$langs->trans("Login").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
 

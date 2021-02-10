@@ -189,7 +189,7 @@ function user_prepare_head($object)
 		}
 	}
 
-	if($user_group_id == '4')
+	if($user_group_id == '4' || $user->admin == 1)
 	{
 		$statut = $object->statut;
 		if($statut == 0)
