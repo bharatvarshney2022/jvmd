@@ -51,8 +51,9 @@ $confirm = GETPOST('confirm', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 $contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'projectlist';
 
-$title = $langs->trans("Projects");
+//$title = $langs->trans("Projects");
 
+$title = $langs->trans("Leads");
 // Security check
 $socid = (is_numeric($_GET["socid"]) ? $_GET["socid"] : 0);
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignement.
@@ -145,6 +146,10 @@ foreach ($object->fields as $key => $val) {
 	// If $val['visible']==0, then we never show the field
 	if (!empty($val['visible'])) {
 		$visible = dol_eval($val['visible'], 1);
+		
+		if($val['label'] == 'ProjectLabel'){
+			$val['label'] = 'Label';
+		}
 		$arrayfields['p.'.$key] = array(
 			'label'=>$val['label'],
 			'checked'=>(($visible < 0) ? 0 : 1),
@@ -154,6 +159,7 @@ foreach ($object->fields as $key => $val) {
 		);
 	}
 }
+
 // Extra fields
 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
 
@@ -275,7 +281,8 @@ $formother = new FormOther($db);
 $formproject = new FormProjets($db);
 
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-$title = $langs->trans("Projects");
+//$title = $langs->trans("Projects");
+$title = $langs->trans("Leads");
 
 
 // Get list of project id allowed to user (in a string list separated by comma)
@@ -461,7 +468,7 @@ $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
 $url = DOL_URL_ROOT.'/projet/card.php?action=create';
 if (!empty($socid)) $url .= '&socid='.$socid;
-$newcardbutton = dolGetButtonTitle($langs->trans('NewProject'), '', 'fa fa-plus-circle', $url, '', $user->rights->projet->creer);
+$newcardbutton = dolGetButtonTitle($langs->trans('New Lead'), '', 'fa fa-plus-circle', $url, '', $user->rights->projet->creer);
 
 print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">';
 if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
@@ -506,7 +513,8 @@ if (!empty($conf->categorie->enabled) && $user->rights->categorie->lire)
 
 // If the user can view user other than himself
 $moreforfilter .= '<div class="divsearchfield">';
-$moreforfilter .= $langs->trans('ProjectsWithThisUserAsContact').': ';
+//$moreforfilter .= $langs->trans('ProjectsWithThisUserAsContact').': ';
+$moreforfilter .= $langs->trans('Leads With This User As Contact').': ';
 //$includeonly = 'hierarchyme';
 $includeonly = '';
 if (empty($user->rights->user->user->lire)) $includeonly = array($user->id);
@@ -517,7 +525,8 @@ $moreforfilter .= '</div>';
 if ($user->rights->societe->client->voir || $socid)
 {
 	$langs->load("commercial");
-	$moreforfilter .= '<div class="divsearchfield">';
+	$moreforfilter .= '<div class="divsearchfield" style="display:none;">';
+	//$moreforfilter .= $langs->trans('ThirdPartiesOfSaleRepresentative').': ';
 	$moreforfilter .= $langs->trans('ThirdPartiesOfSaleRepresentative').': ';
 	$moreforfilter .= $formother->select_salesrepresentatives($search_sale, 'search_sale', $user, 0, 1, 'maxwidth200');
 	$moreforfilter .= '</div>';

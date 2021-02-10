@@ -177,7 +177,7 @@ if ($id > 0 || !empty($ref))
 	print '<table class="border tableforfield centpercent">';
 
 	// Usage
-	print '<tr><td class="tdtop">';
+	print '<tr style="display:none;"><td class="tdtop">';
 	print $langs->trans("Usage");
 	print '</td>';
 	print '<td>';
@@ -205,7 +205,7 @@ if ($id > 0 || !empty($ref))
 	print '</td></tr>';
 
 	// Visibility
-	print '<tr><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
+	print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
 	if ($object->public) print $langs->trans('SharedProject');
 	else print $langs->trans('PrivateProject');
 	print '</td></tr>';
@@ -240,7 +240,7 @@ if ($id > 0 || !empty($ref))
 	print '</td></tr>';
 
 	// Budget
-	print '<tr><td>'.$langs->trans("Budget").'</td><td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 	if (strcmp($object->budget_amount, '')) print price($object->budget_amount, '', $langs, 0, 0, 0, $conf->currency);
 	print '</td></tr>';
 

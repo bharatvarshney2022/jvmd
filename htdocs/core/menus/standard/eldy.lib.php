@@ -207,7 +207,7 @@ function print_eldy_menu($db, $atarget, $type_user, &$tabMenu, &$menu, $noout = 
 		'name' => 'Projet',
 		'link' => '/projet/index.php?mainmenu=project&amp;leftmenu=',
 		'title' => (empty($conf->global->PROJECT_USE_OPPORTUNITIES) || $conf->global->PROJECT_USE_OPPORTUNITIES == 2)
-					? (($conf->global->PROJECT_USE_OPPORTUNITIES == 2) ? "Leads" : "Projects")
+					? (($conf->global->PROJECT_USE_OPPORTUNITIES == 2) ? "Leads" : "Leads")
 					: "Leads",
 		'level' => 0,
 		'enabled' => $showmode = isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal),
@@ -1699,12 +1699,12 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				$titleboth = $langs->trans("Leads");
 				$titlenew = $langs->trans("New Lead"); // Leads and opportunities by default
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0) {
-					$titleboth = $langs->trans("Projects");
-					$titlenew = $langs->trans("NewProject");
+					$titleboth = $langs->trans("Leads");
+					$titlenew = $langs->trans("New Lead");
 				}
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
 					$titleboth = $langs->trans("Leads");
-					$titlenew = $langs->trans("NewLead");
+					$titlenew = $langs->trans("New Lead");
 				}
 
 				// Project assigned to user
