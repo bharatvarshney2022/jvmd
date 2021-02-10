@@ -325,7 +325,7 @@ if (empty($reshook)) {
 
 				$object->fetch($id);
 				$object->setstatus(0);
-				
+
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
 				exit;
 			} else {
@@ -1805,8 +1805,7 @@ if ($action == 'create' || $action == 'adduserldap')
 				}
 			}
 
-			// Other attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			
 
 			// Company / Contact
 			if (!empty($conf->societe->enabled))
@@ -1876,7 +1875,12 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '</div>';
 
 			print '</div></div>';
-			print '<div style="clear:both"></div>';
+			print '<div style="clear:both"></div> <hr />';
+
+			// Other attributes
+			print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			print '</tbody></table></div>';
 
 
 			print dol_get_fiche_end();

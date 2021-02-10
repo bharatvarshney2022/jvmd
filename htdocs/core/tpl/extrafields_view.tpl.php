@@ -48,6 +48,8 @@ if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'e
 
 
 //var_dump($extrafields->attributes[$object->table_element]);
+
+print '<tr class="trextrafields_collapse">';
 if (empty($reshook) && is_array($extrafields->attributes[$object->table_element]['label']))
 {
 	$lastseparatorkeyfound = '';
@@ -112,14 +114,14 @@ if (empty($reshook) && is_array($extrafields->attributes[$object->table_element]
 
 			$lastseparatorkeyfound = $tmpkeyextra;
 		} else {
-			print '<tr class="trextrafields_collapse'.$extrafields_collapse_num;
+			//print '<tr class="trextrafields_collapse'.$extrafields_collapse_num;
 			/*if ($extrafields_collapse_num && $extrafields_collapse_num_old && $extrafields_collapse_num != $extrafields_collapse_num_old) {
 				print ' trextrafields_collapse_new';
 			}*/
 			if ($extrafields_collapse_num && $i == count($extrafields->attributes[$object->table_element]['label'])) {
-				print ' trextrafields_collapse_last';
+				//print ' trextrafields_collapse_last';
 			}
-			print '">';
+			//print '">';
 			$extrafields_collapse_num_old = $extrafields_collapse_num;
 			print '<td class="titlefield">';
 			print '<table class="nobordernopadding centpercent">';
@@ -201,9 +203,16 @@ if (empty($reshook) && is_array($extrafields->attributes[$object->table_element]
 			}
 
 			print '</td>';
-			print '</tr>'."\n";
+			//print '</tr>'."\n";
+
+			if(($i % 2) == 0)
+			{
+				print '</tr><tr class="trextrafields_collapse">';
+			}
 		}
 	}
+
+	print '</tr>'."\n";
 
 
 	// Add code to manage list depending on others
