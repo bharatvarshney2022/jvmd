@@ -96,6 +96,10 @@ class ExtraFields
 	 */
 	public $attribute_required;
 
+	public $attribute_row;
+
+	public $attribute_column;
+
 	/**
 	 * @var array Array to store parameters of attribute (used in select type)
 	 * @deprecated
@@ -170,6 +174,7 @@ class ExtraFields
 		'varchar'=>'String1Line',
 		'text'=>'TextLongNLines',
 		'html'=>'HtmlText',
+		'htmltable'=>'HTML Table',
 		'int'=>'Int',
 		'double'=>'Float',
 		'date'=>'Date',
@@ -211,6 +216,8 @@ class ExtraFields
 		$this->attribute_default = array();
 		$this->attribute_unique = array();
 		$this->attribute_required = array();
+		$this->attribute_row = array();
+		$this->attribute_column = array();
 		$this->attribute_perms = array();
 		$this->attribute_langfile = array();
 		$this->attribute_list = array();
@@ -241,7 +248,7 @@ class ExtraFields
 	 *  @param  int             $printable        Is extrafield displayed on PDF
 	 *  @return int      							<=0 if KO, >0 if OK
 	 */
-	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
 	{
 		if (empty($attrname)) return -1;
 		if (empty($label)) return -1;
@@ -259,7 +266,7 @@ class ExtraFields
 		if ($result > 0 || $err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' || $type == 'separate')
 		{
 			// Add declaration of field into table
-			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable);
+			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column);
 			$err2 = $this->errno;
 			if ($result2 > 0 || ($err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' && $err2 == 'DB_ERROR_RECORD_ALREADY_EXISTS'))
 			{
@@ -321,7 +328,7 @@ class ExtraFields
 			} elseif ($type == 'link') {
 				$typedb = 'int';
 				$lengthdb = '11';
-			} elseif ($type == 'html') {
+			} elseif ($type == 'html' || $type == 'htmltable') {
 				$typedb = 'text';
 				$lengthdb = $length;
 			} elseif ($type == 'password') {
@@ -385,7 +392,7 @@ class ExtraFields
 	 *  @return	int								<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -401,6 +408,10 @@ class ExtraFields
 		if (empty($printable)) $printable = 0;
 		if (empty($alwayseditable)) $alwayseditable = 0;
 		if (empty($totalizable)) $totalizable = 0;
+
+
+		if (empty($row)) $row = 1;
+		if (empty($column)) $column = 1;
 
 		if (!empty($attrname) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname) && !is_numeric($attrname))
 		{
@@ -424,6 +435,8 @@ class ExtraFields
 			$sql .= " elementtype,";
 			$sql .= " fieldunique,";
 			$sql .= " fieldrequired,";
+			$sql .= " fieldrow,";
+			$sql .= " fieldcolumn,";
 			$sql .= " param,";
 			$sql .= " alwayseditable,";
 			$sql .= " perms,";
@@ -448,6 +461,8 @@ class ExtraFields
 			$sql .= " '".$this->db->escape($elementtype)."',";
 			$sql .= " ".$unique.",";
 			$sql .= " ".$required.",";
+			$sql .= " ".$row.",";
+			$sql .= " ".$column.",";
 			$sql .= " '".$this->db->escape($params)."',";
 			$sql .= " ".$alwayseditable.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
@@ -596,7 +611,7 @@ class ExtraFields
 	 * 	@return	int							>0 if OK, <=0 if KO
 	 *  @throws Exception
 	 */
-	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
 	{
 		if ($elementtype == 'thirdparty') $elementtype = 'societe';
 		if ($elementtype == 'contact') $elementtype = 'socpeople';
@@ -624,7 +639,7 @@ class ExtraFields
 			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif ($type == 'html') {
+			} elseif ($type == 'html' || $type == 'htmltable') {
 				$typedb = 'text';
 			} elseif ($type == 'link') {
 				$typedb = 'int';
@@ -646,7 +661,7 @@ class ExtraFields
 			{
 				if ($label)
 				{
-					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable);
+					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column);
 				}
 				if ($result > 0)
 				{
@@ -700,7 +715,7 @@ class ExtraFields
 	 *  @return	int							<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -718,6 +733,9 @@ class ExtraFields
 		if (empty($required)) $required = 0;
 		if (empty($unique)) $unique = 0;
 		if (empty($alwayseditable)) $alwayseditable = 0;
+
+		if (empty($row)) $row = 0;
+		if (empty($column)) $column = 0;
 
 		if (isset($attrname) && $attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname))
 		{
@@ -758,6 +776,8 @@ class ExtraFields
 			$sql .= " elementtype,";
 			$sql .= " fieldunique,";
 			$sql .= " fieldrequired,";
+			$sql .= " fieldrow,";
+			$sql .= " fieldcolumn,";
 			$sql .= " perms,";
 			$sql .= " langs,";
 			$sql .= " pos,";
@@ -782,6 +802,8 @@ class ExtraFields
 			$sql .= " '".$this->db->escape($elementtype)."',";
 			$sql .= " ".$unique.",";
 			$sql .= " ".$required.",";
+			$sql .= " ".$row.",";
+			$sql .= " ".$column.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
 			$sql .= " ".($langfile ? "'".$this->db->escape($langfile)."'" : "null").",";
 			$sql .= " ".$pos.",";
@@ -839,7 +861,7 @@ class ExtraFields
 		$array_name_label = array();
 
 		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
-		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
+		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
 		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
 		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
@@ -895,6 +917,8 @@ class ExtraFields
 					$this->attributes[$tab->elementtype]['computed'][$tab->name] = $tab->fieldcomputed;
 					$this->attributes[$tab->elementtype]['unique'][$tab->name] = $tab->fieldunique;
 					$this->attributes[$tab->elementtype]['required'][$tab->name] = $tab->fieldrequired;
+					$this->attributes[$tab->elementtype]['row'][$tab->name] = $tab->fieldrow;
+					$this->attributes[$tab->elementtype]['column'][$tab->name] = $tab->fieldcolumn;
 					$this->attributes[$tab->elementtype]['param'][$tab->name] = ($tab->param ? unserialize($tab->param) : '');
 					$this->attributes[$tab->elementtype]['pos'][$tab->name] = $tab->pos;
 					$this->attributes[$tab->elementtype]['alwayseditable'][$tab->name] = $tab->alwayseditable;
@@ -1047,7 +1071,7 @@ class ExtraFields
 			} else {
 				$out = '<input type="text" class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix.'" id="'.$keyprefix.$key.$keysuffix.'" value="'.dol_escape_htmltag($value).'" '.($moreparam ? $moreparam : '').'>';
 			}
-		} elseif ($type == 'html')
+		} elseif ($type == 'html' || $type == 'htmltable')
 		{
 			if (!preg_match('/search_/', $keyprefix))		// If keyprefix is search_ or search_options_, we must just use a simple text field
 			{
@@ -1831,7 +1855,7 @@ class ExtraFields
 		} elseif ($type == 'text')
 		{
 			$value = dol_htmlentitiesbr($value);
-		} elseif ($type == 'html')
+		} elseif ($type == 'html' || $type == 'htmltable')
 		{
 			$value = dol_htmlentitiesbr($value);
 		} elseif ($type == 'password')

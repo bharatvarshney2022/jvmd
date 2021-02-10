@@ -57,7 +57,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     		var list = jQuery("#list");
             var totalizable = jQuery("#totalizable");
     		<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist"))
+			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "htmltable"))
 			{
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -96,6 +96,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			else if (type == 'int')      { size.val('10').removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'text')     { size.val('2000').removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'html')     { size.val('2000').removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
+            else if (type == 'htmltable') { size.val('2000').removeAttr('disabled'); unique.removeAttr('checked').prop('disabled', true);  jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show(); }
     		else if (type == 'varchar')  { size.val('255').removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'password') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); required.val('').prop('disabled', true); default_value.val('').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helppassword").show();}
 			else if (type == 'boolean')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide();}
@@ -179,6 +180,10 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 </tr>
 <!-- Position -->
 <tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" size="5" value="<?php echo GETPOSTISSET('pos') ? GETPOST('pos', 'int') : 100; ?>"></td></tr>
+
+<tr><td class="titlefield"><?php echo $langs->trans("Row"); ?></td><td class="valeur"><input type="text" name="row" size="5" value="<?php echo GETPOSTISSET('row') ? GETPOST('row', 'int') : 1; ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("Column"); ?></td><td class="valeur"><input type="text" name="column" size="5" value="<?php echo GETPOSTISSET('column') ? GETPOST('column', 'int') : 1; ?>"></td></tr>
+
 <!-- Language file -->
 <tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" id="langfile" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag(GETPOST('langfile', 'alpha')); ?>"></td></tr>
 <!-- Computed Value -->

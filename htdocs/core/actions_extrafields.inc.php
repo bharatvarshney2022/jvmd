@@ -197,7 +197,9 @@ if ($action == 'add')
 					GETPOST('langfile', 'alpha'),
 					1,
 					(GETPOST('totalizable', 'alpha') ? 1 : 0),
-					GETPOST('printable', 'alpha')
+					GETPOST('printable', 'alpha'),
+					GETPOST('row', 'int'),
+					GETPOST('column', 'int')
 				);
 				if ($result > 0)
 				{
@@ -379,7 +381,9 @@ if ($action == 'update')
 					GETPOST('langfile'),
 					GETPOST('enabled', 'alpha'),
 					(GETPOST('totalizable', 'alpha') ? 1 : 0),
-					GETPOST('printable', 'alpha')
+					GETPOST('printable', 'alpha'),
+					GETPOST('row', 'int'),
+					GETPOST('column', 'int')
 				);
 				if ($result > 0) {
 					setEventMessages($langs->trans('SetupSaved'), null, 'mesgs');

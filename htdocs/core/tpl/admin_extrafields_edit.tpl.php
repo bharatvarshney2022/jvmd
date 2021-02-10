@@ -56,7 +56,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     		var list = jQuery("#list");
             var totalizable = jQuery("#totalizable");
     		<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist"))
+			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "htmltable"))
 			{
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -95,6 +95,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			else if (type == 'int')      { size.removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'text')     { size.removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'html')     { size.removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
+            else if (type == 'htmltable') { size.val('2000').removeAttr('disabled'); unique.removeAttr('checked').prop('disabled', true);  jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show(); }
     		else if (type == 'varchar')  { size.removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'password') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); required.val('').prop('disabled', true); default_value.val('').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helppassword").show();}
 			else if (type == 'boolean')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
@@ -160,6 +161,8 @@ $default = $extrafields->attributes[$elementtype]['default'][$attrname];
 $unique = $extrafields->attributes[$elementtype]['unique'][$attrname];
 $required = $extrafields->attributes[$elementtype]['required'][$attrname];
 $pos = $extrafields->attributes[$elementtype]['pos'][$attrname];
+$row = $extrafields->attributes[$elementtype]['row'][$attrname];
+$column = $extrafields->attributes[$elementtype]['column'][$attrname];
 $alwayseditable = $extrafields->attributes[$elementtype]['alwayseditable'][$attrname];
 $param = $extrafields->attributes[$elementtype]['param'][$attrname];
 $perms = $extrafields->attributes[$elementtype]['perms'][$attrname];
@@ -180,11 +183,22 @@ if ((($type == 'select') || ($type == 'checkbox') || ($type == 'radio')) && is_a
 			$param_chain .= $key.','.$value."\n";
 		}
 	}
+} else if (($type == 'htmltable') && is_array($param))
+{
+	$param_chain = '';
+	foreach ($param['options'] as $key => $value)
+	{
+		if (strlen($key))
+		{
+			$param_chain .= $key.'|'.$value."\n";
+		}
+	}
 } elseif (($type == 'sellist') || ($type == 'chkbxlst') || ($type == 'link') || ($type == 'password') || ($type == 'separate'))
 {
 	$paramlist = array_keys($param['options']);
 	$param_chain = $paramlist[0];
 }
+
 ?>
 <!-- Label -->
 <tr><td class="titlefield fieldrequired"><?php echo $langs->trans("LabelOrTranslationKey"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo $label; ?>"></td></tr>
@@ -260,6 +274,9 @@ if (in_array($type, array_keys($typewecanchangeinto)))
 
 <!-- Position -->
 <tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" size="5" value="<?php echo dol_escape_htmltag($pos); ?>"></td></tr>
+
+<tr><td class="titlefield"><?php echo $langs->trans("Row"); ?></td><td class="valeur"><input type="text" name="row" size="5" value="<?php echo dol_escape_htmltag($row); ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="column" size="5" value="<?php echo dol_escape_htmltag($column); ?>"></td></tr>
 
 <!-- Language file -->
 <tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag($langfile); ?>"></td></tr>
