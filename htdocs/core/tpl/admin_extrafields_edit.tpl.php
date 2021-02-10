@@ -249,7 +249,7 @@ if (in_array($type, array_keys($typewecanchangeinto)))
 ?>
 </td></tr>
 
-<tr><td class="fieldrequired"><?php echo $langs->trans("Vendor ID"); ?></td><td class="valeur">
+<tr><td class="fieldrequired"><?php echo $langs->trans("User Group"); ?></td><td class="valeur">
 <?php
 	$vendorwecanchangeinto = array();
     $sql = "SELECT rowid, nom";

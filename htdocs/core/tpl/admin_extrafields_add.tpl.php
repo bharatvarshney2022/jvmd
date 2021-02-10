@@ -177,7 +177,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     //print_r($vendor2Label); exit;
 ?>
 
-<tr><td class="fieldrequired"><?php echo $langs->trans("Vendor ID"); ?></td><td class="valeur">
+<tr><td class="fieldrequired"><?php echo $langs->trans("User Group"); ?></td><td class="valeur">
 <?php print $form->selectarray('usergroup_id', $vendor2Label, GETPOST('usergroup_id', 'alpha'), 0, 0, 0, '', 0, 0, 0, '', '', 1); ?>
 </td></tr>
 
