@@ -129,7 +129,7 @@ function print_eldy_menu($db, $atarget, $type_user, &$tabMenu, &$menu, $noout = 
 	$menu_arr[] = array(
 		'name' => 'Companies',
 		'link' => '/societe/index.php?mainmenu=companies&amp;leftmenu=',
-		'title' => "ThirdParties",
+		'title' => "Customers",
 		'level' => 0,
 		'enabled' => $showmode = isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal),
 		'target' => $atarget,
@@ -208,7 +208,7 @@ function print_eldy_menu($db, $atarget, $type_user, &$tabMenu, &$menu, $noout = 
 		'link' => '/projet/index.php?mainmenu=project&amp;leftmenu=',
 		'title' => (empty($conf->global->PROJECT_USE_OPPORTUNITIES) || $conf->global->PROJECT_USE_OPPORTUNITIES == 2)
 					? (($conf->global->PROJECT_USE_OPPORTUNITIES == 2) ? "Leads" : "Projects")
-					: "Projects",
+					: "Leads",
 		'level' => 0,
 		'enabled' => $showmode = isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal),
 		'target' => $atarget,
@@ -1696,8 +1696,8 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				);
 				$showmode = isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal);
 
-				$titleboth = $langs->trans("LeadsOrProjects");
-				$titlenew = $langs->trans("NewLeadOrProject"); // Leads and opportunities by default
+				$titleboth = $langs->trans("Leads");
+				$titlenew = $langs->trans("New Lead"); // Leads and opportunities by default
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0) {
 					$titleboth = $langs->trans("Projects");
 					$titlenew = $langs->trans("NewProject");
@@ -1716,12 +1716,12 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 				} elseif ($conf->global->PROJECT_USE_OPPORTUNITIES == 1) {
 					$newmenu->add("/projet/list.php?leftmenu=projets".($search_project_user ? '&search_project_user='.$search_project_user : ''), $langs->trans("List"), 1, $showmode, '', 'project', 'list');
 					$newmenu->add('/projet/list.php?mainmenu=project&amp;leftmenu=list&search_usage_opportunity=1&search_status=99&search_opp_status=openedopp&contextpage=lead', $langs->trans("ListOpenLeads"), 2, $showmode);
-					$newmenu->add('/projet/list.php?mainmenu=project&amp;leftmenu=list&search_opp_status=notopenedopp&search_status=99&contextpage=project', $langs->trans("ListOpenProjects"), 2, $showmode);
+					//$newmenu->add('/projet/list.php?mainmenu=project&amp;leftmenu=list&search_opp_status=notopenedopp&search_status=99&contextpage=project', $langs->trans("ListOpenProjects"), 2, $showmode);
 				} elseif ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
-					$newmenu->add('/projet/list.php?mainmenu=project&amp;leftmenu=list&search_usage_opportunity=1&search_status=99', $langs->trans("List"), 2, $showmode);
+					//$newmenu->add('/projet/list.php?mainmenu=project&amp;leftmenu=list&search_usage_opportunity=1&search_status=99', $langs->trans("List"), 2, $showmode);
 				}
 
-				$newmenu->add("/projet/stats/index.php?leftmenu=projects", $langs->trans("Statistics"), 1, $user->rights->projet->lire);
+				//$newmenu->add("/projet/stats/index.php?leftmenu=projects", $langs->trans("Statistics"), 1, $user->rights->projet->lire);
 
 				// Categories
 				if (!empty($conf->categorie->enabled)) {
@@ -1734,7 +1734,7 @@ function print_left_eldy_menu($db, $menu_array_before, $menu_array_after, &$tabM
 					$newmenu->add("/projet/activity/index.php?leftmenu=tasks".($search_project_user ? '&search_project_user='.$search_project_user : ''), $langs->trans("Activities"), 0, $user->rights->projet->lire, '', 'project', 'tasks');
 					$newmenu->add("/projet/tasks.php?leftmenu=tasks&action=create", $langs->trans("NewTask"), 1, $user->rights->projet->creer);
 					$newmenu->add("/projet/tasks/list.php?leftmenu=tasks".($search_project_user ? '&search_project_user='.$search_project_user : ''), $langs->trans("List"), 1, $user->rights->projet->lire);
-					$newmenu->add("/projet/tasks/stats/index.php?leftmenu=projects", $langs->trans("Statistics"), 1, $user->rights->projet->lire);
+					//$newmenu->add("/projet/tasks/stats/index.php?leftmenu=projects", $langs->trans("Statistics"), 1, $user->rights->projet->lire);
 
 					$newmenu->add("/projet/activity/perweek.php?leftmenu=tasks".($search_project_user ? '&search_project_user='.$search_project_user : ''), $langs->trans("NewTimeSpent"), 0, $user->rights->projet->lire);
 				}
