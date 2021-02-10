@@ -53,6 +53,7 @@ if (!empty($conf->adherent->enabled)) require_once DOL_DOCUMENT_ROOT.'/adherents
 if (!empty($conf->categorie->enabled)) require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 if (!empty($conf->stock->enabled)) require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
+
 $id = GETPOST('id', 'int');
 $action		= GETPOST('action', 'aZ09');
 $mode = GETPOST('mode', 'alpha');
@@ -105,7 +106,20 @@ $object = new User($db);
 $extrafields = new ExtraFields($db);
 
 // fetch optionals attributes and labels
-$extrafields->fetch_name_optionals_label($object->table_element);
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
+$extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
+//echo '<pre>'; print_r($extrafields); exit;
 
 $socialnetworks = getArrayOfSocialNetworks();
 
@@ -264,6 +278,8 @@ if (empty($reshook)) {
 
 			$object->lang = GETPOST('default_lang', 'aZ09');
 
+			$object->statut = 0;
+
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
 			if ($ret < 0) {
@@ -289,6 +305,9 @@ if (empty($reshook)) {
 				}*/
 			}
 
+			// Set user status inactive by default
+			$user->statut = 0;
+
 			$db->begin();
 
 			$id = $object->create($user);
@@ -301,8 +320,12 @@ if (empty($reshook)) {
 					$usercats = GETPOST('usercats', 'array');
 					$object->setCategories($usercats);
 				}
+
 				$db->commit();
 
+				$object->fetch($id);
+				$object->setstatus(0);
+				
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
 				exit;
 			} else {

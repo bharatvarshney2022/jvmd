@@ -944,6 +944,165 @@ class ExtraFields
 			}
 			if ($elementtype) $this->attributes[$elementtype]['loaded'] = 1; // If nothing found, we also save tag 'loaded'
 		} else {
+			$this->attributes = array();
+
+			// For old usage
+			$this->attribute_elementtype = array();
+			$this->attribute_type = array();
+			$this->attribute_label = array();
+			$this->attribute_size = array();
+			$this->attribute_computed = array();
+			$this->attribute_default = array();
+			$this->attribute_unique = array();
+			$this->attribute_required = array();
+			$this->attribute_usergroup_id = array();
+			$this->attribute_row = array();
+			$this->attribute_column = array();
+			$this->attribute_perms = array();
+			$this->attribute_langfile = array();
+			$this->attribute_list = array();
+
+			$this->error = $this->db->lasterror();
+			dol_syslog(get_class($this)."::fetch_name_optionals_label ".$this->error, LOG_ERR);
+		}
+
+		return $array_name_label;
+	}
+
+	public function fetch_name_optionals_label_user($elementtype, $user_group_id, $forceload = false)
+	{
+		// phpcs:enable
+		global $conf;
+
+		if (empty($elementtype)) return array();
+
+		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
+		if ($elementtype == 'contact')        $elementtype = 'socpeople';
+		if ($elementtype == 'order_supplier') $elementtype = 'commande_fournisseur';
+		if ($elementtype == 'stock_mouvement') $elementtype = 'movement';
+
+		$array_name_label = array();
+
+		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
+		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,usergroup_id,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
+		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
+		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
+		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
+		if ($user_group_id > 0) {
+			$sql .= " AND usergroup_id = '".(int)$user_group_id."'";
+		}
+		else
+		{
+			$sql .= " AND usergroup_id = '0'";
+		}
+		$sql .= " ORDER BY pos";
+
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			if ($this->db->num_rows($resql) > 0)
+			{
+				while ($tab = $this->db->fetch_object($resql))
+				{
+					if ($tab->entity != 0 && $tab->entity != $conf->entity)
+					{
+						// This field is not in current entity. We discard but before we save it into the array of mandatory fields if it is a mandatory field without default value
+						if ($tab->fieldrequired && is_null($tab->fielddefault))
+						{
+							$this->attributes[$tab->elementtype]['mandatoryfieldsofotherentities'][$tab->name] = $tab->type;
+						}
+						continue;
+					}
+
+					// We can add this attribute to object. TODO Remove this and return $this->attributes[$elementtype]['label']
+					if ($tab->type != 'separate')
+					{
+						$array_name_label[$tab->name] = $tab->label;
+					}
+
+					// Old usage
+					$this->attribute_type[$tab->name] = $tab->type;
+					$this->attribute_label[$tab->name] = $tab->label;
+					$this->attribute_size[$tab->name] = $tab->size;
+					$this->attribute_elementtype[$tab->name] = $tab->elementtype;
+					$this->attribute_default[$tab->name] = $tab->fielddefault;
+					$this->attribute_computed[$tab->name] = $tab->fieldcomputed;
+					$this->attribute_unique[$tab->name] = $tab->fieldunique;
+					$this->attribute_required[$tab->name] = $tab->fieldrequired;
+					$this->attribute_param[$tab->name] = ($tab->param ? unserialize($tab->param) : '');
+					$this->attribute_pos[$tab->name] = $tab->pos;
+					$this->attribute_alwayseditable[$tab->name] = $tab->alwayseditable;
+					$this->attribute_perms[$tab->name] = (strlen($tab->perms) == 0 ? 1 : $tab->perms);
+					$this->attribute_langfile[$tab->name] = $tab->langs;
+					$this->attribute_list[$tab->name] = $tab->list;
+					$this->attribute_totalizable[$tab->name] = $tab->totalizable;
+					$this->attribute_entityid[$tab->name] = $tab->entity;
+
+					// New usage
+					$this->attributes[$tab->elementtype]['type'][$tab->name] = $tab->type;
+					$this->attributes[$tab->elementtype]['label'][$tab->name] = $tab->label;
+					$this->attributes[$tab->elementtype]['size'][$tab->name] = $tab->size;
+					$this->attributes[$tab->elementtype]['elementtype'][$tab->name] = $tab->elementtype;
+					$this->attributes[$tab->elementtype]['default'][$tab->name] = $tab->fielddefault;
+					$this->attributes[$tab->elementtype]['computed'][$tab->name] = $tab->fieldcomputed;
+					$this->attributes[$tab->elementtype]['unique'][$tab->name] = $tab->fieldunique;
+					$this->attributes[$tab->elementtype]['required'][$tab->name] = $tab->fieldrequired;
+					$this->attributes[$tab->elementtype]['row'][$tab->name] = $tab->fieldrow;
+					$this->attributes[$tab->elementtype]['column'][$tab->name] = $tab->fieldcolumn;
+					$this->attributes[$tab->elementtype]['usergroup_id'][$tab->name] = $tab->usergroup_id;
+					$this->attributes[$tab->elementtype]['param'][$tab->name] = ($tab->param ? unserialize($tab->param) : '');
+					$this->attributes[$tab->elementtype]['pos'][$tab->name] = $tab->pos;
+					$this->attributes[$tab->elementtype]['alwayseditable'][$tab->name] = $tab->alwayseditable;
+					$this->attributes[$tab->elementtype]['perms'][$tab->name] = (strlen($tab->perms) == 0 ? 1 : $tab->perms);
+					$this->attributes[$tab->elementtype]['langfile'][$tab->name] = $tab->langs;
+					$this->attributes[$tab->elementtype]['list'][$tab->name] = $tab->list;
+					$this->attributes[$tab->elementtype]['printable'][$tab->name] = $tab->printable;
+					$this->attributes[$tab->elementtype]['totalizable'][$tab->name] = ($tab->totalizable ? 1 : 0);
+					$this->attributes[$tab->elementtype]['entityid'][$tab->name] = $tab->entity;
+					$this->attributes[$tab->elementtype]['enabled'][$tab->name] = $tab->enabled;
+					$this->attributes[$tab->elementtype]['help'][$tab->name] = $tab->help;
+
+					$this->attributes[$tab->elementtype]['loaded'] = 1;
+				}
+			} else {
+				$this->attributes = array();
+
+				// For old usage
+				$this->attribute_elementtype = array();
+				$this->attribute_type = array();
+				$this->attribute_label = array();
+				$this->attribute_size = array();
+				$this->attribute_computed = array();
+				$this->attribute_default = array();
+				$this->attribute_unique = array();
+				$this->attribute_required = array();
+				$this->attribute_usergroup_id = array();
+				$this->attribute_row = array();
+				$this->attribute_column = array();
+				$this->attribute_perms = array();
+				$this->attribute_langfile = array();
+				$this->attribute_list = array();
+			}
+			if ($elementtype) $this->attributes[$elementtype]['loaded'] = 1; // If nothing found, we also save tag 'loaded'
+		} else {
+			$this->attributes = array();
+
+			// For old usage
+			$this->attribute_elementtype = array();
+			$this->attribute_type = array();
+			$this->attribute_label = array();
+			$this->attribute_size = array();
+			$this->attribute_computed = array();
+			$this->attribute_default = array();
+			$this->attribute_unique = array();
+			$this->attribute_required = array();
+			$this->attribute_usergroup_id = array();
+			$this->attribute_row = array();
+			$this->attribute_column = array();
+			$this->attribute_perms = array();
+			$this->attribute_langfile = array();
+			$this->attribute_list = array();
+
 			$this->error = $this->db->lasterror();
 			dol_syslog(get_class($this)."::fetch_name_optionals_label ".$this->error, LOG_ERR);
 		}
