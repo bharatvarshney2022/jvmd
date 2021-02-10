@@ -618,7 +618,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0)
 			print '<table class="border tableforfield centpercent">';
 
 			// Usage
-			print '<tr><td class="tdtop">';
+			print '<tr style="display:none;"><td class="tdtop">';
 			print $langs->trans("Usage");
 			print '</td>';
 			print '<td>';
@@ -646,7 +646,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0)
 			print '</td></tr>';
 
 			// Visibility
-			print '<tr><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
+			print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
 			if ($projectstatic->public) print $langs->trans('SharedProject');
 			else print $langs->trans('PrivateProject');
 			print '</td></tr>';
@@ -662,7 +662,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0)
 			print '</td></tr>';
 
 			// Budget
-			print '<tr><td>'.$langs->trans("Budget").'</td><td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 			if (strcmp($projectstatic->budget_amount, '')) print price($projectstatic->budget_amount, '', $langs, 1, 0, 0, $conf->currency);
 			print '</td></tr>';
 
@@ -1044,7 +1044,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0)
 			{
 				print '<!-- List of time spent for project -->'."\n";
 
-				$title = $langs->trans("ListTaskTimeUserProject");
+				$title = $langs->trans("List Task Time User Lead");
 
 				print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'clock', 0, $linktocreatetime, '', $limit, 0, 0, 1);
 			} else {
