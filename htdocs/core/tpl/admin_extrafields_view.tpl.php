@@ -55,17 +55,17 @@ print img_picto('A-Z', '1downarrow.png');
 print '</span>';
 print '</td>';
 print '<td>'.$langs->trans("LabelOrTranslationKey").'</td>';
-print '<td>'.$langs->trans("TranslationString").'</td>';
+//print '<td>'.$langs->trans("TranslationString").'</td>';
 print '<td>'.$langs->trans("AttributeCode").'</td>';
 print '<td>'.$langs->trans("Type").'</td>';
 print '<td class="right">'.$langs->trans("Size").'</td>';
-print '<td>'.$langs->trans("ComputedFormula").'</td>';
+//print '<td>'.$langs->trans("ComputedFormula").'</td>';
 print '<td class="center">'.$langs->trans("Unique").'</td>';
 print '<td class="center">'.$langs->trans("Required").'</td>';
 print '<td class="center">'.$langs->trans("AlwaysEditable").'</td>';
 print '<td class="center">'.$form->textwithpicto($langs->trans("Visible"), $langs->trans("VisibleDesc")).'</td>';
-print '<td class="center">'.$form->textwithpicto($langs->trans("DisplayOnPdf"), $langs->trans("DisplayOnPdfDesc")).'</td>';
-print '<td class="center">'.$form->textwithpicto($langs->trans("Totalizable"), $langs->trans("TotalizableDesc")).'</td>';
+//print '<td class="center">'.$form->textwithpicto($langs->trans("DisplayOnPdf"), $langs->trans("DisplayOnPdfDesc")).'</td>';
+//print '<td class="center">'.$form->textwithpicto($langs->trans("Totalizable"), $langs->trans("TotalizableDesc")).'</td>';
 if ($conf->multicompany->enabled) {
 	print '<td class="center">'.$langs->trans("Entities").'</td>';
 }
@@ -84,17 +84,17 @@ if (is_array($extrafields->attributes[$elementtype]['type']) && count($extrafiel
 		print '<tr class="oddeven">';
 		print "<td>".$extrafields->attributes[$elementtype]['pos'][$key]."</td>\n";
 		print "<td>".$extrafields->attributes[$elementtype]['label'][$key]."</td>\n"; // We don't translate here, we want admin to know what is the key not translated value
-		print "<td>".$langs->trans($extrafields->attributes[$elementtype]['label'][$key])."</td>\n";
+		//print "<td>".$langs->trans($extrafields->attributes[$elementtype]['label'][$key])."</td>\n";
 		print "<td>".$key."</td>\n";
 		print "<td>".$type2label[$extrafields->attributes[$elementtype]['type'][$key]]."</td>\n";
 		print '<td class="right">'.$extrafields->attributes[$elementtype]['size'][$key]."</td>\n";
-		print '<td>'.dol_trunc($extrafields->attributes[$elementtype]['computed'][$key], 20)."</td>\n";
+		//print '<td>'.dol_trunc($extrafields->attributes[$elementtype]['computed'][$key], 20)."</td>\n";
 		print '<td class="center">'.yn($extrafields->attributes[$elementtype]['unique'][$key])."</td>\n";
 		print '<td class="center">'.yn($extrafields->attributes[$elementtype]['required'][$key])."</td>\n";
 		print '<td class="center">'.yn($extrafields->attributes[$elementtype]['alwayseditable'][$key])."</td>\n";
 		print '<td class="center">'.$extrafields->attributes[$elementtype]['list'][$key]."</td>\n";
-		print '<td class="center">'.$extrafields->attributes[$elementtype]['printable'][$key]."</td>\n";
-		print '<td class="center">'.yn($extrafields->attributes[$elementtype]['totalizable'][$key])."</td>\n";
+		//print '<td class="center">'.$extrafields->attributes[$elementtype]['printable'][$key]."</td>\n";
+		//print '<td class="center">'.yn($extrafields->attributes[$elementtype]['totalizable'][$key])."</td>\n";
 		if (!empty($conf->multicompany->enabled)) {
 			print '<td class="center">';
 			if (empty($extrafields->attributes[$elementtype]['entityid'][$key]))
@@ -117,7 +117,7 @@ if (is_array($extrafields->attributes[$elementtype]['type']) && count($extrafiel
 		print "</tr>";
 	}
 } else {
-	$colspan = 13;
+	$colspan = 9;
 	if (!empty($conf->multicompany->enabled))  $colspan++;
 
 	print '<tr class="oddeven">';
