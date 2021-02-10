@@ -199,7 +199,8 @@ if ($action == 'add')
 					(GETPOST('totalizable', 'alpha') ? 1 : 0),
 					GETPOST('printable', 'alpha'),
 					GETPOST('row', 'int'),
-					GETPOST('column', 'int')
+					GETPOST('column', 'int'),
+					GETPOST('usergroup_id', 'int')
 				);
 				if ($result > 0)
 				{
@@ -383,7 +384,8 @@ if ($action == 'update')
 					(GETPOST('totalizable', 'alpha') ? 1 : 0),
 					GETPOST('printable', 'alpha'),
 					GETPOST('row', 'int'),
-					GETPOST('column', 'int')
+					GETPOST('column', 'int'),
+					GETPOST('usergroup_id', 'int')
 				);
 				if ($result > 0) {
 					setEventMessages($langs->trans('SetupSaved'), null, 'mesgs');
