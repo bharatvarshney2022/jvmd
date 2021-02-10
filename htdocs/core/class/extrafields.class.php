@@ -96,6 +96,8 @@ class ExtraFields
 	 */
 	public $attribute_required;
 
+	public $attribute_usergroup_id;
+
 	public $attribute_row;
 
 	public $attribute_column;
@@ -216,6 +218,7 @@ class ExtraFields
 		$this->attribute_default = array();
 		$this->attribute_unique = array();
 		$this->attribute_required = array();
+		$this->attribute_usergroup_id = array();
 		$this->attribute_row = array();
 		$this->attribute_column = array();
 		$this->attribute_perms = array();
@@ -248,7 +251,7 @@ class ExtraFields
 	 *  @param  int             $printable        Is extrafield displayed on PDF
 	 *  @return int      							<=0 if KO, >0 if OK
 	 */
-	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
+	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		if (empty($attrname)) return -1;
 		if (empty($label)) return -1;
@@ -266,7 +269,7 @@ class ExtraFields
 		if ($result > 0 || $err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' || $type == 'separate')
 		{
 			// Add declaration of field into table
-			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column);
+			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column, $usergroup_id);
 			$err2 = $this->errno;
 			if ($result2 > 0 || ($err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' && $err2 == 'DB_ERROR_RECORD_ALREADY_EXISTS'))
 			{
@@ -392,7 +395,7 @@ class ExtraFields
 	 *  @return	int								<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
+	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -437,6 +440,7 @@ class ExtraFields
 			$sql .= " fieldrequired,";
 			$sql .= " fieldrow,";
 			$sql .= " fieldcolumn,";
+			$sql .= " usergroup_id,";
 			$sql .= " param,";
 			$sql .= " alwayseditable,";
 			$sql .= " perms,";
@@ -463,6 +467,7 @@ class ExtraFields
 			$sql .= " ".$required.",";
 			$sql .= " ".$row.",";
 			$sql .= " ".$column.",";
+			$sql .= " ".$usergroup_id.",";
 			$sql .= " '".$this->db->escape($params)."',";
 			$sql .= " ".$alwayseditable.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
@@ -611,7 +616,7 @@ class ExtraFields
 	 * 	@return	int							>0 if OK, <=0 if KO
 	 *  @throws Exception
 	 */
-	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
+	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		if ($elementtype == 'thirdparty') $elementtype = 'societe';
 		if ($elementtype == 'contact') $elementtype = 'socpeople';
@@ -661,7 +666,7 @@ class ExtraFields
 			{
 				if ($label)
 				{
-					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column);
+					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column, $usergroup_id);
 				}
 				if ($result > 0)
 				{
@@ -715,7 +720,7 @@ class ExtraFields
 	 *  @return	int							<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1)
+	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -778,6 +783,7 @@ class ExtraFields
 			$sql .= " fieldrequired,";
 			$sql .= " fieldrow,";
 			$sql .= " fieldcolumn,";
+			$sql .= " usergroup_id,";
 			$sql .= " perms,";
 			$sql .= " langs,";
 			$sql .= " pos,";
@@ -804,6 +810,7 @@ class ExtraFields
 			$sql .= " ".$required.",";
 			$sql .= " ".$row.",";
 			$sql .= " ".$column.",";
+			$sql .= " ".$usergroup_id.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
 			$sql .= " ".($langfile ? "'".$this->db->escape($langfile)."'" : "null").",";
 			$sql .= " ".$pos.",";
@@ -861,7 +868,7 @@ class ExtraFields
 		$array_name_label = array();
 
 		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
-		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
+		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,usergroup_id,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
 		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
 		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
@@ -919,6 +926,7 @@ class ExtraFields
 					$this->attributes[$tab->elementtype]['required'][$tab->name] = $tab->fieldrequired;
 					$this->attributes[$tab->elementtype]['row'][$tab->name] = $tab->fieldrow;
 					$this->attributes[$tab->elementtype]['column'][$tab->name] = $tab->fieldcolumn;
+					$this->attributes[$tab->elementtype]['usergroup_id'][$tab->name] = $tab->usergroup_id;
 					$this->attributes[$tab->elementtype]['param'][$tab->name] = ($tab->param ? unserialize($tab->param) : '');
 					$this->attributes[$tab->elementtype]['pos'][$tab->name] = $tab->pos;
 					$this->attributes[$tab->elementtype]['alwayseditable'][$tab->name] = $tab->alwayseditable;

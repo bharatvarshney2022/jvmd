@@ -155,6 +155,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <?php
 $label = $extrafields->attributes[$elementtype]['label'][$attrname];
 $type = $extrafields->attributes[$elementtype]['type'][$attrname];
+$vendor_id = $extrafields->attributes[$elementtype]['usergroup_id'][$attrname];
 $size = $extrafields->attributes[$elementtype]['size'][$attrname];
 $computed = $extrafields->attributes[$elementtype]['computed'][$attrname];
 $default = $extrafields->attributes[$elementtype]['default'][$attrname];
@@ -247,6 +248,51 @@ if (in_array($type, array_keys($typewecanchangeinto)))
 }
 ?>
 </td></tr>
+
+<tr><td class="fieldrequired"><?php echo $langs->trans("Vendor ID"); ?></td><td class="valeur">
+<?php
+	$vendorwecanchangeinto = array();
+    $sql = "SELECT rowid, nom";
+                $sql .= " FROM ".MAIN_DB_PREFIX."usergroup";
+                $sql .= " WHERE entity = '1'";
+    $resql = $db->query($sql);
+    $vendor2Label = array('0' => '&nbsp;');
+    if ($resql)
+    {
+        if ($db->num_rows($resql))
+        {
+            while ($tab = $db->fetch_object($resql))
+            {
+                $vendorwecanchangeinto[$tab->rowid] = $tab->nom;
+                $vendor2Label[$tab->rowid] = $tab->nom;
+            }
+        }
+    }
+
+    if (in_array($vendor_id, array_keys($vendorwecanchangeinto)))
+	{
+		$newarray = array();
+		print '<select id="usergroup_id" class="flat type" name="usergroup_id">';
+		foreach ($vendor2Label as $key => $val)
+		{
+			$selected = '';
+			if ($key == (GETPOST('usergroup_id', 'alpha') ?GETPOST('usergroup_id', 'alpha') : $vendor_id)) $selected = ' selected="selected"';
+			if ($key == $vendor_id) print '<option value="'.$key.'"'.$selected.'>'.$val.'</option>';
+			else print '<option value="'.$key.'"'.$selected.'>'.$val.'</option>';
+		}
+		print '</select>';
+		print ajax_combobox('usergroup_id');
+	} else {
+		print '<select id="usergroup_id" class="flat type" name="usergroup_id">';
+		foreach ($vendor2Label as $key => $val)
+		{
+			$selected = '';
+			print '<option value="'.$key.'">'.$val.'</option>';
+		}
+		print '</select>';
+	}
+?>
+</td></tr>	
 
 <!-- Size -->
 <tr class="extra_size"><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" size="5" value="<?php echo $size; ?>"></td></tr>

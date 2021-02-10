@@ -156,6 +156,31 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
 <?php print $form->selectarray('type', $type2label, GETPOST('type', 'alpha'), 0, 0, 0, '', 0, 0, 0, '', '', 1); ?>
 </td></tr>
+
+<?php
+    $vendor2Label = array('0' => '&nbsp;');
+    $sql = "SELECT rowid, nom";
+                $sql .= " FROM ".MAIN_DB_PREFIX."usergroup";
+                $sql .= " WHERE entity = '1'";
+    $resql = $db->query($sql);
+    if ($resql)
+    {
+        if ($db->num_rows($resql))
+        {
+            while ($tab = $db->fetch_object($resql))
+            {
+                $vendor2Label[$tab->rowid] = $tab->nom;
+            }
+        }
+    }
+
+    //print_r($vendor2Label); exit;
+?>
+
+<tr><td class="fieldrequired"><?php echo $langs->trans("Vendor ID"); ?></td><td class="valeur">
+<?php print $form->selectarray('usergroup_id', $vendor2Label, GETPOST('usergroup_id', 'alpha'), 0, 0, 0, '', 0, 0, 0, '', '', 1); ?>
+</td></tr>
+
 <!-- Size -->
 <tr class="extra_size"><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" size="5" value="<?php echo (GETPOST('size', 'alpha') ?GETPOST('size', 'alpha') : ''); ?>"></td></tr>
 <!-- Default Value (for select list / radio/ checkbox) -->
