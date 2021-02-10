@@ -28,6 +28,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 
 $id = GETPOST('id', 'int');
+$approve_id = GETPOST('approve_id', 'int');
 $action = GETPOST('action', 'aZ09');
 $contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'userapprove'; // To manage different context of search
 
@@ -69,6 +70,63 @@ if($user->admin == 1) // || ($user_group == 3 || $user_group == 11 || $user_grou
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('usercard', 'userapprove', 'globalcard'));
+
+// Insert Data if not exists
+$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."user_approval";
+$sql .= " WHERE fk_user=".$id;
+$resql = $db->query($sql);
+if($resql)
+{
+	$num = $db->num_rows($resql);
+	if($num == 0)
+	{
+		// RM
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."user_approval (entity,fk_user,fk_usergroup,approve_statut)";
+		$sql .= " VALUES('1','".(int)$id."','3','0')";
+		$result = $db->query($sql);
+
+		// CBO
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."user_approval (entity,fk_user,fk_usergroup,approve_statut)";
+		$sql .= " VALUES('1','".(int)$id."','11','0')";
+		$result = $db->query($sql);
+
+		// Service Mgr.
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."user_approval (entity,fk_user,fk_usergroup,approve_statut)";
+		$sql .= " VALUES('1','".(int)$id."','12','0')";
+		$result = $db->query($sql);
+
+		// Service Ex.
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."user_approval (entity,fk_user,fk_usergroup,approve_statut)";
+		$sql .= " VALUES('1','".(int)$id."','13','0')";
+		$result = $db->query($sql);
+	}
+}
+
+if ($action == 'approve')
+{
+
+	if($approve_id > 0)
+	{
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."user_approval";
+		$sql .= " WHERE fk_user= '".$id."' AND rowid = '".$approve_id."' AND approve_statut = 0";
+		$resql = $db->query($sql);
+		if($resql)
+		{
+			$num = $db->num_rows($resql);
+			if($num == 1)
+			{
+				$sql = "UPDATE ".MAIN_DB_PREFIX."user_approval";
+				$sql .= " SET approve_statut = 1";
+				$sql .= " WHERE fk_user= '".$id."' AND rowid = ".$approve_id;
+				$result = $db->query($sql);
+				$db->commit();
+			}
+		}
+
+		header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
+		exit;
+	}
+}
 
 
 /*
@@ -124,26 +182,27 @@ if ($id)
 
 	print '<div class="fichecenter">';
 	print '<table class="border centpercent tableforfield">';
-	// Login
-	print '<tr><td class="titlefield">'.$langs->trans("Login").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
+
+	$sql = "SELECT ua.rowid, ua.fk_usergroup, u.nom, ua.approve_statut FROM ".MAIN_DB_PREFIX."user_approval ua LEFT JOIN ".MAIN_DB_PREFIX."usergroup u ON ua.fk_usergroup = u.rowid WHERE fk_user = '".(int)$id."'";
+	$result = $db->query($sql);
+	$res = $db->query($sql);
+	if ($res) {
+		$users = array();
+		while ($rec = $db->fetch_object($res)) {
+			//print_r($rec); exit;
+			// Login
+			print '<tr><td class="titlefield">'.$rec->nom.'</td><td class="valeur">'.
+			($rec->approve_statut == 1 ? "<span class='badge  badge-status4 badge-status'>Approve</span>" : "<span class='badge  badge-status5 badge-status'>Dis-Approve</span>").'&nbsp;';
+
+			if($rec->approve_statut == 0)
+			{
+				print '<a class="butAction" href="'.DOL_URL_ROOT.'/user/approve_history.php?action=approve&approve_id='.$rec->rowid.'&id='.$id.'">Approve User</a>';
+			}
+			print '</td></tr>';
+		}
+	}
 
 	$editenabled = (($action == 'edit') && !empty($user->rights->user->user->creer));
-
-	// Note
-	print '<tr><td class="tdtop">'.$langs->trans("Note").'</td>';
-	print '<td class="'.($editenabled ? '' : 'sensiblehtmlcontent').'">';
-	if ($editenabled)
-	{
-		print "<input type=\"hidden\" name=\"action\" value=\"update\">";
-		print "<input type=\"hidden\" name=\"id\" value=\"".$object->id."\">";
-		// Editeur wysiwyg
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-		$doleditor = new DolEditor('note_private', $object->note_private, '', 280, 'dolibarr_notes', 'In', true, false, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, '90%');
-		$doleditor->Create();
-	} else {
-		print dol_string_onlythesehtmltags(dol_htmlentitiesbr($object->note_private));
-	}
-	print "</td></tr>";
 
 	print "</table>";
 	print '</div>';
