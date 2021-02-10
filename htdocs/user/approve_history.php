@@ -184,6 +184,10 @@ if ($id)
 	print '<table class="border centpercent tableforfield">';
 
 	$sql = "SELECT ua.rowid, ua.fk_usergroup, u.nom, ua.approve_statut FROM ".MAIN_DB_PREFIX."user_approval ua LEFT JOIN ".MAIN_DB_PREFIX."usergroup u ON ua.fk_usergroup = u.rowid WHERE fk_user = '".(int)$id."'";
+	if($user->admin == 0)
+	{
+		$sql .= " AND fk_usergroup = '".$user_group."'";
+	}
 	$result = $db->query($sql);
 	$res = $db->query($sql);
 	if ($res) {
