@@ -176,6 +176,31 @@ function user_prepare_head($object)
 		$h++;
 	}
 
+	// Check for Vendor and not approve
+	$user_group_id = 0;
+	$usergroup = new UserGroup($db);
+	$groupslist = $usergroup->listGroupsForUser($object->id);
+
+	if ($groupslist != '-1')
+	{
+		foreach ($groupslist as $groupforuser)
+		{
+			$user_group_id = $groupforuser->id;
+		}
+	}
+
+	if($user_group_id == '4')
+	{
+		$statut = $object->statut;
+		if($statut == 0)
+		{
+			$head[$h][0] = DOL_URL_ROOT.'/user/approve_history.php?id='.$object->id;
+			$head[$h][1] = $langs->trans("User Approve");
+			$head[$h][2] = 'approval';
+			$h++;
+		}
+	}
+
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'user', 'remove');
 
 	return $head;

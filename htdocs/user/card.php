@@ -1424,7 +1424,6 @@ if ($action == 'create' || $action == 'adduserldap')
          */
 		if ($action != 'edit')
 		{
-			
 			print dol_get_fiche_head($head, 'user', $title, -1, 'user');
 			
 
