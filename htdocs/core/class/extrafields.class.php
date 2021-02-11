@@ -1308,12 +1308,14 @@ class ExtraFields
 				$out .= ajax_combobox($keyprefix.$key.$keysuffix, array(), 0);
 			}
 
+			$keysuffix1 = $keysuffix;
 			if($type == 'sellistmultiple')
 			{
 				$moreparam .= 'multiple="multiple" size="2"';
+				$keysuffix1 .= '[]';
 			}
 
-			$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
+			$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix1.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
 			if (is_array($param['options']))
 			{
 				$param_list = array_keys($param['options']);
@@ -1838,10 +1840,18 @@ class ExtraFields
 			if ($selectkey == 'rowid' && empty($value)) {
 				$sql .= " WHERE ".$selectkey."=0";
 			} elseif ($selectkey == 'rowid') {
-				$sql .= " WHERE ".$selectkey."=".$this->db->escape($value);
+				if($type == 'sellistmultiple')
+				{
+					$sql .= " WHERE ".$selectkey." IN (".$this->db->escape($value).")";
+				}
+				else
+				{
+					$sql .= " WHERE ".$selectkey."=".$this->db->escape($value);
+				}
 			} else {
 				$sql .= " WHERE ".$selectkey."='".$this->db->escape($value)."'";
 			}
+
 
 			//$sql.= ' AND entity = '.$conf->entity;
 
@@ -1852,7 +1862,11 @@ class ExtraFields
 				if ($filter_categorie === false) {
 					$value = ''; // value was used, so now we reste it to use it to build final output
 
-					$obj = $this->db->fetch_object($resql);
+					if($type == 'sellist')
+					{
+						$obj = $this->db->fetch_object($resql);
+					}
+
 
 					// Several field into label (eq table:code|libelle:rowid)
 					$fields_label = explode('|', $InfoFieldList[1]);
@@ -1870,14 +1884,33 @@ class ExtraFields
 							}
 						}
 					} else {
-						$translabel = '';
-						if (!empty($obj->{$InfoFieldList[1]})) {
-							$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+						if($type == 'sellistmultiple')
+						{
+							while ($obj = $this->db->fetch_object($resql)) {
+								$translabel = '';
+								if (!empty($obj->{$InfoFieldList[1]})) {
+									$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+								}
+								if ($translabel != $obj->{$InfoFieldList[1]}) {
+									$value .= dol_trunc($translabel, 18).",";
+								} else {
+									$value .= $obj->{$InfoFieldList[1]}.",";
+								}
+							}
+
+							$value = rtrim($value, ",");
 						}
-						if ($translabel != $obj->{$InfoFieldList[1]}) {
-							$value = dol_trunc($translabel, 18);
-						} else {
-							$value = $obj->{$InfoFieldList[1]};
+						else
+						{
+							$translabel = '';
+							if (!empty($obj->{$InfoFieldList[1]})) {
+								$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+							}
+							if ($translabel != $obj->{$InfoFieldList[1]}) {
+								$value = dol_trunc($translabel, 18);
+							} else {
+								$value = $obj->{$InfoFieldList[1]};
+							}
 						}
 					}
 				} else {

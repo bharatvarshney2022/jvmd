@@ -198,7 +198,7 @@ if (empty($reshook) && is_array($extrafields->attributes[$object->table_element]
 
 				print '</form>';
 			} else {
-				//var_dump($tmpkeyextra.'-'.$value.'-'.$object->table_element);
+				//var_dump($tmpkeyextra.'-'.$value.'-'.$object->table_element); exit;
 				print $extrafields->showOutputField($tmpkeyextra, $value, '', $object->table_element);
 			}
 
