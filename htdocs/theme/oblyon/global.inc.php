@@ -656,6 +656,10 @@ select.flat, form.flat select {
     height: 2.5em;
 }
 
+select.flat.multi-select {
+    height: 5em;
+}
+
 input:disabled,
 select:disabled {
     background-color: #ddd;

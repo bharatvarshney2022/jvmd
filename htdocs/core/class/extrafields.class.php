@@ -1313,6 +1313,7 @@ class ExtraFields
 			{
 				$moreparam .= 'multiple="multiple" size="2"';
 				$keysuffix1 .= '[]';
+				$morecss .= ' multi-select';
 			}
 
 			$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix1.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
@@ -1395,6 +1396,11 @@ class ExtraFields
 						$sqlwhere .= ' AND entity = '.$conf->entity;
 					}
 					$sql .= $sqlwhere;
+
+					if($type == 'sellistmultiple')
+					{
+						//echo $sql; exit;
+					}
 					//print $sql;
 
 					$sql .= ' ORDER BY '.implode(', ', $fields_label);
@@ -1405,6 +1411,11 @@ class ExtraFields
 						$out .= '<option value="0">&nbsp;</option>';
 						$num = $this->db->num_rows($resql);
 						$i = 0;
+
+						if($type == 'sellistmultiple')
+						{
+							//echo $value; exit;
+						}
 						while ($i < $num) {
 							$labeltoshow = '';
 							$obj = $this->db->fetch_object($resql);
@@ -1421,6 +1432,11 @@ class ExtraFields
 								$labeltoshow = $obj->{$InfoFieldList[1]};
 							}
 							$labeltoshow = $labeltoshow;
+
+							if($type == 'sellistmultiple')
+							{
+								//echo $value; exit;
+							}
 
 							if ($value == $obj->rowid) {
 								if (!$notrans) {
@@ -1442,7 +1458,19 @@ class ExtraFields
 								}
 
 								$out .= '<option value="'.$obj->rowid.'"';
-								$out .= ($value == $obj->rowid ? ' selected' : '');
+
+								if($type == 'sellistmultiple')
+								{
+									$value1 = explode(",", $value);
+									if(in_array($obj->rowid, $value1))
+									{
+										$out .= ' selected';
+									}
+								}
+								else
+								{
+									$out .= ($value == $obj->rowid ? ' selected' : '');
+								}
 								$out .= (!empty($parent) ? ' parent="'.$parent.'"' : '');
 								$out .= '>'.$labeltoshow.'</option>';
 							}
