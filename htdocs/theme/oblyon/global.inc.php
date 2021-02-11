@@ -653,7 +653,7 @@ img[src*=stcomm]	{ vertical-align: text-top; }
 select.flat, form.flat select {
     font-weight: normal;
     font-size: unset;
-    height: 2em;
+    height: 2.5em;
 }
 
 input:disabled,
@@ -8377,6 +8377,10 @@ input#sew_keyword {
     input#addedfile {
         width: 95%;
     }
+}
+
+.d-none {
+    display: none !important;
 }
 
 <?php

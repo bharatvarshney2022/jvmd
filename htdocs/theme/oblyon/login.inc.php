@@ -152,7 +152,7 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
     <?php } ?>
     }
     div.login_block a {
-        color: #<?php echo $colortextbackhmenu; ?>;
+        /*color: #<?php echo $colortextbackhmenu; ?>;*/
         display: inline-block;
     }
     div.login_block span.aversion {
