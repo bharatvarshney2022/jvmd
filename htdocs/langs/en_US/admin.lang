@@ -430,6 +430,7 @@ ExtrafieldMail = Email
 ExtrafieldUrl = Url
 ExtrafieldSelect = Select list
 ExtrafieldSelectList = Select from table
+ExtrafieldSelectMultipleList = Select (multiple) from table
 ExtrafieldSeparator=Separator (not a field)
 ExtrafieldPassword=Password
 ExtrafieldRadio=Radio buttons (one choice only)

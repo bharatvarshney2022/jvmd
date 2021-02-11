@@ -189,6 +189,7 @@ class ExtraFields
 		'password' => 'ExtrafieldPassword',
 		'select' => 'ExtrafieldSelect',
 		'sellist' => 'ExtrafieldSelectList',
+		'sellistmultiple' => 'ExtrafieldSelectMultipleList',
 		'radio' => 'ExtrafieldRadio',
 		'checkbox' => 'ExtrafieldCheckBox',
 		'chkbxlst' => 'ExtrafieldCheckBoxFromList',
@@ -325,7 +326,7 @@ class ExtraFields
 			} elseif ($type == 'url') {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
+			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'sellistmultiple') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
 				$typedb = 'varchar';
 				$lengthdb = '255';
 			} elseif ($type == 'link') {
@@ -641,7 +642,7 @@ class ExtraFields
 			} elseif ($type == 'url') {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
+			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'sellistmultiple') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
 				$typedb = 'varchar';
 				$lengthdb = '255';
 			} elseif ($type == 'html' || $type == 'htmltable') {
@@ -1298,13 +1299,18 @@ class ExtraFields
 				$out .= '</option>';
 			}
 			$out .= '</select>';
-		} elseif ($type == 'sellist')
+		} elseif ($type == 'sellist' || $type == 'sellistmultiple')
 		{
 			$out = '';
 			if (!empty($conf->use_javascript_ajax) && !empty($conf->global->MAIN_EXTRAFIELDS_USE_SELECT2))
 			{
 				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
 				$out .= ajax_combobox($keyprefix.$key.$keysuffix, array(), 0);
+			}
+
+			if($type == 'sellistmultiple')
+			{
+				$moreparam .= 'multiple="multiple" size="2"';
 			}
 
 			$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
@@ -1797,7 +1803,7 @@ class ExtraFields
 			}
 			if ($langfile && $valstr) $value = $langs->trans($valstr);
 			else $value = $valstr;
-		} elseif ($type == 'sellist') {
+		} elseif ($type == 'sellist' || $type == 'sellistmultiple') {
 			$param_list = array_keys($param['options']);
 			$InfoFieldList = explode(":", $param_list[0]);
 

@@ -57,7 +57,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     		var list = jQuery("#list");
             var totalizable = jQuery("#totalizable");
     		<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "htmltable"))
+			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "sellistmultiple") && (GETPOST('type', 'alpha') != "htmltable"))
 			{
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -103,6 +103,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			else if (type == 'price')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide();}
 			else if (type == 'select')   { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'sellist')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
+            else if (type == 'sellistmultiple')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
 			else if (type == 'radio')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'checkbox') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'chkbxlst') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpchkbxlst").show();}
