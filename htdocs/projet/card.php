@@ -151,6 +151,7 @@ if (empty($reshook))
 			$object->ref             = GETPOST('ref', 'alphanohtml');
 			$object->title           = GETPOST('title', 'alphanohtml');
 			$object->socid           = GETPOST('socid', 'int');
+			$object->technician      = GETPOST('technician', 'int');
 			$object->description     = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public          = GETPOST('public', 'alphanohtml');
 			$object->opp_amount      = price2num(GETPOST('opp_amount', 'alphanohtml'));
@@ -171,6 +172,12 @@ if (empty($reshook))
 			if ($ret < 0) $error++;
 
 			$result = $object->create($user);
+
+			/* 
+				Assign lead to vendor default by customer pincode
+			*/
+
+			/* End */	
 			if (!$error && $result > 0)
 			{
 				// Add myself as project leader
@@ -252,6 +259,7 @@ if (empty($reshook))
 			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, we want field as it is
 			$object->statut       = GETPOST('status', 'int');
 			$object->socid        = GETPOST('socid', 'int');
+			echo $object->technician        = GETPOST('technician', 'int');
 			$object->description  = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public       = GETPOST('public', 'alpha');
 			$object->date_start   = (!GETPOST('projectstart')) ? '' : $date_start;
@@ -951,6 +959,23 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print img_picto('', 'category').$form->multiselectarray('categories', $cate_arbo, $arrayselected, 0, 0, 'quatrevingtpercent widthcentpercentminusx', 0, '0');
 			print "</td></tr>";
 		}
+
+		// Technician 
+		
+		print '<tr><td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td colspan="3">';
+		print '<select class="flat" name="technician"><option value="">Select </option>';
+		
+		$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+		$resqlTech = $db->query($sqlTechnician);
+		$numtech = $db->num_rows($resqlTech);
+		if($numtech > 0){
+			while ($objtech = $db -> fetch_object($resqlTech))
+			{
+				print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+			}
+		}	
+		print '</select>';
+		print '</td>';
 
 		// Other options
 		$parameters = array();

@@ -300,6 +300,7 @@ class Project extends CommonObject
 		$sql .= ", title";
 		$sql .= ", description";
 		$sql .= ", fk_soc";
+		$sql .= ", fk_technician";
 		$sql .= ", fk_user_creat";
 		$sql .= ", fk_statut";
 		$sql .= ", fk_opp_status";
@@ -323,6 +324,7 @@ class Project extends CommonObject
 		$sql .= ", '".$this->db->escape($this->title)."'";
 		$sql .= ", '".$this->db->escape($this->description)."'";
 		$sql .= ", ".($this->socid > 0 ? $this->socid : "null");
+		$sql .= ", ".($this->technician > 0 ? $this->technician : "null");
 		$sql .= ", ".$user->id;
 		$sql .= ", ".(is_numeric($this->statut) ? $this->statut : '0');
 		$sql .= ", ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'NULL');
@@ -424,6 +426,7 @@ class Project extends CommonObject
 			$sql .= ", title = '".$this->db->escape($this->title)."'";
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
+			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
 			$sql .= ", fk_statut = ".$this->statut;
 			$sql .= ", fk_opp_status = ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'null');
 			$sql .= ", opp_percent = ".((is_numeric($this->opp_percent) && $this->opp_percent != '') ? $this->opp_percent : 'null');
@@ -528,7 +531,7 @@ class Project extends CommonObject
 		if (empty($id) && empty($ref)) return -1;
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
-		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
+		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_technician, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
 		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
@@ -570,6 +573,7 @@ class Project extends CommonObject
 				$this->note_private = $obj->note_private;
 				$this->note_public = $obj->note_public;
 				$this->socid = $obj->fk_soc;
+				$this->technician = $obj->fk_technician;
 				$this->user_author_id = $obj->fk_user_creat;
 				$this->user_modification_id = $obj->fk_user_modif;
 				$this->user_close_id = $obj->fk_user_close;
@@ -2183,7 +2187,7 @@ class Project extends CommonObject
 
 
 	/**
-	 * 	Create an array of tasks of current project
+	 * 	Create an array of tasks of currentoject
 	 *
 	 *  @param  User   $user       Object user we want project allowed to
 	 * 	@return int		           >0 if OK, <0 if KO

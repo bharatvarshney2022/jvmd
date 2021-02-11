@@ -321,7 +321,7 @@ class MenuManager
 			}
 		}
 
-		//unset($this->menu);
+		unset($this->menu);
 
 		//print 'xx'.$mode;
 		return 0;
