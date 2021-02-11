@@ -8,39 +8,30 @@
 
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	
 	$json = array();
 	
-	$object = new User($db);
+	$object = new Contact($db);
+	
 	$userExists = $object->fetch($user_id);
 	
 	if($userExists)
 	{
-		$newUserData = $object->getMerchantListing($user_id);
+		$slider[] = array("id"=>"1","image"=>$dolibarr_main_url_root."/images/slider1.jpg");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/images/slider2.png");
+
+		$status_code = '1';
+		$message = 'Customer Dashboard';
 		
-		if($newUserData)
-		{
-			$status_code = '1';
-			$message = 'Merchant Dashboard';
-			$userData = array('count' => count($newUserData), 'amount' => count($newUserData) * 25);
-			
-			$latestMerchant = $newUserData;
-		}
-		else
-		{
-			$status_code = '0';
-			$message = 'No data exists for this user';
-			$userData = $latestMerchant = array();
-		}
-		
-		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $userData, 'latest_merchant' => $latestMerchant);
+		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $userExists, 'slider' => $slider);
 	}
 	else
 	{
 		$status_code = '0';
-		$message = 'Sorry! user not exists!!';
+		$message = 'Sorry! customer not exists!!';
 		
 		$json = array('status_code' => $status_code, 'message' => $message);
 	}

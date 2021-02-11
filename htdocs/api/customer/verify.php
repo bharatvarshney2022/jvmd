@@ -10,6 +10,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	$user_otp = GETPOST('user_otp', 'alpha');
@@ -18,11 +19,15 @@
 	
 	$object = new Contact($db);
 	
-	$object->fetch($id);
+	$object->fetch($user_id);
+
+	//print_r($object);
 	
 	$isExist = $object->checkOTP($user_id, $user_otp);
 	if($isExist == 0)
 	{
+
+
 		$status_code = '0';
 		$message = 'Incorrect OTP! Please try again';
 		
@@ -35,11 +40,13 @@
 		
 		$object->verifyOTP($user_id, $user_otp);
 		$db->commit();
-			
+		
+		$already = '1';	
 		$status_code = '1';
 		$message = 'User verified successfully';
+
 		
-		$json = array('status_code' => $status_code, 'message' => $message);
+		$json = array('status_code' => $status_code, 'message' => $message, "firstname" => $object->firstname,"lastname" => $object->lastname,"already" => $already);
 	}
 	
 	$headers = 'Content-type: application/json';
