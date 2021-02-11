@@ -104,7 +104,6 @@ if($resql)
 
 if ($action == 'approve')
 {
-
 	if($approve_id > 0)
 	{
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."user_approval";
@@ -120,6 +119,19 @@ if ($action == 'approve')
 				$sql .= " WHERE fk_user= '".$id."' AND rowid = ".$approve_id;
 				$result = $db->query($sql);
 				$db->commit();
+			}
+		}
+
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."user_approval";
+		$sql .= " WHERE fk_user='".$id."' AND approve_statut = '0'";
+		$resql = $db->query($sql);
+		if($resql)
+		{
+			$num = $db->num_rows($resql);
+			if($num == 0)
+			{
+				$object->fetch($id);
+				$object->setstatus(1);
 			}
 		}
 
