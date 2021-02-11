@@ -2635,7 +2635,7 @@ div.blockvmenulogo
     margin-right: 6px;
     padding: 0;
     height: <?php echo $disableimages ? '20' : '27'; ?>px;
-    max-width: 100px;
+    max-width: 120px;
     vertical-align: middle;
 }
 .backgroundforcompanylogo {
