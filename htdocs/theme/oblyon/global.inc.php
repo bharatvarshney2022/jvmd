@@ -585,7 +585,7 @@ img[src*=stcomm]	{ vertical-align: text-top; }
     select {
         border-color: rgba(0,0,0, .24);
         box-shadow: inset 0 1px 2px rgba(0,0,0, .07);
-        padding: 1px;
+        padding: 7px 5px;
     }
 
     input, input.flat, textarea, textarea.flat, form.flat select, select, select.flat, .dataTables_length label select {
@@ -635,7 +635,7 @@ img[src*=stcomm]	{ vertical-align: text-top; }
         border: none;
         border-bottom: solid 1px rgba(0,0,0,.1);
         outline: none;
-        margin: 0px 0px 0px 0px;
+        margin: 3px 10px 3px 4px;
     }
 
     .liste_titre .flat, .liste_titre select.flat {
@@ -646,7 +646,7 @@ img[src*=stcomm]	{ vertical-align: text-top; }
     input, textarea, select {
         border-color: rgba(0,0,0, .24);
         box-shadow: inset 0 1px 2px rgba(0,0,0, .07);
-        margin:3px 10px 3px 0;
+        margin:3px 10px 3px 6px;
     }
 <?php } ?> /* end if (empty($dol_use_jmobile)) */
 
