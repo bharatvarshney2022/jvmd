@@ -245,7 +245,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 			'supplier_orders' => "SuppliersOrders",
 			'supplier_invoices' => "SuppliersInvoices",
 			'supplier_proposals' => "SupplierProposalShort",
-			'projects' => "Projects",
+			'projects' => "Leads",
 			'expensereports' => "ExpenseReports",
 			'holidays' => "Holidays",
 			'ticket' => "Ticket",
@@ -492,7 +492,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 			),
 		'project' =>
 			array(
-				'groupName' => 'Projects',
+				'groupName' => 'Leads',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
