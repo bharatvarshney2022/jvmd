@@ -21,6 +21,7 @@
 	$object = new ContactTemp($db);
 
 	$isExist = $object->checkOTP($mobile, $user_otp);
+	echo $isExist; exit;
 	if($isExist == 0)
 	{
 		$status_code = '0';

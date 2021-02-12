@@ -1916,6 +1916,7 @@ class ContactTemp extends CommonObject
 		$sql = "SELECT phone_mobile";
 		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
 		$sql .= " WHERE phone_mobile = '".$mobile."' AND otp = '".$user_otp."' ";
+		echo $sql; exit;
 		
 		$resql = $this->db->query($sql);
 		
