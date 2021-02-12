@@ -17,7 +17,8 @@
 	$object = new Contact($db);
 	
 	$userExists = $object->fetch($user_id);
-	
+	$slider = array();
+
 	if($userExists)
 	{
 		$slider[] = array("id"=>"1","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=slider1.jpg");
