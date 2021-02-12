@@ -15,12 +15,14 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
+	$device_id = GETPOST('device_id', 'alpha');
+	$fcmToken = GETPOST('fcmToken', 'alpha');
 	
 	$json = array();
 	
 	$object = new User($db);
 	
-	$isExist = check_user_mobile($mobile);
+	$isExist = check_user_mobile($mobile, $device_id);
 	$isExist1 = check_user_mobile_temp($mobile);
 
 	
@@ -57,7 +59,7 @@
 			$status_code = '1';
 			$message = 'Temporary account data exists';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist1->rowid, 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'customer_type' => 'new');
 		}
 		else
 		{
@@ -85,7 +87,7 @@
 			$status_code = '1';
 			$message = 'New temporary account has been created!';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$last_insert, 'user_otp' => "".$otp, 'fullname' => '', 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'customer_type' => 'new');
 		}
 	}
 	
