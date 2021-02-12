@@ -334,7 +334,7 @@ class ContactTemp extends CommonObject
 		$clause = "WHERE";
 
 		$sql = "SELECT count(sp.rowid) as nb";
-		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as sp";
+		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople_temp as sp";
 		if (!$user->rights->societe->client->voir && !$user->socid)
 		{
 			$sql .= ", ".MAIN_DB_PREFIX."societe as s";
@@ -387,7 +387,7 @@ class ContactTemp extends CommonObject
 
 		$this->entity = ((isset($this->entity) && is_numeric($this->entity)) ? $this->entity : $conf->entity);
 
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople (";
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp (";
 		$sql .= " datec";
 		$sql .= ", fk_soc";
 		$sql .= ", lastname";
@@ -420,7 +420,7 @@ class ContactTemp extends CommonObject
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."socpeople");
+			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
 
 			if (!$error)
 			{
@@ -507,7 +507,7 @@ class ContactTemp extends CommonObject
 		if (empty($this->civility_code) && !is_numeric($this->civility_id)) $this->civility_code = $this->civility_id; // For backward compatibility
 		$this->db->begin();
 
-		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET ";
+		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople_temp SET ";
 		if ($this->socid > 0) $sql .= " fk_soc='".$this->db->escape($this->socid)."',";
 		elseif ($this->socid == -1) $sql .= " fk_soc=null,";
 		$sql .= "  civility='".$this->db->escape($this->civility_code)."'";
@@ -790,7 +790,7 @@ class ContactTemp extends CommonObject
 		$this->db->begin();
 
 		// Mis a jour contact
-		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET";
+		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople_temp SET";
 		$sql .= " birthday=".($this->birthday ? "'".$this->db->idate($this->birthday)."'" : "null");
 		$sql .= ", photo = ".($this->photo ? "'".$this->db->escape($this->photo)."'" : "null");
 		if ($user) $sql .= ", fk_user_modif=".$user->id;
@@ -889,7 +889,7 @@ class ContactTemp extends CommonObject
 		$sql .= " d.nom as state, d.code_departement as state_code,";
 		$sql .= " u.rowid as user_id, u.login as user_login,";
 		$sql .= " s.nom as socname, s.address as socaddress, s.zip as soccp, s.town as soccity, s.default_lang as socdefault_lang";
-		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as c";
+		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople_temp as c";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_country as co ON c.fk_pays = co.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as d ON c.fk_departement = d.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON c.rowid = u.fk_socpeople";
@@ -1196,7 +1196,7 @@ class ContactTemp extends CommonObject
 
 		if (!$error)
 		{
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."socpeople";
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."socpeople_temp";
 			$sql .= " WHERE rowid=".$this->id;
 			dol_syslog(__METHOD__, LOG_DEBUG);
 			$result = $this->db->query($sql);
@@ -1244,7 +1244,7 @@ class ContactTemp extends CommonObject
 	{
 		$sql = "SELECT c.rowid, c.datec as datec, c.fk_user_creat,";
 		$sql .= " c.tms as tms, c.fk_user_modif";
-		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as c";
+		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople_temp as c";
 		$sql .= " WHERE c.rowid = ".$this->db->escape($id);
 
 		$resql = $this->db->query($sql);
@@ -1543,7 +1543,7 @@ class ContactTemp extends CommonObject
 		$this->db->begin();
 
 		// Desactive utilisateur
-		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople";
+		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople_temp";
 		$sql .= " SET statut = ".$this->statut;
 		$sql .= " WHERE rowid = ".$this->id;
 		$result = $this->db->query($sql);

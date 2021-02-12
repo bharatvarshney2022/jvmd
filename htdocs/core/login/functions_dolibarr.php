@@ -334,6 +334,48 @@ function check_user_mobile($usermobile, $entitytotest = 1)
 	return $login;
 }
 
+function check_user_mobile_temp($usermobile, $entitytotest = 1)
+{
+	global $db,$conf,$langs;
 
+	// Force master entity in transversal mode
+	
+	$login=array();
 
+	if (! empty($usermobile))
+	{
+		dol_syslog("functions_subpe::check_user_mobile_temp usermobile=".$usermobile." entitytotest=".$entitytotest);
 
+		// If test username/password asked, we define $test=false if ko and $login var to login if ok, set also $_SESSION["dol_loginmesg"] if ko
+		$table = MAIN_DB_PREFIX."socpeople_temp";
+		
+		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, statut';
+		$sql.=' FROM '.$table;
+		$sql.= " WHERE phone_mobile = '".$db->escape($usermobile)."' ";
+		// Required to first found the user into entity, then the superadmin.
+		// For the case (TODO and that we must avoid) a user has renamed its login with same value than a user in entity 0.
+		$sql.=' ORDER BY entity DESC';
+		//echo $sql;
+		$resql=$db->query($sql);
+		if ($resql)
+		{
+			$obj=$db->fetch_object($resql);
+			if ($obj)
+			{
+				// We must check entity
+				 $phone_mobile = $obj->phone_mobile;		
+				dol_syslog("functions_subpe::check_user_mobile_temp Authentification ko user not found for '".$usertotest."'");
+				
+				// Load translation files required by the page
+                $langs->loadLangs(array('main', 'errors'));
+                $login=$obj;
+			}
+		}
+		else
+		{
+			dol_syslog("functions_subpe::check_user_mobile_temp Authentification ko db error for '".$usertotest."' error=".$db->lasterror());
+		}
+	}
+
+	return $login;
+}

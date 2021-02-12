@@ -827,7 +827,7 @@ class SocieteTemp extends CommonObject
 		if ($result >= 0) {
 			$this->entity = ((isset($this->entity) && is_numeric($this->entity)) ? $this->entity : $conf->entity);
 
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe (nom, name_alias, entity, datec, fk_user_creat, canvas, status, ref_ext, fk_stcomm, fk_incoterms, location_incoterms ,import_key, fk_multicurrency, multicurrency_code)";
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp (nom, name_alias, entity, datec, fk_user_creat, canvas, status, ref_ext, fk_stcomm, fk_incoterms, location_incoterms ,import_key, fk_multicurrency, multicurrency_code)";
 			$sql .= " VALUES ('".$this->db->escape($this->name)."', '".$this->db->escape($this->name_alias)."', ".$this->db->escape($this->entity).", '".$this->db->idate($now)."'";
 			$sql .= ", ".(!empty($user->id) ? ((int) $user->id) : "null");
 			$sql .= ", ".(!empty($this->canvas) ? "'".$this->db->escape($this->canvas)."'" : "null");
@@ -843,7 +843,7 @@ class SocieteTemp extends CommonObject
 			dol_syslog(get_class($this)."::create", LOG_DEBUG);
 			$result = $this->db->query($sql);
 			if ($result) {
-				$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."societe");
+				$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
 
 				$ret = $this->update($this->id, $user, 0, 1, 1, 'add');
 
@@ -1229,7 +1229,7 @@ class SocieteTemp extends CommonObject
 		if ($result >= 0) {
 			dol_syslog(get_class($this)."::update verify ok or not done");
 
-			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe SET ";
+			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe_temp SET ";
 			$sql .= "entity = ".$this->db->escape($this->entity);
 			$sql .= ",nom = '".$this->db->escape($this->name)."'"; // Required
 			$sql .= ",name_alias = '".$this->db->escape($this->name_alias)."'";
@@ -1506,7 +1506,7 @@ class SocieteTemp extends CommonObject
 		$sql .= ', te.code as typent_code';
 		$sql .= ', i.libelle as label_incoterms';
 		$sql .= ', sr.remise_client, model_pdf';
-		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
+		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe_temp as s';
 		$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_effectif as e ON s.fk_effectif = e.id';
 		$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_country as c ON s.fk_pays = c.rowid';
 		$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_stcomm as st ON s.fk_stcomm = st.id';
@@ -1816,7 +1816,7 @@ class SocieteTemp extends CommonObject
 
 			// Remove links to subsidiaries companies
 			if (!$error) {
-				$sql = "UPDATE ".MAIN_DB_PREFIX."societe";
+				$sql = "UPDATE ".MAIN_DB_PREFIX."societe_temp";
 				$sql .= " SET parent = NULL";
 				$sql .= " WHERE parent = ".$id;
 				if (!$this->db->query($sql)) {
@@ -1827,7 +1827,7 @@ class SocieteTemp extends CommonObject
 
 			// Remove third party
 			if (!$error) {
-				$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe";
+				$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp";
 				$sql .= " WHERE rowid = ".$id;
 				if (!$this->db->query($sql)) {
 					$error++;
@@ -1872,7 +1872,7 @@ class SocieteTemp extends CommonObject
 			if ($this->client == 2 || $this->client == 3) {
 				$newclient = 3; //If prospect, we keep prospect tag
 			}
-			$sql = "UPDATE ".MAIN_DB_PREFIX."societe";
+			$sql = "UPDATE ".MAIN_DB_PREFIX."societe_temp";
 			$sql .= " SET client = ".$newclient;
 			$sql .= " WHERE rowid = ".$this->id;
 
@@ -1916,7 +1916,7 @@ class SocieteTemp extends CommonObject
 			$now = dol_now();
 
 			// Position current discount
-			$sql = "UPDATE ".MAIN_DB_PREFIX."societe ";
+			$sql = "UPDATE ".MAIN_DB_PREFIX."societe_temp ";
 			$sql .= " SET remise_client = '".$this->db->escape($remise)."'";
 			$sql .= " WHERE rowid = ".$this->id;
 			$resql = $this->db->query($sql);
@@ -1927,7 +1927,7 @@ class SocieteTemp extends CommonObject
 			}
 
 			// Writes trace in discount history
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_remise";
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_remise_temp";
 			$sql .= " (entity, datec, fk_soc, remise_client, note, fk_user_author)";
 			$sql .= " VALUES (".$conf->entity.", '".$this->db->idate($now)."', ".$this->id.", '".$this->db->escape($remise)."',";
 			$sql .= " '".$this->db->escape($note)."',";
@@ -1975,7 +1975,7 @@ class SocieteTemp extends CommonObject
 			$now = dol_now();
 
 			// Position current discount
-			$sql = "UPDATE ".MAIN_DB_PREFIX."societe ";
+			$sql = "UPDATE ".MAIN_DB_PREFIX."societe_temp ";
 			$sql .= " SET remise_supplier = '".$this->db->escape($remise)."'";
 			$sql .= " WHERE rowid = ".$this->id;
 			$resql = $this->db->query($sql);
@@ -1986,7 +1986,7 @@ class SocieteTemp extends CommonObject
 			}
 
 			// Writes trace in discount history
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_remise_supplier";
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_remise_supplier_temp";
 			$sql .= " (entity, datec, fk_soc, remise_supplier, note, fk_user_author)";
 			$sql .= " VALUES (".$conf->entity.", '".$this->db->idate($now)."', ".$this->id.", '".$this->db->escape($remise)."',";
 			$sql .= " '".$this->db->escape($note)."',";
@@ -2173,7 +2173,7 @@ class SocieteTemp extends CommonObject
 		if ($this->id) {
 			$now = dol_now();
 
-			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe";
+			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe_temp";
 			$sql .= " SET price_level = '".$this->db->escape($price_level)."'";
 			$sql .= " WHERE rowid = ".$this->id;
 
@@ -2182,7 +2182,7 @@ class SocieteTemp extends CommonObject
 				return -1;
 			}
 
-			$sql  = "INSERT INTO ".MAIN_DB_PREFIX."societe_prices";
+			$sql  = "INSERT INTO ".MAIN_DB_PREFIX."societe_prices_temp";
 			$sql .= " (datec, fk_soc, price_level, fk_user_author)";
 			$sql .= " VALUES ('".$this->db->idate($now)."', ".$this->id.", '".$this->db->escape($price_level)."', ".$user->id.")";
 
@@ -3206,7 +3206,7 @@ class SocieteTemp extends CommonObject
 		}
 
 		 //Verify duplicate entries
-		$sql = "SELECT COUNT(*) as idprof FROM ".MAIN_DB_PREFIX."societe WHERE ".$field." = '".$this->db->escape($value)."' AND entity IN (".getEntity('societe').")";
+		$sql = "SELECT COUNT(*) as idprof FROM ".MAIN_DB_PREFIX."societe_temp WHERE ".$field." = '".$this->db->escape($value)."' AND entity IN (".getEntity('societe').")";
 		if ($socid) {
 			$sql .= " AND rowid <> ".$socid;
 		}
@@ -3489,7 +3489,7 @@ class SocieteTemp extends CommonObject
 	{
 		$sql = "SELECT s.rowid, s.nom as name, s.datec as date_creation, tms as date_modification,";
 		$sql .= " fk_user_creat, fk_user_modif";
-		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
+		$sql .= " FROM ".MAIN_DB_PREFIX."societe_temp as s";
 		$sql .= " WHERE s.rowid = ".$id;
 
 		$result = $this->db->query($sql);
