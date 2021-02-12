@@ -245,7 +245,7 @@ $tabsql[42] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX.
 //$tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libelle, d.fk_region as region_id, r.nom as region, c.code as country_code, c.label as country, d.active FROM ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE d.fk_region=r.code_region and r.fk_pays=c.rowid and r.active=1 and c.active=1";
 $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle, ct.fk_state as state_id, d.nom as state, d.fk_region, r.nom as region, c.code as country_code, c.label as country, ct.active FROM ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE ct.fk_state = d.rowid and d.fk_region=r.code_region and r.fk_pays=c.rowid and d.active=1 and r.active=1 and c.active=1";
 
-$tabsql[44] = "SELECT p.rowid as rowid, p.code_pincode as code, p.nom as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_state as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_state = d.rowid and ct.fk_state = d.rowid and d.active=1 and ct.active=1";
+$tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_county as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_county = d.rowid and d.active=1 and ct.active=1";
 
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."p_brands";
 $tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."product_family";
@@ -454,7 +454,7 @@ $tabfieldinsert[40] = "code,libelle,picto";
 $tabfieldinsert[41] = "code,label";
 $tabfieldinsert[42] = "code,label";
 $tabfieldinsert[43] = "code_city,nom,fk_state";
-$tabfieldinsert[44] = "code_pincode,nom,fk_city,fk_state";
+$tabfieldinsert[44] = "code,zip,fk_city,fk_county";
 $tabfieldinsert[45] = "code,nom";
 $tabfieldinsert[46] = "code,nom";
 $tabfieldinsert[47] = "code,nom,fk_family";

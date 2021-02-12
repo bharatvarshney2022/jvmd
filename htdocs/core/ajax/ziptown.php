@@ -62,7 +62,7 @@ if (!empty($_GET['zipcode']) || !empty($_GET['town']))
 
 	if (!empty($conf->global->MAIN_USE_ZIPTOWN_DICTIONNARY))   // Use zip-town table
 	{
-		$sql = "SELECT z.rowid, z.zip, z.town, z.fk_county, z.fk_pays as fk_country";
+		/*$sql = "SELECT z.rowid, z.zip, z.town, z.fk_county, z.fk_pays as fk_country";
 		$sql .= ", c.rowid as fk_country, c.code as country_code, c.label as country";
 		$sql .= ", d.rowid as fk_county, d.code_departement as county_code, d.nom as county";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_ziptown as z";
@@ -74,7 +74,25 @@ if (!empty($_GET['zipcode']) || !empty($_GET['town']))
 		if ($zipcode) $sql .= " AND z.zip LIKE '".$db->escape($zipcode)."%'";
 		if ($town)    $sql .= " AND z.town LIKE '%".$db->escape($town)."%'";
 		$sql .= " ORDER BY z.zip, z.town";
-		$sql .= $db->plimit(100); // Avoid pb with bad criteria
+		$sql .= $db->plimit(100); // Avoid pb with bad criteria*/
+
+
+		$sql = "SELECT z.rowid, z.zip, z.fk_city, cct.nom as town, z.fk_county, z.fk_pays as fk_country";
+		$sql .= ", c.rowid as fk_country, c.code as country_code, c.label as country";
+		$sql .= ", d.rowid as fk_county, d.code_departement as county_code, d.nom as county";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_pincodes as z";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as d ON z.fk_county = d.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_cities as cct ON z.fk_city = cct.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_regions as r ON d.fk_region = r.code_region,";
+		$sql .= " ".MAIN_DB_PREFIX."c_country as c";
+		$sql .= " WHERE z.fk_pays = c.rowid";
+		$sql .= " AND z.active = 1 AND c.active = 1";
+		if ($zipcode) $sql .= " AND z.zip LIKE '".$db->escape($zipcode)."%'";
+		if ($town)    $sql .= " AND z.fk_city LIKE '%".$db->escape($town)."%'";
+		$sql .= " ORDER BY z.zip, z.fk_city";
+		$sql .= $db->plimit(100);
+
+
 	} else // Use table of third parties
 	{
 		$sql = "SELECT DISTINCT s.zip, s.town, s.fk_departement as fk_county, s.fk_pays as fk_country";
@@ -90,7 +108,6 @@ if (!empty($_GET['zipcode']) || !empty($_GET['town']))
 		$sql .= $db->plimit(100); // Avoid pb with bad criteria
 	}
 
-	//print $sql;
 	$resql = $db->query($sql);
 	//var_dump($db);
 	if ($resql)
