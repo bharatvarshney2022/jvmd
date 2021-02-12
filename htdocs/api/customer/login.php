@@ -38,7 +38,7 @@
 
           	$table = MAIN_DB_PREFIX."socpeople";
             $updateSql ="UPDATE ".$table." SET";
-			$updateSql.= " otp = '".$db->escape($otp)."' ";
+			$updateSql.= " otp = '".$db->escape($otp)."', fcmToken = '".$db->escape($fcmToken)."' ";
 			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
 			$resql = $db->query($updateSql);
 

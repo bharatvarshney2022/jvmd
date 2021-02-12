@@ -13,7 +13,8 @@
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact_temp.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 	
-	$user_id = GETPOST('user_id', 'int');
+	$mobile = GETPOST('mobile', 'alpha');
+	$device_id = GETPOST('device_id', 'alpha');
 	$user_otp = GETPOST('user_otp', 'alpha');
 	
 	$json = array();
