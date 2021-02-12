@@ -108,7 +108,7 @@ function societe_prepare_head(Societe $object)
 
 	if (!empty($conf->projet->enabled) && (!empty($user->rights->projet->lire))) {
 		$head[$h][0] = DOL_URL_ROOT.'/societe/project.php?socid='.$object->id;
-		$head[$h][1] = $langs->trans("Projects");
+		$head[$h][1] = $langs->trans("Leads");
 		$nbNote = 0;
 		$sql = "SELECT COUNT(n.rowid) as nb";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet as n";
@@ -689,7 +689,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		}
 
 		print "\n";
-		print load_fiche_titre($langs->trans("ProjectsDedicatedToThisThirdParty"), $newcardbutton.$morehtmlright, '');
+		print load_fiche_titre($langs->trans("Leads Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
@@ -710,9 +710,9 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("DateStart").'</td>';
 			print '<td class="center">'.$langs->trans("DateEnd").'</td>';
-			print '<td class="right">'.$langs->trans("OpportunityAmountShort").'</td>';
-			print '<td class="center">'.$langs->trans("OpportunityStatusShort").'</td>';
-			print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityAmountShort").'</td>';
+			//print '<td class="center">'.$langs->trans("OpportunityStatusShort").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
 			print '<td class="right">'.$langs->trans("Status").'</td>';
 			print '</tr>';
 
@@ -745,7 +745,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Date end
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						// Opp amount
-						print '<td class="right">';
+						/*print '<td class="right">';
 						if ($obj->opp_status_code) {
 							print price($obj->opp_amount, 1, '', 1, -1, -1, '');
 						}
@@ -757,7 +757,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Opp percent
 						print '<td class="right">';
 						if ($obj->opp_percent) print price($obj->opp_percent, 1, '', 1, 0).'%';
-						print '</td>';
+						print '</td>';*/
 						// Status
 						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
 
@@ -766,7 +766,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 					$i++;
 				}
 			} else {
-				print '<tr class="oddeven"><td colspan="8" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
 			}
 			$db->free($result);
 		} else {

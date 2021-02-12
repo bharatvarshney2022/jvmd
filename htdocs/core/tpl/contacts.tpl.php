@@ -77,7 +77,7 @@ if ($permission)
 {
 	print '<div class="underbanner clearboth"></div>'."\n";
 
-	print '<div class="div-table-responsive-no-min">'."\n";
+	print '<div class="div-table-responsive-no-min" style="display: none;">'."\n";
 	print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n";
 
 	?>
@@ -95,7 +95,7 @@ if ($permission)
 	if (empty($hideaddcontactforuser))
 	{
 		?>
-	<form class="tagtr impair nohover" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
+	<form style="display: none;" class="tagtr impair nohover" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
 	<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
 	<input type="hidden" name="id" value="<?php echo $object->id; ?>" />
 	<input type="hidden" name="action" value="addcontact" />
