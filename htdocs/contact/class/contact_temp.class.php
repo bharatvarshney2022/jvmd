@@ -1916,8 +1916,7 @@ class ContactTemp extends CommonObject
 		$sql = "SELECT phone_mobile";
 		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
 		$sql .= " WHERE phone_mobile = '".$mobile."' AND otp = '".$user_otp."' ";
-		echo $sql; exit;
-		
+
 		$resql = $this->db->query($sql);
 		
 		$num = $this->db->num_rows($resql);
@@ -1948,10 +1947,10 @@ class ContactTemp extends CommonObject
 		return $num;
 	}
 
-	public function verifyOTP($user_id, $user_otp)
+	public function verifyOTP($mobile, $user_otp)
 	{
 		$sql = "UPDATE ".MAIN_DB_PREFIX.$this->table_element;
-		$sql .= " SET statut = '1' WHERE rowid = '".$user_id."' AND otp = '".$user_otp."'";
+		$sql .= " SET statut = '1' WHERE phone_mobile = '".$user_id."' AND otp = '".$user_otp."'";
 		
 		$resql = $this->db->query($sql);
 		return $resql;

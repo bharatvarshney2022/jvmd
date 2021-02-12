@@ -21,7 +21,6 @@
 	$object = new ContactTemp($db);
 
 	$isExist = $object->checkOTP($mobile, $user_otp);
-	echo $isExist; exit;
 	if($isExist == 0)
 	{
 		$status_code = '0';
@@ -34,7 +33,7 @@
 	{
 		$db->begin();
 		
-		$object->verifyOTP($user_id, $user_otp);
+		$object->verifyOTP($mobile, $user_otp);
 		$db->commit();
 		
 		$already = '1';	
