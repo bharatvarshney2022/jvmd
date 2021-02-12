@@ -303,7 +303,7 @@ function check_user_mobile($usermobile, $entitytotest = 1)
 		// If test username/password asked, we define $test=false if ko and $login var to login if ok, set also $_SESSION["dol_loginmesg"] if ko
 		$table = MAIN_DB_PREFIX."socpeople";
 		
-		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, statut';
+		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, otp, statut';
 		$sql.=' FROM '.$table;
 		$sql.= " WHERE phone_mobile = '".$db->escape($usermobile)."' ";
 		// Required to first found the user into entity, then the superadmin.
@@ -349,7 +349,7 @@ function check_user_mobile_temp($usermobile, $entitytotest = 1)
 		// If test username/password asked, we define $test=false if ko and $login var to login if ok, set also $_SESSION["dol_loginmesg"] if ko
 		$table = MAIN_DB_PREFIX."socpeople_temp";
 		
-		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, statut';
+		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, otp, statut';
 		$sql.=' FROM '.$table;
 		$sql.= " WHERE phone_mobile = '".$db->escape($usermobile)."' ";
 		// Required to first found the user into entity, then the superadmin.
