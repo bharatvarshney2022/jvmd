@@ -40,7 +40,7 @@
 		$status_code = '1';
 		$message = 'User verified successfully';
 
-		$json = array('status_code' => $status_code, 'message' => $message, "firstname" => $object->firstname,"lastname" => $object->lastname);
+		$json = array('status_code' => $status_code, 'message' => $message);
 	}
 	
 	$headers = 'Content-type: application/json';
