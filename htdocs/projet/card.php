@@ -554,12 +554,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	// Ref
 	$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
-	print '<tr><td class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input size="12" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
+	print '<tr ><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
 	print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 	print '</td>';
 
 	// Label
-	print '<td><span class="fieldrequired">'.$langs->trans("Label").'</span></td><td><input class="minwidth400" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
+	print '<td width="15%"><span class="fieldrequired">'.$langs->trans("Label").'</span></td><td><input class="minwidth400" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
 
 	// Usage (opp, task, bill time, ...)
 	print '<tr style="display:none;"><td class="tdtop">';
@@ -1118,7 +1118,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Date start - end
-		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
 		$start = dol_print_date($object->date_start, 'day');
 		print ($start ? $start : '?');
 		$end = dol_print_date($object->date_end, 'day');

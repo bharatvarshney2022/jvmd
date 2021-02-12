@@ -1007,7 +1007,9 @@ if ($action == 'create' || $action == 'adduserldap')
 		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');
 	}else{
 		$object->fk_user = $user->id;
-		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');	
+
+		print img_picto('', 'user').$form->select_dolusers($user->id, 'fk_user1', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');	
+		print '<input type="hidden" name="fk_user" value="'.$user->id.'">';
 	}	
 	
 	print '</td>';
