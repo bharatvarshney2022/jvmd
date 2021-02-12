@@ -1118,7 +1118,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Date start - end
-		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td>';
+		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="3">';
 		$start = dol_print_date($object->date_start, 'day');
 		print ($start ? $start : '?');
 		$end = dol_print_date($object->date_end, 'day');
