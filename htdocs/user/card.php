@@ -1055,6 +1055,16 @@ if ($action == 'create' || $action == 'adduserldap')
 	print $object->address;
 	print '</textarea></td></tr>';
 
+	// Zip
+	print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
+	print $formcompany->select_ziptown($object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6);
+	print '</td>';
+
+	// Town
+	print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
+	print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+	print '</td></tr>';
+
 	// Country
 	print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 	print $form->select_country((GETPOST('country_id') != '' ?GETPOST('country_id') : $object->country_id));
@@ -1068,16 +1078,6 @@ if ($action == 'create' || $action == 'adduserldap')
 		print $formcompany->select_state($object->state_id, $object->country_code, 'state_id');
 		print '</td></tr>';
 	}
-
-	// Zip
-	print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
-	print $formcompany->select_ziptown($object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6);
-	print '</td>';
-
-	// Town
-	print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
-	print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
-	print '</td></tr>';
 
 	// Tel
 	print '<tr style="display:none;"><td>'.$langs->trans("PhonePro").'</td>';
