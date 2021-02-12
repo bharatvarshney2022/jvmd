@@ -19,10 +19,18 @@
 	$object = new ContactTemp($db);
 
 	$isExist = $object->getOTPFromMobile($mobile);
+	print_r($isExist); exit;
 	if($isExist)
 	{
+		$status_code = '1';
+		$message = 'Resend OTP';
+		
+		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => $isExist);
+	}
+	else
+	{
 		$status_code = '0';
-		$message = 'Incorrect OTP! Please try again';
+		$message = 'Phone number not exists! Please try again';
 		
 		$json = array('status_code' => $status_code, 'message' => $message);
 	}
