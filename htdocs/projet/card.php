@@ -151,7 +151,7 @@ if (empty($reshook))
 			$object->ref             = GETPOST('ref', 'alphanohtml');
 			$object->title           = GETPOST('title', 'alphanohtml');
 			$object->socid           = GETPOST('socid', 'int');
-			$object->technician      = GETPOST('technician', 'int');
+			$object->technician      = '0';
 			$object->description     = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public          = GETPOST('public', 'alphanohtml');
 			$object->opp_amount      = price2num(GETPOST('opp_amount', 'alphanohtml'));
@@ -176,7 +176,26 @@ if (empty($reshook))
 			/* 
 				Assign lead to vendor default by customer pincode
 			*/
-
+				require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+				$societetmp = new Societe($db);
+				$societetmp->fetch($object->socid);
+				// fetch optionals attributes and labels
+				$extrafields = new ExtraFields($db);
+				$extralabels = $extrafields->fetch_name_optionals_label($societetmp->table_element);
+				$ret = $societetmp->fetch_optionals($object->socid,$extralabels);
+				
+				$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and FIND_IN_SET('2',uex.apply_zipcode) > 0 ";
+				$resqlVendor = $db->query($sqlVendors);
+				$numvendor = $db->num_rows($resqlVendor);
+				$objvendor = $resqlVendor->fetch_all();
+				foreach ($objvendor as $rsvendor) {
+					$vendorid = $rsvendor[0];
+					$typeid = '160';
+					$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+				}
+				//print_r($objvendor);
+				//echo $selected_input_value = $societetmp->fk_pincode;
+				//exit;
 			/* End */	
 			if (!$error && $result > 0)
 			{
@@ -259,7 +278,7 @@ if (empty($reshook))
 			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, we want field as it is
 			$object->statut       = GETPOST('status', 'int');
 			$object->socid        = GETPOST('socid', 'int');
-			echo $object->technician        = GETPOST('technician', 'int');
+			$object->technician        = GETPOST('technician', 'int');
 			$object->description  = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public       = GETPOST('public', 'alpha');
 			$object->date_start   = (!GETPOST('projectstart')) ? '' : $date_start;
@@ -961,22 +980,34 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Technician 
-		
-		print '<tr><td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td colspan="3">';
-		print '<select class="flat" name="technician"><option value="">Select </option>';
-		
-		$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
-		$resqlTech = $db->query($sqlTechnician);
-		$numtech = $db->num_rows($resqlTech);
-		if($numtech > 0){
-			while ($objtech = $db -> fetch_object($resqlTech))
-			{
-				print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
-			}
-		}	
-		print '</select>';
-		print '</td>';
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
 
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		if($user_group_id == '4'){
+			print '<tr><td>'.$langs->trans("Assign Technician").'</td><td colspan="3">';
+			print '<select class="flat" name="technician"><option value="">Select </option>';
+			
+			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+			$resqlTech = $db->query($sqlTechnician);
+			$numtech = $db->num_rows($resqlTech);
+			if($numtech > 0){
+				while ($objtech = $db -> fetch_object($resqlTech))
+				{
+					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+				}
+			}	
+			print '</select>';
+			print '</td></tr>';
+		}
 		// Other options
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
