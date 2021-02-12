@@ -660,6 +660,14 @@ select.flat.multi-select {
     height: 5em;
 }
 
+select.full-width-select2-container {
+    width: 100% !important;
+}
+
+div.tabBar ul li.select2-search.select2-search--inline, div.tabBar ul li.select2-selection__choice {
+    margin-left: 0px !important;
+}
+
 input:disabled,
 select:disabled {
     background-color: #ddd;
