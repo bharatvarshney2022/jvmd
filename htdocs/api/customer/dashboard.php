@@ -20,8 +20,8 @@
 	
 	if($userExists)
 	{
-		$slider[] = array("id"=>"1","image"=>$dolibarr_main_url_root."/../documents/medias/slider1.jpg");
-		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/../documents/medias/slider2.png");
+		$slider[] = array("id"=>"1","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=slider1.jpg");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_data_root."/viewimage.php?cache=1&modulepart=medias&file=slider2.png");
 
 		$status_code = '1';
 		$message = 'Customer Dashboard';
