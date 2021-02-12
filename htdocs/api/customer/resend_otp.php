@@ -29,6 +29,7 @@
         $updateSql ="UPDATE ".$table." SET";
 		$updateSql.= " otp = '".$db->escape($otp)."' ";
 		$updateSql.= " WHERE mobile = '".(int)$mobile."' ";
+		echo $updateSql; exit;
 		$resql = $db->query($updateSql);
 		
 		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => $isExist['otp']);
