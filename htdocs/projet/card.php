@@ -554,7 +554,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	// Ref
 	$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
-	print '<tr ><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
+	print '<tr><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
 	print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 	print '</td>';
 
@@ -827,14 +827,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Ref
 		$suggestedref = $object->ref;
-		print '<tr><td class="fieldrequired">'.$langs->trans("Ref").'</td>';
-		print '<td><input size="12" name="ref" value="'.$suggestedref.'">';
+		print '<tr><td width="15%" class="fieldrequired">'.$langs->trans("Ref").'</td>';
+		print '<td><input size="12" class="minwidth200"  name="ref" value="'.$suggestedref.'">';
 		print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 		print '</td>';
 
 		// Label
-		print '<td class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
-		print '<td><input class="quatrevingtpercent" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
+		print '<td width="15%" class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
+		print '<td><input class="quatrevingtpercent"  class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
 
 		// Status
 		print '<tr><td class="fieldrequired">'.$langs->trans("Status").'</td><td>';
