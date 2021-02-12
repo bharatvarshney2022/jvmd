@@ -42,7 +42,7 @@
 
 			//$this->httpGet("http://opensms.microprixs.com/api/mt/SendSMS?user=rahul100gm&password=rahul100gm&senderid=IOOGMS&channel=trans&DCS=0&flashsms=0&number=".$mobile."&text=".$smsmessage."&route=35");
 
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => $isExist->rowid, 'email' => $isExist->email, 'firstname' => $isExist->firstname, 'lastname' => $isExist->lastname, 'user_otp' => "".$otp, 'customer_type' => 'existing');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->rowid, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
 			$status_code = '0';
 			$message = 'Customer not activated! Please contact support!!';
@@ -57,7 +57,7 @@
 			$status_code = '1';
 			$message = 'Temporary account data exists';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => $isExist1->rowid, 'user_otp' => "".$isExist1->otp, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist1->rowid, 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'customer_type' => 'new');
 		}
 		else
 		{
@@ -85,7 +85,7 @@
 			$status_code = '1';
 			$message = 'New temporary account has been created!';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => $last_insert, 'user_otp' => "".$otp, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$last_insert, 'user_otp' => "".$otp, 'fullname' => '', 'customer_type' => 'new');
 		}
 	}
 	
