@@ -183,15 +183,18 @@ if (empty($reshook))
 				$extrafields = new ExtraFields($db);
 				$extralabels = $extrafields->fetch_name_optionals_label($societetmp->table_element);
 				$ret = $societetmp->fetch_optionals($object->socid,$extralabels);
+				if($ret){
+
 				
-				$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and FIND_IN_SET('2',uex.apply_zipcode) > 0 ";
-				$resqlVendor = $db->query($sqlVendors);
-				$numvendor = $db->num_rows($resqlVendor);
-				$objvendor = $resqlVendor->fetch_all();
-				foreach ($objvendor as $rsvendor) {
-					$vendorid = $rsvendor[0];
-					$typeid = '160';
-					$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+					$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+					$resqlVendor = $db->query($sqlVendors);
+					$numvendor = $db->num_rows($resqlVendor);
+					$objvendor = $resqlVendor->fetch_all();
+					foreach ($objvendor as $rsvendor) {
+						$vendorid = $rsvendor[0];
+						$typeid = '160';
+						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+					}
 				}
 				//print_r($objvendor);
 				//echo $selected_input_value = $societetmp->fk_pincode;
