@@ -244,9 +244,7 @@ if ($id > 0 || !empty($ref))
 	if (strcmp($object->budget_amount, '')) print price($object->budget_amount, '', $langs, 0, 0, 0, $conf->currency);
 	print '</td></tr>';
 
-	// Other attributes
-	$cols = 2;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	
 
 	print "</table>";
 
@@ -275,8 +273,13 @@ if ($id > 0 || !empty($ref))
 	print '</div>';
 	print '</div>';
 
-	print '<div class="clearboth"></div>';
+	print '<div class="clearboth"></div><hr />';
 
+	// Other attributes
+	print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+	$cols = 2;
+	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	print '</tbody></table></div>';
 	print dol_get_fiche_end();
 
 	print '<br>';

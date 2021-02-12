@@ -1127,18 +1127,16 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if ($object->hasDelay()) print img_warning("Late");
 		print '</td></tr>';
 
+
 		// Budget
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 		if (strcmp($object->budget_amount, '')) print price($object->budget_amount, 0, $langs, 1, 0, 0, $conf->currency);
 		print '</td></tr>';
+		print "</table>\n";
+			print '</div>';
 
-		// Other attributes
-		$cols = 2;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		
 
-		print '</table>';
-
-		print '</div>';
 		print '<div class="fichehalfright">';
 		print '<div class="ficheaddleft">';
 		print '<div class="underbanner clearboth"></div>';
@@ -1163,7 +1161,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</div>';
 		print '</div>';
 
-		print '<div class="clearboth"></div>';
+		// Other attributes
+			print '<div style="clear:both"></div> <hr />';
+
+			// Other attributes
+			print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+		$cols = 1;
+		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		print '</tbody></table></div>';
 	}
 
 	print dol_get_fiche_end();
