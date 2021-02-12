@@ -13,34 +13,18 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
-	$device_id = GETPOST('device_id', 'alpha');
-	$user_otp = GETPOST('user_otp', 'alpha');
 	
 	$json = array();
 	
 	$object = new ContactTemp($db);
 
-	$isExist = $object->checkOTP($mobile, $user_otp);
-	if($isExist == 0)
+	$isExist = $object->getOTPFromMobile($mobile);
+	if($isExist)
 	{
 		$status_code = '0';
 		$message = 'Incorrect OTP! Please try again';
 		
 		$json = array('status_code' => $status_code, 'message' => $message);
-	}
-	
-	if(!$json)
-	{
-		$db->begin();
-		
-		$object->verifyOTP($user_id, $user_otp);
-		$db->commit();
-		
-		$already = '1';	
-		$status_code = '1';
-		$message = 'User verified successfully';
-
-		$json = array('status_code' => $status_code, 'message' => $message, "firstname" => $object->firstname,"lastname" => $object->lastname);
 	}
 	
 	$headers = 'Content-type: application/json';

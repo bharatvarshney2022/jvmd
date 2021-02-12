@@ -1911,15 +1911,38 @@ class ContactTemp extends CommonObject
 		return "Error, mode/status not found";
 	}
 
-	public function checkOTP($user_id, $user_otp)
+	public function checkOTP($mobile, $user_otp)
 	{
 		$sql = "SELECT phone_mobile";
 		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
-		$sql .= " WHERE rowid = '".$user_id."' AND otp = '".$user_otp."' ";
+		$sql .= " WHERE phone_mobile = '".$mobile."' AND otp = '".$user_otp."' ";
 		
 		$resql = $this->db->query($sql);
 		
 		$num = $this->db->num_rows($resql);
+		
+		return $num;
+	}
+
+	public function getOTPFromMobile($mobile)
+	{
+		$sql = "SELECT phone_mobile, otp";
+		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
+		$sql .= " WHERE phone_mobile = '".$mobile."' AND otp = '".$user_otp."' ";
+		
+		$resql = $this->db->query($sql);
+		
+		$num = $this->db->num_rows($resql);
+
+		if($num > 0)
+		{
+			$obj = $this->db->fetch_array($resql);
+			return $obj;
+		}
+		else
+		{
+			return array();
+		}
 		
 		return $num;
 	}
