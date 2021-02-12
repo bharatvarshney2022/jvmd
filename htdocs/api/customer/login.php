@@ -13,13 +13,11 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
-	//$password = GETPOST('password', 'alpha');
 	
 	$json = array();
 	
 	$object = new User($db);
 	
-	//$isExist = check_user_password($mobile, $password);
 	$isExist = check_user_mobile($mobile);
 	
 	if($isExist->phone_mobile != $mobile)

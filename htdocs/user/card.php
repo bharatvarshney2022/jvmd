@@ -105,7 +105,6 @@ $langs->loadLangs(array('users', 'companies', 'ldap', 'admin', 'hrm', 'stocks'))
 $object = new User($db);
 $extrafields = new ExtraFields($db);
 
-// fetch optionals attributes and labels
 $user_group_id = 0;
 $usergroup = new UserGroup($db);
 $groupslist = $usergroup->listGroupsForUser($id);
@@ -118,8 +117,8 @@ if ($groupslist != '-1')
 	}
 }
 
+// fetch optionals attributes and labels
 $extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
-//echo '<pre>'; print_r($extrafields); exit;
 
 $socialnetworks = getArrayOfSocialNetworks();
 
