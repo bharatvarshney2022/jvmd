@@ -840,7 +840,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			$num = $db->num_rows($result);
 
 			print '<tr class="liste_titre">';
-			print '<td>'.$langs->trans("Ref").'</td>';
+			print '<td>'.$langs->trans("S.No.").'</td>';
 			print '<td>'.$langs->trans("Model No.").'</td>';
 			print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("Brand").'</td>';
@@ -870,7 +870,8 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 						// Ref
 						print '<td>';
-						print $producttmp->getNomUrl(1);
+						//print $producttmp->getNomUrl(1);
+						print ($i+1);
 						print '</td>';
 						//model
 						print '<td>'.$obj->product_model.'</td>';
