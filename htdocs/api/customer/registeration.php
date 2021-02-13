@@ -27,31 +27,11 @@
 	$fcmToken = GETPOST('fcmToken', 'alpha');
 	
 	$json = array();
-	
+
 	$object = new ContactTemp($db);
-
-	$isExist = $object->checkOTP($mobile, $user_otp);
-	if($isExist == 0)
-	{
-		$status_code = '0';
-		$message = 'Incorrect OTP! Please try again';
-		
-		$json = array('status_code' => $status_code, 'message' => $message);
-	}
+	$object->fetch($temp_user_id);
+	print_r($object); exit;
 	
-	if(!$json)
-	{
-		$db->begin();
-		
-		$object->verifyOTP($mobile, $user_otp);
-		$db->commit();
-		
-		$already = '1';	
-		$status_code = '1';
-		$message = 'User verified successfully';
-
-		$json = array('status_code' => $status_code, 'message' => $message);
-	}
 	
 	$headers = 'Content-type: application/json';
 	header($headers);
