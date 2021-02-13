@@ -43,7 +43,7 @@
 		$fk_pincode = $row['rowid'];
 	}
 
-	$sql = "SELECT z.rowid, z.zip FROM ".MAIN_DB_PREFIX."c_departements as z";
+	$sql = "SELECT z.rowid, z.nom FROM ".MAIN_DB_PREFIX."c_departements as z";
 	$sql .= " WHERE z.active = 1 AND z.nom LIKE '".$db->escape($state)."%'";
 	$resql1 = $db->query($sql);
 	if ($resql1)
@@ -106,7 +106,7 @@
 					$objectSociete->update($societe_id);
 
 					// Insert Entry of Zip Code (Additional Field)
-					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_pincode = '".$fk_pincode."'";
+					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_object = '".$societe_id."', fk_pincode = '".$fk_pincode."'";
 					$resql1 = $db->query($sql1);
 
 
