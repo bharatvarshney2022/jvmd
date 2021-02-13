@@ -9,6 +9,7 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact_temp.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
@@ -47,7 +48,48 @@
 		//$object->fk_departement = '';
 		
 		$update = $object->update($temp_user_id, null, 1, 'update', 1);
-		echo $update; exit;
+		
+		if($update > 0)
+		{
+			// Insert new Contact
+			$objectContact = new Contact($db);
+
+			$objectContact->lastname = $lastname;
+			$objectContact->firstname = $firstname;
+			$objectContact->statut = '1';
+			$contact_id = $objectContact->create();
+			
+			$objectContact->address = $address.",".$city.",".$state;
+			$objectContact->email = $email;
+			$objectContact->town = $city;
+			$objectContact->fk_pays = '117'; // Country
+			$objectContact->zip = $postalCode;
+			$objectContact->userlatitude = $userlatitude;
+			$objectContact->userlongitude = $userlongitude;
+			$objectContact->device_id = $device_id;
+			$objectContact->fcmToken = $fcmToken;
+
+			$objectContact->update($contact_id);
+
+			$status_code = '1';
+			$message = 'User created successfully';
+
+			$json = array('status_code' => $status_code, 'message' => $message);
+		}
+		else
+		{
+			$status_code = '0';
+			$message = 'Something went wrong OTP';
+			
+			$json = array('status_code' => $status_code, 'message' => $message);
+		}
+	}
+	else
+	{
+		$status_code = '0';
+		$message = 'Sorry! user not exists.';
+		
+		$json = array('status_code' => $status_code, 'message' => $message);
 	}
 	
 	
