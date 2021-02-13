@@ -41,7 +41,7 @@
 		$objectSociete = new Societe($db);
 		$resultSoc = $objectSociete->isDeviceExists($result->phone_mobile, $device_id);
 
-		if($result == 0)
+		if($resultSoc == 0)
 		{
 			// Add values
 			$object->firstname = $firstname;
@@ -136,7 +136,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Sorry! Device and/or Phone already exists'.$result->phone_mobile;
+			$message = 'Sorry! Device and/or Phone already exists'.$resultSoc->phone_mobile;
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
