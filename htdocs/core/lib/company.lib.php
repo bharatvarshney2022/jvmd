@@ -106,6 +106,8 @@ function societe_prepare_head(Societe $object)
 		$h++;
 	}
 
+	
+
 	if (!empty($conf->projet->enabled) && (!empty($user->rights->projet->lire))) {
 		$head[$h][0] = DOL_URL_ROOT.'/societe/project.php?socid='.$object->id;
 		$head[$h][1] = $langs->trans("Leads");
@@ -130,6 +132,28 @@ function societe_prepare_head(Societe $object)
 		$head[$h][2] = 'project';
 		$h++;
 	}
+
+	$head[$h][0] = DOL_URL_ROOT.'/societe/products.php?socid='.$object->id;
+		$head[$h][1] = $langs->trans("Products");
+		$nbNote = 0;
+		$sql = "SELECT COUNT(n.rowid) as nb";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as n";
+		$sql .= " WHERE fk_soc = ".$object->id;
+		$resql = $db->query($sql);
+		if ($resql) {
+			$num = $db->num_rows($resql);
+			$i = 0;
+			while ($i < $num) {
+				$obj = $db->fetch_object($resql);
+				$nbNote = $obj->nb;
+				$i++;
+			}
+		} else {
+			dol_print_error($db);
+		}
+		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+		$head[$h][2] = 'products';
+		$h++;
 
 	// Tab to link resources
 	if (!empty($conf->resource->enabled) && !empty($conf->global->RESOURCE_ON_THIRDPARTIES)) {
@@ -763,6 +787,115 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 						print '</tr>';
 					}
+					$i++;
+				}
+			} else {
+				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+			}
+			$db->free($result);
+		} else {
+			dol_print_error($db);
+		}
+		print "</table>";
+		print '</div>';
+
+		print "<br>\n";
+	}
+
+	return $i;
+}
+
+
+function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatelink = 0, $morehtmlright = '')
+{
+	global $user;
+
+	$i = -1;
+
+	if (!empty($conf->projet->enabled) && $user->rights->projet->lire) {
+		$langs->load("projects");
+
+		$newcardbutton = '';
+		if (!empty($conf->projet->enabled) && $user->rights->projet->creer && empty($nocreatelink)) {
+			$newcardbutton .= dolGetButtonTitle($langs->trans('AddProject'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
+		}
+
+		print "\n";
+		print load_fiche_titre($langs->trans("Products Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
+		print '<div class="div-table-responsive">';
+		print "\n".'<table class="noborder" width=100%>';
+
+		$sql  = "SELECT p.rowid as id, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."p_brands as b on p.fk_brand = b.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_family as f on p.fk_category = f.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_subfamily as sf on p.fk_subcategory = sf.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid";
+		
+		$sql .= " WHERE p.fk_soc = ".$object->id;
+		$sql .= " ORDER BY p.datec DESC";
+
+		$result = $db->query($sql);
+		if ($result) {
+			$num = $db->num_rows($result);
+
+			print '<tr class="liste_titre">';
+			print '<td>'.$langs->trans("Ref").'</td>';
+			print '<td>'.$langs->trans("Model").'</td>';
+			print '<td>'.$langs->trans("Name").'</td>';
+			print '<td class="center">'.$langs->trans("Brand").'</td>';
+			print '<td class="center">'.$langs->trans("Category").'</td>';
+			print '<td class="right">'.$langs->trans("Sub Category").'</td>';
+			print '<td class="center">'.$langs->trans("Capacity").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
+			print '<td class="right">'.$langs->trans("Added Date").'</td>';
+			print '<td class="right">'.$langs->trans("Status").'</td>';
+			print '</tr>';
+
+			if ($num > 0) {
+				require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
+				$producttmp = new Product($db);
+
+				$i = 0;
+
+				while ($i < $num) {
+					$obj = $db->fetch_object($result);
+					
+					$producttmp->fetch($obj->fk_product);
+					// To verify role of users
+					
+						print '<tr class="oddeven">';
+
+						// Ref
+						print '<td>';
+						print $projecttmp->getNomUrl(1);
+						print '</td>';
+						//model
+						print '<td>'.$obj->product_model.'</td>';
+						// Product name
+						print '<td>'.$obj->pname.'</td>';
+						
+						// Product Brand
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Category
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Sub Category
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Capacity
+						print '<td>'.$obj->brandname.'</td>';
+						
+						// Date Added
+						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
+						
+						// Status
+						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
+
+						print '</tr>';
+					
 					$i++;
 				}
 			} else {
