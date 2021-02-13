@@ -17,7 +17,7 @@
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData = array('brand_id' => $row['rowid'], 'name' => $row['nom']);
+			$brandData[] = array('brand_id' => $row['rowid'], 'name' => $row['nom']);
 		}
 
 		$status_code = '1';
