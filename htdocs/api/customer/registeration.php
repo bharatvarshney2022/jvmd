@@ -60,19 +60,27 @@
 			$objectContact->firstname = $firstname;
 			$objectContact->statut = '1';
 			$contact_id = $objectContact->create($user);
-			
-			$objectContact->address = $address.",".$city.",".$state;
-			$objectContact->email = $email;
-			$objectContact->town = $city;
-			$objectContact->country_id = '117'; // Country
-			$objectContact->zip = $postalCode;
-			$objectContact->userlatitude = $userlatitude;
-			$objectContact->userlongitude = $userlongitude;
-			$objectContact->device_id = $device_id;
-			$objectContact->fcmToken = $fcmToken;
-			$objectContact->phone_mobile = $object->phone_mobile;
 
-			$objectContact->update($contact_id);
+			if($contact_id > 0)
+			{
+				$objectContact->address = $address.",".$city.",".$state;
+				$objectContact->email = $email;
+				$objectContact->town = $city;
+				$objectContact->country_id = '117'; // Country
+				$objectContact->zip = $postalCode;
+				$objectContact->userlatitude = $userlatitude;
+				$objectContact->userlongitude = $userlongitude;
+				$objectContact->device_id = $device_id;
+				$objectContact->fcmToken = $fcmToken;
+				$objectContact->phone_mobile = $object->phone_mobile;
+
+				$objectContact->update($contact_id);
+				$db->commit();
+			}
+			else
+			{
+				$db->rollback();
+			}
 
 			$status_code = '1';
 			$message = 'User created successfully';
