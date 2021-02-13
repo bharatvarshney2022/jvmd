@@ -62,9 +62,7 @@
 		$objectSociete = new Societe($db);
 		$resultSoc = $objectSociete->isDeviceExists($result->phone_mobile, $device_id);
 		$objectSociete->get_codeclient($objectSociete, 0);
-		echo $objectSociete->code_client; exit;
-
-
+		
 		if($resultSoc == 0)
 		{
 			// Add values
