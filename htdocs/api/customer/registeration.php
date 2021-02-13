@@ -64,12 +64,13 @@
 			$objectContact->address = $address.",".$city.",".$state;
 			$objectContact->email = $email;
 			$objectContact->town = $city;
-			$objectContact->fk_pays = '117'; // Country
+			$objectContact->country_id = '117'; // Country
 			$objectContact->zip = $postalCode;
 			$objectContact->userlatitude = $userlatitude;
 			$objectContact->userlongitude = $userlongitude;
 			$objectContact->device_id = $device_id;
 			$objectContact->fcmToken = $fcmToken;
+			$objectContact->phone_mobile = $object->phone_mobile;
 
 			$objectContact->update($contact_id);
 
