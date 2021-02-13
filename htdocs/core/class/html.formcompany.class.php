@@ -1125,7 +1125,7 @@ class FormCompany extends Form
 		$langs->load("dict");
 
 		$sql = "SELECT rowid, code";
-		$sql .= " FROM ".MAIN_DB_PREFIX."product_model ";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model ";
 		$sql .= " WHERE active = 1";
 		$sql .= " ORDER BY nom ASC";
 
@@ -1171,7 +1171,7 @@ class FormCompany extends Form
 		$langs->load("dict");
 
 		$sql = "SELECT rowid, nom";
-		$sql .= " FROM ".MAIN_DB_PREFIX."p_brands ";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_brands ";
 		$sql .= " WHERE active = 1";
 		$sql .= " ORDER BY nom ASC";
 
@@ -1216,7 +1216,7 @@ class FormCompany extends Form
 		$langs->load("dict");
 
 		$sql = "SELECT rowid, nom";
-		$sql .= " FROM ".MAIN_DB_PREFIX."product_family ";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family ";
 		$sql .= " WHERE active = 1";
 		$sql .= " ORDER BY nom ASC";
 
@@ -1261,7 +1261,7 @@ class FormCompany extends Form
 		$langs->load("dict");
 
 		$sql = "SELECT rowid, nom";
-		$sql .= " FROM ".MAIN_DB_PREFIX."product_subfamily ";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily ";
 		$sql .= " WHERE active = 1";
 		$sql .= " ORDER BY nom ASC";
 

@@ -7,6 +7,8 @@
 	if (! defined("NOLOGIN"))        define("NOLOGIN", '1');				// If this page is public (can be called outside logged session)
 
 	require '../../main.inc.php';
+
+	$temp_user_id = GETPOST('temp_user_id', 'int');
 	
 	$json = $brandData = array();
 

@@ -140,10 +140,10 @@ $tabname[41] = MAIN_DB_PREFIX."c_transport_mode";
 $tabname[42] = MAIN_DB_PREFIX."c_product_nature";
 $tabname[43] = MAIN_DB_PREFIX."c_cities";
 $tabname[44] = MAIN_DB_PREFIX."c_pincodes";
-$tabname[45] = MAIN_DB_PREFIX."p_brands";
-$tabname[46] = MAIN_DB_PREFIX."product_family";
-$tabname[47] = MAIN_DB_PREFIX."product_subfamily";
-$tabname[48] = MAIN_DB_PREFIX."product_model";
+$tabname[45] = MAIN_DB_PREFIX."c_brands";
+$tabname[46] = MAIN_DB_PREFIX."c_product_family";
+$tabname[47] = MAIN_DB_PREFIX."c_product_subfamily";
+$tabname[48] = MAIN_DB_PREFIX."c_product_model";
 
 
 // Dictionary labels
@@ -247,11 +247,11 @@ $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle
 
 $tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_county as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_county = d.rowid and d.active=1 and ct.active=1";
 
-$tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."p_brands";
-$tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."product_family";
-$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, f.nom as family, sf.active FROM ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f WHERE sf.fk_family = f.rowid ";
+$tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_brands";
+$tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_product_family";
+$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, f.nom as family, sf.active FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f WHERE sf.fk_family = f.rowid ";
 
-$tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."product_model as pm, ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f,".MAIN_DB_PREFIX."p_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
+$tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
 
 
 

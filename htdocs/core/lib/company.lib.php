@@ -825,12 +825,12 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
-		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."p_brands as b on p.fk_brand = b.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_family as f on p.fk_category = f.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_subfamily as sf on p.fk_subcategory = sf.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sf on p.fk_subcategory = sf.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid";
 		
 		$sql .= " WHERE p.fk_soc = ".$object->id;
 		$sql .= " ORDER BY p.datec DESC";
@@ -874,7 +874,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print ($i+1);
 						print '</td>';
 						//model
-						print '<td>'.$obj->product_model.'</td>';
+						print '<td>'.$obj->c_product_model.'</td>';
 						// Product name
 						print '<td>'.$obj->pname.'</td>';
 						// Product Brand
