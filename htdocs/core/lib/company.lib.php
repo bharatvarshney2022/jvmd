@@ -841,7 +841,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 			print '<tr class="liste_titre">';
 			print '<td>'.$langs->trans("Ref").'</td>';
-			print '<td>'.$langs->trans("Model").'</td>';
+			print '<td>'.$langs->trans("Model No.").'</td>';
 			print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("Brand").'</td>';
 			print '<td class="center">'.$langs->trans("Category").'</td>';
