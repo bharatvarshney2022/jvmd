@@ -36,13 +36,13 @@
 		$object->verifyOTP($mobile, $user_otp);
 		$db->commit();
 
-		echo $object->rowid;exit;
+		$contactData = $object->getOTPFromMobile($mobile);
 		
 		$already = '1';	
 		$status_code = '1';
 		$message = 'User verified successfully';
 
-		$json = array('status_code' => $status_code, 'message' => $message, 'temp_user_id' => "".$isExist->rowid);
+		$json = array('status_code' => $status_code, 'message' => $message, 'temp_user_id' => "".$contactData->rowid);
 	}
 	
 	$headers = 'Content-type: application/json';
