@@ -62,7 +62,7 @@
 		$objectSociete = new Societe($db);
 		$resultSoc = $objectSociete->isDeviceExists($result->phone_mobile, $device_id);
 		$objectSociete->get_codeclient($objectSociete, 0);
-		
+
 		if($resultSoc == 0)
 		{
 			// Add values
@@ -85,10 +85,11 @@
 			{
 				// Insert new Contact
 				$objectSociete = new Societe($db);
-				$objectSociete->get_codeclient($objectSociete, 0);
 				$objectSociete->name = $firstname." ".$lastname;
 				$objectSociete->name_alias = $firstname." ".$lastname;
 				$objectSociete->status = '1';
+				$objectSociete->code_client = -1;
+				$objectSociete->get_codeclient($objectSociete, 0);
 				$societe_id = $objectSociete->create($user);
 
 				if($societe_id > 0)
