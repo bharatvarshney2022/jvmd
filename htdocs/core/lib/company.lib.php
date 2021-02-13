@@ -849,7 +849,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			print '<td class="center">'.$langs->trans("Capacity").'</td>';
 			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
 			print '<td class="right">'.$langs->trans("Added Date").'</td>';
-			print '<td class="right">'.$langs->trans("Status").'</td>';
+			print '<td class="right">'.$langs->trans("Action").'</td>';
 			print '</tr>';
 
 			if ($num > 0) {
@@ -895,7 +895,12 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						
 						// Status
-						print '<td class="right">'.$producttmp->getLibStatut(5).'</td>';
+						print '<td class="right">';
+						//print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&id='.$obj->rowid.'&backtopage='.urlencode($backtopage).'">';
+						print '<a class="editfielda paddingleft" href="#">';
+						print img_edit();
+							print '</a>';
+						print '</td>';
 
 						print '</tr>';
 					
