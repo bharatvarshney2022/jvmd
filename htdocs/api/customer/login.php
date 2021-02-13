@@ -57,7 +57,7 @@
 		if($isExist1)
 		{
 			$status_code = '1';
-			$message = 'New temporary account has been created';
+			$message = 'New account has been created';
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
@@ -85,7 +85,7 @@
 			$object->create($tempUser);*/
 
 			$status_code = '1';
-			$message = 'New temporary account has been created!';
+			$message = 'New account has been created!';
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
