@@ -849,7 +849,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			print '<td class="center">'.$langs->trans("Capacity").'</td>';
 			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
 			print '<td class="right">'.$langs->trans("Added Date").'</td>';
-			print '<td class="right">'.$langs->trans("Action").'</td>';
+			print '<td class="right">'.$langs->trans("Option").'</td>';
 			print '</tr>';
 
 			if ($num > 0) {
