@@ -57,6 +57,7 @@
 			// Insert new Contact
 			$objectSociete = new Societe($db);
 			$objectSociete->name = $firstname." ".$lastname;
+			$objectSociete->name_alias = $firstname." ".$lastname;
 			$objectSociete->code_client = '-1';
 			$objectSociete->status = '1';
 			$societe_id = $objectSociete->create($user);
