@@ -37,92 +37,106 @@
 
 	if($result > 0)
 	{
-		// Add values
-		$object->firstname = $firstname;
-		$object->lastname = $lastname;
-		$object->address = $address.",".$city.",".$state;
-		$object->email = $email;
-		$object->town = $city;
-		$object->fk_pays = '117'; // Country
-		$object->zip = $postalCode;
-		$object->userlatitude = $userlatitude;
-		$object->userlongitude = $userlongitude;
+		// Check if already exists
+		$objectSociete = new Societe($db);
+		$resultSoc = $object->isDeviceExists($result->phone_mobile, $device_id);
 
-		//$object->fk_departement = '';
-		
-		$update = $object->update($temp_user_id, null, 1, 'update', 1);
-		
-		if($update > 0)
+		if($result == 0)
 		{
-			// Insert new Contact
-			$objectSociete = new Societe($db);
-			$objectSociete->name = $firstname." ".$lastname;
-			$objectSociete->name_alias = $firstname." ".$lastname;
-			$objectSociete->code_client = '-1';
-			$objectSociete->status = '1';
-			$societe_id = $objectSociete->create($user);
+			// Add values
+			$object->firstname = $firstname;
+			$object->lastname = $lastname;
+			$object->address = $address.",".$city.",".$state;
+			$object->email = $email;
+			$object->town = $city;
+			$object->fk_pays = '117'; // Country
+			$object->zip = $postalCode;
+			$object->userlatitude = $userlatitude;
+			$object->userlongitude = $userlongitude;
 
-			if($societe_id > 0)
+			//$object->fk_departement = '';
+			
+			$update = $object->update($temp_user_id, null, 1, 'update', 1);
+			
+			if($update > 0)
 			{
-				$objectSociete->address = $address.",".$city.",".$state;
-				$objectSociete->email = $email;
-				$objectSociete->town = $city;
-				$objectSociete->country_id = '117'; // Country
-				$objectSociete->zip = $postalCode;
-				$objectSociete->phone = $object->phone_mobile;
-				$objectSociete->phone_mobile = $object->phone_mobile;
-				$objectSociete->typent_id = '2';
-				$objectSociete->client = '2';
+				// Insert new Contact
+				$objectSociete = new Societe($db);
+				$objectSociete->name = $firstname." ".$lastname;
+				$objectSociete->name_alias = $firstname." ".$lastname;
+				$objectSociete->code_client = '-1';
+				$objectSociete->status = '1';
+				$societe_id = $objectSociete->create($user);
 
-				$objectSociete->update($societe_id);
-
-
-				$objectContact = new Contact($db);
-
-				$objectContact->socid = $societe_id;
-				$objectContact->lastname = $lastname;
-				$objectContact->firstname = $firstname;
-				$objectContact->statut = '1';
-				$contact_id = $objectContact->create($user);
-
-				if($contact_id > 0)
+				if($societe_id > 0)
 				{
-					$otp = rand(111111, 999999);
+					$objectSociete->address = $address.",".$city.",".$state;
+					$objectSociete->email = $email;
+					$objectSociete->town = $city;
+					$objectSociete->country_id = '117'; // Country
+					$objectSociete->zip = $postalCode;
+					$objectSociete->phone = $object->phone_mobile;
+					$objectSociete->phone_mobile = $object->phone_mobile;
+					$objectSociete->typent_id = '2';
+					$objectSociete->client = '2';
 
-					$objectContact->otp = $otp;
-					$objectContact->address = $address.",".$city.",".$state;
-					$objectContact->email = $email;
-					$objectContact->town = $city;
-					$objectContact->country_id = '117'; // Country
-					$objectContact->zip = $postalCode;
-					$objectContact->userlatitude = $userlatitude;
-					$objectContact->userlongitude = $userlongitude;
-					$objectContact->device_id = $device_id;
-					$objectContact->fcmToken = $fcmToken;
-					$objectContact->phone_mobile = $object->phone_mobile;
+					$objectSociete->update($societe_id);
 
-					$objectContact->update($contact_id);
-					$db->commit();
+
+					$objectContact = new Contact($db);
+
+					$objectContact->socid = $societe_id;
+					$objectContact->lastname = $lastname;
+					$objectContact->firstname = $firstname;
+					$objectContact->statut = '1';
+					$contact_id = $objectContact->create($user);
+
+					if($contact_id > 0)
+					{
+						$otp = rand(111111, 999999);
+
+						$objectContact->otp = $otp;
+						$objectContact->address = $address.",".$city.",".$state;
+						$objectContact->email = $email;
+						$objectContact->town = $city;
+						$objectContact->country_id = '117'; // Country
+						$objectContact->zip = $postalCode;
+						$objectContact->userlatitude = $userlatitude;
+						$objectContact->userlongitude = $userlongitude;
+						$objectContact->device_id = $device_id;
+						$objectContact->fcmToken = $fcmToken;
+						$objectContact->phone_mobile = $object->phone_mobile;
+
+						$objectContact->update($contact_id);
+						$db->commit();
+					}
+					else
+					{
+						$db->rollback();
+					}
 				}
 				else
 				{
 					$db->rollback();
 				}
+
+				$status_code = '1';
+				$message = 'User created successfully';
+
+				$json = array('status_code' => $status_code, 'message' => $message, "user_id" => "".$societe_id);
 			}
 			else
 			{
-				$db->rollback();
+				$status_code = '0';
+				$message = 'Something went wrong OTP';
+				
+				$json = array('status_code' => $status_code, 'message' => $message);
 			}
-
-			$status_code = '1';
-			$message = 'User created successfully';
-
-			$json = array('status_code' => $status_code, 'message' => $message, "user_id" => "".$societe_id);
 		}
 		else
 		{
 			$status_code = '0';
-			$message = 'Something went wrong OTP';
+			$message = 'Sorry! Device already exists';
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
