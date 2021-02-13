@@ -825,7 +825,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
-		$sql  = "SELECT p.rowid as id, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."p_brands as b on p.fk_brand = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_family as f on p.fk_category = f.rowid";
@@ -863,13 +863,14 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 					$obj = $db->fetch_object($result);
 					
 					$producttmp->fetch($obj->fk_product);
+
 					// To verify role of users
 					
 						print '<tr class="oddeven">';
 
 						// Ref
 						print '<td>';
-						print $projecttmp->getNomUrl(1);
+						print $producttmp->getNomUrl(1);
 						print '</td>';
 						//model
 						print '<td>'.$obj->product_model.'</td>';
@@ -892,7 +893,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						
 						// Status
-						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
+						print '<td class="right">'.$producttmp->getLibStatut(5).'</td>';
 
 						print '</tr>';
 					
