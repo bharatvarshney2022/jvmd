@@ -89,7 +89,6 @@
 				$objectSociete->name_alias = $firstname." ".$lastname;
 				$objectSociete->status = '1';
 				$objectSociete->code_client = -1;
-				$objectSociete->get_codeclient($objectSociete, 0);
 				$societe_id = $objectSociete->create($user);
 
 				if($societe_id > 0)
@@ -107,6 +106,13 @@
 					$objectSociete->status = '1';
 
 					$objectSociete->update($societe_id);
+
+					// Update Code-Client
+					$code_client = $objectSociete->get_codeclient($objectSociete, 0)
+
+					$sql1 = 'UPDATE '.MAIN_DB_PREFIX."societe SET code_client = '".$db->escape($code_client)."' WHERE rowid = '".(int)$societe_id."'";
+					$resql1 = $db->query($sql1);
+
 
 					// Insert Entry of Zip Code (Additional Field)
 					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_object = '".$societe_id."', fk_pincode = '".$fk_pincode."'";
