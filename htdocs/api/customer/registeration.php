@@ -77,7 +77,7 @@
 					$objectSociete->phone = $object->phone_mobile;
 					$objectSociete->phone_mobile = $object->phone_mobile;
 					$objectSociete->typent_id = '2';
-					$objectSociete->client = '2';
+					$objectSociete->client = '1'; // Customer
 					$objectSociete->status = '1';
 
 					$objectSociete->update($societe_id);
