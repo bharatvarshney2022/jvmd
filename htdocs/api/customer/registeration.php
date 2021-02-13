@@ -32,6 +32,17 @@
 	
 	$json = array();
 
+	// Get ZIPCDOE
+	$sql = "SELECT z.rowid, z.zip FROM ".MAIN_DB_PREFIX."c_pincodes as z";
+	$sql .= " WHERE z.active = 1 AND z.zip LIKE '".$db->escape($postalCode)."%'";
+	$resql1 = $db->query($sql);
+	if ($resql1)
+	{
+		$row = $db->fetch_array($resql1);
+		print_r($row); exit;
+	}
+
+
 	$object = new ContactTemp($db);
 	$result = $object->fetch($temp_user_id);
 
@@ -46,7 +57,7 @@
 			// Add values
 			$object->firstname = $firstname;
 			$object->lastname = $lastname;
-			$object->address = $address.",".$city.",".$state;
+			$object->address = $address;
 			$object->email = $email;
 			$object->town = $city;
 			$object->fk_pays = '117'; // Country
@@ -69,7 +80,7 @@
 
 				if($societe_id > 0)
 				{
-					$objectSociete->address = $address.",".$city.",".$state;
+					$objectSociete->address = $address;
 					$objectSociete->email = $email;
 					$objectSociete->town = $city;
 					$objectSociete->country_id = '117'; // Country
@@ -81,6 +92,10 @@
 					$objectSociete->status = '1';
 
 					$objectSociete->update($societe_id);
+
+					// Insert Entry of Zip Code (Additional Field)
+					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_pincode = '1'";
+					$resql1 = $db->query($sql1);
 
 
 					$objectContact = new Contact($db);
@@ -96,7 +111,7 @@
 						$otp = rand(111111, 999999);
 
 						$objectContact->otp = $otp;
-						$objectContact->address = $address.",".$city.",".$state;
+						$objectContact->address = $address;
 						$objectContact->email = $email;
 						$objectContact->town = $city;
 						$objectContact->country_id = '117'; // Country
