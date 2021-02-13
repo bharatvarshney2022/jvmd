@@ -29,8 +29,26 @@
 	$json = array();
 
 	$object = new ContactTemp($db);
-	$object->fetch($temp_user_id);
-	print_r($object); exit;
+	$result = $object->fetch($temp_user_id);
+
+	if($result > 0)
+	{
+		// Add values
+		$object->firstname = $firstname;
+		$object->lastname = $lastname;
+		$object->address = $address.",".$city.",".$state;
+		$object->email = $email;
+		$object->town = $city;
+		$object->fk_pays = '117'; // Country
+		$object->zip = $postalCode;
+		$object->userlatitude = $userlatitude;
+		$object->userlongitude = $userlongitude;
+
+		//$object->fk_departement = '';
+		
+		$object->update();
+	}
+	exit;
 	
 	
 	$headers = 'Content-type: application/json';

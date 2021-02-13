@@ -103,6 +103,9 @@ class ContactTemp extends CommonObject
 		'town' =>array('type'=>'text', 'label'=>'Town', 'enabled'=>1, 'visible'=>1, 'position'=>65),
 		'fk_departement' =>array('type'=>'integer', 'label'=>'Fk departement', 'enabled'=>1, 'visible'=>3, 'position'=>70),
 		'fk_pays' =>array('type'=>'integer', 'label'=>'Fk pays', 'enabled'=>1, 'visible'=>3, 'position'=>75),
+		'userlatitude' =>array('type'=>'text', 'label'=>'Town', 'enabled'=>1, 'visible'=>1, 'position'=>76),
+		'userlongitude' =>array('type'=>'text', 'label'=>'Town', 'enabled'=>1, 'visible'=>1, 'position'=>77),
+
 		'birthday' =>array('type'=>'date', 'label'=>'Birthday', 'enabled'=>1, 'visible'=>3, 'position'=>80),
 		'poste' =>array('type'=>'varchar(80)', 'label'=>'PostOrFunction', 'enabled'=>1, 'visible'=>-1, 'position'=>85),
 		'phone' =>array('type'=>'varchar(30)', 'label'=>'Phone', 'enabled'=>1, 'visible'=>1, 'position'=>90, 'searchall'=>1),
@@ -148,6 +151,9 @@ class ContactTemp extends CommonObject
 	public $state_id; // Id of department
 	public $state_code; // Code of department
 	public $state; // Label of department
+
+	public $userlatitude; // Label of department
+	public $userlongitude; // Label of department
 
 	public $poste; // Position
 
@@ -519,6 +525,10 @@ class ContactTemp extends CommonObject
 		$sql .= ", fk_pays=".($this->country_id > 0 ? $this->country_id : 'NULL');
 		$sql .= ", fk_departement=".($this->state_id > 0 ? $this->state_id : 'NULL');
 		$sql .= ", poste='".$this->db->escape($this->poste)."'";
+
+		$sql .= ", userlongitude='".$this->db->escape($this->userlongitude)."'";
+		$sql .= ", userlongitude='".$this->db->escape($this->userlongitude)."'";
+
 		$sql .= ", fax='".$this->db->escape($this->fax)."'";
 		$sql .= ", email='".$this->db->escape($this->email)."'";
 		$sql .= ", socialnetworks = '".$this->db->escape(json_encode($this->socialnetworks))."'";
@@ -876,7 +886,7 @@ class ContactTemp extends CommonObject
 		$sql = "SELECT c.rowid, c.entity, c.fk_soc, c.ref_ext, c.civility as civility_code, c.lastname, c.firstname,";
 		$sql .= " c.address, c.statut, c.zip, c.town,";
 		$sql .= " c.fk_pays as country_id,";
-		$sql .= " c.fk_departement as state_id,";
+		$sql .= " c.fk_departement as state_id, c.userlatitude, c.userlongitude,";
 		$sql .= " c.birthday,";
 		$sql .= " c.poste, c.phone, c.phone_perso, c.phone_mobile, c.fax, c.email,";
 		$sql .= " c.socialnetworks,";
@@ -940,6 +950,9 @@ class ContactTemp extends CommonObject
 				$this->state_id = $obj->state_id;
 				$this->state_code = $obj->state_code;
 				$this->state = $obj->state;
+
+				$this->userlatitude = $obj->userlatitude;
+				$this->userlongitude = $obj->userlongitude;
 
 				$this->country_id = $obj->country_id;
 				$this->country_code = $obj->country_id ? $obj->country_code : '';
