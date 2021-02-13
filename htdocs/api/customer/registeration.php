@@ -108,9 +108,10 @@
 					$objectSociete->update($societe_id);
 
 					// Update Code-Client
-					$code_client = $objectSociete->get_codeclient($objectSociete, 0);
+					$code_client = $objectSociete->createCodeClient($objectSociete, 0);
 
 					$sql1 = 'UPDATE '.MAIN_DB_PREFIX."societe SET code_client = '".$db->escape($code_client)."' WHERE rowid = '".(int)$societe_id."'";
+					echo $sql1; exit;
 					$resql1 = $db->query($sql1);
 
 

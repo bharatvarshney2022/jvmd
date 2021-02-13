@@ -2854,6 +2854,28 @@ class Societe extends CommonObject
 		}
 	}
 
+	public function createCodeClient($objsoc = 0, $type = 0)
+	{
+		// phpcs:enable
+		global $conf;
+		if (!empty($conf->global->SOCIETE_CODECLIENT_ADDON)) {
+			$module = $conf->global->SOCIETE_CODECLIENT_ADDON;
+
+			$dirsociete = array_merge(array('/core/modules/societe/'), $conf->modules_parts['societe']);
+			foreach ($dirsociete as $dirroot) {
+				$res = dol_include_once($dirroot.$module.'.php');
+				if ($res) {
+					break;
+				}
+			}
+			$mod = new $module();
+
+			return $mod->getNextValue($objsoc, $type);
+
+			dol_syslog(get_class($this)."::createCodeClient code_client=".$this->code_client." module=".$module);
+		}
+	}
+
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Assigns a vendor code from the code control module.
