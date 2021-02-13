@@ -35,6 +35,8 @@
 		
 		$object->verifyOTP($mobile, $user_otp);
 		$db->commit();
+
+		echo $object->rowid;exit;
 		
 		$already = '1';	
 		$status_code = '1';
