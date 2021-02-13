@@ -77,7 +77,7 @@
 			$status_code = '1';
 			$message = 'User created successfully';
 
-			$json = array('status_code' => $status_code, 'message' => $message);
+			$json = array('status_code' => $status_code, 'message' => $message, "user_id" => "".$contact_id);
 		}
 		else
 		{
