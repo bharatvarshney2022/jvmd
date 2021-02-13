@@ -71,7 +71,8 @@
 				$objectSociete->phone_mobile = $object->phone_mobile;
 				$objectSociete->typent_id = '2';
 
-				$objectContact->update($societe_id);
+				$objectSociete->update($societe_id);
+				
 
 				$objectContact = new Contact($db);
 
