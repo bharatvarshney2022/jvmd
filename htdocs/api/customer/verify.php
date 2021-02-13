@@ -40,7 +40,7 @@
 		$status_code = '1';
 		$message = 'User verified successfully';
 
-		$json = array('status_code' => $status_code, 'message' => $message);
+		$json = array('status_code' => $status_code, 'message' => $message, 'temp_user_id' => "".$isExist->rowid);
 	}
 	
 	$headers = 'Content-type: application/json';

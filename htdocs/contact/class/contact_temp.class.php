@@ -1913,7 +1913,7 @@ class ContactTemp extends CommonObject
 
 	public function checkOTP($mobile, $user_otp)
 	{
-		$sql = "SELECT phone_mobile";
+		$sql = "SELECT rowid, phone_mobile";
 		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
 		$sql .= " WHERE phone_mobile = '".$mobile."' AND otp = '".$user_otp."' ";
 

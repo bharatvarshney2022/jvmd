@@ -31,7 +31,7 @@
 		$updateSql.= " WHERE phone_mobile = '".(int)$mobile."' ";
 		$resql = $db->query($updateSql);
 
-		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp, 'temp_user_id' => "".$isExist->rowid);
+		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
 	}
 	else
 	{
