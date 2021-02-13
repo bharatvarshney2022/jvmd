@@ -2838,7 +2838,7 @@ class SocieteTemp extends CommonObject
 		if (!empty($conf->global->SOCIETE_CODECLIENT_ADDON)) {
 			$module = $conf->global->SOCIETE_CODECLIENT_ADDON;
 
-			$dirsociete = array_merge(array('/core/modules/societe/'), $conf->modules_parts['societe']);
+			$dirsociete = array_merge(array('/core/modules/societe_temp/'), $conf->modules_parts['societe']);
 			foreach ($dirsociete as $dirroot) {
 				$res = dol_include_once($dirroot.$module.'.php');
 				if ($res) {
