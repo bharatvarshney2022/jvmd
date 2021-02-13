@@ -512,6 +512,7 @@ class Contact extends CommonObject
 		$this->town = (empty($this->town) ? '' : trim($this->town));
 		$this->setUpperOrLowerCase();
 		$this->country_id = ($this->country_id > 0 ? $this->country_id : $this->country_id);
+		$this->otp = ($this->otp != '' ? $this->otp : '');
 		if (empty($this->statut)) $this->statut = 0;
 		if (empty($this->civility_code) && !is_numeric($this->civility_id)) $this->civility_code = $this->civility_id; // For backward compatibility
 		$this->db->begin();
@@ -533,6 +534,7 @@ class Contact extends CommonObject
 		$sql .= ", device_id='".$this->db->escape($this->device_id)."'";
 		$sql .= ", fcmToken='".$this->db->escape($this->fcmToken)."'";
 
+		$sql .= ", otp='".$this->db->escape($this->otp)."'";
 		$sql .= ", poste='".$this->db->escape($this->poste)."'";
 		$sql .= ", fax='".$this->db->escape($this->fax)."'";
 		$sql .= ", email='".$this->db->escape($this->email)."'";

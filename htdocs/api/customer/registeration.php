@@ -63,6 +63,9 @@
 
 			if($contact_id > 0)
 			{
+				$otp = rand(111111, 999999);
+
+				$objectContact->otp = $otp;
 				$objectContact->address = $address.",".$city.",".$state;
 				$objectContact->email = $email;
 				$objectContact->town = $city;
