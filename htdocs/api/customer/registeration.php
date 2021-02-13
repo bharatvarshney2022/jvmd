@@ -35,7 +35,7 @@
 	$object = new ContactTemp($db);
 	$result = $object->fetch($temp_user_id);
 
-	if($result > 0)
+	if($result)
 	{
 		// Check if already exists
 		$objectSociete = new Societe($db);
@@ -136,7 +136,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Sorry! Device and/or Phone already exists';
+			$message = 'Sorry! Device and/or Phone already exists'.$result->phone_mobile;
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
