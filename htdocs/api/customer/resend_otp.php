@@ -24,14 +24,14 @@
 		$status_code = '1';
 		$message = 'Resend OTP';
 
-		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => $isExist['otp']);
-
 		$otp = rand(111111, 999999);
 		$table = MAIN_DB_PREFIX."socpeople_temp";
         $updateSql ="UPDATE ".$table." SET";
 		$updateSql.= " otp = '".$db->escape($otp)."'";
 		$updateSql.= " WHERE phone_mobile = '".(int)$mobile."' ";
 		$resql = $db->query($updateSql);
+
+		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => $otp);
 	}
 	else
 	{
