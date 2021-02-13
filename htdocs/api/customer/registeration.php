@@ -53,8 +53,7 @@
 			$object->zip = $postalCode;
 			$object->userlatitude = $userlatitude;
 			$object->userlongitude = $userlongitude;
-
-			//$object->fk_departement = '';
+			$object->status = '1';
 			
 			$update = $object->update($temp_user_id, null, 1, 'update', 1);
 			
@@ -79,6 +78,7 @@
 					$objectSociete->phone_mobile = $object->phone_mobile;
 					$objectSociete->typent_id = '2';
 					$objectSociete->client = '2';
+					$objectSociete->status = '1';
 
 					$objectSociete->update($societe_id);
 
