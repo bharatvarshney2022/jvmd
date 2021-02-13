@@ -136,7 +136,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Sorry! Device already exists';
+			$message = 'Sorry! Device and/or Phone already exists';
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
