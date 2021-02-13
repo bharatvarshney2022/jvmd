@@ -1910,4 +1910,26 @@ class Contact extends CommonObject
 
 		return "Error, mode/status not found";
 	}
+
+	public function checkOTP($user_id, $user_otp)
+	{
+		$sql = "SELECT phone_mobile";
+		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
+		$sql .= " WHERE rowid = '".$user_id."' AND otp = '".$user_otp."' ";
+		
+		$resql = $this->db->query($sql);
+		
+		$num = $this->db->num_rows($resql);
+		
+		return $num;
+	}
+
+	public function verifyOTP($user_id, $user_otp)
+	{
+		$sql = "UPDATE ".MAIN_DB_PREFIX.$this->table_element;
+		$sql .= " SET statut = '1' WHERE rowid = '".$user_id."' AND otp = '".$user_otp."'";
+		
+		$resql = $this->db->query($sql);
+		return $resql;
+	}
 }

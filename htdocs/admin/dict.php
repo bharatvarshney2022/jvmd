@@ -91,7 +91,8 @@ $hookmanager->initHooks(array('admin'));
 // Put here declaration of dictionaries properties
 
 // Sort order to show dictionary (0 is space). All other dictionaries (added by modules) will be at end of this.
-$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,48,  0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
+//$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,48,  0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
+$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,48,  0, 39, 40, 38, 0, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
 
 // Name of SQL tables of dictionaries
 $tabname = array();
@@ -244,7 +245,7 @@ $tabsql[42] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX.
 //$tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libelle, d.fk_region as region_id, r.nom as region, c.code as country_code, c.label as country, d.active FROM ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE d.fk_region=r.code_region and r.fk_pays=c.rowid and r.active=1 and c.active=1";
 $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle, ct.fk_state as state_id, d.nom as state, d.fk_region, r.nom as region, c.code as country_code, c.label as country, ct.active FROM ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_country as c WHERE ct.fk_state = d.rowid and d.fk_region=r.code_region and r.fk_pays=c.rowid and d.active=1 and r.active=1 and c.active=1";
 
-$tabsql[44] = "SELECT p.rowid as rowid, p.code_pincode as code, p.nom as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_state as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_state = d.rowid and ct.fk_state = d.rowid and d.active=1 and ct.active=1";
+$tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_county as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_county = d.rowid and d.active=1 and ct.active=1";
 
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."p_brands";
 $tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."product_family";
@@ -453,7 +454,7 @@ $tabfieldinsert[40] = "code,libelle,picto";
 $tabfieldinsert[41] = "code,label";
 $tabfieldinsert[42] = "code,label";
 $tabfieldinsert[43] = "code_city,nom,fk_state";
-$tabfieldinsert[44] = "code_pincode,nom,fk_city,fk_state";
+$tabfieldinsert[44] = "code,zip,fk_city,fk_county";
 $tabfieldinsert[45] = "code,nom";
 $tabfieldinsert[46] = "code,nom";
 $tabfieldinsert[47] = "code,nom,fk_family";

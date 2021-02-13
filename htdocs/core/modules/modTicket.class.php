@@ -120,7 +120,7 @@ class modTicket extends DolibarrModules
 			$conf->ticket = new stdClass();
 			$conf->ticket->enabled = 0;
 		}
-		$this->dictionaries = array(
+		/*$this->dictionaries = array(
 			'langs' => 'ticket',
 			'tabname' => array(MAIN_DB_PREFIX."c_ticket_type", MAIN_DB_PREFIX."c_ticket_severity", MAIN_DB_PREFIX."c_ticket_category", MAIN_DB_PREFIX."c_ticket_resolution"),
 			'tablib' => array("TicketDictType", "TicketDictSeverity", "TicketDictCategory", "TicketDictResolution"),
@@ -137,7 +137,7 @@ class modTicket extends DolibarrModules
 			'tabrowid' => array("rowid", "rowid", "rowid", "rowid"),
 			'tabcond' => array($conf->ticket->enabled, $conf->ticket->enabled, $conf->ticket->enabled, $conf->ticket->enabled),
 			'tabhelp' => array(array('code'=>$langs->trans("EnterAnyCode"), 'use_default'=>$langs->trans("Enter0or1")), array('code'=>$langs->trans("EnterAnyCode"), 'use_default'=>$langs->trans("Enter0or1")), array('code'=>$langs->trans("EnterAnyCode"), 'use_default'=>$langs->trans("Enter0or1")), array('code'=>$langs->trans("EnterAnyCode"), 'use_default'=>$langs->trans("Enter0or1"))),
-		);
+		);*/
 
 		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.

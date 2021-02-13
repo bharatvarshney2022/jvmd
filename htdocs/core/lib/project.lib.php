@@ -41,13 +41,13 @@ function project_prepare_head(Project $project)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/projet/card.php?id='.$project->id;
-	$head[$h][1] = $langs->trans("Project");
+	$head[$h][1] = $langs->trans("Leads");
 	$head[$h][2] = 'project';
 	$h++;
 
 	$nbContact = count($project->liste_contact(-1, 'internal')) + count($project->liste_contact(-1, 'external'));
 	$head[$h][0] = DOL_URL_ROOT.'/projet/contact.php?id='.$project->id;
-	$head[$h][1] = $langs->trans("ProjectContact");
+	$head[$h][1] = $langs->trans("Lead Contact");
 	if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 	$head[$h][2] = 'contact';
 	$h++;
@@ -125,10 +125,10 @@ function project_prepare_head(Project $project)
 	// Entries must be declared in modules descriptor with line
 	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
 	// $this->tabs = array('entity:-tabname);   												to remove a tab
-	complete_head_from_modules($conf, $langs, $project, $head, $h, 'project');
+	//complete_head_from_modules($conf, $langs, $project, $head, $h, 'project');
 
 
-	if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
+	/*if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
 	{
 		$nbNote = 0;
 		if (!empty($project->note_private)) $nbNote++;
@@ -138,18 +138,18 @@ function project_prepare_head(Project $project)
 		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'notes';
 		$h++;
-	}
+	}*/
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
 	$upload_dir = $conf->projet->dir_output."/".dol_sanitizeFileName($project->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $project->element, $project->id);
-	$head[$h][0] = DOL_URL_ROOT.'/projet/document.php?id='.$project->id;
+	/*$head[$h][0] = DOL_URL_ROOT.'/projet/document.php?id='.$project->id;
 	$head[$h][1] = $langs->trans('Documents');
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 	$head[$h][2] = 'document';
-	$h++;
+	$h++;*/
 
 	// Manage discussion
 	if (!empty($conf->global->PROJECT_ALLOW_COMMENT_ON_PROJECT))
@@ -162,7 +162,7 @@ function project_prepare_head(Project $project)
 		$h++;
 	}
 
-	$head[$h][0] = DOL_URL_ROOT.'/projet/info.php?id='.$project->id;
+	/*$head[$h][0] = DOL_URL_ROOT.'/projet/info.php?id='.$project->id;
 	$head[$h][1] .= $langs->trans("Events");
 	if (!empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read)))
 	{
@@ -170,7 +170,7 @@ function project_prepare_head(Project $project)
 		$head[$h][1] .= $langs->trans("Agenda");
 	}
 	$head[$h][2] = 'agenda';
-	$h++;
+	$h++;*/
 
 	complete_head_from_modules($conf, $langs, $project, $head, $h, 'project', 'remove');
 
@@ -230,17 +230,17 @@ function task_prepare_head($object)
 
 	if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
 	{
-		$nbNote = 0;
+		/*$nbNote = 0;
 		if (!empty($object->note_private)) $nbNote++;
 		if (!empty($object->note_public)) $nbNote++;
 		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/note.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
 		$head[$h][1] = $langs->trans('Notes');
 		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'task_notes';
-		$h++;
+		$h++;*/
 	}
 
-	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
+	/*$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
 	$filesdir = $conf->projet->dir_output."/".dol_sanitizeFileName($object->project->ref).'/'.dol_sanitizeFileName($object->ref);
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	include_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
@@ -249,10 +249,10 @@ function task_prepare_head($object)
 	$head[$h][1] = $langs->trans('Documents');
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 	$head[$h][2] = 'task_document';
-	$h++;
+	$h++;*/
 
 	// Manage discussion
-	if (!empty($conf->global->PROJECT_ALLOW_COMMENT_ON_TASK))
+	/*if (!empty($conf->global->PROJECT_ALLOW_COMMENT_ON_TASK))
 	{
 		$nbComments = $object->getNbComments();
 		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/comment.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
@@ -260,7 +260,7 @@ function task_prepare_head($object)
 		if ($nbComments > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbComments.'</span>';
 		$head[$h][2] = 'task_comment';
 		$h++;
-	}
+	}*/
 
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'task', 'remove');
 

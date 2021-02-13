@@ -53,6 +53,7 @@ if (!empty($conf->adherent->enabled)) require_once DOL_DOCUMENT_ROOT.'/adherents
 if (!empty($conf->categorie->enabled)) require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 if (!empty($conf->stock->enabled)) require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
+
 $id = GETPOST('id', 'int');
 $action		= GETPOST('action', 'aZ09');
 $mode = GETPOST('mode', 'alpha');
@@ -104,8 +105,20 @@ $langs->loadLangs(array('users', 'companies', 'ldap', 'admin', 'hrm', 'stocks'))
 $object = new User($db);
 $extrafields = new ExtraFields($db);
 
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
 // fetch optionals attributes and labels
-$extrafields->fetch_name_optionals_label($object->table_element);
+$extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
 
 $socialnetworks = getArrayOfSocialNetworks();
 
@@ -264,6 +277,8 @@ if (empty($reshook)) {
 
 			$object->lang = GETPOST('default_lang', 'aZ09');
 
+			$object->statut = 0;
+
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
 			if ($ret < 0) {
@@ -289,6 +304,9 @@ if (empty($reshook)) {
 				}*/
 			}
 
+			// Set user status inactive by default
+			$user->statut = 0;
+
 			$db->begin();
 
 			$id = $object->create($user);
@@ -301,7 +319,11 @@ if (empty($reshook)) {
 					$usercats = GETPOST('usercats', 'array');
 					$object->setCategories($usercats);
 				}
+
 				$db->commit();
+
+				$object->fetch($id);
+				$object->setstatus(0);
 
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
 				exit;
@@ -985,7 +1007,9 @@ if ($action == 'create' || $action == 'adduserldap')
 		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 0, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');
 	}else{
 		$object->fk_user = $user->id;
-		print img_picto('', 'user').$form->select_dolusers($object->fk_user, 'fk_user', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');	
+
+		print img_picto('', 'user').$form->select_dolusers($user->id, 'fk_user1', 1, array($object->id), 1, '', 0, $conf->entity, 0, 0, '', 0, '', 'maxwidth180');	
+		print '<input type="hidden" name="fk_user" value="'.$user->id.'">';
 	}	
 	
 	print '</td>';
@@ -1401,7 +1425,6 @@ if ($action == 'create' || $action == 'adduserldap')
          */
 		if ($action != 'edit')
 		{
-			
 			print dol_get_fiche_head($head, 'user', $title, -1, 'user');
 			
 
@@ -1782,8 +1805,7 @@ if ($action == 'create' || $action == 'adduserldap')
 				}
 			}
 
-			// Other attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			
 
 			// Company / Contact
 			if (!empty($conf->societe->enabled))
@@ -1853,7 +1875,12 @@ if ($action == 'create' || $action == 'adduserldap')
 			print '</div>';
 
 			print '</div></div>';
-			print '<div style="clear:both"></div>';
+			print '<div style="clear:both"></div> <hr />';
+
+			// Other attributes
+			print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			print '</tbody></table></div>';
 
 
 			print dol_get_fiche_end();

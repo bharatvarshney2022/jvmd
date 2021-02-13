@@ -5264,6 +5264,8 @@ abstract class CommonObject
 
 		if (empty($userused)) $userused = $user;
 
+		//echo '<pre>';print_r($this->array_options); exit;
+
 		$error = 0;
 
 		if (!empty($this->array_options))
@@ -5393,6 +5395,10 @@ abstract class CommonObject
 							$this->array_options[$key] = strtotime($this->array_options[$key]);
 						}
 						$new_array_options[$key] = $this->db->idate($this->array_options[$key]);
+						break;
+					case 'sellistmultiple':
+						$array_options_data = implode(",", $this->array_options[$key]);
+						$new_array_options[$key] = $array_options_data;
 						break;
 		   			case 'link':
 						$param_list = array_keys($attributeParam['options']);

@@ -255,7 +255,7 @@ if ($id > 0 || !empty($ref))
 			print '<table class="border tableforfield centpercent">';
 
 			// Usage
-			print '<tr><td class="tdtop">';
+			print '<tr style="display:none;"><td class="tdtop">';
 			print $langs->trans("Usage");
 			print '</td>';
 			print '<td>';
@@ -283,7 +283,7 @@ if ($id > 0 || !empty($ref))
 			print '</td></tr>';
 
 			// Visibility
-			print '<tr><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
+			print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
 			if ($projectstatic->public) print $langs->trans('SharedProject');
 			else print $langs->trans('PrivateProject');
 			print '</td></tr>';
@@ -299,7 +299,7 @@ if ($id > 0 || !empty($ref))
 			print '</td></tr>';
 
 			// Budget
-			print '<tr><td>'.$langs->trans("Budget").'</td><td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 			if (strcmp($projectstatic->budget_amount, '')) print price($projectstatic->budget_amount, '', $langs, 1, 0, 0, $conf->currency);
 			print '</td></tr>';
 
@@ -627,14 +627,14 @@ if ($id > 0 || !empty($ref))
 			$genallowed = ($user->rights->projet->lire);
 			$delallowed = ($user->rights->projet->creer);
 
-			print $formfile->showdocuments('project_task', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf);
+			//print $formfile->showdocuments('project_task', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf);
 
 			print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
 			// List of actions on element
 			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 			$formactions = new FormActions($db);
-			$somethingshown = $formactions->showactions($object, 'task', $socid, 1, '', 10, 'withproject='.$withproject);
+			//$somethingshown = $formactions->showactions($object, 'task', $socid, 1, '', 10, 'withproject='.$withproject);
 
 			print '</div></div></div>';
 		}

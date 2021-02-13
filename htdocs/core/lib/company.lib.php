@@ -46,7 +46,7 @@ function societe_prepare_head(Societe $object)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/societe/card.php?socid='.$object->id;
-	$head[$h][1] = $langs->trans("ThirdParty");
+	$head[$h][1] = $langs->trans("Customer Info");
 	$head[$h][2] = 'card';
 	$h++;
 
@@ -71,12 +71,12 @@ function societe_prepare_head(Societe $object)
 			$h++;
 		}
 	} else {
-		$head[$h][0] = DOL_URL_ROOT.'/societe/societecontact.php?socid='.$object->id;
+		/*$head[$h][0] = DOL_URL_ROOT.'/societe/societecontact.php?socid='.$object->id;
 		$nbContact = count($object->liste_contact(-1, 'internal')) + count($object->liste_contact(-1, 'external'));
 		$head[$h][1] = $langs->trans("ContactsAddresses");
 		if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 		$head[$h][2] = 'contact';
-		$h++;
+		$h++;*/
 	}
 
 	if ($object->client == 1 || $object->client == 2 || $object->client == 3) {
@@ -84,9 +84,9 @@ function societe_prepare_head(Societe $object)
 		$head[$h][1] = '';
 		if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && ($object->client == 2 || $object->client == 3)) $head[$h][1] .= $langs->trans("Prospect");
 		if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && $object->client == 3) $head[$h][1] .= ' | ';
-		if (empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && ($object->client == 1 || $object->client == 3)) $head[$h][1] .= $langs->trans("Customer");
+		if (empty($conf->global->SOCIETE_DISABLE_CUSTOMERS) && ($object->client == 1 || $object->client == 3))/* $head[$h][1] .= $langs->trans("Customer");
 		$head[$h][2] = 'customer';
-		$h++;
+		$h++;*/
 
 		if (!empty($conf->global->PRODUIT_CUSTOMER_PRICES)) {
 			$langs->load("products");
@@ -106,9 +106,11 @@ function societe_prepare_head(Societe $object)
 		$h++;
 	}
 
+	
+
 	if (!empty($conf->projet->enabled) && (!empty($user->rights->projet->lire))) {
 		$head[$h][0] = DOL_URL_ROOT.'/societe/project.php?socid='.$object->id;
-		$head[$h][1] = $langs->trans("Projects");
+		$head[$h][1] = $langs->trans("Leads");
 		$nbNote = 0;
 		$sql = "SELECT COUNT(n.rowid) as nb";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet as n";
@@ -130,6 +132,28 @@ function societe_prepare_head(Societe $object)
 		$head[$h][2] = 'project';
 		$h++;
 	}
+
+	$head[$h][0] = DOL_URL_ROOT.'/societe/products.php?socid='.$object->id;
+		$head[$h][1] = $langs->trans("Products");
+		$nbNote = 0;
+		$sql = "SELECT COUNT(n.rowid) as nb";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as n";
+		$sql .= " WHERE fk_soc = ".$object->id;
+		$resql = $db->query($sql);
+		if ($resql) {
+			$num = $db->num_rows($resql);
+			$i = 0;
+			while ($i < $num) {
+				$obj = $db->fetch_object($resql);
+				$nbNote = $obj->nb;
+				$i++;
+			}
+		} else {
+			dol_print_error($db);
+		}
+		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+		$head[$h][2] = 'products';
+		$h++;
 
 	// Tab to link resources
 	if (!empty($conf->resource->enabled) && !empty($conf->global->RESOURCE_ON_THIRDPARTIES)) {
@@ -689,7 +713,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		}
 
 		print "\n";
-		print load_fiche_titre($langs->trans("ProjectsDedicatedToThisThirdParty"), $newcardbutton.$morehtmlright, '');
+		print load_fiche_titre($langs->trans("Leads Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
@@ -710,9 +734,9 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("DateStart").'</td>';
 			print '<td class="center">'.$langs->trans("DateEnd").'</td>';
-			print '<td class="right">'.$langs->trans("OpportunityAmountShort").'</td>';
-			print '<td class="center">'.$langs->trans("OpportunityStatusShort").'</td>';
-			print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityAmountShort").'</td>';
+			//print '<td class="center">'.$langs->trans("OpportunityStatusShort").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
 			print '<td class="right">'.$langs->trans("Status").'</td>';
 			print '</tr>';
 
@@ -745,7 +769,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Date end
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						// Opp amount
-						print '<td class="right">';
+						/*print '<td class="right">';
 						if ($obj->opp_status_code) {
 							print price($obj->opp_amount, 1, '', 1, -1, -1, '');
 						}
@@ -757,7 +781,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Opp percent
 						print '<td class="right">';
 						if ($obj->opp_percent) print price($obj->opp_percent, 1, '', 1, 0).'%';
-						print '</td>';
+						print '</td>';*/
 						// Status
 						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
 
@@ -766,7 +790,116 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 					$i++;
 				}
 			} else {
-				print '<tr class="oddeven"><td colspan="8" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+			}
+			$db->free($result);
+		} else {
+			dol_print_error($db);
+		}
+		print "</table>";
+		print '</div>';
+
+		print "<br>\n";
+	}
+
+	return $i;
+}
+
+
+function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatelink = 0, $morehtmlright = '')
+{
+	global $user;
+
+	$i = -1;
+
+	if (!empty($conf->projet->enabled) && $user->rights->projet->lire) {
+		$langs->load("projects");
+
+		$newcardbutton = '';
+		if (!empty($conf->projet->enabled) && $user->rights->projet->creer && empty($nocreatelink)) {
+			$newcardbutton .= dolGetButtonTitle($langs->trans('AddProject'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
+		}
+
+		print "\n";
+		print load_fiche_titre($langs->trans("Products Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
+		print '<div class="div-table-responsive">';
+		print "\n".'<table class="noborder" width=100%>';
+
+		$sql  = "SELECT p.rowid as id, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."p_brands as b on p.fk_brand = b.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_family as f on p.fk_category = f.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_subfamily as sf on p.fk_subcategory = sf.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid";
+		
+		$sql .= " WHERE p.fk_soc = ".$object->id;
+		$sql .= " ORDER BY p.datec DESC";
+
+		$result = $db->query($sql);
+		if ($result) {
+			$num = $db->num_rows($result);
+
+			print '<tr class="liste_titre">';
+			print '<td>'.$langs->trans("Ref").'</td>';
+			print '<td>'.$langs->trans("Model").'</td>';
+			print '<td>'.$langs->trans("Name").'</td>';
+			print '<td class="center">'.$langs->trans("Brand").'</td>';
+			print '<td class="center">'.$langs->trans("Category").'</td>';
+			print '<td class="right">'.$langs->trans("Sub Category").'</td>';
+			print '<td class="center">'.$langs->trans("Capacity").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
+			print '<td class="right">'.$langs->trans("Added Date").'</td>';
+			print '<td class="right">'.$langs->trans("Status").'</td>';
+			print '</tr>';
+
+			if ($num > 0) {
+				require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
+				$producttmp = new Product($db);
+
+				$i = 0;
+
+				while ($i < $num) {
+					$obj = $db->fetch_object($result);
+					
+					$producttmp->fetch($obj->fk_product);
+					// To verify role of users
+					
+						print '<tr class="oddeven">';
+
+						// Ref
+						print '<td>';
+						print $projecttmp->getNomUrl(1);
+						print '</td>';
+						//model
+						print '<td>'.$obj->product_model.'</td>';
+						// Product name
+						print '<td>'.$obj->pname.'</td>';
+						
+						// Product Brand
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Category
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Sub Category
+						print '<td>'.$obj->brandname.'</td>';
+
+						// Product Capacity
+						print '<td>'.$obj->brandname.'</td>';
+						
+						// Date Added
+						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
+						
+						// Status
+						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
+
+						print '</tr>';
+					
+					$i++;
+				}
+			} else {
+				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
 			}
 			$db->free($result);
 		} else {

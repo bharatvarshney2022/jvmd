@@ -151,6 +151,7 @@ if (empty($reshook))
 			$object->ref             = GETPOST('ref', 'alphanohtml');
 			$object->title           = GETPOST('title', 'alphanohtml');
 			$object->socid           = GETPOST('socid', 'int');
+			$object->technician      = '0';
 			$object->description     = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public          = GETPOST('public', 'alphanohtml');
 			$object->opp_amount      = price2num(GETPOST('opp_amount', 'alphanohtml'));
@@ -171,6 +172,34 @@ if (empty($reshook))
 			if ($ret < 0) $error++;
 
 			$result = $object->create($user);
+
+			/* 
+				Assign lead to vendor default by customer pincode
+			*/
+				require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+				$societetmp = new Societe($db);
+				$societetmp->fetch($object->socid);
+				// fetch optionals attributes and labels
+				$extrafields = new ExtraFields($db);
+				$extralabels = $extrafields->fetch_name_optionals_label($societetmp->table_element);
+				$ret = $societetmp->fetch_optionals($object->socid,$extralabels);
+				if($ret){
+
+				
+					$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+					$resqlVendor = $db->query($sqlVendors);
+					$numvendor = $db->num_rows($resqlVendor);
+					$objvendor = $resqlVendor->fetch_all();
+					foreach ($objvendor as $rsvendor) {
+						$vendorid = $rsvendor[0];
+						$typeid = '160';
+						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+					}
+				}
+				//print_r($objvendor);
+				//echo $selected_input_value = $societetmp->fk_pincode;
+				//exit;
+			/* End */	
 			if (!$error && $result > 0)
 			{
 				// Add myself as project leader
@@ -252,6 +281,7 @@ if (empty($reshook))
 			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, we want field as it is
 			$object->statut       = GETPOST('status', 'int');
 			$object->socid        = GETPOST('socid', 'int');
+			$object->technician        = GETPOST('technician', 'int');
 			$object->description  = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public       = GETPOST('public', 'alpha');
 			$object->date_start   = (!GETPOST('projectstart')) ? '' : $date_start;
@@ -464,15 +494,15 @@ $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 
 llxHeader("", $title, $help_url);
 
-$titleboth = $langs->trans("LeadsOrProjects");
-$titlenew = $langs->trans("NewLeadOrProject"); // Leads and opportunities by default
+$titleboth = $langs->trans("Leads");
+$titlenew = $langs->trans("New Lead"); // Leads and opportunities by default
 if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0) {
-	$titleboth = $langs->trans("Projects");
-	$titlenew = $langs->trans("NewProject");
+	$titleboth = $langs->trans("Leads");
+	$titlenew = $langs->trans("New Lead");
 }
 if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
 	$titleboth = $langs->trans("Leads");
-	$titlenew = $langs->trans("NewLead");
+	$titlenew = $langs->trans("New Lead");
 }
 
 if ($action == 'create' && $user->rights->projet->creer)
@@ -524,15 +554,15 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	// Ref
 	$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
-	print '<tr><td class="titlefieldcreate"><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input size="12" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
+	print '<tr><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
 	print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
-	print '</td></tr>';
+	print '</td>';
 
 	// Label
-	print '<tr><td><span class="fieldrequired">'.$langs->trans("ProjectLabel").'</span></td><td><input class="minwidth500" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
+	print '<td width="15%"><span class="fieldrequired">'.$langs->trans("Label").'</span></td><td><input class="minwidth400" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
 
 	// Usage (opp, task, bill time, ...)
-	print '<tr><td class="tdtop">';
+	print '<tr style="display:none;"><td class="tdtop">';
 	print $langs->trans("Usage");
 	print '</td>';
 	print '<td>';
@@ -583,7 +613,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
 		print $langs->trans("ThirdParty");
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
-		print '</td><td class="maxwidthonsmartphone">';
+		print '</td><td colspan="3" class="maxwidthonsmartphone">';
 		$filteronlist = '';
 		if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
 	   	$text = img_picto('', 'company').$form->select_company(GETPOST('socid', 'int'), 'socid', $filteronlist, 'SelectThirdParty', 1, 0, array(), 0, 'minwidth300 widthcentpercentminusxx');
@@ -606,7 +636,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	}
 
 	// Visibility
-	print '<tr><td>'.$langs->trans("Visibility").'</td><td class="maxwidthonsmartphone">';
+	print '<tr style="display:none;"><td>'.$langs->trans("Visibility").'</td><td class="maxwidthonsmartphone">';
 	$array = array();
 	if (empty($conf->global->PROJECT_DISABLE_PRIVATE_PROJECT)) $array[0] = $langs->trans("PrivateProject");
 	if (empty($conf->global->PROJECT_DISABLE_PUBLIC_PROJECT)) $array[1] = $langs->trans("SharedProject");
@@ -616,42 +646,42 @@ if ($action == 'create' && $user->rights->projet->creer)
 	// Date start
 	print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
 	print $form->selectDate(($date_start ? $date_start : ''), 'projectstart', 0, 0, 0, '', 1, 0);
-	print '</td></tr>';
+	print '</td>';
 
 	// Date end
-	print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+	print '<td>'.$langs->trans("DateEnd").'</td><td>';
 	print $form->selectDate(($date_end ? $date_end : -1), 'projectend', 0, 0, 0, '', 1, 0);
 	print '</td></tr>';
 
 	if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 	{
 		// Opportunity status
-		print '<tr class="classuseopportunity"><td>'.$langs->trans("OpportunityStatus").'</td>';
+		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityStatus").'</td>';
 		print '<td class="maxwidthonsmartphone">';
 		print $formproject->selectOpportunityStatus('opp_status', GETPOST('opp_status') ?GETPOST('opp_status') : $object->opp_status, 1, 0, 0, 0, '', 0, 1);
 		print '</tr>';
 
 		// Opportunity probability
-		print '<tr class="classuseopportunity"><td>'.$langs->trans("OpportunityProbability").'</td>';
+		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityProbability").'</td>';
 		print '<td><input size="5" type="text" id="opp_percent" name="opp_percent" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? GETPOST('opp_percent') : '').'"><span class="hideonsmartphone"> %</span>';
 		print '<input type="hidden" name="opp_percent_not_set" id="opp_percent_not_set" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? '0' : '1').'">';
 		print '</td>';
 		print '</tr>';
 
 		// Opportunity amount
-		print '<tr class="classuseopportunity"><td>'.$langs->trans("OpportunityAmount").'</td>';
+		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityAmount").'</td>';
 		print '<td><input size="5" type="text" name="opp_amount" value="'.dol_escape_htmltag(GETPOSTISSET('opp_amount') ? GETPOST('opp_amount') : '').'"></td>';
 		print '</tr>';
 	}
 
 	// Budget
-	print '<tr><td>'.$langs->trans("Budget").'</td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td>';
 	print '<td><input size="5" type="text" name="budget_amount" value="'.dol_escape_htmltag(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : '').'"></td>';
 	print '</tr>';
 
 	// Description
 	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td>';
-	print '<td>';
+	print '<td colspan="3">';
 	$doleditor = new DolEditor('description', GETPOST("description", 'restricthtml'), '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
@@ -797,14 +827,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Ref
 		$suggestedref = $object->ref;
-		print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td>';
-		print '<td><input size="12" name="ref" value="'.$suggestedref.'">';
+		print '<tr><td width="15%" class="fieldrequired">'.$langs->trans("Ref").'</td>';
+		print '<td><input size="12" class="minwidth200"  name="ref" value="'.$suggestedref.'">';
 		print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
-		print '</td></tr>';
+		print '</td>';
 
 		// Label
-		print '<tr><td class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
-		print '<td><input class="quatrevingtpercent" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
+		print '<td width="15%" class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
+		print '<td><input class="quatrevingtpercent"  class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
 
 		// Status
 		print '<tr><td class="fieldrequired">'.$langs->trans("Status").'</td><td>';
@@ -814,10 +844,30 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print '<option value="'.$key.'"'.((GETPOSTISSET('status') ?GETPOST('status') : $object->statut) == $key ? ' selected="selected"' : '').'>'.$langs->trans($val).'</option>';
 		}
 		print '</select>';
-		print '</td></tr>';
+		print '</td>';
+
+		// Thirdparty
+		if ($conf->societe->enabled)
+		{
+			print '<td>';
+			print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
+			print $langs->trans("ThirdParty");
+			print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
+			print '</td><td>';
+			$filteronlist = '';
+			if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
+			$text = $form->select_company($object->thirdparty->id, 'socid', $filteronlist, 'None', 1, 0, array(), 0, 'minwidth300');
+			if (empty($conf->global->PROJECT_CAN_ALWAYS_LINK_TO_ALL_SUPPLIERS) && empty($conf->dol_use_jmobile))
+			{
+				$texthelp = $langs->trans("IfNeedToUseOtherObjectKeepEmpty");
+				print $form->textwithtooltip($text.' '.img_help(), $texthelp, 1, 0, '', '', 2);
+			} else print $text;
+			print '</td></tr>';
+		}
+
 
 		// Usage
-		print '<tr><td class="tdtop">';
+		print '<tr style="display:none;"><td class="tdtop">';
 		print $langs->trans("Usage");
 		print '</td>';
 		print '<td>';
@@ -857,27 +907,9 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		print '</td></tr>';
 
-		// Thirdparty
-		if ($conf->societe->enabled)
-		{
-			print '<tr><td>';
-			print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
-			print $langs->trans("ThirdParty");
-			print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
-			print '</td><td>';
-			$filteronlist = '';
-			if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
-			$text = $form->select_company($object->thirdparty->id, 'socid', $filteronlist, 'None', 1, 0, array(), 0, 'minwidth300');
-			if (empty($conf->global->PROJECT_CAN_ALWAYS_LINK_TO_ALL_SUPPLIERS) && empty($conf->dol_use_jmobile))
-			{
-				$texthelp = $langs->trans("IfNeedToUseOtherObjectKeepEmpty");
-				print $form->textwithtooltip($text.' '.img_help(), $texthelp, 1, 0, '', '', 2);
-			} else print $text;
-			print '</td></tr>';
-		}
-
+		
 		// Visibility
-		print '<tr><td>'.$langs->trans("Visibility").'</td><td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Visibility").'</td><td>';
 		$array = array();
 		if (empty($conf->global->PROJECT_DISABLE_PRIVATE_PROJECT)) $array[0] = $langs->trans("PrivateProject");
 		if (empty($conf->global->PROJECT_DISABLE_PUBLIC_PROJECT)) $array[1] = $langs->trans("SharedProject");
@@ -914,24 +946,24 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// Date start
 		print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
 		print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
-		print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
+		/*print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
 		if ($comefromclone) {print ' checked '; }
-		print '/> '.$langs->trans("ProjectReportDate");
-		print '</td></tr>';
+		print '/> '.$langs->trans("ProjectReportDate");*/
+		print '</td>';
 
 		// Date end
-		print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+		print '<td>'.$langs->trans("DateEnd").'</td><td>';
 		print $form->selectDate($object->date_end ? $object->date_end : -1, 'projectend', 0, 0, 0, '', 1, 0);
 		print '</td></tr>';
-
+ 
 		// Budget
-		print '<tr><td>'.$langs->trans("Budget").'</td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td>';
 		print '<td><input size="5" type="text" name="budget_amount" value="'.(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : (strcmp($object->budget_amount, '') ? price2num($object->budget_amount) : '')).'"></td>';
 		print '</tr>';
 
 		// Description
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td>';
-		print '<td>';
+		print '<td colspan="3">';
 		$doleditor = new DolEditor('description', $object->description, '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
 		$doleditor->Create();
 		print '</td></tr>';
@@ -950,6 +982,35 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print "</td></tr>";
 		}
 
+		// Technician 
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		if($user_group_id == '4'){
+			print '<tr><td>'.$langs->trans("Assign Technician").'</td><td colspan="3">';
+			print '<select class="flat" name="technician"><option value="">Select </option>';
+			
+			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+			$resqlTech = $db->query($sqlTechnician);
+			$numtech = $db->num_rows($resqlTech);
+			if($numtech > 0){
+				while ($objtech = $db -> fetch_object($resqlTech))
+				{
+					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+				}
+			}	
+			print '</select>';
+			print '</td></tr>';
+		}
 		// Other options
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -995,7 +1056,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<table class="border tableforfield" width="100%">';
 
 		// Usage
-		print '<tr><td class="tdtop">';
+		print '<tr style="display:none;"><td class="tdtop">';
 		print $langs->trans("Usage");
 		print '</td>';
 		print '<td>';
@@ -1023,7 +1084,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</td></tr>';
 
 		// Visibility
-		print '<tr><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
+		print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
 		if ($object->public) print $langs->trans('SharedProject');
 		else print $langs->trans('PrivateProject');
 		print '</td></tr>';
@@ -1057,7 +1118,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Date start - end
-		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td>';
+		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
 		$start = dol_print_date($object->date_start, 'day');
 		print ($start ? $start : '?');
 		$end = dol_print_date($object->date_end, 'day');
@@ -1066,18 +1127,16 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if ($object->hasDelay()) print img_warning("Late");
 		print '</td></tr>';
 
+
 		// Budget
-		print '<tr><td>'.$langs->trans("Budget").'</td><td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 		if (strcmp($object->budget_amount, '')) print price($object->budget_amount, 0, $langs, 1, 0, 0, $conf->currency);
 		print '</td></tr>';
+		print "</table>\n";
+			print '</div>';
 
-		// Other attributes
-		$cols = 2;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		
 
-		print '</table>';
-
-		print '</div>';
 		print '<div class="fichehalfright">';
 		print '<div class="ficheaddleft">';
 		print '<div class="underbanner clearboth"></div>';
@@ -1102,7 +1161,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</div>';
 		print '</div>';
 
-		print '<div class="clearboth"></div>';
+		// Other attributes
+			print '<div style="clear:both"></div> <hr />';
+
+			// Other attributes
+			print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+		$cols = 1;
+		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		print '</tbody></table></div>';
 	}
 
 	print dol_get_fiche_end();
@@ -1350,7 +1416,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		$genallowed = ($user->rights->projet->lire && $userAccess > 0);
 		$delallowed = ($user->rights->projet->creer && $userWrite > 0);
 
-		print $formfile->showdocuments('project', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf);
+		//print $formfile->showdocuments('project', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf);
 
 		print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
@@ -1363,7 +1429,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// List of actions on element
 		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 		$formactions = new FormActions($db);
-		$somethingshown = $formactions->showactions($object, 'project', 0, 1, '', $MAXEVENT, '', $morehtmlright);
+		//$somethingshown = $formactions->showactions($object, 'project', 0, 1, '', $MAXEVENT, '', $morehtmlright);
 
 		print '</div></div></div>';
 	}

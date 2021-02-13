@@ -57,7 +57,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     		var list = jQuery("#list");
             var totalizable = jQuery("#totalizable");
     		<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist"))
+			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "sellistmultiple") && (GETPOST('type', 'alpha') != "htmltable"))
 			{
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -96,12 +96,14 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			else if (type == 'int')      { size.val('10').removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'text')     { size.val('2000').removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'html')     { size.val('2000').removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
+            else if (type == 'htmltable') { size.val('2000').removeAttr('disabled'); unique.removeAttr('checked').prop('disabled', true);  jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show(); }
     		else if (type == 'varchar')  { size.val('255').removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'password') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); required.val('').prop('disabled', true); default_value.val('').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helppassword").show();}
 			else if (type == 'boolean')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide();}
 			else if (type == 'price')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide();}
 			else if (type == 'select')   { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'sellist')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
+            else if (type == 'sellistmultiple')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
 			else if (type == 'radio')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'checkbox') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'chkbxlst') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpchkbxlst").show();}
@@ -155,6 +157,31 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
 <?php print $form->selectarray('type', $type2label, GETPOST('type', 'alpha'), 0, 0, 0, '', 0, 0, 0, '', '', 1); ?>
 </td></tr>
+
+<?php
+    $vendor2Label = array('0' => '&nbsp;');
+    $sql = "SELECT rowid, nom";
+                $sql .= " FROM ".MAIN_DB_PREFIX."usergroup";
+                $sql .= " WHERE entity = '1'";
+    $resql = $db->query($sql);
+    if ($resql)
+    {
+        if ($db->num_rows($resql))
+        {
+            while ($tab = $db->fetch_object($resql))
+            {
+                $vendor2Label[$tab->rowid] = $tab->nom;
+            }
+        }
+    }
+
+    //print_r($vendor2Label); exit;
+?>
+
+<tr><td class="fieldrequired"><?php echo $langs->trans("User Group"); ?></td><td class="valeur">
+<?php print $form->selectarray('usergroup_id', $vendor2Label, GETPOST('usergroup_id', 'alpha'), 0, 0, 0, '', 0, 0, 0, '', '', 1); ?>
+</td></tr>
+
 <!-- Size -->
 <tr class="extra_size"><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" size="5" value="<?php echo (GETPOST('size', 'alpha') ?GETPOST('size', 'alpha') : ''); ?>"></td></tr>
 <!-- Default Value (for select list / radio/ checkbox) -->
@@ -179,6 +206,10 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 </tr>
 <!-- Position -->
 <tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" size="5" value="<?php echo GETPOSTISSET('pos') ? GETPOST('pos', 'int') : 100; ?>"></td></tr>
+
+<tr><td class="titlefield"><?php echo $langs->trans("Row"); ?></td><td class="valeur"><input type="text" name="row" size="5" value="<?php echo GETPOSTISSET('row') ? GETPOST('row', 'int') : 1; ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("Column"); ?></td><td class="valeur"><input type="text" name="column" size="5" value="<?php echo GETPOSTISSET('column') ? GETPOST('column', 'int') : 1; ?>"></td></tr>
+
 <!-- Language file -->
 <tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" id="langfile" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag(GETPOST('langfile', 'alpha')); ?>"></td></tr>
 <!-- Computed Value -->

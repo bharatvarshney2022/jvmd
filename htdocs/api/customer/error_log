@@ -1,0 +1,40 @@
+[05-Mar-2020 13:25:30 Asia/Kolkata] PHP Warning:  copy(/home/wwwmicroprixs/public_html/documents/users/74/thumbs/thumbs/user_photo1583394928864_mini.png): failed to open stream: No such file or directory in /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/update_profile.php on line 62
+[05-Mar-2020 13:25:30 Asia/Kolkata] PHP Warning:  copy(/home/wwwmicroprixs/public_html/documents/users/74/thumbs/thumbs/user_photo1583394928864_small.png): failed to open stream: No such file or directory in /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/update_profile.php on line 63
+[05-Mar-2020 13:26:55 Asia/Kolkata] PHP Warning:  copy(/home/wwwmicroprixs/public_html/documents/users/74/thumbs/thumbs/user_photo1583395012842_mini.png): failed to open stream: No such file or directory in /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/update_profile.php on line 62
+[05-Mar-2020 13:26:55 Asia/Kolkata] PHP Warning:  copy(/home/wwwmicroprixs/public_html/documents/users/74/thumbs/thumbs/user_photo1583395012842_small.png): failed to open stream: No such file or directory in /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/update_profile.php on line 63
+[11-Mar-2020 13:12:49 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291
+[13-Mar-2020 10:45:00 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291
+[13-Mar-2020 10:45:48 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291
+[13-Mar-2020 10:47:40 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291
+[13-Mar-2020 15:02:48 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291
+[26-Mar-2020 08:34:56 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on bool in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php:291
+Stack trace:
+#0 /home/wwwmicroprixs/public_html/subpe_erp/user/class/user.class.php(4182): DBMysqli->fetch_object(false)
+#1 /home/wwwmicroprixs/public_html/subpe_erp/api/sales_exective/login.php(58): User->userToken('74')
+#2 {main}
+  thrown in /home/wwwmicroprixs/public_html/subpe_erp/core/db/mysqli.class.php on line 291

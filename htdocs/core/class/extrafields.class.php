@@ -96,6 +96,12 @@ class ExtraFields
 	 */
 	public $attribute_required;
 
+	public $attribute_usergroup_id;
+
+	public $attribute_row;
+
+	public $attribute_column;
+
 	/**
 	 * @var array Array to store parameters of attribute (used in select type)
 	 * @deprecated
@@ -170,6 +176,7 @@ class ExtraFields
 		'varchar'=>'String1Line',
 		'text'=>'TextLongNLines',
 		'html'=>'HtmlText',
+		'htmltable'=>'HTML Table',
 		'int'=>'Int',
 		'double'=>'Float',
 		'date'=>'Date',
@@ -182,6 +189,7 @@ class ExtraFields
 		'password' => 'ExtrafieldPassword',
 		'select' => 'ExtrafieldSelect',
 		'sellist' => 'ExtrafieldSelectList',
+		'sellistmultiple' => 'ExtrafieldSelectMultipleList',
 		'radio' => 'ExtrafieldRadio',
 		'checkbox' => 'ExtrafieldCheckBox',
 		'chkbxlst' => 'ExtrafieldCheckBoxFromList',
@@ -211,6 +219,9 @@ class ExtraFields
 		$this->attribute_default = array();
 		$this->attribute_unique = array();
 		$this->attribute_required = array();
+		$this->attribute_usergroup_id = array();
+		$this->attribute_row = array();
+		$this->attribute_column = array();
 		$this->attribute_perms = array();
 		$this->attribute_langfile = array();
 		$this->attribute_list = array();
@@ -241,7 +252,7 @@ class ExtraFields
 	 *  @param  int             $printable        Is extrafield displayed on PDF
 	 *  @return int      							<=0 if KO, >0 if OK
 	 */
-	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	public function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique = 0, $required = 0, $default_value = '', $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		if (empty($attrname)) return -1;
 		if (empty($label)) return -1;
@@ -259,7 +270,7 @@ class ExtraFields
 		if ($result > 0 || $err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' || $type == 'separate')
 		{
 			// Add declaration of field into table
-			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable);
+			$result2 = $this->create_label($attrname, $label, $type, $pos, $size, $elementtype, $unique, $required, $param, $alwayseditable, $perms, $list, $help, $default_value, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column, $usergroup_id);
 			$err2 = $this->errno;
 			if ($result2 > 0 || ($err1 == 'DB_ERROR_COLUMN_ALREADY_EXISTS' && $err2 == 'DB_ERROR_RECORD_ALREADY_EXISTS'))
 			{
@@ -315,13 +326,13 @@ class ExtraFields
 			} elseif ($type == 'url') {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
+			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'sellistmultiple') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
 				$typedb = 'varchar';
 				$lengthdb = '255';
 			} elseif ($type == 'link') {
 				$typedb = 'int';
 				$lengthdb = '11';
-			} elseif ($type == 'html') {
+			} elseif ($type == 'html' || $type == 'htmltable') {
 				$typedb = 'text';
 				$lengthdb = $length;
 			} elseif ($type == 'password') {
@@ -385,7 +396,7 @@ class ExtraFields
 	 *  @return	int								<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	private function create_label($attrname, $label = '', $type = '', $pos = 0, $size = 0, $elementtype = 'member', $unique = 0, $required = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '-1', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -401,6 +412,10 @@ class ExtraFields
 		if (empty($printable)) $printable = 0;
 		if (empty($alwayseditable)) $alwayseditable = 0;
 		if (empty($totalizable)) $totalizable = 0;
+
+
+		if (empty($row)) $row = 1;
+		if (empty($column)) $column = 1;
 
 		if (!empty($attrname) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname) && !is_numeric($attrname))
 		{
@@ -424,6 +439,9 @@ class ExtraFields
 			$sql .= " elementtype,";
 			$sql .= " fieldunique,";
 			$sql .= " fieldrequired,";
+			$sql .= " fieldrow,";
+			$sql .= " fieldcolumn,";
+			$sql .= " usergroup_id,";
 			$sql .= " param,";
 			$sql .= " alwayseditable,";
 			$sql .= " perms,";
@@ -448,6 +466,9 @@ class ExtraFields
 			$sql .= " '".$this->db->escape($elementtype)."',";
 			$sql .= " ".$unique.",";
 			$sql .= " ".$required.",";
+			$sql .= " ".$row.",";
+			$sql .= " ".$column.",";
+			$sql .= " ".$usergroup_id.",";
 			$sql .= " '".$this->db->escape($params)."',";
 			$sql .= " ".$alwayseditable.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
@@ -596,7 +617,7 @@ class ExtraFields
 	 * 	@return	int							>0 if OK, <=0 if KO
 	 *  @throws Exception
 	 */
-	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	public function update($attrname, $label, $type, $length, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		if ($elementtype == 'thirdparty') $elementtype = 'societe';
 		if ($elementtype == 'contact') $elementtype = 'socpeople';
@@ -621,10 +642,10 @@ class ExtraFields
 			} elseif ($type == 'url') {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
+			} elseif (($type == 'select') || ($type == 'sellist') || ($type == 'sellistmultiple') || ($type == 'radio') || ($type == 'checkbox') || ($type == 'chkbxlst')) {
 				$typedb = 'varchar';
 				$lengthdb = '255';
-			} elseif ($type == 'html') {
+			} elseif ($type == 'html' || $type == 'htmltable') {
 				$typedb = 'text';
 			} elseif ($type == 'link') {
 				$typedb = 'int';
@@ -646,7 +667,7 @@ class ExtraFields
 			{
 				if ($label)
 				{
-					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable);
+					$result = $this->update_label($attrname, $label, $type, $length, $elementtype, $unique, $required, $pos, $param, $alwayseditable, $perms, $list, $help, $default, $computed, $entity, $langfile, $enabled, $totalizable, $printable, $row, $column, $usergroup_id);
 				}
 				if ($result > 0)
 				{
@@ -700,7 +721,7 @@ class ExtraFields
 	 *  @return	int							<=0 if KO, >0 if OK
 	 *  @throws Exception
 	 */
-	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0)
+	private function update_label($attrname, $label, $type, $size, $elementtype, $unique = 0, $required = 0, $pos = 0, $param = '', $alwayseditable = 0, $perms = '', $list = '0', $help = '', $default = '', $computed = '', $entity = '', $langfile = '', $enabled = '1', $totalizable = 0, $printable = 0, $row = 1, $column = 1, $usergroup_id = 0)
 	{
 		// phpcs:enable
 		global $conf, $user;
@@ -718,6 +739,9 @@ class ExtraFields
 		if (empty($required)) $required = 0;
 		if (empty($unique)) $unique = 0;
 		if (empty($alwayseditable)) $alwayseditable = 0;
+
+		if (empty($row)) $row = 0;
+		if (empty($column)) $column = 0;
 
 		if (isset($attrname) && $attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname))
 		{
@@ -758,6 +782,9 @@ class ExtraFields
 			$sql .= " elementtype,";
 			$sql .= " fieldunique,";
 			$sql .= " fieldrequired,";
+			$sql .= " fieldrow,";
+			$sql .= " fieldcolumn,";
+			$sql .= " usergroup_id,";
 			$sql .= " perms,";
 			$sql .= " langs,";
 			$sql .= " pos,";
@@ -782,6 +809,9 @@ class ExtraFields
 			$sql .= " '".$this->db->escape($elementtype)."',";
 			$sql .= " ".$unique.",";
 			$sql .= " ".$required.",";
+			$sql .= " ".$row.",";
+			$sql .= " ".$column.",";
+			$sql .= " ".$usergroup_id.",";
 			$sql .= " ".($perms ? "'".$this->db->escape($perms)."'" : "null").",";
 			$sql .= " ".($langfile ? "'".$this->db->escape($langfile)."'" : "null").",";
 			$sql .= " ".$pos.",";
@@ -839,7 +869,7 @@ class ExtraFields
 		$array_name_label = array();
 
 		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
-		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
+		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,usergroup_id,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
 		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
 		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
@@ -895,6 +925,9 @@ class ExtraFields
 					$this->attributes[$tab->elementtype]['computed'][$tab->name] = $tab->fieldcomputed;
 					$this->attributes[$tab->elementtype]['unique'][$tab->name] = $tab->fieldunique;
 					$this->attributes[$tab->elementtype]['required'][$tab->name] = $tab->fieldrequired;
+					$this->attributes[$tab->elementtype]['row'][$tab->name] = $tab->fieldrow;
+					$this->attributes[$tab->elementtype]['column'][$tab->name] = $tab->fieldcolumn;
+					$this->attributes[$tab->elementtype]['usergroup_id'][$tab->name] = $tab->usergroup_id;
 					$this->attributes[$tab->elementtype]['param'][$tab->name] = ($tab->param ? unserialize($tab->param) : '');
 					$this->attributes[$tab->elementtype]['pos'][$tab->name] = $tab->pos;
 					$this->attributes[$tab->elementtype]['alwayseditable'][$tab->name] = $tab->alwayseditable;
@@ -912,6 +945,165 @@ class ExtraFields
 			}
 			if ($elementtype) $this->attributes[$elementtype]['loaded'] = 1; // If nothing found, we also save tag 'loaded'
 		} else {
+			$this->attributes = array();
+
+			// For old usage
+			$this->attribute_elementtype = array();
+			$this->attribute_type = array();
+			$this->attribute_label = array();
+			$this->attribute_size = array();
+			$this->attribute_computed = array();
+			$this->attribute_default = array();
+			$this->attribute_unique = array();
+			$this->attribute_required = array();
+			$this->attribute_usergroup_id = array();
+			$this->attribute_row = array();
+			$this->attribute_column = array();
+			$this->attribute_perms = array();
+			$this->attribute_langfile = array();
+			$this->attribute_list = array();
+
+			$this->error = $this->db->lasterror();
+			dol_syslog(get_class($this)."::fetch_name_optionals_label ".$this->error, LOG_ERR);
+		}
+
+		return $array_name_label;
+	}
+
+	public function fetch_name_optionals_label_user($elementtype, $user_group_id, $forceload = false)
+	{
+		// phpcs:enable
+		global $conf;
+
+		if (empty($elementtype)) return array();
+
+		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
+		if ($elementtype == 'contact')        $elementtype = 'socpeople';
+		if ($elementtype == 'order_supplier') $elementtype = 'commande_fournisseur';
+		if ($elementtype == 'stock_mouvement') $elementtype = 'movement';
+
+		$array_name_label = array();
+
+		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
+		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,usergroup_id,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
+		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
+		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
+		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
+		if ($user_group_id > 0) {
+			$sql .= " AND usergroup_id = '".(int)$user_group_id."'";
+		}
+		else
+		{
+			$sql .= " AND usergroup_id = '0'";
+		}
+		$sql .= " ORDER BY pos";
+
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			if ($this->db->num_rows($resql) > 0)
+			{
+				while ($tab = $this->db->fetch_object($resql))
+				{
+					if ($tab->entity != 0 && $tab->entity != $conf->entity)
+					{
+						// This field is not in current entity. We discard but before we save it into the array of mandatory fields if it is a mandatory field without default value
+						if ($tab->fieldrequired && is_null($tab->fielddefault))
+						{
+							$this->attributes[$tab->elementtype]['mandatoryfieldsofotherentities'][$tab->name] = $tab->type;
+						}
+						continue;
+					}
+
+					// We can add this attribute to object. TODO Remove this and return $this->attributes[$elementtype]['label']
+					if ($tab->type != 'separate')
+					{
+						$array_name_label[$tab->name] = $tab->label;
+					}
+
+					// Old usage
+					$this->attribute_type[$tab->name] = $tab->type;
+					$this->attribute_label[$tab->name] = $tab->label;
+					$this->attribute_size[$tab->name] = $tab->size;
+					$this->attribute_elementtype[$tab->name] = $tab->elementtype;
+					$this->attribute_default[$tab->name] = $tab->fielddefault;
+					$this->attribute_computed[$tab->name] = $tab->fieldcomputed;
+					$this->attribute_unique[$tab->name] = $tab->fieldunique;
+					$this->attribute_required[$tab->name] = $tab->fieldrequired;
+					$this->attribute_param[$tab->name] = ($tab->param ? unserialize($tab->param) : '');
+					$this->attribute_pos[$tab->name] = $tab->pos;
+					$this->attribute_alwayseditable[$tab->name] = $tab->alwayseditable;
+					$this->attribute_perms[$tab->name] = (strlen($tab->perms) == 0 ? 1 : $tab->perms);
+					$this->attribute_langfile[$tab->name] = $tab->langs;
+					$this->attribute_list[$tab->name] = $tab->list;
+					$this->attribute_totalizable[$tab->name] = $tab->totalizable;
+					$this->attribute_entityid[$tab->name] = $tab->entity;
+
+					// New usage
+					$this->attributes[$tab->elementtype]['type'][$tab->name] = $tab->type;
+					$this->attributes[$tab->elementtype]['label'][$tab->name] = $tab->label;
+					$this->attributes[$tab->elementtype]['size'][$tab->name] = $tab->size;
+					$this->attributes[$tab->elementtype]['elementtype'][$tab->name] = $tab->elementtype;
+					$this->attributes[$tab->elementtype]['default'][$tab->name] = $tab->fielddefault;
+					$this->attributes[$tab->elementtype]['computed'][$tab->name] = $tab->fieldcomputed;
+					$this->attributes[$tab->elementtype]['unique'][$tab->name] = $tab->fieldunique;
+					$this->attributes[$tab->elementtype]['required'][$tab->name] = $tab->fieldrequired;
+					$this->attributes[$tab->elementtype]['row'][$tab->name] = $tab->fieldrow;
+					$this->attributes[$tab->elementtype]['column'][$tab->name] = $tab->fieldcolumn;
+					$this->attributes[$tab->elementtype]['usergroup_id'][$tab->name] = $tab->usergroup_id;
+					$this->attributes[$tab->elementtype]['param'][$tab->name] = ($tab->param ? unserialize($tab->param) : '');
+					$this->attributes[$tab->elementtype]['pos'][$tab->name] = $tab->pos;
+					$this->attributes[$tab->elementtype]['alwayseditable'][$tab->name] = $tab->alwayseditable;
+					$this->attributes[$tab->elementtype]['perms'][$tab->name] = (strlen($tab->perms) == 0 ? 1 : $tab->perms);
+					$this->attributes[$tab->elementtype]['langfile'][$tab->name] = $tab->langs;
+					$this->attributes[$tab->elementtype]['list'][$tab->name] = $tab->list;
+					$this->attributes[$tab->elementtype]['printable'][$tab->name] = $tab->printable;
+					$this->attributes[$tab->elementtype]['totalizable'][$tab->name] = ($tab->totalizable ? 1 : 0);
+					$this->attributes[$tab->elementtype]['entityid'][$tab->name] = $tab->entity;
+					$this->attributes[$tab->elementtype]['enabled'][$tab->name] = $tab->enabled;
+					$this->attributes[$tab->elementtype]['help'][$tab->name] = $tab->help;
+
+					$this->attributes[$tab->elementtype]['loaded'] = 1;
+				}
+			} else {
+				$this->attributes = array();
+
+				// For old usage
+				$this->attribute_elementtype = array();
+				$this->attribute_type = array();
+				$this->attribute_label = array();
+				$this->attribute_size = array();
+				$this->attribute_computed = array();
+				$this->attribute_default = array();
+				$this->attribute_unique = array();
+				$this->attribute_required = array();
+				$this->attribute_usergroup_id = array();
+				$this->attribute_row = array();
+				$this->attribute_column = array();
+				$this->attribute_perms = array();
+				$this->attribute_langfile = array();
+				$this->attribute_list = array();
+			}
+			if ($elementtype) $this->attributes[$elementtype]['loaded'] = 1; // If nothing found, we also save tag 'loaded'
+		} else {
+			$this->attributes = array();
+
+			// For old usage
+			$this->attribute_elementtype = array();
+			$this->attribute_type = array();
+			$this->attribute_label = array();
+			$this->attribute_size = array();
+			$this->attribute_computed = array();
+			$this->attribute_default = array();
+			$this->attribute_unique = array();
+			$this->attribute_required = array();
+			$this->attribute_usergroup_id = array();
+			$this->attribute_row = array();
+			$this->attribute_column = array();
+			$this->attribute_perms = array();
+			$this->attribute_langfile = array();
+			$this->attribute_list = array();
+
 			$this->error = $this->db->lasterror();
 			dol_syslog(get_class($this)."::fetch_name_optionals_label ".$this->error, LOG_ERR);
 		}
@@ -1047,7 +1239,7 @@ class ExtraFields
 			} else {
 				$out = '<input type="text" class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix.'" id="'.$keyprefix.$key.$keysuffix.'" value="'.dol_escape_htmltag($value).'" '.($moreparam ? $moreparam : '').'>';
 			}
-		} elseif ($type == 'html')
+		} elseif ($type == 'html' || $type == 'htmltable')
 		{
 			if (!preg_match('/search_/', $keyprefix))		// If keyprefix is search_ or search_options_, we must just use a simple text field
 			{
@@ -1107,7 +1299,7 @@ class ExtraFields
 				$out .= '</option>';
 			}
 			$out .= '</select>';
-		} elseif ($type == 'sellist')
+		} elseif ($type == 'sellist' || $type == 'sellistmultiple')
 		{
 			$out = '';
 			if (!empty($conf->use_javascript_ajax) && !empty($conf->global->MAIN_EXTRAFIELDS_USE_SELECT2))
@@ -1116,156 +1308,295 @@ class ExtraFields
 				$out .= ajax_combobox($keyprefix.$key.$keysuffix, array(), 0);
 			}
 
-			$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
-			if (is_array($param['options']))
+			$keysuffix1 = $keysuffix;
+			if($type == 'sellistmultiple')
 			{
-				$param_list = array_keys($param['options']);
-				$InfoFieldList = explode(":", $param_list[0]);
-				$parentName = '';
-				$parentField = '';
-				// 0 : tableName
-				// 1 : label field name
-				// 2 : key fields name (if differ of rowid)
-				// 3 : key field parent (for dependent lists)
-				// 4 : where clause filter on column or table extrafield, syntax field='value' or extra.field=value
-				// 5 : id category type
-				// 6 : ids categories list separated by comma for category root
-				$keyList = (empty($InfoFieldList[2]) ? 'rowid' : $InfoFieldList[2].' as rowid');
-
-
-				if (count($InfoFieldList) > 4 && !empty($InfoFieldList[4]))
-				{
-					if (strpos($InfoFieldList[4], 'extra.') !== false)
-					{
-						$keyList = 'main.'.$InfoFieldList[2].' as rowid';
-					} else {
-						$keyList = $InfoFieldList[2].' as rowid';
-					}
-				}
-				if (count($InfoFieldList) > 3 && !empty($InfoFieldList[3]))
-				{
-					list($parentName, $parentField) = explode('|', $InfoFieldList[3]);
-					$keyList .= ', '.$parentField;
-				}
-
-				$filter_categorie = false;
-				if (count($InfoFieldList) > 5) {
-					if ($InfoFieldList[0] == 'categorie') {
-						$filter_categorie = true;
-					}
-				}
-
-				if ($filter_categorie === false) {
-					$fields_label = explode('|', $InfoFieldList[1]);
-					if (is_array($fields_label)) {
-						$keyList .= ', ';
-						$keyList .= implode(', ', $fields_label);
-					}
-
-					$sqlwhere = '';
-					$sql = 'SELECT '.$keyList;
-					$sql .= ' FROM '.MAIN_DB_PREFIX.$InfoFieldList[0];
-					if (!empty($InfoFieldList[4])) {
-						// can use curent entity filter
-						if (strpos($InfoFieldList[4], '$ENTITY$') !== false) {
-							$InfoFieldList[4] = str_replace('$ENTITY$', $conf->entity, $InfoFieldList[4]);
-						}
-						// can use SELECT request
-						if (strpos($InfoFieldList[4], '$SEL$') !== false) {
-							$InfoFieldList[4] = str_replace('$SEL$', 'SELECT', $InfoFieldList[4]);
-						}
-
-						// current object id can be use into filter
-						if (strpos($InfoFieldList[4], '$ID$') !== false && !empty($objectid)) {
-							$InfoFieldList[4] = str_replace('$ID$', $objectid, $InfoFieldList[4]);
-						} else {
-							$InfoFieldList[4] = str_replace('$ID$', '0', $InfoFieldList[4]);
-						}
-						//We have to join on extrafield table
-						if (strpos($InfoFieldList[4], 'extra') !== false) {
-							$sql .= ' as main, '.MAIN_DB_PREFIX.$InfoFieldList[0].'_extrafields as extra';
-							$sqlwhere .= ' WHERE extra.fk_object=main.'.$InfoFieldList[2].' AND '.$InfoFieldList[4];
-						} else {
-							$sqlwhere .= ' WHERE '.$InfoFieldList[4];
-						}
-					} else {
-						$sqlwhere .= ' WHERE 1=1';
-					}
-					// Some tables may have field, some other not. For the moment we disable it.
-					if (in_array($InfoFieldList[0], array('tablewithentity'))) {
-						$sqlwhere .= ' AND entity = '.$conf->entity;
-					}
-					$sql .= $sqlwhere;
-					//print $sql;
-
-					$sql .= ' ORDER BY '.implode(', ', $fields_label);
-
-					dol_syslog(get_class($this).'::showInputField type=sellist', LOG_DEBUG);
-					$resql = $this->db->query($sql);
-					if ($resql) {
-						$out .= '<option value="0">&nbsp;</option>';
-						$num = $this->db->num_rows($resql);
-						$i = 0;
-						while ($i < $num) {
-							$labeltoshow = '';
-							$obj = $this->db->fetch_object($resql);
-
-							// Several field into label (eq table:code|libelle:rowid)
-							$notrans = false;
-							$fields_label = explode('|', $InfoFieldList[1]);
-							if (is_array($fields_label) && count($fields_label) > 1) {
-								$notrans = true;
-								foreach ($fields_label as $field_toshow) {
-									$labeltoshow .= $obj->$field_toshow.' ';
-								}
-							} else {
-								$labeltoshow = $obj->{$InfoFieldList[1]};
-							}
-							$labeltoshow = $labeltoshow;
-
-							if ($value == $obj->rowid) {
-								if (!$notrans) {
-									foreach ($fields_label as $field_toshow) {
-										$translabel = $langs->trans($obj->$field_toshow);
-										$labeltoshow = $translabel.' ';
-									}
-								}
-								$out .= '<option value="'.$obj->rowid.'" selected>'.$labeltoshow.'</option>';
-							} else {
-								if (!$notrans) {
-									$translabel = $langs->trans($obj->{$InfoFieldList[1]});
-									$labeltoshow = $translabel;
-								}
-								if (empty($labeltoshow)) $labeltoshow = '(not defined)';
-
-								if (!empty($InfoFieldList[3]) && $parentField) {
-									$parent = $parentName.':'.$obj->{$parentField};
-								}
-
-								$out .= '<option value="'.$obj->rowid.'"';
-								$out .= ($value == $obj->rowid ? ' selected' : '');
-								$out .= (!empty($parent) ? ' parent="'.$parent.'"' : '');
-								$out .= '>'.$labeltoshow.'</option>';
-							}
-
-							$i++;
-						}
-						$this->db->free($resql);
-					} else {
-						print 'Error in request '.$sql.' '.$this->db->lasterror().'. Check setup of extra parameters.<br>';
-					}
-				} else {
-					require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-					$data = $form->select_all_categories(Categorie::$MAP_ID_TO_CODE[$InfoFieldList[5]], '', 'parent', 64, $InfoFieldList[6], 1, 1);
-					$out .= '<option value="0">&nbsp;</option>';
-					foreach ($data as $data_key => $data_value) {
-						$out .= '<option value="'.$data_key.'"';
-						$out .= ($value == $data_key ? ' selected' : '');
-						$out .= '>'.$data_value.'</option>';
-					}
-				}
+				$moreparam .= 'multiple';
+				$keysuffix1 .= '[]';
+				$morecss .= ' multiselect';
 			}
-			$out .= '</select>';
+
+			if($type == 'sellistmultiple')
+			{
+				$keyvalueArray = array();
+				if (is_array($param['options']))
+				{
+					$param_list = array_keys($param['options']);
+					$InfoFieldList = explode(":", $param_list[0]);
+
+					$keyList = (empty($InfoFieldList[2]) ? 'rowid' : $InfoFieldList[2].' as rowid');
+
+
+					if (count($InfoFieldList) > 4 && !empty($InfoFieldList[4]))
+					{
+						if (strpos($InfoFieldList[4], 'extra.') !== false)
+						{
+							$keyList = 'main.'.$InfoFieldList[2].' as rowid';
+						} else {
+							$keyList = $InfoFieldList[2].' as rowid';
+						}
+					}
+					if (count($InfoFieldList) > 3 && !empty($InfoFieldList[3]))
+					{
+						list($parentName, $parentField) = explode('|', $InfoFieldList[3]);
+						$keyList .= ', '.$parentField;
+					}
+
+					$filter_categorie = false;
+					if (count($InfoFieldList) > 5) {
+						if ($InfoFieldList[0] == 'categorie') {
+							$filter_categorie = true;
+						}
+					}
+
+					if ($filter_categorie === false) {
+						$fields_label = explode('|', $InfoFieldList[1]);
+						if (is_array($fields_label)) {
+							$keyList .= ', ';
+							$keyList .= implode(', ', $fields_label);
+						}
+
+						$sqlwhere = '';
+						$sql = 'SELECT '.$keyList;
+						$sql .= ' FROM '.MAIN_DB_PREFIX.$InfoFieldList[0];
+						if (!empty($InfoFieldList[4])) {
+							// can use curent entity filter
+							if (strpos($InfoFieldList[4], '$ENTITY$') !== false) {
+								$InfoFieldList[4] = str_replace('$ENTITY$', $conf->entity, $InfoFieldList[4]);
+							}
+							// can use SELECT request
+							if (strpos($InfoFieldList[4], '$SEL$') !== false) {
+								$InfoFieldList[4] = str_replace('$SEL$', 'SELECT', $InfoFieldList[4]);
+							}
+
+							// current object id can be use into filter
+							if (strpos($InfoFieldList[4], '$ID$') !== false && !empty($objectid)) {
+								$InfoFieldList[4] = str_replace('$ID$', $objectid, $InfoFieldList[4]);
+							} else {
+								$InfoFieldList[4] = str_replace('$ID$', '0', $InfoFieldList[4]);
+							}
+							//We have to join on extrafield table
+							if (strpos($InfoFieldList[4], 'extra') !== false) {
+								$sql .= ' as main, '.MAIN_DB_PREFIX.$InfoFieldList[0].'_extrafields as extra';
+								$sqlwhere .= ' WHERE extra.fk_object=main.'.$InfoFieldList[2].' AND '.$InfoFieldList[4];
+							} else {
+								$sqlwhere .= ' WHERE '.$InfoFieldList[4];
+							}
+						} else {
+							$sqlwhere .= ' WHERE 1=1';
+						}
+						// Some tables may have field, some other not. For the moment we disable it.
+						if (in_array($InfoFieldList[0], array('tablewithentity'))) {
+							$sqlwhere .= ' AND entity = '.$conf->entity;
+						}
+						$sql .= $sqlwhere;
+
+						$sql .= ' ORDER BY '.implode(', ', $fields_label);
+						$resql = $this->db->query($sql);
+						
+						if ($resql) {
+							$num = $this->db->num_rows($resql);
+							$i = 0;
+							if ($num)
+							{
+								while ($i < $num)
+								{
+									$obj = $this->db->fetch_object($resql);
+									$fields_label = explode('|', $InfoFieldList[1]);
+
+									$keyvalueArray[$obj->rowid] = $obj->{$fields_label[0]};
+									$i++;
+								}
+							}
+						}
+					}
+				}
+
+				$valueArr = explode(",", $value);
+				//print_r($valueArr); exit;
+
+				$out .= $form->multiselectarray($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container");
+			}
+			else
+			{
+				$out .= '<select class="flat '.$morecss.' maxwidthonsmartphone" name="'.$keyprefix.$key.$keysuffix1.'" id="'.$keyprefix.$key.$keysuffix.'" '.($moreparam ? $moreparam : '').'>';
+				if (is_array($param['options']))
+				{
+					$param_list = array_keys($param['options']);
+					$InfoFieldList = explode(":", $param_list[0]);
+					$parentName = '';
+					$parentField = '';
+					// 0 : tableName
+					// 1 : label field name
+					// 2 : key fields name (if differ of rowid)
+					// 3 : key field parent (for dependent lists)
+					// 4 : where clause filter on column or table extrafield, syntax field='value' or extra.field=value
+					// 5 : id category type
+					// 6 : ids categories list separated by comma for category root
+					$keyList = (empty($InfoFieldList[2]) ? 'rowid' : $InfoFieldList[2].' as rowid');
+
+
+					if (count($InfoFieldList) > 4 && !empty($InfoFieldList[4]))
+					{
+						if (strpos($InfoFieldList[4], 'extra.') !== false)
+						{
+							$keyList = 'main.'.$InfoFieldList[2].' as rowid';
+						} else {
+							$keyList = $InfoFieldList[2].' as rowid';
+						}
+					}
+					if (count($InfoFieldList) > 3 && !empty($InfoFieldList[3]))
+					{
+						list($parentName, $parentField) = explode('|', $InfoFieldList[3]);
+						$keyList .= ', '.$parentField;
+					}
+
+					$filter_categorie = false;
+					if (count($InfoFieldList) > 5) {
+						if ($InfoFieldList[0] == 'categorie') {
+							$filter_categorie = true;
+						}
+					}
+
+					if ($filter_categorie === false) {
+						$fields_label = explode('|', $InfoFieldList[1]);
+						if (is_array($fields_label)) {
+							$keyList .= ', ';
+							$keyList .= implode(', ', $fields_label);
+						}
+
+						$sqlwhere = '';
+						$sql = 'SELECT '.$keyList;
+						$sql .= ' FROM '.MAIN_DB_PREFIX.$InfoFieldList[0];
+						if (!empty($InfoFieldList[4])) {
+							// can use curent entity filter
+							if (strpos($InfoFieldList[4], '$ENTITY$') !== false) {
+								$InfoFieldList[4] = str_replace('$ENTITY$', $conf->entity, $InfoFieldList[4]);
+							}
+							// can use SELECT request
+							if (strpos($InfoFieldList[4], '$SEL$') !== false) {
+								$InfoFieldList[4] = str_replace('$SEL$', 'SELECT', $InfoFieldList[4]);
+							}
+
+							// current object id can be use into filter
+							if (strpos($InfoFieldList[4], '$ID$') !== false && !empty($objectid)) {
+								$InfoFieldList[4] = str_replace('$ID$', $objectid, $InfoFieldList[4]);
+							} else {
+								$InfoFieldList[4] = str_replace('$ID$', '0', $InfoFieldList[4]);
+							}
+							//We have to join on extrafield table
+							if (strpos($InfoFieldList[4], 'extra') !== false) {
+								$sql .= ' as main, '.MAIN_DB_PREFIX.$InfoFieldList[0].'_extrafields as extra';
+								$sqlwhere .= ' WHERE extra.fk_object=main.'.$InfoFieldList[2].' AND '.$InfoFieldList[4];
+							} else {
+								$sqlwhere .= ' WHERE '.$InfoFieldList[4];
+							}
+						} else {
+							$sqlwhere .= ' WHERE 1=1';
+						}
+						// Some tables may have field, some other not. For the moment we disable it.
+						if (in_array($InfoFieldList[0], array('tablewithentity'))) {
+							$sqlwhere .= ' AND entity = '.$conf->entity;
+						}
+						$sql .= $sqlwhere;
+
+						if($type == 'sellistmultiple')
+						{
+							//echo $sql; exit;
+						}
+						//print $sql;
+
+						$sql .= ' ORDER BY '.implode(', ', $fields_label);
+
+						dol_syslog(get_class($this).'::showInputField type=sellist', LOG_DEBUG);
+						$resql = $this->db->query($sql);
+						if ($resql) {
+							$out .= '<option value="0">&nbsp;</option>';
+							$num = $this->db->num_rows($resql);
+							$i = 0;
+
+							if($type == 'sellistmultiple')
+							{
+								//echo $value; exit;
+							}
+							while ($i < $num) {
+								$labeltoshow = '';
+								$obj = $this->db->fetch_object($resql);
+
+								// Several field into label (eq table:code|libelle:rowid)
+								$notrans = false;
+								$fields_label = explode('|', $InfoFieldList[1]);
+								if (is_array($fields_label) && count($fields_label) > 1) {
+									$notrans = true;
+									foreach ($fields_label as $field_toshow) {
+										$labeltoshow .= $obj->$field_toshow.' ';
+									}
+								} else {
+									$labeltoshow = $obj->{$InfoFieldList[1]};
+								}
+								$labeltoshow = $labeltoshow;
+
+								if($type == 'sellistmultiple')
+								{
+									//echo $value; exit;
+								}
+
+								if ($value == $obj->rowid) {
+									if (!$notrans) {
+										foreach ($fields_label as $field_toshow) {
+											$translabel = $langs->trans($obj->$field_toshow);
+											$labeltoshow = $translabel.' ';
+										}
+									}
+									$out .= '<option value="'.$obj->rowid.'" selected>'.$labeltoshow.'</option>';
+								} else {
+									if (!$notrans) {
+										$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+										$labeltoshow = $translabel;
+									}
+									if (empty($labeltoshow)) $labeltoshow = '(not defined)';
+
+									if (!empty($InfoFieldList[3]) && $parentField) {
+										$parent = $parentName.':'.$obj->{$parentField};
+									}
+
+									$out .= '<option value="'.$obj->rowid.'"';
+
+									if($type == 'sellistmultiple')
+									{
+										$value1 = explode(",", $value);
+										if(in_array($obj->rowid, $value1))
+										{
+											$out .= ' selected';
+										}
+									}
+									else
+									{
+										$out .= ($value == $obj->rowid ? ' selected' : '');
+									}
+									$out .= (!empty($parent) ? ' parent="'.$parent.'"' : '');
+									$out .= '>'.$labeltoshow.'</option>';
+								}
+
+								$i++;
+							}
+							$this->db->free($resql);
+						} else {
+							print 'Error in request '.$sql.' '.$this->db->lasterror().'. Check setup of extra parameters.<br>';
+						}
+					} else {
+						require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+						$data = $form->select_all_categories(Categorie::$MAP_ID_TO_CODE[$InfoFieldList[5]], '', 'parent', 64, $InfoFieldList[6], 1, 1);
+						$out .= '<option value="0">&nbsp;</option>';
+						foreach ($data as $data_key => $data_value) {
+							$out .= '<option value="'.$data_key.'"';
+							$out .= ($value == $data_key ? ' selected' : '');
+							$out .= '>'.$data_value.'</option>';
+						}
+					}
+				}
+				$out .= '</select>';
+			}
 		} elseif ($type == 'checkbox')
 		{
 			$value_arr = explode(',', $value);
@@ -1606,7 +1937,7 @@ class ExtraFields
 			}
 			if ($langfile && $valstr) $value = $langs->trans($valstr);
 			else $value = $valstr;
-		} elseif ($type == 'sellist') {
+		} elseif ($type == 'sellist' || $type == 'sellistmultiple') {
 			$param_list = array_keys($param['options']);
 			$InfoFieldList = explode(":", $param_list[0]);
 
@@ -1641,10 +1972,18 @@ class ExtraFields
 			if ($selectkey == 'rowid' && empty($value)) {
 				$sql .= " WHERE ".$selectkey."=0";
 			} elseif ($selectkey == 'rowid') {
-				$sql .= " WHERE ".$selectkey."=".$this->db->escape($value);
+				if($type == 'sellistmultiple')
+				{
+					$sql .= " WHERE ".$selectkey." IN (".$this->db->escape($value).")";
+				}
+				else
+				{
+					$sql .= " WHERE ".$selectkey."=".$this->db->escape($value);
+				}
 			} else {
 				$sql .= " WHERE ".$selectkey."='".$this->db->escape($value)."'";
 			}
+
 
 			//$sql.= ' AND entity = '.$conf->entity;
 
@@ -1655,7 +1994,11 @@ class ExtraFields
 				if ($filter_categorie === false) {
 					$value = ''; // value was used, so now we reste it to use it to build final output
 
-					$obj = $this->db->fetch_object($resql);
+					if($type == 'sellist')
+					{
+						$obj = $this->db->fetch_object($resql);
+					}
+
 
 					// Several field into label (eq table:code|libelle:rowid)
 					$fields_label = explode('|', $InfoFieldList[1]);
@@ -1673,14 +2016,33 @@ class ExtraFields
 							}
 						}
 					} else {
-						$translabel = '';
-						if (!empty($obj->{$InfoFieldList[1]})) {
-							$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+						if($type == 'sellistmultiple')
+						{
+							while ($obj = $this->db->fetch_object($resql)) {
+								$translabel = '';
+								if (!empty($obj->{$InfoFieldList[1]})) {
+									$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+								}
+								if ($translabel != $obj->{$InfoFieldList[1]}) {
+									$value .= dol_trunc($translabel, 18).",";
+								} else {
+									$value .= $obj->{$InfoFieldList[1]}.",";
+								}
+							}
+
+							$value = rtrim($value, ",");
 						}
-						if ($translabel != $obj->{$InfoFieldList[1]}) {
-							$value = dol_trunc($translabel, 18);
-						} else {
-							$value = $obj->{$InfoFieldList[1]};
+						else
+						{
+							$translabel = '';
+							if (!empty($obj->{$InfoFieldList[1]})) {
+								$translabel = $langs->trans($obj->{$InfoFieldList[1]});
+							}
+							if ($translabel != $obj->{$InfoFieldList[1]}) {
+								$value = dol_trunc($translabel, 18);
+							} else {
+								$value = $obj->{$InfoFieldList[1]};
+							}
 						}
 					}
 				} else {
@@ -1831,7 +2193,7 @@ class ExtraFields
 		} elseif ($type == 'text')
 		{
 			$value = dol_htmlentitiesbr($value);
-		} elseif ($type == 'html')
+		} elseif ($type == 'html' || $type == 'htmltable')
 		{
 			$value = dol_htmlentitiesbr($value);
 		} elseif ($type == 'password')

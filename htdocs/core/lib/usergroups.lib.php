@@ -66,10 +66,10 @@ function user_prepare_head($object)
 		$h++;
 	}
 	if($user->admin){
-		$head[$h][0] = DOL_URL_ROOT.'/user/param_ihm.php?id='.$object->id;
+		/*$head[$h][0] = DOL_URL_ROOT.'/user/param_ihm.php?id='.$object->id;
 		$head[$h][1] = $langs->trans("UserGUISetup");
 		$head[$h][2] = 'guisetup';
-		$h++;
+		$h++;*/
 	}	
 
 	if (!empty($conf->agenda->enabled) && $user->admin) {
@@ -152,11 +152,11 @@ function user_prepare_head($object)
 		// Notes
 		$nbNote = 0;
 		if (!empty($object->note)) $nbNote++;
-		$head[$h][0] = DOL_URL_ROOT.'/user/note.php?id='.$object->id;
+		/*$head[$h][0] = DOL_URL_ROOT.'/user/note.php?id='.$object->id;
 		$head[$h][1] = $langs->trans("Note");
 		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'note';
-		$h++;
+		$h++;*/
 
 		// Attached files
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -174,6 +174,31 @@ function user_prepare_head($object)
 		$head[$h][1] = $langs->trans("Info");
 		$head[$h][2] = 'info';
 		$h++;
+	}
+
+	// Check for Vendor and not approve
+	$user_group_id = 0;
+	$usergroup = new UserGroup($db);
+	$groupslist = $usergroup->listGroupsForUser($object->id);
+
+	if ($groupslist != '-1')
+	{
+		foreach ($groupslist as $groupforuser)
+		{
+			$user_group_id = $groupforuser->id;
+		}
+	}
+
+	if($user_group_id == '4' || $user->admin == 1)
+	{
+		$statut = $object->statut;
+		if($statut == 0)
+		{
+			$head[$h][0] = DOL_URL_ROOT.'/user/approve_history.php?id='.$object->id;
+			$head[$h][1] = $langs->trans("User Approve");
+			$head[$h][2] = 'approval';
+			$h++;
+		}
 	}
 
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'user', 'remove');

@@ -559,11 +559,11 @@ print '</td><td>';
 print '<input name="MAIN_INFO_GDPR" id="infodirector" class="minwidth500" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_GDPR).'"></td></tr>';
 
 // Capital
-print '<tr class="oddeven"><td><label for="capital">'.$langs->trans("Capital").'</label></td><td>';
+print '<tr class="oddeven d-none"><td><label for="capital">'.$langs->trans("Capital").'</label></td><td>';
 print '<input name="capital" id="capital" class="maxwidth100" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_CAPITAL).'"></td></tr>';
 
 // Juridical Status
-print '<tr class="oddeven"><td><label for="forme_juridique_code">'.$langs->trans("JuridicalStatus").'</label></td><td>';
+print '<tr class="oddeven d-none"><td><label for="forme_juridique_code">'.$langs->trans("JuridicalStatus").'</label></td><td>';
 if ($mysoc->country_code) {
 	print $formcompany->select_juridicalstatus($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE, $mysoc->country_code, '', 'forme_juridique_code');
 } else {
@@ -655,7 +655,7 @@ print '<input name="tva" id="intra_vat" class="minwidth200" value="'.dol_escape_
 print '</td></tr>';
 
 // Object of the company
-print '<tr class="oddeven"><td><label for="object">'.$langs->trans("CompanyObject").'</label></td><td>';
+print '<tr class="oddeven d-none"><td><label for="object">'.$langs->trans("CompanyObject").'</label></td><td>';
 print '<textarea class="flat quatrevingtpercent" name="object" id="object" rows="'.ROWS_5.'">'.(!empty($conf->global->MAIN_INFO_SOCIETE_OBJECT) ? $conf->global->MAIN_INFO_SOCIETE_OBJECT : '').'</textarea></td></tr>';
 print '</td></tr>';
 
@@ -704,8 +704,7 @@ print "</td></tr>\n";
 print "</table>";
 
 // Second tax
-print '<br>';
-print '<table class="noborder centpercent editmode">';
+print '<table class="noborder centpercent editmode d-none">';
 print '<tr class="liste_titre">';
 print '<td width="25%">'.$form->textwithpicto($langs->transcountry("LocalTax1Management", $mysoc->country_code), $langs->transcountry("LocalTax1IsUsedDesc", $mysoc->country_code)).'</td><td>'.$langs->trans("Description").'</td>';
 print '<td class="right">&nbsp;</td>';
@@ -751,8 +750,7 @@ if ($mysoc->useLocalTax(1))
 print "</table>";
 
 // Third tax system
-print '<br>';
-print '<table class="noborder centpercent editmode">';
+print '<table class="noborder centpercent editmode d-none">';
 print '<tr class="liste_titre">';
 print '<td width="25%">'.$form->textwithpicto($langs->transcountry("LocalTax2Management", $mysoc->country_code), $langs->transcountry("LocalTax2IsUsedDesc", $mysoc->country_code)).'</td><td>'.$langs->trans("Description").'</td>';
 print '<td class="right">&nbsp;</td>';
@@ -798,8 +796,7 @@ print "</table>";
 
 
 // Tax stamp
-print '<br>';
-print '<table class="noborder centpercent editmode">';
+print '<table class="noborder centpercent editmode d-none">';
 print '<tr class="liste_titre">';
 print '<td width="25%">'.$form->textwithpicto($langs->trans("RevenueStamp"), $langs->trans("RevenueStampDesc")).'</td><td>'.$langs->trans("Description").'</td>';
 print '<td class="right">&nbsp;</td>';

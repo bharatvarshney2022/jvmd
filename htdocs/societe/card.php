@@ -1786,7 +1786,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
 
 
-			print dol_get_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
+			//print dol_get_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
 			print '<div class="fichecenter2">';
 			print '<table class="border centpercent">';
@@ -1912,15 +1912,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print $form->widgetForTranslation("address", $object, $permissiontoadd, 'textarea', 'alphanohtml', 'quatrevingtpercent');
 			print '</td></tr>';
 
-			// Zip / Town
-			print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
-			print $formcompany->select_ziptown($object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 0, '', 'maxwidth100');
-			print '</td>';
-			if ($conf->browser->layout == 'phone') print '</tr><tr>';
-			print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
-			print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
-			print $form->widgetForTranslation("town", $object, $permissiontoadd, 'string', 'alphanohtml', 'maxwidth100 quatrevingtpercent');
-			print '</td></tr>';
+			
 
 			// Country
 			print '<tr><td>'.$form->editfieldkey('Country', 'selectcounty_id', '', $object, 0).'</td><td>';
@@ -1943,6 +1935,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print '</td>';
 			}
 			print '</tr>';
+
+			// Zip / Town
+			
+			print '<tr><td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
+			print $formcompany->select_ziptown($object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+			print $form->widgetForTranslation("town", $object, $permissiontoadd, 'string', 'alphanohtml', 'maxwidth100 quatrevingtpercent');
+			print '</td>';
+			if ($conf->browser->layout == 'phone') print '</tr><tr>';
+			print '<td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
+			print $formcompany->select_ziptown($object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 0, '', 'maxwidth100');
+			print '</td></tr>';
+			
 
 			// Phone / Fax
 			print '<tr><td>'.$form->editfieldkey('Phone', 'phone', GETPOST('phone', 'alpha'), $object, 0).'</td>';

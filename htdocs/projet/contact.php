@@ -177,7 +177,7 @@ if ($id > 0 || !empty($ref))
 	print '<table class="border tableforfield centpercent">';
 
 	// Usage
-	print '<tr><td class="tdtop">';
+	print '<tr style="display:none;"><td class="tdtop">';
 	print $langs->trans("Usage");
 	print '</td>';
 	print '<td>';
@@ -205,7 +205,7 @@ if ($id > 0 || !empty($ref))
 	print '</td></tr>';
 
 	// Visibility
-	print '<tr><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
+	print '<tr style="display:none;"><td class="titlefield">'.$langs->trans("Visibility").'</td><td>';
 	if ($object->public) print $langs->trans('SharedProject');
 	else print $langs->trans('PrivateProject');
 	print '</td></tr>';
@@ -230,7 +230,7 @@ if ($id > 0 || !empty($ref))
 	}
 
 	// Date start - end
-	print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td>';
+	print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
 	$start = dol_print_date($object->date_start, 'day');
 	print ($start ? $start : '?');
 	$end = dol_print_date($object->date_end, 'day');
@@ -240,13 +240,11 @@ if ($id > 0 || !empty($ref))
 	print '</td></tr>';
 
 	// Budget
-	print '<tr><td>'.$langs->trans("Budget").'</td><td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 	if (strcmp($object->budget_amount, '')) print price($object->budget_amount, '', $langs, 0, 0, 0, $conf->currency);
 	print '</td></tr>';
 
-	// Other attributes
-	$cols = 2;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	
 
 	print "</table>";
 
@@ -275,8 +273,13 @@ if ($id > 0 || !empty($ref))
 	print '</div>';
 	print '</div>';
 
-	print '<div class="clearboth"></div>';
+	print '<div class="clearboth"></div><hr />';
 
+	// Other attributes
+	print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+	$cols = 2;
+	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	print '</tbody></table></div>';
 	print dol_get_fiche_end();
 
 	print '<br>';
@@ -285,6 +288,7 @@ if ($id > 0 || !empty($ref))
 	$dirtpls = array_merge($conf->modules_parts['tpl'], array('/core/tpl'));
 	foreach ($dirtpls as $reldir)
 	{
+		
 		$res = @include dol_buildpath($reldir.'/contacts.tpl.php');
 		if ($res) break;
 	}

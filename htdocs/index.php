@@ -245,7 +245,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 			'supplier_orders' => "SuppliersOrders",
 			'supplier_invoices' => "SuppliersInvoices",
 			'supplier_proposals' => "SupplierProposalShort",
-			'projects' => "Projects",
+			'projects' => "Leads",
 			'expensereports' => "ExpenseReports",
 			'holidays' => "Holidays",
 			'ticket' => "Ticket",
@@ -492,7 +492,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 			),
 		'project' =>
 			array(
-				'groupName' => 'Projects',
+				'groupName' => 'Leads',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
@@ -780,7 +780,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 			}
 			$text .= '. '.$langs->transnoentitiesnoconv("LateDesc");
 
-			$weatherDashBoard = '<div class="box-flex-item '.$appendClass.'"><div class="box-flex-item-with-margin">'."\n";
+			/*$weatherDashBoard = '<div class="box-flex-item '.$appendClass.'"><div class="box-flex-item-with-margin">'."\n";
 			$weatherDashBoard .= '	<div class="info-box '.$openedDashBoardSize.' info-box-weather info-box-weather-level'.$weather->level.'">'."\n";
 			$weatherDashBoard .= '		<span class="info-box-icon">';
 			$weatherDashBoard .= img_weather('', $weather->level, '', 0, 'valignmiddle width50');
@@ -805,7 +805,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 			$weatherDashBoard .= '		</div><!-- /.info-box-content -->'."\n";
 			$weatherDashBoard .= '	</div><!-- /.info-box -->'."\n";
 			$weatherDashBoard .= '</div><!-- /.box-flex-item-with-margin -->'."\n";
-			$weatherDashBoard .= '</div><!-- /.box-flex-item -->'."\n";
+			$weatherDashBoard .= '</div><!-- /.box-flex-item -->'."\n";*/
 			$weatherDashBoard .= "\n";
 
 			$openedDashBoard = $weatherDashBoard.$openedDashBoard;
@@ -813,7 +813,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 
 		if (!empty($isIntopOpenedDashBoard)) {
 			for ($i = 1; $i <= 10; $i++) {
-				$openedDashBoard .= '<div class="box-flex-item filler"></div>';
+				//$openedDashBoard .= '<div class="box-flex-item filler"></div>';
 			}
 		}
 

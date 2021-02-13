@@ -56,7 +56,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
     		var list = jQuery("#list");
             var totalizable = jQuery("#totalizable");
     		<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist"))
+			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist") && (GETPOST('type', 'alpha') != "sellistmultiple") && (GETPOST('type', 'alpha') != "htmltable"))
 			{
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -95,12 +95,14 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			else if (type == 'int')      { size.removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'text')     { size.removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'html')     { size.removeAttr('disabled'); unique.prop('disabled', true).removeAttr('checked'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
+            else if (type == 'htmltable') { size.val('2000').removeAttr('disabled'); unique.removeAttr('checked').prop('disabled', true);  jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show(); }
     		else if (type == 'varchar')  { size.removeAttr('disabled'); unique.removeAttr('disabled'); jQuery("#value_choice").hide();jQuery("#helpchkbxlst").hide(); }
 			else if (type == 'password') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); required.val('').prop('disabled', true); default_value.val('').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helppassword").show();}
 			else if (type == 'boolean')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'price')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").hide(); jQuery("#helpchkbxlst").hide();}
 			else if (type == 'select')   { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'sellist')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
+			else if (type == 'sellistmultiple')  { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpsellist").show();}
 			else if (type == 'radio')    { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'checkbox') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpselect").show();}
 			else if (type == 'chkbxlst') { size.val('').prop('disabled', true); unique.removeAttr('checked').prop('disabled', true); jQuery("#value_choice").show(); jQuery(".spanforparamtooltip").hide(); jQuery("#helpchkbxlst").show();}
@@ -154,12 +156,15 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <?php
 $label = $extrafields->attributes[$elementtype]['label'][$attrname];
 $type = $extrafields->attributes[$elementtype]['type'][$attrname];
+$vendor_id = $extrafields->attributes[$elementtype]['usergroup_id'][$attrname];
 $size = $extrafields->attributes[$elementtype]['size'][$attrname];
 $computed = $extrafields->attributes[$elementtype]['computed'][$attrname];
 $default = $extrafields->attributes[$elementtype]['default'][$attrname];
 $unique = $extrafields->attributes[$elementtype]['unique'][$attrname];
 $required = $extrafields->attributes[$elementtype]['required'][$attrname];
 $pos = $extrafields->attributes[$elementtype]['pos'][$attrname];
+$row = $extrafields->attributes[$elementtype]['row'][$attrname];
+$column = $extrafields->attributes[$elementtype]['column'][$attrname];
 $alwayseditable = $extrafields->attributes[$elementtype]['alwayseditable'][$attrname];
 $param = $extrafields->attributes[$elementtype]['param'][$attrname];
 $perms = $extrafields->attributes[$elementtype]['perms'][$attrname];
@@ -180,11 +185,22 @@ if ((($type == 'select') || ($type == 'checkbox') || ($type == 'radio')) && is_a
 			$param_chain .= $key.','.$value."\n";
 		}
 	}
-} elseif (($type == 'sellist') || ($type == 'chkbxlst') || ($type == 'link') || ($type == 'password') || ($type == 'separate'))
+} else if (($type == 'htmltable') && is_array($param))
+{
+	$param_chain = '';
+	foreach ($param['options'] as $key => $value)
+	{
+		if (strlen($key))
+		{
+			$param_chain .= $key.'|'.$value."\n";
+		}
+	}
+} elseif (($type == 'sellist') || ($type == 'sellistmultiple') || ($type == 'chkbxlst') || ($type == 'link') || ($type == 'password') || ($type == 'separate'))
 {
 	$paramlist = array_keys($param['options']);
 	$param_chain = $paramlist[0];
 }
+
 ?>
 <!-- Label -->
 <tr><td class="titlefield fieldrequired"><?php echo $langs->trans("LabelOrTranslationKey"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo $label; ?>"></td></tr>
@@ -234,6 +250,51 @@ if (in_array($type, array_keys($typewecanchangeinto)))
 ?>
 </td></tr>
 
+<tr><td class="fieldrequired"><?php echo $langs->trans("User Group"); ?></td><td class="valeur">
+<?php
+	$vendorwecanchangeinto = array();
+    $sql = "SELECT rowid, nom";
+                $sql .= " FROM ".MAIN_DB_PREFIX."usergroup";
+                $sql .= " WHERE entity = '1'";
+    $resql = $db->query($sql);
+    $vendor2Label = array('0' => '&nbsp;');
+    if ($resql)
+    {
+        if ($db->num_rows($resql))
+        {
+            while ($tab = $db->fetch_object($resql))
+            {
+                $vendorwecanchangeinto[$tab->rowid] = $tab->nom;
+                $vendor2Label[$tab->rowid] = $tab->nom;
+            }
+        }
+    }
+
+    if (in_array($vendor_id, array_keys($vendorwecanchangeinto)))
+	{
+		$newarray = array();
+		print '<select id="usergroup_id" class="flat type" name="usergroup_id">';
+		foreach ($vendor2Label as $key => $val)
+		{
+			$selected = '';
+			if ($key == (GETPOST('usergroup_id', 'alpha') ?GETPOST('usergroup_id', 'alpha') : $vendor_id)) $selected = ' selected="selected"';
+			if ($key == $vendor_id) print '<option value="'.$key.'"'.$selected.'>'.$val.'</option>';
+			else print '<option value="'.$key.'"'.$selected.'>'.$val.'</option>';
+		}
+		print '</select>';
+		print ajax_combobox('usergroup_id');
+	} else {
+		print '<select id="usergroup_id" class="flat type" name="usergroup_id">';
+		foreach ($vendor2Label as $key => $val)
+		{
+			$selected = '';
+			print '<option value="'.$key.'">'.$val.'</option>';
+		}
+		print '</select>';
+	}
+?>
+</td></tr>	
+
 <!-- Size -->
 <tr class="extra_size"><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" size="5" value="<?php echo $size; ?>"></td></tr>
 
@@ -260,6 +321,9 @@ if (in_array($type, array_keys($typewecanchangeinto)))
 
 <!-- Position -->
 <tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" size="5" value="<?php echo dol_escape_htmltag($pos); ?>"></td></tr>
+
+<tr><td class="titlefield"><?php echo $langs->trans("Row"); ?></td><td class="valeur"><input type="text" name="row" size="5" value="<?php echo dol_escape_htmltag($row); ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="column" size="5" value="<?php echo dol_escape_htmltag($column); ?>"></td></tr>
 
 <!-- Language file -->
 <tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag($langfile); ?>"></td></tr>

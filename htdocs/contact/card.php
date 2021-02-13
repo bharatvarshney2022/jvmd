@@ -1525,7 +1525,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		if ($action != 'presend')
 		{
-			print '<div class="fichecenter"><div class="fichehalfleft">';
+			print '<div class="fichecenter" style="display:none;"><div class="fichehalfleft">';
 
 			print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 

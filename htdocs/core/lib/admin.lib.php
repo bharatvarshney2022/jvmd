@@ -1815,7 +1815,7 @@ function company_admin_prepare_head()
 	$head[$h][2] = 'company';
 	$h++;
 
-	$head[$h][0] = DOL_URL_ROOT."/admin/openinghours.php";
+	/*$head[$h][0] = DOL_URL_ROOT."/admin/openinghours.php";
 	$head[$h][1] = $langs->trans("OpeningHours");
 	$head[$h][2] = 'openinghours';
 	$h++;
@@ -1828,7 +1828,7 @@ function company_admin_prepare_head()
 	$head[$h][0] = DOL_URL_ROOT."/admin/company_socialnetworks.php";
 	$head[$h][1] = $langs->trans("SocialNetworksInformation");
 	$head[$h][2] = 'socialnetworks';
-	$h++;
+	$h++;*/
 
 	complete_head_from_modules($conf, $langs, null, $head, $h, 'mycompany_admin', 'add');
 
