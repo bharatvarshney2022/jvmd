@@ -77,7 +77,7 @@
 
 				$objectContact = new Contact($db);
 
-				$objectContact->fk_soc = $societe_id;
+				$objectContact->socid = $societe_id;
 				$objectContact->lastname = $lastname;
 				$objectContact->firstname = $firstname;
 				$objectContact->statut = '1';
