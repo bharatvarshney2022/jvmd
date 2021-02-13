@@ -46,9 +46,9 @@
 
 		//$object->fk_departement = '';
 		
-		$object->update($temp_user_id, null, 1, 'update', 1);
+		$update = $object->update($temp_user_id, null, 1, 'update', 1);
+		echo $update; exit;
 	}
-	exit;
 	
 	
 	$headers = 'Content-type: application/json';
