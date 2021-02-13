@@ -876,18 +876,19 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print '<td>'.$obj->product_model.'</td>';
 						// Product name
 						print '<td>'.$obj->pname.'</td>';
-						
 						// Product Brand
 						print '<td>'.$obj->brandname.'</td>';
 
 						// Product Category
-						print '<td>'.$obj->brandname.'</td>';
+						print '<td>'.$obj->familyname.'</td>';
 
 						// Product Sub Category
-						print '<td>'.$obj->brandname.'</td>';
+						print '<td>'.$obj->subfamily.'</td>';
 
 						// Product Capacity
-						print '<td>'.$obj->brandname.'</td>';
+						
+						print '<td>'.$obj->capacity.'</td>';
+
 						
 						// Date Added
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
