@@ -202,6 +202,46 @@ if (empty($reshook))
 	}
 
 	// Add a product or service
+	if ($action == 'add_customer_product')
+	{
+		$error = 0;
+		$fk_model = GETPOST('modelname', 'int');
+	
+		if (empty($fk_model))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Model Required')), null, 'errors');
+            $action = "create_customerproduct";
+            $error++;
+        }
+
+        if (!$error)
+		{
+			$customerProduct = array();
+			$customerProduct['fk_soc'] = GETPOST('fk_soc', 'int');
+			$customerProduct['fk_brand'] = GETPOST('fk_brand', 'int');
+			$customerProduct['fk_category'] = GETPOST('fk_category', 'int');
+			$customerProduct['fk_subcategory'] = GETPOST('fk_subcategory', 'int');
+			$customerProduct['fk_product'] = GETPOST('fk_product', 'int');
+
+			$customerProduct['fk_model'] = GETPOST('modelname', 'int');
+			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
+			//print_r($customerProduct);
+			$productid = $object->add_customer_product($user,$customerProduct);
+			if (!empty($backtopage))
+			{
+				$backtopage = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $backtopage); // New method to autoselect project after a New on another form object creation
+				if (preg_match('/\?/', $backtopage)) $backtopage .= '&socid='.$object->id; // Old method
+				header("Location: ".$backtopage);
+				exit;
+			} else {
+				//header("Location: ".$_SERVER['PHP_SELF']."?id=".$productid);
+				header("Location: ".DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int'));
+				exit;
+			}
+			
+		}	
+
+	}	
 	if ($action == 'add' && $usercancreate)
 	{
 		$error = 0;
@@ -954,6 +994,112 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	// -----------------------------------------
 	// When used in standard mode
 	// -----------------------------------------
+
+	if ($action == 'create_customerproduct' && $usercancreate)
+	{
+		print '<script type="text/javascript">';
+				print '$(document).ready(function () {
+                        $("#selectcountry_id").change(function() {
+                        	document.formprod.action.value="create";
+                        	document.formprod.submit();
+                        });
+                     });';
+
+                print '$(document).ready(function () {
+                        $("#modelname").change(function() {
+                        	var model = $(this).val();
+                        	$.ajax({
+								  dataType: "json",
+								  url: "productmodeldata.php",
+								  data: { model: model},
+								  success: function(data) {
+									$("#label").val(data.name);
+									$("#brand").val(data.brand);
+									$("#product_family").val(data.family);
+									$("#product_subfamily").val(data.subfamily);
+
+									$("#fk_brand").val(data.brandid);
+									$("#fk_category").val(data.categoryid);
+									$("#fk_subcategory").val(data.subcategoryid);
+									$("#fk_product").val(data.product_id);
+								  }
+							});
+                        });
+                     });';     
+				print '</script>'."\n";
+
+				// Load object modCodeProduct
+				$module = (!empty($conf->global->PRODUCT_CODEPRODUCT_ADDON) ? $conf->global->PRODUCT_CODEPRODUCT_ADDON : 'mod_codeproduct_leopard');
+				if (substr($module, 0, 16) == 'mod_codeproduct_' && substr($module, -3) == 'php')
+				{
+					$module = substr($module, 0, dol_strlen($module) - 4);
+				}
+				$result = dol_include_once('/core/modules/product/'.$module.'.php');
+				if ($result > 0)
+				{
+					$modCodeProduct = new $module();
+				}
+
+				dol_set_focus('input[name="ref"]');
+				$socid = GETPOST('socid');
+				print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="formprod">';
+				print '<input type="hidden" name="token" value="'.newToken().'">';
+				print '<input type="hidden" name="action" value="add_customer_product">';
+				print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+				print '<input type="hidden" name="fk_soc" value="'.$socid.'">';
+				print '<input type="hidden" id="fk_brand" name="fk_brand" value="">';
+				print '<input type="hidden" id="fk_category" name="fk_category" value="">';
+				print '<input type="hidden" id="fk_subcategory" name="fk_subcategory" value="">';
+				print '<input type="hidden" id="fk_product" name="fk_product" value="">';
+
+				
+				$picto = 'product';
+				$title = $langs->trans("Add Customer Product");
+				
+				$linkback = "";
+				print load_fiche_titre($title, $linkback, $picto);
+				print "<h3>Product Information</h3>";
+				print dol_get_fiche_head('');
+				print '<table class="border centpercent">';
+
+				// Model
+				print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+				print $formcompany->select_modelName($family_id, '0' ,'modelname');
+				//print $form->selectarray('model', $modelarray, GETPOST('model'));
+				print '</td>';
+				// Label
+				print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+
+				// Brand
+				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
+				print '</td>';
+
+				
+
+				// Product Family
+				print '<td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td></tr>';
+
+				// Product Family
+				print '<tr><td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('product_subfamily')).'"></td>';
+
+				// Ac Capacity
+				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
+
+				
+				print '</table>';
+				print dol_get_fiche_end();
+
+				print '<div class="center">';
+				print '<input type="submit" class="button" value="'.$langs->trans("Create").'">';
+				print ' &nbsp; &nbsp; ';
+				print '<input type="button" class="button button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+				print '</div>';
+
+				print '</form>';
+
+
+
+	}	
 	if ($action == 'create' && $usercancreate)
 	{
 		//WYSIWYG Editor

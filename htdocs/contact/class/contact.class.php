@@ -103,6 +103,10 @@ class Contact extends CommonObject
 		'town' =>array('type'=>'text', 'label'=>'Town', 'enabled'=>1, 'visible'=>1, 'position'=>65),
 		'fk_departement' =>array('type'=>'integer', 'label'=>'Fk departement', 'enabled'=>1, 'visible'=>3, 'position'=>70),
 		'fk_pays' =>array('type'=>'integer', 'label'=>'Fk pays', 'enabled'=>1, 'visible'=>3, 'position'=>75),
+
+		'userlatitude' =>array('type'=>'varchar(255)', 'label'=>'userlatitude', 'enabled'=>1, 'visible'=>1, 'position'=>76),
+		'userlongitude' =>array('type'=>'varchar(255)', 'label'=>'userlongitude', 'enabled'=>1, 'visible'=>1, 'position'=>77),
+
 		'birthday' =>array('type'=>'date', 'label'=>'Birthday', 'enabled'=>1, 'visible'=>3, 'position'=>80),
 		'poste' =>array('type'=>'varchar(80)', 'label'=>'PostOrFunction', 'enabled'=>1, 'visible'=>-1, 'position'=>85),
 		'phone' =>array('type'=>'varchar(30)', 'label'=>'Phone', 'enabled'=>1, 'visible'=>1, 'position'=>90, 'searchall'=>1),
@@ -148,6 +152,11 @@ class Contact extends CommonObject
 	public $state_id; // Id of department
 	public $state_code; // Code of department
 	public $state; // Label of department
+
+	public $userlatitude; // Label of department
+	public $userlongitude; // Label of department
+	public $device_id; // Label of department
+	public $fcmToken; // Label of department
 
 	public $poste; // Position
 
@@ -503,6 +512,7 @@ class Contact extends CommonObject
 		$this->town = (empty($this->town) ? '' : trim($this->town));
 		$this->setUpperOrLowerCase();
 		$this->country_id = ($this->country_id > 0 ? $this->country_id : $this->country_id);
+		$this->otp = ($this->otp != '' ? $this->otp : '');
 		if (empty($this->statut)) $this->statut = 0;
 		if (empty($this->civility_code) && !is_numeric($this->civility_id)) $this->civility_code = $this->civility_id; // For backward compatibility
 		$this->db->begin();
@@ -518,6 +528,13 @@ class Contact extends CommonObject
 		$sql .= ", town='".$this->db->escape($this->town)."'";
 		$sql .= ", fk_pays=".($this->country_id > 0 ? $this->country_id : 'NULL');
 		$sql .= ", fk_departement=".($this->state_id > 0 ? $this->state_id : 'NULL');
+
+		$sql .= ", userlatitude='".$this->db->escape($this->userlatitude)."'";
+		$sql .= ", userlongitude='".$this->db->escape($this->userlongitude)."'";
+		$sql .= ", device_id='".$this->db->escape($this->device_id)."'";
+		$sql .= ", fcmToken='".$this->db->escape($this->fcmToken)."'";
+
+		$sql .= ", otp='".$this->db->escape($this->otp)."'";
 		$sql .= ", poste='".$this->db->escape($this->poste)."'";
 		$sql .= ", fax='".$this->db->escape($this->fax)."'";
 		$sql .= ", email='".$this->db->escape($this->email)."'";

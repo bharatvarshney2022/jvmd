@@ -4527,4 +4527,17 @@ class Societe extends CommonObject
 
 		return CommonObject::commonReplaceThirdparty($db, $origin_id, $dest_id, $tables);
 	}
+
+	public function isDeviceExists($phone_mobile, $device_id)
+	{
+		$sql = "SELECT phone_mobile";
+		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
+		$sql .= " WHERE phone_mobile = '".$this->db->escape($phone_mobile)."' AND device_id = '".$this->db->escape($device_id)."' ";
+		
+		$resql = $this->db->query($sql);
+		
+		$num = $this->db->num_rows($resql);
+		
+		return $num;
+	}
 }

@@ -5727,11 +5727,60 @@ class Product extends CommonObject
 		}
 	}
 
+	public function add_customer_product($user,$post)
+	{
+		$now = dol_now();
+		$entity = 1;
+		$sql = "SELECT count(*) as nb";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
+		$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
+		$sql .= " AND fk_model = '".$this->db->escape($post['fk_model'])."'";
+
+		$result = $this->db->query($sql);
+		if ($result) {
+			$obj = $this->db->fetch_object($result);
+			if ($obj->nb == 0) {
+				// Produit non deja existant
+				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer (";
+				$sql .= "datec";
+				$sql .= ", entity";
+				$sql .= ", fk_brand";
+				$sql .= ", fk_category";
+				$sql .= ", fk_subcategory";
+				$sql .= ", fk_model";
+				$sql .= ", fk_product";
+				$sql .= ", fk_soc";
+				$sql .= ", ac_capacity";
+				$sql .= ", fk_user";
+				$sql .= ") VALUES (";
+				$sql .= "'".$this->db->idate($now)."'";
+				$sql .= ", ".$entity;
+				$sql .= ", '".$this->db->escape($post['fk_brand'])."'";
+				$sql .= ", '".$this->db->escape($post['fk_category'])."'";
+				$sql .= ", '".$this->db->escape($post['fk_subcategory'])."'";					
+				$sql .= ", '".$this->db->escape($post['fk_model'])."'";
+				$sql .= ", '".$this->db->escape($post['fk_product'])."'";
+				$sql .= ", '".$this->db->escape($post['fk_soc'])."'";
+				$sql .= ", '".$this->db->escape($post['ac_capacity'])."'";
+				$sql .= ", ".$user->id;
+				$sql .= ")";
+				/*echo $sql;
+				exit;*/
+				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
+				$result = $this->db->query($sql);
+				if ($result) {
+					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
+					return $id;
+				}
+			}
+		}
+	}	
+
 	/* Get model info by model id*/
 	public function getProductModel($model_id)
 	{
 		$outjson = array();
-		$sql = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."product_model as pm, ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f,".MAIN_DB_PREFIX."p_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid AND pm.rowid = '".$model_id."' ";
+		$sql = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active, b.rowid as brandid, f.rowid as categoryid, sf.rowid as subcategoryid, p.rowid as productid FROM ".MAIN_DB_PREFIX."product as p, ".MAIN_DB_PREFIX."product_model as pm, ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f,".MAIN_DB_PREFIX."p_brands as b WHERE p.fk_model = pm.rowid and pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid AND pm.rowid = '".$model_id."' ";
 
 		$result = $this->db->query($sql);
 		if ($result) {
@@ -5740,10 +5789,62 @@ class Product extends CommonObject
 
 				$id = $obj->rowid;
 
-				$outjson = array('id' => $obj->rowid, 'brand' => $obj->brand, 'family' => $obj->family, 'subfamily' => $obj->subfamily, 'name' => $obj->name, 'model' => $obj->modelno);
+				$outjson = array('id' => $obj->rowid, 'brand' => $obj->brand, 'family' => $obj->family, 'subfamily' => $obj->subfamily, 'name' => $obj->name, 'model' => $obj->modelno, 'product_id' => $obj->productid, 'subcategoryid' => $obj->subcategoryid, 'categoryid' => $obj->categoryid, 'brandid' => $obj->brandid);
 			}
 		}	
 		return json_encode($outjson);
+	}
+
+	/* Get model info by model id*/
+	public function getCustomerProductModelInfo($model_id,$socid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno, p.fk_brand,p.fk_category, p.fk_subcategory, p.fk_product FROM ".MAIN_DB_PREFIX."product_customer as p LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid AND p.fk_model = '".$model_id."' AND p.fk_soc = '".$socid."' ";
+		$result = $this->db->query($sql);
+		if ($result) {
+			$num = $this->db->num_rows($result);
+			if ($this->db->num_rows($result)) {
+				$i = 0;
+				
+				while ($i < $num) {
+					$obj = $this->db->fetch_object($result);
+
+					$id = $obj->rowid;
+
+					$outjson = array('id' => $obj->rowid, 'branid' => $obj->fk_brand, 'category' => $obj->fk_category, 'subcategory' => $obj->fk_subcategory, 'product_id' => $obj->fk_product, 'model' => $obj->modelno);
+					$i++;
+				}
+			}
+		}	
+		return json_encode($outjson);
+	}
+
+	/* Get product info by customer id*/
+	public function getCustomerProductModel($socid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p, ".MAIN_DB_PREFIX."LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
+
+		$result = $this->db->query($sql);
+		$str = '<option value="0">Select Model No</option>';
+		if ($result) {
+			$num = $this->db->num_rows($result);
+			
+			if ($this->db->num_rows($result)) {
+				$i = 0;
+				
+				while ($i < $num) {
+					
+					$obj = $this->db->fetch_object($result);
+
+					$id = $obj->rowid;
+					$str .= '<option value="'.$obj->modelid.'">'.$obj->modelno.'</option>';
+					//$outjson = array('id' => $obj->modelid, 'code' => $obj->modelno);
+					$i++;
+				}
+			}
+		}	
+		return $str;
 	}
 }
 

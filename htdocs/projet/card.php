@@ -581,6 +581,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 						jQuery(".classuseopportunity").hide();
 					}
 				});
+
+
+				jQuery("#socid").change(function() {
+					alert("his");
+				});
+
 			});';
 		print '</script>';
 		print '<br>';
@@ -606,6 +612,48 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print '</td>';
 	print '</tr>';
 
+	print '<script>';
+		print '$( document ).ready(function() {
+				jQuery("#socid").change(function() {
+					var socid = $(this).val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductmodeldata.php",
+						  data: {socid: socid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#options_fk_product_model").html(html);
+						  }
+					});
+				});
+
+				jQuery("#options_fk_product_model").change(function() {
+					var modelid = $(this).val();
+					var socid = $("#socid").val();
+					getmodelinfo(modelid,socid);
+				});					
+
+			});
+
+			function getmodelinfo(id,socid){
+         		var model = id;
+            	$.ajax({
+					  dataType: "json",
+					  url: "productmodeldata.php",
+					  data: {model: model, socid: socid},
+					  success: function(data) {
+						$("#options_fk_brand").val(data.branid);
+						$("#options_fk_category").val(data.category);
+						$("#options_fk_sub_category").val(data.subcategory);
+						$("#options_fk_product").val(data.product_id);
+					  }
+				});
+         	}
+
+			';
+
+
+		print '</script>';
 	// Thirdparty
 	if ($conf->societe->enabled)
 	{
@@ -845,6 +893,66 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		print '</select>';
 		print '</td>';
+		// fetch optionals attributes and labels
+				$leadextrafields = new ExtraFields($db);
+				$leadextrafields = $extrafields->fetch_name_optionals_label($object->table_element);
+				echo $modelid = $object->fetch_optionals($object->id,$leadextrafields);
+		print '<script>';
+		print '$( document ).ready(function() {';
+				if($object->thirdparty->id > 0){
+					print '$("socid").val("'.$object->thirdparty->id.'");
+							getcustomermodelinfo("'.$object->thirdparty->id.'");
+
+							getmodelinfo("'.$modelid.'","'.$object->thirdparty->id.'");
+						';
+				}	
+				print 'jQuery("#socid").change(function() {
+					var socid = $(this).val();
+                	getcustomermodelinfo(socid);
+				});
+
+				jQuery("#options_fk_product_model").change(function() {
+					var modelid = $(this).val();
+					var socid = $("#socid").val();
+					getmodelinfo(modelid,socid);
+				});					
+
+			});
+
+			function getcustomermodelinfo(id){
+         		var socid = id;
+            	$.ajax({
+						  dataType: "html",
+						  url: "customerproductmodeldata.php",
+						  data: {socid: socid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#options_fk_product_model").html(html);
+						  }
+					});
+         	}
+
+			function getmodelinfo(id,socid){
+         		var model = id;
+         		//alert(socid);
+            	$.ajax({
+					  dataType: "json",
+					  url: "productmodeldata.php",
+					  data: { model: model,socid: socid},
+					  success: function(data) {
+					  	//alert(data);
+						$("#options_fk_brand").val(data.branid);
+						$("#options_fk_category").val(data.category);
+						$("#options_fk_sub_category").val(data.subcategory);
+						$("#options_fk_product").val(data.product_id);
+					  }
+				});
+         	}
+
+			';
+
+
+		print '</script>';
 
 		// Thirdparty
 		if ($conf->societe->enabled)
