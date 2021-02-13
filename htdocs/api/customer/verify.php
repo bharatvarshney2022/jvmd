@@ -37,6 +37,7 @@
 		$db->commit();
 
 		$contactData = $object->getOTPFromMobile($mobile);
+		print_r($contactData); exit;
 		
 		$already = '1';	
 		$status_code = '1';
