@@ -39,7 +39,7 @@
 	{
 		// Check if already exists
 		$objectSociete = new Societe($db);
-		$resultSoc = $object->isDeviceExists($result->phone_mobile, $device_id);
+		$resultSoc = $objectSociete->isDeviceExists($result->phone_mobile, $device_id);
 
 		if($result == 0)
 		{
