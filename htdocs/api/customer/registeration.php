@@ -9,7 +9,7 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/contact/class/societe.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact_temp.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
