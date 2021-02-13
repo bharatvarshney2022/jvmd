@@ -57,7 +57,7 @@
 		if($isExist1)
 		{
 			$status_code = '1';
-			$message = 'Temporary account data exists';
+			$message = 'New temporary account has been created';
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
