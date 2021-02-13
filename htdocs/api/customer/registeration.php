@@ -33,13 +33,23 @@
 	$json = array();
 
 	// Get ZIPCDOE
+	$fk_pincode = $fk_departement = 0;
 	$sql = "SELECT z.rowid, z.zip FROM ".MAIN_DB_PREFIX."c_pincodes as z";
 	$sql .= " WHERE z.active = 1 AND z.zip LIKE '".$db->escape($postalCode)."%'";
 	$resql1 = $db->query($sql);
 	if ($resql1)
 	{
 		$row = $db->fetch_array($resql1);
-		print_r($row); exit;
+		$fk_pincode = $row['rowid'];
+	}
+
+	$sql = "SELECT z.rowid, z.zip FROM ".MAIN_DB_PREFIX."c_departements as z";
+	$sql .= " WHERE z.active = 1 AND z.nom LIKE '".$db->escape($state)."%'";
+	$resql1 = $db->query($sql);
+	if ($resql1)
+	{
+		$row = $db->fetch_array($resql1);
+		$fk_departement = $row['rowid'];
 	}
 
 
@@ -60,6 +70,7 @@
 			$object->address = $address;
 			$object->email = $email;
 			$object->town = $city;
+			$object->fk_departement = $fk_departement; // Country
 			$object->fk_pays = '117'; // Country
 			$object->zip = $postalCode;
 			$object->userlatitude = $userlatitude;
@@ -83,6 +94,7 @@
 					$objectSociete->address = $address;
 					$objectSociete->email = $email;
 					$objectSociete->town = $city;
+					$objectSociete->state_id = $fk_departement; // Country
 					$objectSociete->country_id = '117'; // Country
 					$objectSociete->zip = $postalCode;
 					$objectSociete->phone = $object->phone_mobile;
@@ -94,7 +106,7 @@
 					$objectSociete->update($societe_id);
 
 					// Insert Entry of Zip Code (Additional Field)
-					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_pincode = '1'";
+					$sql1 = 'INSERT INTO '.MAIN_DB_PREFIX."societe_extrafields SET fk_pincode = '".$fk_pincode."'";
 					$resql1 = $db->query($sql1);
 
 
@@ -114,6 +126,7 @@
 						$objectContact->address = $address;
 						$objectContact->email = $email;
 						$objectContact->town = $city;
+						$objectContact->state_id = $fk_departement; // Country
 						$objectContact->country_id = '117'; // Country
 						$objectContact->zip = $postalCode;
 						$objectContact->userlatitude = $userlatitude;
