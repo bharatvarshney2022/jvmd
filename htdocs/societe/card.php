@@ -1786,7 +1786,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
 
 
-			//print dol_get_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
+			print dol_get_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
 			print '<div class="fichecenter2">';
 			print '<table class="border centpercent">';
