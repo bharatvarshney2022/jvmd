@@ -8,6 +8,8 @@
 
 	require '../../main.inc.php';
 
+	$customer_id = GETPOST('customer_id', 'int');
+
 	unset($_SESSION["dol_login"]);
 
 
