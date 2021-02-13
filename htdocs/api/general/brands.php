@@ -17,11 +17,11 @@
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData[$row['rowid']] = $row['nom'];
+			$brandData = array('brand_id' => $row['rowid'], 'name' => $row['nom']);
 		}
 
 		$status_code = '1';
-		$message = 'Zip Code Listing';
+		$message = 'Brand Listing';
 			
 		$json = array('status_code' => $status_code, 'message' => $message, 'brand_data' => $brandData);
 	}
