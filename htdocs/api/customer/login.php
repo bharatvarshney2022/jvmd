@@ -68,6 +68,9 @@
 
 			$otp = rand(111111, 999999);
 
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($mobile)."'";
+			$resql = $db->query($sql);
+
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($mobile)."', statut = '0'";
 			$resql = $db->query($sql);
 			$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
