@@ -9,6 +9,7 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact_temp.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
@@ -54,31 +55,55 @@
 		if($update > 0)
 		{
 			// Insert new Contact
-			$objectContact = new Contact($db);
+			$objectSociete = new Societe($db);
+			$objectSociete->name = $firstname." ".$lastname;
+			$objectSociete->code_client = '-1';
+			$objectSociete->status = '1';
+			$societe_id = $objectSociete->create($user);
 
-			$objectContact->lastname = $lastname;
-			$objectContact->firstname = $firstname;
-			$objectContact->statut = '1';
-			$contact_id = $objectContact->create($user);
-
-			if($contact_id > 0)
+			if($societe_id > 0)
 			{
-				$otp = rand(111111, 999999);
+				$objectSociete->address = $address.",".$city.",".$state;
+				$objectSociete->email = $email;
+				$objectSociete->town = $city;
+				$objectSociete->country_id = '117'; // Country
+				$objectSociete->zip = $postalCode;
+				$objectSociete->phone_mobile = $object->phone_mobile;
+				$objectSociete->typent_id = '2';
 
-				$objectContact->otp = $otp;
-				$objectContact->address = $address.",".$city.",".$state;
-				$objectContact->email = $email;
-				$objectContact->town = $city;
-				$objectContact->country_id = '117'; // Country
-				$objectContact->zip = $postalCode;
-				$objectContact->userlatitude = $userlatitude;
-				$objectContact->userlongitude = $userlongitude;
-				$objectContact->device_id = $device_id;
-				$objectContact->fcmToken = $fcmToken;
-				$objectContact->phone_mobile = $object->phone_mobile;
+				$objectContact->update($societe_id);
 
-				$objectContact->update($contact_id);
-				$db->commit();
+				$objectContact = new Contact($db);
+
+				$objectContact->fk_soc = $societe_id;
+				$objectContact->lastname = $lastname;
+				$objectContact->firstname = $firstname;
+				$objectContact->statut = '1';
+				$contact_id = $objectContact->create($user);
+
+				if($contact_id > 0)
+				{
+					$otp = rand(111111, 999999);
+
+					$objectContact->otp = $otp;
+					$objectContact->address = $address.",".$city.",".$state;
+					$objectContact->email = $email;
+					$objectContact->town = $city;
+					$objectContact->country_id = '117'; // Country
+					$objectContact->zip = $postalCode;
+					$objectContact->userlatitude = $userlatitude;
+					$objectContact->userlongitude = $userlongitude;
+					$objectContact->device_id = $device_id;
+					$objectContact->fcmToken = $fcmToken;
+					$objectContact->phone_mobile = $object->phone_mobile;
+
+					$objectContact->update($contact_id);
+					$db->commit();
+				}
+				else
+				{
+					$db->rollback();
+				}
 			}
 			else
 			{
