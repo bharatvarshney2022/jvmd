@@ -78,14 +78,15 @@
 			$object->status = '1';
 			
 			$update = $object->update($temp_user_id, null, 1, 'update', 1);
+
 			
 			if($update > 0)
 			{
 				// Insert new Contact
 				$objectSociete = new Societe($db);
+				$objectSociete->get_codeclient($objectSociete, 0);
 				$objectSociete->name = $firstname." ".$lastname;
 				$objectSociete->name_alias = $firstname." ".$lastname;
-				$objectSociete->code_client = $objectSociete->get_codeclient($objectSociete, 0);
 				$objectSociete->status = '1';
 				$societe_id = $objectSociete->create($user);
 
