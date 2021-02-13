@@ -114,7 +114,7 @@
 			$status_code = '1';
 			$message = 'User created successfully';
 
-			$json = array('status_code' => $status_code, 'message' => $message, "user_id" => "".$contact_id);
+			$json = array('status_code' => $status_code, 'message' => $message, "user_id" => "".$societe_id);
 		}
 		else
 		{
