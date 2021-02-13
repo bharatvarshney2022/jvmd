@@ -26,6 +26,8 @@
 	$postalCode = GETPOST('postalCode', 'alpha');
 	$device_id = GETPOST('device_id', 'alpha');
 	$fcmToken = GETPOST('fcmToken', 'alpha');
+
+	global $user;
 	
 	$json = array();
 
@@ -57,7 +59,7 @@
 			$objectContact->lastname = $lastname;
 			$objectContact->firstname = $firstname;
 			$objectContact->statut = '1';
-			$contact_id = $objectContact->create();
+			$contact_id = $objectContact->create($user);
 			
 			$objectContact->address = $address.",".$city.",".$state;
 			$objectContact->email = $email;
