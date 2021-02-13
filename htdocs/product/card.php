@@ -234,7 +234,8 @@ if (empty($reshook))
 				header("Location: ".$backtopage);
 				exit;
 			} else {
-				header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+				//header("Location: ".$_SERVER['PHP_SELF']."?id=".$productid);
+				header("Location: ".DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int'));
 				exit;
 			}
 			
