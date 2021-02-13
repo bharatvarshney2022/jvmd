@@ -69,11 +69,13 @@
 				$objectSociete->town = $city;
 				$objectSociete->country_id = '117'; // Country
 				$objectSociete->zip = $postalCode;
+				$objectSociete->phone = $object->phone_mobile;
 				$objectSociete->phone_mobile = $object->phone_mobile;
 				$objectSociete->typent_id = '2';
+				$objectSociete->client = '2';
 
 				$objectSociete->update($societe_id);
-				
+
 
 				$objectContact = new Contact($db);
 
