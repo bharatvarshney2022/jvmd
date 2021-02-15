@@ -52,7 +52,7 @@ function project_prepare_head(Project $project)
 	$head[$h][2] = 'contact';
 	$h++;
 
-	if (empty($conf->global->PROJECT_HIDE_TASKS))
+	/*if (empty($conf->global->PROJECT_HIDE_TASKS))
 	{
 		// Then tab for sub level of projet, i mean tasks
 		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks.php?id='.$project->id;
@@ -84,7 +84,7 @@ function project_prepare_head(Project $project)
 		if ($nbTimeSpent > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">...</span>';
 		$head[$h][2] = 'timespent';
 		$h++;
-	}
+	}*/
 
 	if ((!empty($conf->fournisseur->enabled) && empty($conf->global->MAIN_USE_NEW_SUPPLIERMOD) || !empty($conf->supplier_order->enabled) || !empty($conf->supplier_invoice->enabled))
 		|| !empty($conf->propal->enabled) || !empty($conf->commande->enabled)

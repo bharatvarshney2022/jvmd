@@ -249,6 +249,7 @@ $tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.acti
 
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_brands";
 $tabsql[46] = "SELECT f.rowid as rowid, f.code, f.nom, f.active, b.nom as brand FROM ".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE f.fk_brand = b.rowid";
+
 $tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, sf.active, b.nom as brand, f.nom as family FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE sf.fk_brand = b.rowid AND sf.fk_family = f.rowid ";
 
 $tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
@@ -1950,8 +1951,10 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			print '</td>';	
 		}elseif ($fieldlist[$field] == 'family')
 		{
+			//print_r($fieldlist);
 			print '<td>';
-			$formcompany->select_family($family_id, '0' ,'family');
+			$brand_id = (!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:0);
+			$formcompany->select_family($family_id, $brand_id ,'family');
 			print '</td>';
 		}elseif ($fieldlist[$field] == 'subfamily')
 		{
