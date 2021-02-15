@@ -155,7 +155,7 @@ if (!is_array($user_arbo) && $user_arbo < 0)
 		);
 	}
 
-	var_dump($data);
+	//var_dump($data);
 
 	$title = $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView");
 
