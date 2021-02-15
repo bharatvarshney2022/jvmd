@@ -995,7 +995,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	// When used in standard mode
 	// -----------------------------------------
 
-	if ($action == 'create_customerproduct' && $usercancreate)
+	if ($action == 'create_customerproduct')
 	{
 		print '<script type="text/javascript">';
 				print '$(document).ready(function () {
