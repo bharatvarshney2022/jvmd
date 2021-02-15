@@ -815,9 +815,23 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 	if (!empty($conf->projet->enabled) && $user->rights->projet->lire) {
 		$langs->load("projects");
 
-		$newcardbutton = '';
-		if (!empty($conf->projet->enabled) && $user->rights->projet->creer && empty($nocreatelink)) {
-			$newcardbutton .= dolGetButtonTitle($langs->trans('AddProject'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		if($user_group_id == '4'){
+
+			$newcardbutton .= dolGetButtonTitle($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
+
+			print '<br>';
 		}
 
 		print "\n";
@@ -897,9 +911,11 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Status
 						print '<td class="right">';
 						//print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&id='.$obj->rowid.'&backtopage='.urlencode($backtopage).'">';
-						print '<a class="editfielda paddingleft" href="#">';
-						print img_edit();
+						if($user_group_id == '4'){
+							print '<a class="editfielda paddingleft" href="#">';
+								print img_edit();
 							print '</a>';
+						}	
 						print '</td>';
 
 						print '</tr>';
