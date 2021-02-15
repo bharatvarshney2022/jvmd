@@ -126,11 +126,7 @@ if ($socid)
 
 	$params = '';
 
-	$newcardbutton .= dolGetButtonTitle($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
-
-	print '<br>';
-
-
+	
 	// Projects list
 	$result = show_products($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id, 1, $newcardbutton);
 }

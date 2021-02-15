@@ -5823,7 +5823,7 @@ class Product extends CommonObject
 	public function getCustomerProductModel($socid)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p, ".MAIN_DB_PREFIX."LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_model as m where p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Model No</option>';
@@ -5839,13 +5839,163 @@ class Product extends CommonObject
 
 					$id = $obj->rowid;
 					$str .= '<option value="'.$obj->modelid.'">'.$obj->modelno.'</option>';
-					//$outjson = array('id' => $obj->modelid, 'code' => $obj->modelno);
+					
 					$i++;
 				}
 			}
 		}	
 		return $str;
 	}
+
+
+public function getCategoryByBrand($brand_id)
+	{
+		if($brand_id != ''){
+			$outjson = array();
+			$sql = "SELECT rowid, nom";
+			$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family ";
+			$sql .= " WHERE active = 1";
+			if($brand_id != 0){
+				$sql .= " AND fk_brand = '".$brand_id."' ";	
+			}
+			
+			$sql .= " ORDER BY nom ASC";
+			//echo $sql;
+			$result = $this->db->query($sql);
+			$str = '<option value="0">Select Category</option>';
+			if ($result) {
+				$num = $this->db->num_rows($result);
+				
+				if ($this->db->num_rows($result)) {
+					$i = 0;
+					
+					while ($i < $num) {
+						
+						$obj = $this->db->fetch_object($result);
+
+						$id = $obj->rowid;
+						$str .= '<option value="'.$obj->rowid.'">'.$obj->nom.'</option>';
+						
+						$i++;
+					}
+				}
+			}
+		}else{
+			$str = '<option value="0">Select Category</option>';
+
+		}	
+		return $str;
+	}
+
+
+	public function getSubCategoryByBrand($brand_id,$category)
+		{
+			if($brand_id != '' && $category != ''){
+				$outjson = array();
+				$sql = "SELECT rowid, nom";
+				$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily ";
+				$sql .= " WHERE active = 1";
+				if($brand_id != 0){
+					$sql .= " AND fk_brand = '".$brand_id."' ";	
+				}
+				
+				if($category != 0){
+					$sql .= " AND fk_family = '".$category."' ";	
+				}
+				
+				$sql .= " ORDER BY nom ASC";
+				//echo $sql;
+				$result = $this->db->query($sql);
+				$str = '<option value="0">Select Sub Category</option>';
+				if ($result) {
+					$num = $this->db->num_rows($result);
+					
+					if ($this->db->num_rows($result)) {
+						$i = 0;
+						
+						while ($i < $num) {
+							
+							$obj = $this->db->fetch_object($result);
+
+							$id = $obj->rowid;
+							$str .= '<option value="'.$obj->rowid.'">'.$obj->nom.'</option>';
+							
+							$i++;
+						}
+					}
+				}
+			}else{
+				$str = '<option value="0">Select Sub Category</option>';
+			}		
+			return $str;
+		}
+
+
+		public function getmodelbysubcat($brand_id,$category,$subcategory)
+		{
+			
+			if($brand_id != '' && $category != '' && $subcategory != ''){
+				$outjson = array();
+				$sql = "SELECT rowid, code";
+				$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model ";
+				$sql .= " WHERE active = 1";
+				if($brand_id != 0){
+					$sql .= " AND fk_brand = '".$brand_id."' ";	
+				}
+				
+				if($category != 0){
+					$sql .= " AND fk_family = '".$category."' ";	
+				}
+
+				if($subcategory != 0){
+					$sql .= " AND fk_subfamily = '".$subcategory."' ";	
+				}
+				
+				$sql .= " ORDER BY nom ASC";
+				//echo $sql;
+				$result = $this->db->query($sql);
+				$str = '<option value="0">Select Model</option>';
+				if ($result) {
+					$num = $this->db->num_rows($result);
+					
+					if ($this->db->num_rows($result)) {
+						$i = 0;
+						
+						while ($i < $num) {
+							
+							$obj = $this->db->fetch_object($result);
+
+							$id = $obj->rowid;
+							$str .= '<option value="'.$obj->rowid.'">'.$obj->code.'</option>';
+							
+							$i++;
+						}
+					}
+				}
+			}else{
+				$str = '<option value="0">Select Model</option>';
+			}		
+			return $str;
+		}
+
+	public function getProductByModel($model_id)
+	{
+		$outjson = array();
+		$sql = "SELECT * FROM ".MAIN_DB_PREFIX."c_product_model WHERE rowid = '".$model_id."' ";
+
+		$result = $this->db->query($sql);
+		if ($result) {
+			if ($this->db->num_rows($result)) {
+				$obj = $this->db->fetch_object($result);
+
+				
+
+				$outjson = array('id' => $obj->rowid, 'name' => $obj->nom, 'code' => $obj->code);
+			}
+		}	
+		return json_encode($outjson);
+	}
+
 }
 
 

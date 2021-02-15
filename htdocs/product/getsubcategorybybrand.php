@@ -31,9 +31,10 @@ if (!defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX', '1');
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-$model = GETPOST('model');
+$brand = GETPOST('brand');
+$category = GETPOST('category');
 //top_httphead();
 $object = new Product($db);
 $output = array();
-$output = $object->getProductByModel($model);
+$output = $object->getSubCategoryByBrand($brand,$category);
 echo $output;

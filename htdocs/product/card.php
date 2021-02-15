@@ -1112,21 +1112,63 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
                      });';
 
                 print '$(document).ready(function () {
-                        $("#modelname").change(function() {
+                        $("#fk_brand").change(function() {
+                        	var brand = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_category").html(html);
+								  }
+							});
+                        });
+
+                       $("#fk_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_sub_category").html(html);
+								  }
+							});
+                        }); 
+
+                        $("#fk_sub_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getproductmodel.php",
+								  data: { brand: brand, category: category , subcategory: subcategory},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_model").html(html);
+								  }
+							});
+                        }); 
+
+
+                        $("#fk_model").change(function() {
                         	var model = $(this).val();
                         	$.ajax({
 								  dataType: "json",
 								  url: "productmodeldata.php",
-								  data: { model: model},
+								  data: {model: model},
 								  success: function(data) {
+								  	//alert(data);
 									$("#label").val(data.name);
-									$("#brand").val(data.brand);
-									$("#c_product_family").val(data.family);
-									$("#c_product_subfamily").val(data.subfamily);
 								  }
 							});
-                        });
-                     });';     
+                        }); 
+
+	               });';     
 				print '</script>'."\n";
 
 		// Load object modCodeProduct
@@ -1185,26 +1227,37 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print $langs->trans("RefAlreadyExists");
 		}
 		print '</td>';
-
-		// Model
-		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-		print $formcompany->select_modelName($family_id, '0' ,'modelname');
-		//print $form->selectarray('model', $modelarray, GETPOST('model'));
-		print '</td></tr>';
-		// Label
-		print '<tr><td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td>';
-
+		
 		// Brand
-		print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
+		print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+		print $formcompany->select_brand('', '0' ,'fk_brand');
 		print '</td></tr>';
+		
+		// Product Category
+
+		print '<tr><td>'.$langs->trans("Category").'</td><td>';
+		print '<select class="flat" id="fk_category" name="fk_category">';
+		print '<option value="0">Select Category</option>';
+		print '</select>';
+		print '</td>';
+
+		// Product sub Category
+		print '<td>'.$langs->trans("Sub Category").'</td><td>';
+		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print '<option value="0">Select Sub Category</option>';
+		print '</select>';
+		print '</td></tr>';
+		// Model
+		print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		print '<select class="flat" id="fk_model" name="fk_model">';
+		print '<option value="0">Select Model</option>';
+		print '</select>';
+		print '</td>';
+
+		// Label
+		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
 
 		
-
-		// Product Family
-		print '<tr><td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td>';
-
-		// Product Family
-		print '<td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('c_product_subfamily')).'"></td></tr>';
 
 		// ERP Invoice No
 		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td>';
