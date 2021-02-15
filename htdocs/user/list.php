@@ -360,7 +360,7 @@ if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->
 	if(!$user->admin){
 		//
 
-		if($user_group_id == '12')
+		if($user_group_id == '3' || $user_group_id == '11' || $user_group_id == '12')
 		{
 			// List all vendors
 			$vendor_list = '';
