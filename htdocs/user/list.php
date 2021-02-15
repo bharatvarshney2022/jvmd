@@ -166,7 +166,7 @@ $search_categ = GETPOST("search_categ", 'int');
 $catid = GETPOST('catid', 'int');
 
 // Default search
-if ($search_statut == '') $search_statut = '1';
+//if ($search_statut == '') $search_statut = '1';
 if ($mode == 'employee' && !GETPOSTISSET('search_employee')) $search_employee = 1;
 
 // Define value to know what current user can do on users
@@ -340,11 +340,51 @@ if ($reshook > 0) {
 	$sql .= " WHERE u.entity IN (".getEntity('user').")";
 }
 if ($socid > 0) $sql .= " AND u.fk_soc = ".$socid;
+
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+//echo $user_group_id; exit;
+
 //if ($search_user != '')       $sql.=natural_search(array('u.login', 'u.lastname', 'u.firstname'), $search_user);
 if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->escape($search_supervisor)).")";
 }else{ 
 	if(!$user->admin){
-		$sql .= " AND u.fk_user = '".$user->id."'";
+		
+
+		if($user_group_id == '12')
+		{
+			// List all vendors
+			$vendor_list = '';
+			$sqlVendor = "SELECT fk_user FROM `".MAIN_DB_PREFIX."usergroup_user` WHERE fk_usergroup = '4'";
+			$resqlVendor = $db->query($sqlVendor);
+			if ($resqlVendor)
+			{
+				while($rowVendor = $db->fetch_object($resqlVendor))
+				{
+					$vendorData[] = $rowVendor->fk_user;
+				}
+				$vendorData[] = $user->id;
+
+				if($vendorData)
+				{
+					$vendor_list = implode(",", $vendorData);
+					$sql .= " AND u.fk_user IN (".$vendor_list.")";
+				}
+			}
+		}
+		else
+		{
+			$sql .= " AND u.fk_user = '".$user->id."'";
+		}
 	}
 }
 if ($search_thirdparty != '') $sql .= natural_search(array('s.nom'), $search_thirdparty);
