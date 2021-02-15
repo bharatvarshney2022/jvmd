@@ -5780,7 +5780,7 @@ class Product extends CommonObject
 	public function getProductModel($model_id)
 	{
 		$outjson = array();
-		$sql = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active, b.rowid as brandid, f.rowid as categoryid, sf.rowid as subcategoryid, p.rowid as productid FROM ".MAIN_DB_PREFIX."product as p, ".MAIN_DB_PREFIX."product_model as pm, ".MAIN_DB_PREFIX."product_subfamily as sf,".MAIN_DB_PREFIX."product_family as f,".MAIN_DB_PREFIX."p_brands as b WHERE p.fk_model = pm.rowid and pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid AND pm.rowid = '".$model_id."' ";
+		$sql = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active, b.rowid as brandid, f.rowid as categoryid, sf.rowid as subcategoryid, p.rowid as productid FROM ".MAIN_DB_PREFIX."product as p, ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE p.fk_model = pm.rowid and pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid AND pm.rowid = '".$model_id."' ";
 
 		$result = $this->db->query($sql);
 		if ($result) {
@@ -5799,7 +5799,7 @@ class Product extends CommonObject
 	public function getCustomerProductModelInfo($model_id,$socid)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno, p.fk_brand,p.fk_category, p.fk_subcategory, p.fk_product FROM ".MAIN_DB_PREFIX."product_customer as p LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid AND p.fk_model = '".$model_id."' AND p.fk_soc = '".$socid."' ";
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno, p.fk_brand,p.fk_category, p.fk_subcategory, p.fk_product FROM ".MAIN_DB_PREFIX."product_customer as p LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid AND p.fk_model = '".$model_id."' AND p.fk_soc = '".$socid."' ";
 		$result = $this->db->query($sql);
 		if ($result) {
 			$num = $this->db->num_rows($result);
@@ -5823,7 +5823,7 @@ class Product extends CommonObject
 	public function getCustomerProductModel($socid)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p, ".MAIN_DB_PREFIX."LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p, ".MAIN_DB_PREFIX."LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Model No</option>';

@@ -4646,7 +4646,8 @@ div .tdtop {
     padding-right: 3px;
     padding-top: 2px;
     padding-bottom: 2px;
-    width: 118px;
+    width: -webkit-fill-available;
+    float: left;
 }
 .tabBar .fichehalfright .boxstats {
     padding-top: 8px;

@@ -825,12 +825,12 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
-		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."p_brands as b on p.fk_brand = b.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_family as f on p.fk_category = f.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_subfamily as sf on p.fk_subcategory = sf.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_model as m on p.fk_model = m.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sf on p.fk_subcategory = sf.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid";
 		
 		$sql .= " WHERE p.fk_soc = ".$object->id;
 		$sql .= " ORDER BY p.datec DESC";
@@ -840,7 +840,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			$num = $db->num_rows($result);
 
 			print '<tr class="liste_titre">';
-			print '<td>'.$langs->trans("Ref").'</td>';
+			print '<td>'.$langs->trans("S.No.").'</td>';
 			print '<td>'.$langs->trans("Model No.").'</td>';
 			print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("Brand").'</td>';
@@ -849,7 +849,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			print '<td class="center">'.$langs->trans("Capacity").'</td>';
 			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
 			print '<td class="right">'.$langs->trans("Added Date").'</td>';
-			print '<td class="right">'.$langs->trans("Status").'</td>';
+			print '<td class="right">'.$langs->trans("Option").'</td>';
 			print '</tr>';
 
 			if ($num > 0) {
@@ -870,30 +870,37 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 						// Ref
 						print '<td>';
-						print $producttmp->getNomUrl(1);
+						//print $producttmp->getNomUrl(1);
+						print ($i+1);
 						print '</td>';
 						//model
-						print '<td>'.$obj->product_model.'</td>';
+						print '<td>'.$obj->c_product_model.'</td>';
 						// Product name
 						print '<td>'.$obj->pname.'</td>';
-						
 						// Product Brand
 						print '<td>'.$obj->brandname.'</td>';
 
 						// Product Category
-						print '<td>'.$obj->brandname.'</td>';
+						print '<td>'.$obj->familyname.'</td>';
 
 						// Product Sub Category
-						print '<td>'.$obj->brandname.'</td>';
+						print '<td>'.$obj->subfamily.'</td>';
 
 						// Product Capacity
-						print '<td>'.$obj->brandname.'</td>';
+						
+						print '<td>'.$obj->capacity.'</td>';
+
 						
 						// Date Added
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						
 						// Status
-						print '<td class="right">'.$producttmp->getLibStatut(5).'</td>';
+						print '<td class="right">';
+						//print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&id='.$obj->rowid.'&backtopage='.urlencode($backtopage).'">';
+						print '<a class="editfielda paddingleft" href="#">';
+						print img_edit();
+							print '</a>';
+						print '</td>';
 
 						print '</tr>';
 					

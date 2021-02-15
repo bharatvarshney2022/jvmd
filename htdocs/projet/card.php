@@ -622,12 +622,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 						  data: {socid: socid},
 						  success: function(html) {
 						  	//alert(html);
-							$("#options_fk_product_model").html(html);
+							$("#options_fk_c_product_model").html(html);
 						  }
 					});
 				});
 
-				jQuery("#options_fk_product_model").change(function() {
+				jQuery("#options_fk_c_product_model").change(function() {
 					var modelid = $(this).val();
 					var socid = $("#socid").val();
 					getmodelinfo(modelid,socid);
@@ -911,7 +911,7 @@ if ($action == 'create' && $user->rights->projet->creer)
                 	getcustomermodelinfo(socid);
 				});
 
-				jQuery("#options_fk_product_model").change(function() {
+				jQuery("#options_fk_c_product_model").change(function() {
 					var modelid = $(this).val();
 					var socid = $("#socid").val();
 					getmodelinfo(modelid,socid);
@@ -927,7 +927,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 						  data: {socid: socid},
 						  success: function(html) {
 						  	//alert(html);
-							$("#options_fk_product_model").html(html);
+							$("#options_fk_c_product_model").html(html);
 						  }
 					});
          	}

@@ -31,7 +31,7 @@
  */
 
 /**
- *       \file       htdocs/user/card.php
+ *       \file       htdocs/user/create_vendor.php
  *       \brief      Tab of user card
  */
 
@@ -323,7 +323,9 @@ if (empty($reshook)) {
 				$db->commit();
 
 				$object->fetch($id);
-				$object->setstatus(1);
+				$object->setstatus(0);
+
+				$result = $object->SetInGroup('4', '1');
 
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
 				exit;
@@ -1378,7 +1380,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 		}
 
-		$head = user_prepare_head($object);
+		$head = user_prepare_head_vendor($object);
 
 		/*
          * Confirmation reinitialisation mot de passe
@@ -1994,7 +1996,7 @@ if ($action == 'create' || $action == 'adduserldap')
                  * List of groups of user
                  */
 
-				if ($canreadgroup && $user->admin)
+				if ($canreadgroup)
 				{
 					print '<!-- Group section -->'."\n";
 

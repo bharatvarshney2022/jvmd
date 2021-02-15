@@ -995,7 +995,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	// When used in standard mode
 	// -----------------------------------------
 
-	if ($action == 'create_customerproduct' && $usercancreate)
+	if ($action == 'create_customerproduct')
 	{
 		print '<script type="text/javascript">';
 				print '$(document).ready(function () {
@@ -1015,8 +1015,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(data) {
 									$("#label").val(data.name);
 									$("#brand").val(data.brand);
-									$("#product_family").val(data.family);
-									$("#product_subfamily").val(data.subfamily);
+									$("#c_product_family").val(data.family);
+									$("#c_product_subfamily").val(data.subfamily);
 
 									$("#fk_brand").val(data.brandid);
 									$("#fk_category").val(data.categoryid);
@@ -1065,7 +1065,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// Model
 				print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
 				print $formcompany->select_modelName($family_id, '0' ,'modelname');
-				//print $form->selectarray('model', $modelarray, GETPOST('model'));
 				print '</td>';
 				// Label
 				print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
@@ -1073,14 +1072,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// Brand
 				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
 				print '</td>';
-
 				
 
 				// Product Family
-				print '<td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td></tr>';
+				print '<td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td></tr>';
 
 				// Product Family
-				print '<tr><td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('product_subfamily')).'"></td>';
+				print '<tr><td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('c_product_subfamily')).'"></td>';
 
 				// Ac Capacity
 				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
@@ -1123,8 +1121,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(data) {
 									$("#label").val(data.name);
 									$("#brand").val(data.brand);
-									$("#product_family").val(data.family);
-									$("#product_subfamily").val(data.subfamily);
+									$("#c_product_family").val(data.family);
+									$("#c_product_subfamily").val(data.subfamily);
 								  }
 							});
                         });
@@ -1203,10 +1201,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		
 
 		// Product Family
-		print '<tr><td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td>';
+		print '<tr><td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td>';
 
 		// Product Family
-		print '<td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('product_subfamily')).'"></td></tr>';
+		print '<td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('c_product_subfamily')).'"></td></tr>';
 
 		// ERP Invoice No
 		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td>';
@@ -1740,8 +1738,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(data) {
 									$("#label").val(data.name);
 									$("#brand").val(data.brand);
-									$("#product_family").val(data.family);
-									$("#product_subfamily").val(data.subfamily);
+									$("#c_product_family").val(data.family);
+									$("#c_product_subfamily").val(data.subfamily);
 								  }
 							});
                      	}
@@ -1799,10 +1797,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		
 
 			// Product Family
-			print '<tr><td>'.$langs->trans("Family").'</td><td><input name="product_family" id="product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td>';
+			print '<tr><td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td>';
 
 			// Product Family
-			print '<td>'.$langs->trans("Sub Family").'</td><td><input name="product_subfamily" id="product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td></tr>';
+			print '<td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td></tr>';
 
 			// ERP Invoice No
 			print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td>';
