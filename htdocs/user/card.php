@@ -323,7 +323,7 @@ if (empty($reshook)) {
 				$db->commit();
 
 				$object->fetch($id);
-				$object->setstatus(0);
+				$object->setstatus(1);
 
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
 				exit;
