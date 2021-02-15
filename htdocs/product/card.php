@@ -1121,6 +1121,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(html) {
 								  	//alert(html);
 									$("#fk_category").html(html);
+									$("#fk_sub_category").html("<option>Select Sub Category</option>");
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
 								  }
 							});
                         });
@@ -1135,6 +1138,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(html) {
 								  	//alert(html);
 									$("#fk_sub_category").html(html);
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
 								  }
 							});
                         }); 
@@ -1150,6 +1155,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 								  success: function(html) {
 								  	//alert(html);
 									$("#fk_model").html(html);
+									$("#label").val("");
 								  }
 							});
                         }); 
