@@ -31,7 +31,7 @@
  */
 
 /**
- *       \file       htdocs/user/card.php
+ *       \file       htdocs/user/create_vendor.php
  *       \brief      Tab of user card
  */
 
@@ -1380,7 +1380,7 @@ if ($action == 'create' || $action == 'adduserldap')
 			}
 		}
 
-		$head = user_prepare_head($object);
+		$head = user_prepare_head_vendor($object);
 
 		/*
          * Confirmation reinitialisation mot de passe

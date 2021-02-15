@@ -206,6 +206,181 @@ function user_prepare_head($object)
 	return $head;
 }
 
+function user_prepare_head_vendor($object)
+{
+	global $langs, $conf, $user, $db;
+
+	$langs->load("users");
+
+	$canreadperms = true;
+	if (!empty($conf->global->MAIN_USE_ADVANCED_PERMS)) {
+		$canreadperms = ($user->admin || ($user->id != $object->id && $user->rights->user->user_advance->readperms) || ($user->id == $object->id && $user->rights->user->self_advance->readperms));
+	}
+
+	$h = 0;
+	$head = array();
+
+	$head[$h][0] = DOL_URL_ROOT.'/user/create_vendor.php?id='.$object->id;
+	$head[$h][1] = $langs->trans("User");
+	$head[$h][2] = 'user';
+	$h++;
+
+	if ((!empty($conf->ldap->enabled) && !empty($conf->global->LDAP_SYNCHRO_ACTIVE))
+		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || !empty($user->admin))) {
+		$langs->load("ldap");
+		$head[$h][0] = DOL_URL_ROOT.'/user/ldap.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("LDAPCard");
+		$head[$h][2] = 'ldap';
+		$h++;
+	}
+
+	if ($canreadperms && $user->admin) {
+		$head[$h][0] = DOL_URL_ROOT.'/user/perms.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("Rights").(empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) ? '<span class="badge marginleftonlyshort">'.($object->nb_rights).'</span>' : '');
+		$head[$h][2] = 'rights';
+		$h++;
+	}
+	if($user->admin){
+		/*$head[$h][0] = DOL_URL_ROOT.'/user/param_ihm.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("UserGUISetup");
+		$head[$h][2] = 'guisetup';
+		$h++;*/
+	}	
+
+	if (!empty($conf->agenda->enabled) && $user->admin) {
+		if (empty($conf->global->AGENDA_EXT_NB)) $conf->global->AGENDA_EXT_NB = 5;
+		$MAXAGENDA = $conf->global->AGENDA_EXT_NB;
+
+		$i = 1;
+		$nbagenda = 0;
+		while ($i <= $MAXAGENDA) {
+			$key = $i;
+			$name = 'AGENDA_EXT_NAME_'.$object->id.'_'.$key;
+			$src = 'AGENDA_EXT_SRC_'.$object->id.'_'.$key;
+			$offsettz = 'AGENDA_EXT_OFFSETTZ_'.$object->id.'_'.$key;
+			$color = 'AGENDA_EXT_COLOR_'.$object->id.'_'.$key;
+			$i++;
+
+			if (!empty($object->conf->$name)) $nbagenda++;
+		}
+
+		$head[$h][0] = DOL_URL_ROOT.'/user/agenda_extsites.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("ExtSites").($nbagenda ? '<span class="badge marginleftonlyshort">'.$nbagenda.'</span>' : '');
+		$head[$h][2] = 'extsites';
+		$h++;
+	}
+
+	if (!empty($conf->clicktodial->enabled)) {
+		$head[$h][0] = DOL_URL_ROOT.'/user/clicktodial.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("ClickToDial");
+		$head[$h][2] = 'clicktodial';
+		$h++;
+	}
+
+	// Notifications
+	if ($user->socid == 0 && !empty($conf->notification->enabled)) {
+		$nbNote = 0;
+		$sql = "SELECT COUNT(n.rowid) as nb";
+		$sql .= " FROM ".MAIN_DB_PREFIX."notify_def as n";
+		$sql .= " WHERE fk_user = ".$object->id;
+		$resql = $db->query($sql);
+		if ($resql) {
+			$num = $db->num_rows($resql);
+			$i = 0;
+			while ($i < $num) {
+				$obj = $db->fetch_object($resql);
+				$nbNote = $obj->nb;
+				$i++;
+			}
+		} else {
+			dol_print_error($db);
+		}
+
+		$langs->load("mails");
+		$head[$h][0] = DOL_URL_ROOT.'/user/notify/card.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("NotificationsAuto");
+		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+		$head[$h][2] = 'notify';
+		$h++;
+	}
+
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
+	// $this->tabs = array('entity:-tabname);   												to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'user');
+
+	if ((!empty($conf->salaries->enabled) && !empty($user->rights->salaries->read))
+		|| (!empty($conf->hrm->enabled) && !empty($user->rights->hrm->employee->read))
+		|| (!empty($conf->expensereport->enabled) && !empty($user->rights->expensereport->lire) && ($user->id == $object->id || $user->rights->expensereport->readall))
+		|| (!empty($conf->holiday->enabled) && !empty($user->rights->holiday->read) && ($user->id == $object->id || $user->rights->holiday->readall))
+		) {
+		// Bank
+		$head[$h][0] = DOL_URL_ROOT.'/user/bank.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("HRAndBank");
+		$head[$h][2] = 'bank';
+		$h++;
+	}
+
+	// Such info on users is visible only by internal user
+	if (empty($user->socid)) {
+		// Notes
+		$nbNote = 0;
+		if (!empty($object->note)) $nbNote++;
+		/*$head[$h][0] = DOL_URL_ROOT.'/user/note.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("Note");
+		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+		$head[$h][2] = 'note';
+		$h++;*/
+
+		// Attached files
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		$upload_dir = $conf->user->dir_output."/".$object->id;
+		$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
+		$nbLinks = Link::count($db, $object->element, $object->id);
+		$head[$h][0] = DOL_URL_ROOT.'/user/document.php?userid='.$object->id;
+		$head[$h][1] = $langs->trans("Documents");
+		if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
+		$head[$h][2] = 'document';
+		$h++;
+		
+		$head[$h][0] = DOL_URL_ROOT.'/user/info.php?id='.$object->id;
+		$head[$h][1] = $langs->trans("Info");
+		$head[$h][2] = 'info';
+		$h++;
+	}
+
+	// Check for Vendor and not approve
+	$user_group_id = 0;
+	$usergroup = new UserGroup($db);
+	$groupslist = $usergroup->listGroupsForUser($object->id);
+
+	if ($groupslist != '-1')
+	{
+		foreach ($groupslist as $groupforuser)
+		{
+			$user_group_id = $groupforuser->id;
+		}
+	}
+
+	if($user_group_id == '4' || $user->admin == 1)
+	{
+		$statut = $object->statut;
+		if($statut == 0)
+		{
+			$head[$h][0] = DOL_URL_ROOT.'/user/approve_history.php?id='.$object->id;
+			$head[$h][1] = $langs->trans("User Approve");
+			$head[$h][2] = 'approval';
+			$h++;
+		}
+	}
+
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'user', 'remove');
+
+	return $head;
+}
+
 /**
  * Prepare array with list of tabs
  *
