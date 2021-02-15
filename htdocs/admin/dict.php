@@ -238,7 +238,7 @@ $tabsql[36] = "SELECT r.rowid, r.fk_c_exp_tax_cat, r.range_ik, r.active, r.entit
 $tabsql[37] = "SELECT r.rowid, r.code, r.label, r.short_label, r.unit_type, r.scale, r.active FROM ".MAIN_DB_PREFIX."c_units r";
 $tabsql[38] = "SELECT rowid, entity, code, label, url, icon, active FROM ".MAIN_DB_PREFIX."c_socialnetworks";
 $tabsql[39] = "SELECT code, label as libelle, sortorder, active FROM ".MAIN_DB_PREFIX."c_prospectcontactlevel";
-$tabsql[40] = "SELECT id      as rowid, code, libelle, picto, active FROM ".MAIN_DB_PREFIX."c_stcommcontact";
+$tabsql[40] = "SELECT id as rowid, code, libelle, picto, active FROM ".MAIN_DB_PREFIX."c_stcommcontact";
 $tabsql[41] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_transport_mode";
 $tabsql[42] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_product_nature";
 
@@ -248,11 +248,10 @@ $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle
 $tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_county as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_county = d.rowid and d.active=1 and ct.active=1";
 
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_brands";
-$tabsql[46] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_product_family";
-$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, f.nom as family, sf.active FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f WHERE sf.fk_family = f.rowid ";
+$tabsql[46] = "SELECT f.rowid as rowid, f.code, f.nom, f.active, b.nom as brand FROM ".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE f.fk_brand = b.rowid";
+$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, sf.active, b.nom as brand, f.nom as family FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE sf.fk_brand = b.rowid AND sf.fk_family = f.rowid ";
 
 $tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
-
 
 
 // Criteria to sort dictionaries
@@ -353,8 +352,8 @@ $tabfield[42] = "code,label";
 $tabfield[43] = "code,libelle,state,region_id,region";
 $tabfield[44] = "code,libelle,city,state";
 $tabfield[45] = "code,nom";
-$tabfield[46] = "code,nom";
-$tabfield[47] = "family,code,label";
+$tabfield[46] = "brand,code,nom";
+$tabfield[47] = "brand,family,code,label";
 $tabfield[48] = "brand,family,subfamily,modelno,name";
 
 // Edit field names for editing a record
@@ -404,8 +403,8 @@ $tabfieldvalue[42] = "code,label";
 $tabfieldvalue[43] = "code,libelle,state,region"; // 
 $tabfieldvalue[44] = "code,libelle,city,state";
 $tabfieldvalue[45] = "code,nom";
-$tabfieldvalue[46] = "code,nom";
-$tabfieldvalue[47] = "code,label,family";
+$tabfieldvalue[46] = "code,nom,brand";
+$tabfieldvalue[47] = "code,label,brand,family";
 $tabfieldvalue[48] = "brand,family,subfamily,modelno,name";
 
 // Field names in the table for inserting a record
@@ -456,8 +455,8 @@ $tabfieldinsert[42] = "code,label";
 $tabfieldinsert[43] = "code_city,nom,fk_state";
 $tabfieldinsert[44] = "code,zip,fk_city,fk_county";
 $tabfieldinsert[45] = "code,nom";
-$tabfieldinsert[46] = "code,nom";
-$tabfieldinsert[47] = "code,nom,fk_family";
+$tabfieldinsert[46] = "code,nom,fk_brand";
+$tabfieldinsert[47] = "code,nom,fk_brand,fk_family";
 $tabfieldinsert[48] = "fk_brand,fk_family,fk_subfamily,code,nom";
 
 // Rowid name of field depending if field is autoincrement on or off..
