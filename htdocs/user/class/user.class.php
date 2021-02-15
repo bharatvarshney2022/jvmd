@@ -3130,6 +3130,13 @@ class User extends CommonObject
 		}
 		if ($filter) {
 			$sql .= " AND ".$filter;
+			if($user->admin)
+			{
+			}
+			else
+			{
+				$sql .= " OR rowid = ".$user->id." ";
+			}
 		}
 
 		dol_syslog(get_class($this)."::get_full_tree get user list", LOG_DEBUG);
