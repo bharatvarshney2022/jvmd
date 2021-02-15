@@ -775,7 +775,10 @@ function print_left_oblyon_menu($db,$menu_array_before,$menu_array_after,&$tabMe
 					}
 
 					$newmenu->add("/user/list.php?leftmenu=users", $langs->trans("ListOfUsers"), 2, $user->rights->user->user->lire || $user->admin);
-					$newmenu->add("/user/hierarchy.php?leftmenu=users", $langs->trans("HierarchicView"), 2, $user->rights->user->user->lire || $user->admin);
+					if($user->admin)
+					{
+						$newmenu->add("/user/hierarchy.php?leftmenu=users", $langs->trans("HierarchicView"), 2, $user->rights->user->user->lire || $user->admin);
+					}
 					if (! empty($conf->categorie->enabled))
 					{
 						$langs->load("categories");
