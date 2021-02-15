@@ -1065,7 +1065,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// Model
 				print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
 				print $formcompany->select_modelName($family_id, '0' ,'modelname');
-				//print $form->selectarray('model', $modelarray, GETPOST('model'));
 				print '</td>';
 				// Label
 				print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
@@ -1073,7 +1072,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// Brand
 				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
 				print '</td>';
-
 				
 
 				// Product Family
