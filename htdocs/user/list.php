@@ -358,7 +358,7 @@ if ($groupslist != '-1')
 if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->escape($search_supervisor)).")";
 }else{ 
 	if(!$user->admin){
-		
+		//
 
 		if($user_group_id == '12')
 		{
@@ -372,12 +372,12 @@ if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->
 				{
 					$vendorData[] = $rowVendor->fk_user;
 				}
-				$vendorData[] = $user->id;
+				//$vendorData[] = $user->id;
 
 				if($vendorData)
 				{
 					$vendor_list = implode(",", $vendorData);
-					$sql .= " AND u.fk_user IN (".$vendor_list.")";
+					$sql .= " AND u.rowid IN (".$vendor_list.")";
 				}
 			}
 		}
