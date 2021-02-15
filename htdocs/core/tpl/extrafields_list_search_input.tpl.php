@@ -9,6 +9,7 @@ if (empty($conf) || !is_object($conf))
 	exit;
 }
 
+
 if (empty($extrafieldsobjectkey) && is_object($object)) $extrafieldsobjectkey = $object->table_element;
 
 // Loop to show all columns of extrafields for the search title line

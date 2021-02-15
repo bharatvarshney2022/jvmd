@@ -77,7 +77,14 @@ llxHeader('', $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView")
 
 
 // Load hierarchy of users
-$user_arbo = $userstatic->get_full_tree(0, ($search_statut != '' && $search_statut >= 0) ? "statut = ".$search_statut : '');
+if($user->admin)
+{
+	$user_arbo = $userstatic->get_full_tree(0, ($search_statut != '' && $search_statut >= 0) ? "statut = ".$search_statut : '');
+}
+else
+{
+	$user_arbo = $userstatic->get_full_tree(0, ($search_statut != '' && $search_statut >= 0) ? "statut = ".$search_statut . " AND fk_user = ".$user->id: '');
+}
 
 if (!is_array($user_arbo) && $user_arbo < 0)
 {
@@ -131,6 +138,15 @@ if (!is_array($user_arbo) && $user_arbo < 0)
 
 		$entry = '<table class="nobordernopadding centpercent"><tr><td class="'.($val['statut'] ? 'usertdenabled' : 'usertddisabled').'">'.$li.'</td><td align="right" class="'.($val['statut'] ? 'usertdenabled' : 'usertddisabled').'">'.$userstatic->getLibStatut(2).'</td></tr></table>';
 
+		// Added for non member hierarchy
+		if(!$user->admin)
+		{
+			if($val['rowid'] == $user->id)
+			{
+				$val['fk_user'] = null;
+			}
+		}
+
 		$data[] = array(
 			'rowid'=>$val['rowid'],
 			'fk_menu'=>$val['fk_user'],
@@ -139,14 +155,18 @@ if (!is_array($user_arbo) && $user_arbo < 0)
 		);
 	}
 
-	//var_dump($data);
+	var_dump($data);
 
 	$title = $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView");
 
 	$param = "search_statut=".urlencode($search_statut);
 
 	$newcardbutton = '';
-	$newcardbutton .= dolGetButtonTitle($langs->trans('NewUser'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/user/card.php?action=create'.($mode == 'employee' ? '&employee=1' : '').'&leftmenu=', '', $canadduser);
+
+	if($user->admin)
+	{
+		$newcardbutton .= dolGetButtonTitle($langs->trans('NewUser'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/user/card.php?action=create'.($mode == 'employee' ? '&employee=1' : '').'&leftmenu=', '', $canadduser);
+	}
 
 	$morehtmlright .= dolGetButtonTitle($langs->trans("List"), '', 'fa fa-list paddingleft imgforviewmode', DOL_URL_ROOT.'/user/list.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''));
 	$param = array('morecss'=>'marginleftonly btnTitleSelected');
@@ -187,6 +207,7 @@ if (!is_array($user_arbo) && $user_arbo < 0)
 
 
 	$nbofentries = (count($data) - 1);
+
 
 	if ($nbofentries > 0)
 	{

@@ -74,7 +74,20 @@ $diroutputmassaction = $conf->mymodule->dir_output.'/temp/massgeneration/'.$user
 $hookmanager->initHooks(array('userlist'));
 
 // Fetch optionals attributes and labels
-$extrafields->fetch_name_optionals_label($object->table_element);
+// Fetch only for admin
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
+$extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
 
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
