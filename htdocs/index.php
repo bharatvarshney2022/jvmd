@@ -1076,9 +1076,9 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 	<!--End::Row-->';
 
 	if (!empty($isIntopOpenedDashBoard)) {
-		print '<div class="fichecenter">';
-		print '<div class="opened-dash-board-wrap"><div class="box-flex-container">'.$openedDashBoard.'</div></div>';
-		print '</div>';
+		//print '<div class="fichecenter">';
+		//print '<div class="opened-dash-board-wrap"><div class="box-flex-container">'.$openedDashBoard.'</div></div>';
+		//print '</div>';
 	}
 }
 
