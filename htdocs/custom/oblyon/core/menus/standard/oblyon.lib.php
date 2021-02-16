@@ -121,7 +121,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
     }
 
 	if ( empty($menu_invert) && ($conf->global->OBLYON_HIDE_LEFTMENU || $conf->dol_optimize_smallscreen) ) {
-		print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
+		//print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
 	}
 
 	// Home
@@ -1088,7 +1088,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 	$usemenuhider = !empty($menu_invert) && ($conf->global->OBLYON_HIDE_LEFTMENU || $conf->dol_optimize_smallscreen);
 
 	if ( $usemenuhider ) {
-		print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
+		//print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
 	}
 
 	// Show logo company
