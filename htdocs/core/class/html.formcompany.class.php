@@ -279,7 +279,7 @@ class FormCompany extends Form
 		$result = $this->db->query($sql);
 		if ($result)
 		{
-			if (!empty($htmlname)) $out .= '<select id="'.$htmlname.'" class="flat maxwidth200onsmartphone minwidth300" name="'.$htmlname.'">';
+			if (!empty($htmlname)) $out .= '<select id="'.$htmlname.'" class="form-control" name="'.$htmlname.'">';
 			if ($country_codeid) $out .= '<option value="0">&nbsp;</option>';
 			$num = $this->db->num_rows($result);
 			$i = 0;

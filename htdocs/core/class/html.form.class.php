@@ -753,7 +753,7 @@ class Form
 	 *  @param	array	$exclude_country_code	Array of country code (iso2) to exclude
 	 *  @return string           				HTML string with select
 	 */
-	public function select_country($selected = '', $htmlname = 'country_id', $htmloption = '', $maxlength = 0, $morecss = 'minwidth300', $usecodeaskey = '', $showempty = 1, $disablefavorites = 0, $addspecialentries = 0, $exclude_country_code = array())
+	public function select_country($selected = '', $htmlname = 'country_id', $htmloption = '', $maxlength = 0, $morecss = '', $usecodeaskey = '', $showempty = 1, $disablefavorites = 0, $addspecialentries = 0, $exclude_country_code = array())
 	{
 		// phpcs:enable
 		global $conf, $langs, $mysoc;
@@ -775,7 +775,7 @@ class Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			$out .= '<select id="select'.$htmlname.'" class="form-control selectcountry'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" '.$htmloption.'>';
+			$out .= '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" '.$htmloption.'>';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -5138,11 +5138,11 @@ class Form
 			$out .= '</option>';
 		}
 		$out .= '</select>';
-		if ($user->admin) $out .= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
+		//if ($user->admin) $out .= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 
 		// Make select dynamic
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
-		$out .= ajax_combobox($htmlname);
+		//include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+		//$out .= ajax_combobox($htmlname);
 
 		return $out;
 	}
