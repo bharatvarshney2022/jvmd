@@ -775,7 +775,7 @@ class Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			$out .= '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" '.$htmloption.'>';
+			$out .= '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" '.$htmloption.' style="width:100%">';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -5122,7 +5122,7 @@ class Form
 
 		if ($selected == 'euro' || $selected == 'euros') $selected = 'EUR'; // Pour compatibilite
 
-		$out .= '<select class="form-control" name="'.$htmlname.'" id="'.$htmlname.'">';
+		$out .= '<select class="form-control" name="'.$htmlname.'" id="'.$htmlname.'" style="width:100%">';
 		foreach ($langs->cache_currencies as $code_iso => $currency)
 		{
 			$labeltoshow = $currency['label'];

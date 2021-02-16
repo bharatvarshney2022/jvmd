@@ -424,7 +424,7 @@ print '<!--begin::Entry-->
 
 								// Country
 								print '<tr class=""><td class="fieldrequired"><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="maxwidthonsmartphone">';
-								print img_picto('', 'globe-americas', 'class="paddingrightonly"');
+								//print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 								print $form->select_country($mysoc->country_id, 'country_id');
 								//if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 								print '</td></tr>'."\n";
