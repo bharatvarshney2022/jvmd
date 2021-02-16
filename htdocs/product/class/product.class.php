@@ -510,6 +510,9 @@ class Product extends CommonObject
 		// Clean parameters
 		$this->ref = dol_sanitizeFileName(dol_string_nospecial(trim($this->ref)));
 		$this->label = trim($this->label);
+		$this->fk_brand = trim($this->fk_brand);
+		$this->fk_category = trim($this->fk_category);
+		$this->fk_sub_category = trim($this->fk_sub_category);
 		$this->fk_model = trim($this->fk_model);
 		$this->erpinvoice_no = trim($this->erpinvoice_no);
 		$this->component_no = trim($this->component_no);
@@ -659,6 +662,9 @@ class Product extends CommonObject
 					$sql .= ", price_min";
 					$sql .= ", price_min_ttc";
 					$sql .= ", label";
+					$sql .= ", fk_brand";
+					$sql .= ", fk_category";
+					$sql .= ", fk_sub_category";
 					$sql .= ", fk_model";
 					$sql .= ", erpinvoice_no";
 					$sql .= ", component_no";
@@ -690,6 +696,10 @@ class Product extends CommonObject
 					$sql .= ", ".price2num($price_min_ht);
 					$sql .= ", ".price2num($price_min_ttc);
 					$sql .= ", ".(!empty($this->label) ? "'".$this->db->escape($this->label)."'" : "null");
+					$sql .= ", ".(!empty($this->fk_brand) ? "'".$this->db->escape($this->fk_brand)."'" : "0");
+					$sql .= ", ".(!empty($this->fk_category) ? "'".$this->db->escape($this->fk_category)."'" : "0");
+					$sql .= ", ".(!empty($this->fk_sub_category) ? "'".$this->db->escape($this->fk_sub_category)."'" : "0");
+
 					$sql .= ", ".(!empty($this->fk_model) ? "'".$this->db->escape($this->fk_model)."'" : "0");
 					$sql .= ", ".(!empty($this->erpinvoice_no) ? "'".$this->db->escape($this->erpinvoice_no)."'" : "null");
 					$sql .= ", ".(!empty($this->component_no) ? "'".$this->db->escape($this->component_no)."'" : "null");
@@ -874,7 +884,9 @@ class Product extends CommonObject
 		// Clean parameters
 		$this->ref = dol_string_nospecial(trim($this->ref));
 		$this->label = trim($this->label);
-
+		$this->fk_brand = trim($this->fk_brand);
+		$this->fk_category = trim($this->fk_category);
+		$this->fk_sub_category = trim($this->fk_sub_category);
 		$this->fk_model = trim($this->fk_model);
 		$this->erpinvoice_no = trim($this->erpinvoice_no);
 		$this->component_no = trim($this->component_no);
@@ -1034,6 +1046,10 @@ class Product extends CommonObject
 			if ($updatetype && ($this->isProduct() || $this->isService())) {
 				$sql .= ", fk_product_type = ".$this->type;
 			}
+
+			$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
+			$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+			$sql .= ", fk_sub_category = '".$this->db->escape($this->fk_sub_category)."'";
 
 			$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
 			$sql .= ", erpinvoice_no = '".$this->db->escape($this->erpinvoice_no)."'";
@@ -2103,7 +2119,7 @@ class Product extends CommonObject
 			return -1;
 		}
 
-		$sql = "SELECT rowid, ref, ref_ext, label, fk_model, component_no, erpinvoice_no, invoicedate, ship_date,custsale, description, url, note_public, note as note_private, customcode, fk_country, fk_state, price, price_ttc,";
+		$sql = "SELECT rowid, ref, ref_ext, label, fk_brand, fk_category,fk_sub_category,fk_model, component_no, erpinvoice_no, invoicedate, ship_date,custsale, description, url, note_public, note as note_private, customcode, fk_country, fk_state, price, price_ttc,";
 		$sql .= " price_min, price_min_ttc, price_base_type, cost_price, default_vat_code, tva_tx, recuperableonly as tva_npr, localtax1_tx, localtax2_tx, localtax1_type, localtax2_type, tosell,";
 		$sql .= " tobuy, fk_product_type, duration, fk_default_warehouse, seuil_stock_alerte, canvas, net_measure, net_measure_units, weight, weight_units,";
 		$sql .= " length, length_units, width, width_units, height, height_units,";
@@ -2137,6 +2153,9 @@ class Product extends CommonObject
 				$this->ref                            = $obj->ref;
 				$this->ref_ext                        = $obj->ref_ext;
 				$this->label                          = $obj->label;
+				$this->fk_brand                       = $obj->fk_brand;
+				$this->fk_category                    = $obj->fk_category;
+				$this->fk_sub_category                = $obj->fk_sub_category;
 				$this->fk_model                          = $obj->fk_model;
 				$this->component_no                          = $obj->component_no;
 				$this->erpinvoice_no                          = $obj->erpinvoice_no;

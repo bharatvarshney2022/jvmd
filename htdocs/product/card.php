@@ -271,7 +271,10 @@ if (empty($reshook))
 
             $object->ref                   = $ref;
             $object->label                 = GETPOST('label', $label_security_check);
-            $object->fk_model              = GETPOST('modelname');
+            $object->fk_brand              = GETPOST('fk_brand');
+            $object->fk_category           = GETPOST('fk_category');
+            $object->fk_sub_category       = GETPOST('fk_sub_category');
+            $object->fk_model              = GETPOST('fk_model');
             $object->erpinvoice_no         = GETPOST('erpinvoice_no');
             $object->component_no          = GETPOST('component_no');
           	$object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedatemonth', 'int'), GETPOST('invoicedateday', 'int'), GETPOST('invoicedateyear', 'int'));
@@ -463,7 +466,10 @@ if (empty($reshook))
 
 				$object->ref                    = $ref;
 				$object->label                  = GETPOST('label', $label_security_check);
-				$object->fk_model              = GETPOST('modelname');
+				$object->fk_brand              = GETPOST('fk_brand');
+            	$object->fk_category           = GETPOST('fk_category');
+            	$object->fk_sub_category       = GETPOST('fk_sub_category');
+            	$object->fk_model              = GETPOST('fk_model');
 	            $object->erpinvoice_no         = GETPOST('erpinvoice_no');
 	            $object->component_no          = GETPOST('component_no');
 	          	$object->invoicedate           = dol_mktime(0, 0, 0, GETPOST('invoicedatemonth', 'int'), GETPOST('invoicedateday', 'int'), GETPOST('invoicedateyear', 'int'));
@@ -1786,6 +1792,71 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 							getmodelinfo(model);
 
                         });
+
+
+                         $("#fk_brand").change(function() {
+                        	var brand = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_category").html(html);
+									$("#fk_sub_category").html("<option>Select Sub Category</option>");
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        });
+
+                       $("#fk_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_sub_category").html(html);
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+                        $("#fk_sub_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getproductmodel.php",
+								  data: { brand: brand, category: category , subcategory: subcategory},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_model").html(html);
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+
+                        $("#fk_model").change(function() {
+                        	var model = $(this).val();
+                        	$.ajax({
+								  dataType: "json",
+								  url: "productmodeldata.php",
+								  data: {model: model},
+								  success: function(data) {
+								  	//alert(data);
+									$("#label").val(data.name);
+								  }
+							});
+                        });
+
+                        
                      });
 
                      	function getmodelinfo(id){
@@ -1839,27 +1910,51 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Ref
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
 
-		   // Model
-			//print_r($object);
-			print '<td class="fieldrequired">'.$langs->trans("Model No.").'-'.$object->fk_model.'</td><td>';
-			print $formcompany->select_modelName($object->fk_model, '0' ,'modelname');
-			//print $form->selectarray('model', $modelarray, GETPOST('model'));
-			print '</td></tr>';
-			
-			// Label
-			print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td>';
-
 			// Brand
-			print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="">';
-			print '</td></tr>';
+				print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+				print $formcompany->select_brand($object->fk_brand, '0' ,'fk_brand');
+				print '</td></tr>';
+				
+				// Product Category
 
-		
+				print '<tr><td>'.$langs->trans("Category").'</td><td>';
+				
+				if($object->fk_brand > 0){
+					print $formcompany->select_family($object->fk_category, $object->fk_brand ,'fk_category');
+					//print $object->getCategoryByBrand($object->fk_brand);
+				}else{
+					print '<select class="flat" id="fk_category" name="fk_category">';
+					print '<option value="0">Select Sub Category</option>';
+					print '</select>';
+				}
+				
+				print '</td>';
 
-			// Product Family
-			print '<tr><td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td>';
+				// Product sub Category
+				print '<td>'.$langs->trans("Sub Category").'</td><td>';
+				if($object->fk_brand > 0 && $object->fk_category > 0){
+					print $formcompany->select_subfamily($object->fk_sub_category , $object->fk_brand,$object->fk_category,'fk_sub_category');
+				}else{
+					print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+					print '<option value="0">Select Sub Category</option>';
+					print '</select>';
+				}
+				print '</td></tr>';
+				// Model
+				print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+				if($object->fk_brand > 0 && $object->fk_category > 0 && $object->fk_sub_category > 0){
+					print $formcompany->select_modelName($object->fk_model , $object->fk_brand, $object->fk_category, $object->fk_sub_category, 'fk_model');
+				}else{
+					print '<select class="flat" id="fk_model" name="fk_model">'; 
+					print '<option value="0">Select Model</option>';
+					print '</select>';
+				}
+				print '</td>';
+		  
+			// Label
+				print '<td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
 
-			// Product Family
-			print '<td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value=""></td></tr>';
+			
 
 			// ERP Invoice No
 			print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td>';
