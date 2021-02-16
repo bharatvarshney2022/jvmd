@@ -80,16 +80,16 @@ $colorbackhmenu1 = join(',', colorStringToArray($colorbackhmenu1)); // Normalize
 			<!--begin::Aside-->
 			<div class="login-aside order-2 order-lg-1 d-flex flex-row-auto position-relative overflow-hidden" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/bg-1.jpg');">
 				<!--begin: Aside Container-->
-				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-13 px-lg-35">
+				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-1 px-lg-35">
 					<!--begin::Logo-->
-					<a href="<?php echo $dolibarr_main_url_root; ?>" class="text-center pt-2">
-						<img src="<?php echo $urllogo; ?>" class="max-h-250px" alt="" />
+					<a href="<?php echo $dolibarr_main_url_root; ?>" class="text-center">
+						<img src="<?php echo $urllogo; ?>" class="max-h-150px" alt="" />
 					</a>
 					<!--end::Logo-->
 					<!--begin::Aside body-->
 					<div class="d-flex flex-column-fluid flex-column flex-center">
 						<!--begin::Signin-->
-						<div class="login-form login-forgot  py-11">
+						<div class="login-form login-forgot">
 							<?php if ($message) { ?>
 								<div class="alert alert-danger  login_main_message">
 								<?php echo dol_htmloutput_mesg($message, '', '', 1); ?>

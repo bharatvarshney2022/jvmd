@@ -104,16 +104,16 @@ print "<!--begin::Main-->";
 			<!--begin::Aside-->
 			<div class="login-aside order-2 order-lg-1 d-flex flex-row-auto position-relative overflow-hidden" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/bg-1.jpg');">
 				<!--begin: Aside Container-->
-				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-13 px-lg-35">
+				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-1 px-lg-35">
 					<!--begin::Logo-->
-					<a href="<?php echo $dolibarr_main_url_root; ?>" class="text-center pt-2">
-						<img src="<?php echo $urllogo; ?>" class="max-h-250px" alt="" />
+					<a href="<?php echo $dolibarr_main_url_root; ?>" class="text-center">
+						<img src="<?php echo $urllogo; ?>" class="max-h-150px" alt="" />
 					</a>
 					<!--end::Logo-->
 					<!--begin::Aside body-->
 					<div class="d-flex flex-column-fluid flex-column flex-center">
 						<!--begin::Signin-->
-						<div class="login-form login-signin py-11">
+						<div class="login-form login-signin">
 							<!--begin::Form-->
 							<?php
 								// Show error message if defined
@@ -222,7 +222,7 @@ print "<!--begin::Main-->";
 							?>
 
 								<!--begin::Action-->
-								<div class="text-center pt-2">
+								<div class="text-center">
 									<button id="kt_login_signin_submit" type="submit" class="btn btn-dark font-weight-bolder font-size-h6 px-8 py-4 my-3">Sign In</button>
 								</div>
 								<!--end::Action-->
