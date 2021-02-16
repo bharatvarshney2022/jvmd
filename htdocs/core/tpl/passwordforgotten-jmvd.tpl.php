@@ -78,7 +78,7 @@ $colorbackhmenu1 = join(',', colorStringToArray($colorbackhmenu1)); // Normalize
 		<!--begin::Login-->
 		<div class="login login-2 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" id="kt_login">
 			<!--begin::Aside-->
-			<div class="login-aside order-2 order-lg-1 d-flex flex-row-auto position-relative overflow-hidden">
+			<div class="login-aside order-2 order-lg-1 d-flex flex-row-auto position-relative overflow-hidden" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/bg-1.jpg');">
 				<!--begin: Aside Container-->
 				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-13 px-lg-35">
 					<!--begin::Logo-->
