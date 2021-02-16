@@ -19,23 +19,23 @@
  */
 
 /**
- *	\file       htdocs/core/boxes/box_clients.php
- *	\ingroup    societes
- *	\brief      Module de generation de l'affichage de la box clients
+ *	\file       htdocs/core/boxes/box_dashboard_stats.php
+ *	\ingroup    user
+ *	\brief      Box for user dashboard_stats
  */
 
 include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
- * Class to manage the box to show last thirdparties
+ * Class to manage the box to show user dashboard_stats
  */
-class box_clients extends ModeleBoxes
+class box_dashboard_stats extends ModeleBoxes
 {
-	public $boxcode = "lastcustomers";
-	public $boximg = "object_company";
-	public $boxlabel = "BoxLastCustomers";
-	public $depends = array("societe");
+	public $boxcode = "dashboard_stats";
+	public $boximg = "object_user";
+	public $boxlabel = "BoxTitleUserDashboardStats";
+	public $depends = array("user");
 
 	/**
 	 * @var DoliDB Database handler.
@@ -56,14 +56,11 @@ class box_clients extends ModeleBoxes
 	 */
 	public function __construct($db, $param = '')
 	{
-		global $conf, $user;
+		global $user;
 
 		$this->db = $db;
 
-		// disable box for such cases
-		if (!empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $this->enabled = 0; // disabled by this option
-
-		$this->hidden = !($user->rights->societe->lire && empty($user->socid));
+		$this->hidden = !($user->rights->user->user->lire && empty($user->socid));
 	}
 
 	/**
@@ -72,31 +69,29 @@ class box_clients extends ModeleBoxes
 	 *  @param	int		$max        Maximum number of records to load
 	 *  @return	void
 	 */
-	public function loadBox($max = 5)
+	public function loadBox($max = 20)
 	{
-		global $user, $langs, $conf;
+		global $user, $langs;
 		$langs->load("boxes");
 
 		$this->max = $max;
 
-		include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-		$thirdpartystatic = new Societe($this->db);
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		$userstatic = new User($this->db);
 
-		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastModifiedCustomers", $max));
+		$this->info_box_head = array('text' => $langs->trans("BoxTitleUserBirthdaysOfMonth"));
 
-		if ($user->rights->societe->lire)
+		if ($user->rights->user->user->lire)
 		{
-			$sql = "SELECT s.rowid as socid, s.nom as name, s.name_alias";
-			$sql .= ", s.code_client, s.code_compta, s.client";
-			$sql .= ", s.logo, s.email, s.entity";
-			$sql .= ", s.datec, s.tms, s.status";
-			$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
-			if (!$user->rights->societe->client->voir && !$user->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-			$sql .= " WHERE s.client IN (1, 3)";
-			$sql .= " AND s.entity IN (".getEntity('societe').")";
-			if (!$user->rights->societe->client->voir && !$user->socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".$user->id;
-			if ($user->socid) $sql .= " AND s.rowid = ".$user->socid;
-			$sql .= " ORDER BY s.tms DESC";
+			$tmparray = dol_getdate(dol_now(), true);
+
+			$sql = "SELECT u.rowid, u.firstname, u.lastname, u.birth, u.email, u.statut as status";
+			$sql .= " FROM ".MAIN_DB_PREFIX."user as u";
+			$sql .= " WHERE u.entity IN (".getEntity('user').")";
+			$sql .= " AND u.statut = 1";
+			$sql .= dolSqlDateFilter('u.birth', 0, $tmparray['mon'], 0);
+			$sql .= " ORDER BY DAY(u.birth) ASC";
 			$sql .= $this->db->plimit($max, 0);
 
 			dol_syslog(get_class($this)."::loadBox", LOG_DEBUG);
@@ -109,42 +104,36 @@ class box_clients extends ModeleBoxes
 				while ($line < $num)
 				{
 					$objp = $this->db->fetch_object($result);
-					$datec = $this->db->jdate($objp->datec);
-					$datem = $this->db->jdate($objp->tms);
 
-					$thirdpartystatic->id = $objp->socid;
-					$thirdpartystatic->name = $objp->name;
-					$thirdpartystatic->name_alias = $objp->name_alias;
-					$thirdpartystatic->code_client = $objp->code_client;
-					$thirdpartystatic->code_compta = $objp->code_compta;
-					$thirdpartystatic->client = $objp->client;
-					$thirdpartystatic->logo = $objp->logo;
-					$thirdpartystatic->email = $objp->email;
-					$thirdpartystatic->entity = $objp->entity;
+					$userstatic->id = $objp->rowid;
+					$userstatic->firstname = $objp->firstname;
+					$userstatic->lastname = $objp->lastname;
+					$userstatic->email = $objp->email;
+					$userstatic->statut = $objp->status;
+
+					$dateb = $this->db->jdate($objp->birth);
+					$age = date('Y', dol_now()) - date('Y', $dateb);
 
 					$this->info_box_contents[$line][] = array(
 						'td' => '',
-						'text' => $thirdpartystatic->getNomUrl(1),
+						'text' => $userstatic->getNomUrl(1),
 						'asis' => 1,
 					);
 
 					$this->info_box_contents[$line][] = array(
 						'td' => 'class="right"',
-						'text' => dol_print_date($datem, "day")
+						'text' => dol_print_date($dateb, "day").' - '.$age.' '.$langs->trans('DurationYears')
 					);
 
-					$this->info_box_contents[$line][] = array(
-						'td' => 'class="right" width="18"',
-						'text' => $thirdpartystatic->LibStatut($objp->status, 3)
-					);
+					/*$this->info_box_contents[$line][] = array(
+                        'td' => 'class="right" width="18"',
+                        'text' => $userstatic->LibStatut($objp->status, 3)
+                    );*/
 
 					$line++;
 				}
 
-				if ($num == 0) $this->info_box_contents[$line][0] = array(
-					'td' => 'class="center opacitymedium"',
-					'text'=>$langs->trans("NoRecordedCustomers")
-				);
+				if ($num == 0) $this->info_box_contents[$line][0] = array('td' => 'class="center opacitymedium"', 'text'=>$langs->trans("None"));
 
 				$this->db->free($result);
 			} else {
