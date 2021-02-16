@@ -106,7 +106,7 @@ print "<!--begin::Main-->";
 				<!--begin: Aside Container-->
 				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-13 px-lg-35">
 					<!--begin::Logo-->
-					<a href="#" class="text-center pt-2">
+					<a href="<?php echo $dolibarr_main_url_root; ?>" class="text-center pt-2">
 						<img src="<?php echo $urllogo; ?>" class="max-h-250px" alt="" />
 					</a>
 					<!--end::Logo-->
