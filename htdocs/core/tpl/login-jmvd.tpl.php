@@ -180,17 +180,17 @@ print "<!--begin::Main-->";
 									else $php_self .= '?time='.dol_print_date(dol_now(), 'dayhourlog');
 									// TODO: provide accessible captcha variants
 									?>
-									<!-- Captcha -->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $langs->trans("SecurityCode"); ?></label>
+<!-- Captcha -->
+								<div class="form-group">
+									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $langs->trans("SecurityCode"); ?></label>
 
-										<input id="securitycode" placeholder="<?php echo $langs->trans("SecurityCode"); ?>" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="text" maxlength="5" name="code" />
+									<input id="securitycode" placeholder="<?php echo $langs->trans("SecurityCode"); ?>" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="text" maxlength="5" name="code" />
 
-										<div class="nowrap inline-block pt-5">
-											<img class="inline-block valignmiddle" src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" id="img_securitycode" />
-											<a class="inline-block valignmiddle" href="<?php echo $php_self; ?>" tabindex="4" data-role="button"><?php echo $captcha_refresh; ?></a>
-										</div>
+									<div class="pt-5">
+										<img class="" src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" id="img_securitycode" />
+										<a class="inline-block valignmiddle" href="<?php echo $php_self; ?>" tabindex="4" data-role="button"><?php echo $captcha_refresh; ?></a>
 									</div>
+								</div>
 									<?php
 								}
 
@@ -210,127 +210,142 @@ print "<!--begin::Main-->";
 								}
 							?>
 
-							<!--begin::Action-->
-							<div class="text-center pt-2">
-								<button id="kt_login_signin_submit" type="submit" class="btn btn-dark font-weight-bolder font-size-h6 px-8 py-4 my-3">Sign In</button>
-							</div>
-							<!--end::Action-->
-						</form>
-						<!--end::Form-->
+								<!--begin::Action-->
+								<div class="text-center pt-2">
+									<button id="kt_login_signin_submit" type="submit" class="btn btn-dark font-weight-bolder font-size-h6 px-8 py-4 my-3">Sign In</button>
+								</div>
+								<!--end::Action-->
+							</form>
+							<!--end::Form-->
+						</div>
+						<!--end::Signin-->
 					</div>
-					<!--end::Signin-->
+					<!--end::Aside body-->
+					<!--begin: Aside footer for desktop-->
+					<div class="text-center">
+						
+					</div>
+					<!--end: Aside footer for desktop-->
 				</div>
-				<!--end::Aside body-->
-				<!--begin: Aside footer for desktop-->
-				<div class="text-center">
-					
-				</div>
-				<!--end: Aside footer for desktop-->
+				<!--end: Aside Container-->
 			</div>
-			<!--end: Aside Container-->
-		</div>
-
-		<?php
-		// Show error message if defined
-		if (!empty($_SESSION['dol_loginmesg']))
-		{
-			?>
-			<div class="center login_main_message"><div class="error">
-			<?php echo $_SESSION['dol_loginmesg']; ?>
-			</div></div>
 			<?php
-		}
-
-		// Add commit strip
-		if (!empty($conf->global->MAIN_EASTER_EGG_COMMITSTRIP)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-			if (substr($langs->defaultlang, 0, 2) == 'fr') {
-				$resgetcommitstrip = getURLContent("https://www.commitstrip.com/fr/feed/");
-			} else {
-				$resgetcommitstrip = getURLContent("https://www.commitstrip.com/en/feed/");
-			}
-			if ($resgetcommitstrip && $resgetcommitstrip['http_code'] == '200')
-			{
-				$xml = simplexml_load_string($resgetcommitstrip['content']);
-				$little = $xml->channel->item[0]->children('content', true);
-				print preg_replace('/width="650" height="658"/', '', $little->encoded);
-			}
-		}
-
-		?>
-
-		<?php if ($main_home)
-		{
-			?>
-			<div class="center login_main_home paddingtopbottom <?php echo empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' backgroundsemitransparent'; ?>" style="max-width: 70%">
-			<?php echo $main_home; ?>
-			</div><br>
-			<?php
-		}
-		?>
-
-		<!-- authentication mode = <?php echo $main_authentication ?> -->
-		<!-- cookie name used for this session = <?php echo $session_name ?> -->
-		<!-- urlfrom in this session = <?php echo isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : ''; ?> -->
-
-		<!-- Common footer is not used for login page, this is same than footer but inside login tpl -->
-
-		<?php
-		if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER;
-
-		if (!empty($morelogincontent) && is_array($morelogincontent)) {
-			foreach ($morelogincontent as $format => $option)
-			{
-				if ($format == 'js') {
-					echo "\n".'<!-- Javascript by hook -->';
-					echo $option."\n";
-				}
-			}
-		} elseif (!empty($moreloginextracontent)) {
-			echo '<!-- Javascript by hook -->';
-			echo $moreloginextracontent;
-		}
-
-		// Google Analytics
-		// TODO Add a hook here
-		if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AN_ID))
-		{
-			$tmptagarray = explode(',', $conf->global->MAIN_GOOGLE_AN_ID);
-			foreach ($tmptagarray as $tmptag) {
-				print "\n";
-				print "<!-- JS CODE TO ENABLE for google analtics tag -->\n";
-				print "
-							<!-- Global site tag (gtag.js) - Google Analytics -->
-							<script async src=\"https://www.googletagmanager.com/gtag/js?id=".trim($tmptag)."\"></script>
-							<script>
-							window.dataLayer = window.dataLayer || [];
-							function gtag(){dataLayer.push(arguments);}
-							gtag('js', new Date());
-
-							gtag('config', '".trim($tmptag)."');
-							</script>";
-				print "\n";
-			}
-		}
-
-		// TODO Replace this with a hook
-		// Google Adsense (need Google module)
-		if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT))
-		{
-			if (empty($conf->dol_use_jmobile))
+			// Show error message if defined
+			if (!empty($_SESSION['dol_loginmesg']))
 			{
 				?>
-			<div class="center"><br>
-				<script><!--
-					google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
-					google_ad_slot = "<?php echo $conf->global->MAIN_GOOGLE_AD_SLOT ?>";
-					google_ad_width = <?php echo $conf->global->MAIN_GOOGLE_AD_WIDTH ?>;
-					google_ad_height = <?php echo $conf->global->MAIN_GOOGLE_AD_HEIGHT ?>;
-					//-->
-				</script>
-				<script src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-			</div>
+				<div class="center login_main_message"><div class="error">
+				<?php echo $_SESSION['dol_loginmesg']; ?>
+				</div></div>
 				<?php
 			}
-		}
-		?>
+
+			// Add commit strip
+			if (!empty($conf->global->MAIN_EASTER_EGG_COMMITSTRIP)) {
+				include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+				if (substr($langs->defaultlang, 0, 2) == 'fr') {
+					$resgetcommitstrip = getURLContent("https://www.commitstrip.com/fr/feed/");
+				} else {
+					$resgetcommitstrip = getURLContent("https://www.commitstrip.com/en/feed/");
+				}
+				if ($resgetcommitstrip && $resgetcommitstrip['http_code'] == '200')
+				{
+					$xml = simplexml_load_string($resgetcommitstrip['content']);
+					$little = $xml->channel->item[0]->children('content', true);
+					print preg_replace('/width="650" height="658"/', '', $little->encoded);
+				}
+			}
+
+			?>
+			<?php if ($main_home)
+			{
+				?>
+				<div class="center login_main_home paddingtopbottom <?php echo empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' backgroundsemitransparent'; ?>" style="max-width: 70%">
+				<?php echo $main_home; ?>
+				</div><br>
+				<?php
+			}
+			?>
+			<?php //echo $main_authentication ?>
+			<?php //echo $session_name ?>
+			<?php //echo isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : ''; ?>
+			<?php
+			if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER;
+
+			if (!empty($morelogincontent) && is_array($morelogincontent)) {
+				foreach ($morelogincontent as $format => $option)
+				{
+					if ($format == 'js') {
+						echo "\n".'<!-- Javascript by hook -->';
+						echo $option."\n";
+					}
+				}
+			} elseif (!empty($moreloginextracontent)) {
+				echo '<!-- Javascript by hook -->';
+				echo $moreloginextracontent;
+			}
+
+			// Google Analytics
+			// TODO Add a hook here
+			if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AN_ID))
+			{
+				$tmptagarray = explode(',', $conf->global->MAIN_GOOGLE_AN_ID);
+				foreach ($tmptagarray as $tmptag) {
+					print "\n";
+					print "<!-- JS CODE TO ENABLE for google analtics tag -->\n";
+					print "
+								<!-- Global site tag (gtag.js) - Google Analytics -->
+								<script async src=\"https://www.googletagmanager.com/gtag/js?id=".trim($tmptag)."\"></script>
+								<script>
+								window.dataLayer = window.dataLayer || [];
+								function gtag(){dataLayer.push(arguments);}
+								gtag('js', new Date());
+
+								gtag('config', '".trim($tmptag)."');
+								</script>";
+					print "\n";
+				}
+			}
+
+			// TODO Replace this with a hook
+			// Google Adsense (need Google module)
+			if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT))
+			{
+				if (empty($conf->dol_use_jmobile))
+				{
+					?>
+				<div class="center"><br>
+					<script><!--
+						google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
+						google_ad_slot = "<?php echo $conf->global->MAIN_GOOGLE_AD_SLOT ?>";
+						google_ad_width = <?php echo $conf->global->MAIN_GOOGLE_AD_WIDTH ?>;
+						google_ad_height = <?php echo $conf->global->MAIN_GOOGLE_AD_HEIGHT ?>;
+						//-->
+					</script>
+					<script src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+				</div>
+					<?php
+				}
+			}
+			?>
+			
+			<!--begin::Aside-->
+			<!--begin::Content-->
+			<div class="content order-1 order-lg-2 d-flex flex-column w-100 pb-0" style="background-color: #B1DCED;">
+				<!--begin::Title-->
+				<div class="d-flex flex-column justify-content-center text-center pt-lg-40 pt-md-5 pt-sm-5 px-lg-0 pt-5 px-7">
+					<h3 class="display4 font-weight-bolder my-7 text-dark" style="color: #986923;">JMVD Group</h3>
+					<p class="font-weight-bolder font-size-h2-md font-size-lg text-dark opacity-70">A Climate Control Company</p>
+				</div>
+				<!--end::Title-->
+				<!--begin::Image-->
+					<div class="content-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/login-visual-2.svg")></div>
+				<!--end::Image-->
+			</div>
+			<!--end::Content-->
+		</div>
+		<!--end::Login-->
+	</div>
+	</body>
+	<!--end::Body-->
+</html>
