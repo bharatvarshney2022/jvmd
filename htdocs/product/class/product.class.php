@@ -648,7 +648,7 @@ class Product extends CommonObject
 			$sql .= " FROM ".MAIN_DB_PREFIX."product";
 			$sql .= " WHERE entity IN (".getEntity('product').")";
 			$sql .= " AND ref = '".$this->db->escape($this->ref)."'";
-
+			$sql .= " AND fk_model = '".$this->db->escape($this->fk_model)."'";
 			$result = $this->db->query($sql);
 			if ($result) {
 				$obj = $this->db->fetch_object($result);
@@ -5794,7 +5794,40 @@ class Product extends CommonObject
 			}
 		}
 	}	
-
+/* Update customer product*/
+	public function update_customer_product($user,$post)
+	{
+		$now = dol_now();
+		$entity = 1;
+		$sql = "SELECT count(*) as nb";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
+		$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
+		
+		$result = $this->db->query($sql);
+		if ($result) {
+			$obj = $this->db->fetch_object($result);
+			if ($obj->nb > 0) {
+				// Produit non deja existant
+				$sql = "UPDATE ".MAIN_DB_PREFIX."product_customer SET ";
+				$sql .= " fk_brand = '".$this->db->escape($post['fk_brand'])."' ";
+				$sql .= ", fk_category = '".$this->db->escape($post['fk_category'])."' ";
+				$sql .= ", fk_subcategory = '".$this->db->escape($post['fk_subcategory'])."' ";
+				$sql .= ", fk_model = '".$this->db->escape($post['fk_model'])."' ";
+				$sql .= ", fk_product = '".$this->db->escape($post['fk_product'])."' ";
+				$sql .= ", ac_capacity = '".$this->db->escape($post['ac_capacity'])."' ";
+				$sql .= " WHERE rowid = '".$this->db->escape($post['custprodid'])."' ";
+				
+				/*echo $sql;
+				exit;*/
+				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
+				$result = $this->db->query($sql);
+				if ($result) {
+					$id = $post['custprodid'];
+					return $id;
+				}
+			}
+		}
+	}
 	/* Get model info by model id*/
 	public function getProductModel($model_id)
 	{
@@ -5864,6 +5897,27 @@ class Product extends CommonObject
 			}
 		}	
 		return $str;
+	}
+
+
+	public function getCustomerProductbyid($rowid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_brand, p.fk_category, p.fk_subcategory, p.fk_model as fk_model, m.code as modelno, p.fk_product,p.ac_capacity FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_model as m where p.fk_model = m.rowid AND p.rowid = '".$rowid."' ";
+
+		$result = $this->db->query($sql);
+		
+		if ($result) {
+			if ($this->db->num_rows($result)) {
+				$obj = $this->db->fetch_object($result);
+				return $obj;
+			}else{
+				return '';
+			}
+		}else{
+			return '';
+		}	
+		
 	}
 
 
@@ -5996,6 +6050,57 @@ public function getCategoryByBrand($brand_id)
 			}		
 			return $str;
 		}
+
+		public function getProductListByModel($brand_id,$category,$subcategory,$model)
+		{
+			
+			if($brand_id != '' && $category != '' && $subcategory != '' && $model != ''){
+				$outjson = array();
+				$sql = "SELECT rowid, label";
+				$sql .= " FROM ".MAIN_DB_PREFIX."product ";
+				$sql .= " WHERE hidden = 0";
+				if($brand_id != 0){
+					$sql .= " AND fk_brand = '".$brand_id."' ";	
+				}
+				
+				if($category != 0){
+					$sql .= " AND fk_category = '".$category."' ";	
+				}
+
+				if($subcategory != 0){
+					$sql .= " AND fk_sub_category = '".$subcategory."' ";	
+				}
+
+				if($model != 0){
+					$sql .= " AND fk_model = '".$model."' ";	
+				}
+				
+				$sql .= " ORDER BY rowid ASC";
+				//echo $sql;
+				$result = $this->db->query($sql);
+				$str = '<option value="0">Select Product</option>';
+				if ($result) {
+					$num = $this->db->num_rows($result);
+					
+					if ($this->db->num_rows($result)) {
+						$i = 0;
+						
+						while ($i < $num) {
+							
+							$obj = $this->db->fetch_object($result);
+
+							$id = $obj->rowid;
+							$str .= '<option value="'.$obj->rowid.'">'.$obj->label.'</option>';
+							
+							$i++;
+						}
+					}
+				}
+			}else{
+				$str = '<option value="0">Select Product</option>';
+			}		
+			return $str;
+		}	
 
 	public function getProductByModel($model_id)
 	{

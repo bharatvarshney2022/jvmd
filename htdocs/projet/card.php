@@ -554,7 +554,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	// Ref
 	$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
-	print '<tr><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
+	print '<tr><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" readonly size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
 	print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 	print '</td>';
 
@@ -661,7 +661,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
 		print $langs->trans("ThirdParty");
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
-		print '</td><td colspan="3" class="maxwidthonsmartphone">';
+		print '</td><td class="maxwidthonsmartphone">';
 		$filteronlist = '';
 		if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
 	   	$text = img_picto('', 'company').$form->select_company(GETPOST('socid', 'int'), 'socid', $filteronlist, 'SelectThirdParty', 1, 0, array(), 0, 'minwidth300 widthcentpercentminusxx');
@@ -671,9 +671,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print $form->textwithtooltip($text.' '.img_help(), $texthelp, 1);
 		} else print $text;
 		if (!GETPOSTISSET('backtopage')) print ' <a href="'.DOL_URL_ROOT.'/societe/card.php?action=create&backtopage='.urlencode($_SERVER["PHP_SELF"].'?action=create').'"><span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddThirdParty").'"></span></a>';
-		print '</td></tr>';
+		print '</td>';
 	}
 
+	// Date start
+	print '<td>'.$langs->trans("DateStart").'</td><td>';
+	print $form->selectDate(($date_start ? $date_start : ''), 'projectstart', 0, 0, 0, '', 1, 0);
+	print '</td></tr>';
 	// Status
 	if ($status != '')
 	{
@@ -691,13 +695,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print $form->selectarray('public', $array, GETPOST('public') ?GETPOST('public') : $object->public, 0, 0, 0, '', 0, 0, 0, '', '', 1);
 	print '</td></tr>';
 
-	// Date start
-	print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-	print $form->selectDate(($date_start ? $date_start : ''), 'projectstart', 0, 0, 0, '', 1, 0);
-	print '</td>';
+	
 
 	// Date end
-	print '<td>'.$langs->trans("DateEnd").'</td><td>';
+	print '<tr style="display:none;"><td>'.$langs->trans("DateEnd").'</td><td>';
 	print $form->selectDate(($date_end ? $date_end : -1), 'projectend', 0, 0, 0, '', 1, 0);
 	print '</td></tr>';
 

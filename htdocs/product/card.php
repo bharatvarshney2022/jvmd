@@ -205,7 +205,7 @@ if (empty($reshook))
 	if ($action == 'add_customer_product')
 	{
 		$error = 0;
-		$fk_model = GETPOST('modelname', 'int');
+		$fk_model = GETPOST('fk_model', 'int');
 	
 		if (empty($fk_model))
         {
@@ -216,21 +216,22 @@ if (empty($reshook))
 
         if (!$error)
 		{
+
 			$customerProduct = array();
 			$customerProduct['fk_soc'] = GETPOST('fk_soc', 'int');
 			$customerProduct['fk_brand'] = GETPOST('fk_brand', 'int');
 			$customerProduct['fk_category'] = GETPOST('fk_category', 'int');
-			$customerProduct['fk_subcategory'] = GETPOST('fk_subcategory', 'int');
+			$customerProduct['fk_subcategory'] = GETPOST('fk_sub_category', 'int');
 			$customerProduct['fk_product'] = GETPOST('fk_product', 'int');
 
-			$customerProduct['fk_model'] = GETPOST('modelname', 'int');
+			$customerProduct['fk_model'] = GETPOST('fk_model', 'int');
 			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
 			//print_r($customerProduct);
 			$productid = $object->add_customer_product($user,$customerProduct);
 			if (!empty($backtopage))
 			{
 				$backtopage = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $backtopage); // New method to autoselect project after a New on another form object creation
-				if (preg_match('/\?/', $backtopage)) $backtopage .= '&socid='.$object->id; // Old method
+				if (preg_match('/\?/', $backtopage)) $backtopage; // Old method
 				header("Location: ".$backtopage);
 				exit;
 			} else {
@@ -241,7 +242,45 @@ if (empty($reshook))
 			
 		}	
 
-	}	
+	}
+
+	if ($action == 'update_customer_product')
+	{
+		$error = 0;
+		$fk_model = GETPOST('fk_model', 'int');
+	
+		if (empty($fk_model))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Model Required')), null, 'errors');
+            $action = "edit_customerproduct";
+            $error++;
+        }
+
+        if (!$error)
+		{
+
+			$customerProduct = array();
+			$customerProduct['fk_soc'] = GETPOST('fk_soc', 'int');
+			$customerProduct['custprodid'] = GETPOST('custprodid', 'int');
+			$customerProduct['fk_brand'] = GETPOST('fk_brand', 'int');
+			$customerProduct['fk_category'] = GETPOST('fk_category', 'int');
+			$customerProduct['fk_subcategory'] = GETPOST('fk_sub_category', 'int');
+			$customerProduct['fk_product'] = GETPOST('fk_product', 'int');
+
+			$customerProduct['fk_model'] = GETPOST('fk_model', 'int');
+			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
+			//print_r($customerProduct);
+			$productid = $object->update_customer_product($user,$customerProduct);
+			
+			//header("Location: ".$_SERVER['PHP_SELF']."?id=".$productid);
+			header("Location: ".DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int'));
+			exit;
+			
+			
+		}	
+
+	}
+	
 	if ($action == 'add' && $usercancreate)
 	{
 		$error = 0;
@@ -1000,7 +1039,195 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	// -----------------------------------------
 	// When used in standard mode
 	// -----------------------------------------
+	if ($action == 'edit_customerproduct')
+		{
+			$fk_soc = GETPOST('fk_soc', 'int');
+			$custprodid = GETPOST('custprodid', 'int');
+			$formcompany = new FormCompany($db);
+			$custprdobject = $object->getCustomerProductbyid($custprodid);
 
+			print '<script type="text/javascript">';
+				
+				print '$(document).ready(function () {';
+					if($custprdobject->fk_product > 0 && $custprdobject->fk_model > 0){
+						print 'getproductinfo('.$custprdobject->fk_model.');
+							
+						';
+					}	
+						
+                        print '$("#fk_brand").change(function() {
+                        	var brand = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_category").html(html);
+									$("#fk_sub_category").html("<option>Select Sub Category</option>");
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        });
+
+                       $("#fk_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_sub_category").html(html);
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+                        $("#fk_sub_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getproductmodel.php",
+								  data: { brand: brand, category: category , subcategory: subcategory},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_model").html(html);
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+
+                       $("#fk_model").change(function() {
+                        	var model = $(this).val();
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $("#fk_sub_category").val();
+                        	
+                        	$.ajax({
+								  dataType: "html",
+								  url: "productlistbymodel.php",
+								  data: {brand: brand, category: category , subcategory: subcategory, model: model},
+								  success: function(data) {
+								  	//alert(data);
+									$("#fk_product").html(data);
+								  }
+							});
+                        }); 
+
+
+                     });
+
+                     	function getproductinfo(id){
+                     		//alert(id);
+                     		var model = id;
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $("#fk_sub_category").val();
+                        	
+                        	$.ajax({
+								  dataType: "html",
+								  url: "productlistbymodel.php",
+								  data: {brand: brand, category: category , subcategory: subcategory, model: model},
+								  success: function(data) {
+								  	//alert(data);
+									$("#fk_product").html(data);
+									$("#fk_product option[value='.$custprdobject->fk_product.']").attr("selected", "selected"); 
+								  }
+							});
+                     	}
+                     ';  
+
+
+			print '</script>'."\n";
+
+			print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" method="POST" name="formprod">'."\n";
+			print '<input type="hidden" name="token" value="'.newToken().'">';
+			print '<input type="hidden" name="action" value="update_customer_product">';
+			print '<input type="hidden" name="fk_soc" value="'.$fk_soc.'">';
+			print '<input type="hidden" name="custprodid" value="'.$custprodid.'">';
+			print '<input type="hidden" name="canvas" value="'.$object->canvas.'">';
+
+			//$head = product_prepare_head($object);
+			//$titre = $langs->trans("CardProduct".$object->type);
+			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
+			print dol_get_fiche_head($head, 'card', $titre, 0, $picto);
+
+			print "<h3>Edit Product Information</h3>";
+			print '<table class="border allwidth">';
+
+			// Brand
+				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+				print $formcompany->select_brand($custprdobject->fk_brand, '0' ,'fk_brand');
+				print '</td>';
+				
+				// Product Category
+
+				print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+				if($custprdobject->fk_brand > 0){
+					print $formcompany->select_family($custprdobject->fk_category, $custprdobject->fk_brand ,'fk_category');
+					//print $object->getCategoryByBrand($object->fk_brand);
+				}else{
+					print '<select class="flat" id="fk_category" name="fk_category">';
+					print '<option value="0">Select Sub Category</option>';
+					print '</select>';
+				}
+				print '</td></tr>';
+
+				// Product sub Category
+				print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+				if($custprdobject->fk_brand > 0 && $custprdobject->fk_category > 0){
+					print $formcompany->select_subfamily($custprdobject->fk_subcategory  , $custprdobject->fk_brand,$object->fk_category,'fk_sub_category');
+				}else{
+					print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+					print '<option value="0">Select Sub Category</option>';
+					print '</select>';
+				}
+				print '</td>';
+				
+				// Model
+				print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+				if($custprdobject->fk_brand > 0 && $custprdobject->fk_category > 0 && $custprdobject->fk_subcategory  > 0){
+					print $formcompany->select_modelName($custprdobject->fk_model , $custprdobject->fk_brand, $custprdobject->fk_category, $custprdobject->fk_subcategory , 'fk_model');
+				}else{
+					print '<select class="flat" id="fk_model" name="fk_model">'; 
+					print '<option value="0">Select Model</option>';
+					print '</select>';
+				}
+				print '</td></tr>';
+
+				// Label
+				print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+				print '<select class="flat" id="fk_product" name="fk_product">';
+				print '<option value="0">Select Product</option>';
+				print '</select>';
+				print '</td>';
+				// Ac Capacity
+				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($custprdobject->ac_capacity).'"></td></tr>';
+
+				
+				print '</table>';
+				print dol_get_fiche_end();
+				$backurl = DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int');
+				print '<div class="center">';
+				print '<input type="submit" class="button" value="'.$langs->trans("Update").'">';
+				print ' &nbsp; &nbsp; ';
+				print '<a href = "'.$backurl.'" class="button button-cancel">'.$langs->trans("Cancel").'</a>';
+				print '</div>';
+
+				print '</form>';
+			
+				
+				
+		  
+			
+	}
 	if ($action == 'create_customerproduct')
 	{
 		print '<script type="text/javascript">';
@@ -1012,26 +1239,73 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
                      });';
 
                 print '$(document).ready(function () {
-                        $("#modelname").change(function() {
-                        	var model = $(this).val();
+                        $("#fk_brand").change(function() {
+                        	var brand = $(this).val();
                         	$.ajax({
-								  dataType: "json",
-								  url: "productmodeldata.php",
-								  data: { model: model},
-								  success: function(data) {
-									$("#label").val(data.name);
-									$("#brand").val(data.brand);
-									$("#c_product_family").val(data.family);
-									$("#c_product_subfamily").val(data.subfamily);
-
-									$("#fk_brand").val(data.brandid);
-									$("#fk_category").val(data.categoryid);
-									$("#fk_subcategory").val(data.subcategoryid);
-									$("#fk_product").val(data.product_id);
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_category").html(html);
+									$("#fk_sub_category").html("<option>Select Sub Category</option>");
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
 								  }
 							});
                         });
-                     });';     
+
+                       $("#fk_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_sub_category").html(html);
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+                        $("#fk_sub_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getproductmodel.php",
+								  data: { brand: brand, category: category , subcategory: subcategory},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_model").html(html);
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+
+                        $("#fk_model").change(function() {
+                        	var model = $(this).val();
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $("#fk_sub_category").val();
+                        	
+                        	$.ajax({
+								  dataType: "html",
+								  url: "productlistbymodel.php",
+								  data: {brand: brand, category: category , subcategory: subcategory, model: model},
+								  success: function(data) {
+								  	//alert(data);
+									$("#fk_product").html(data);
+								  }
+							});
+                        }); 
+
+	               });';    
 				print '</script>'."\n";
 
 				// Load object modCodeProduct
@@ -1053,10 +1327,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print '<input type="hidden" name="action" value="add_customer_product">';
 				print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 				print '<input type="hidden" name="fk_soc" value="'.$socid.'">';
-				print '<input type="hidden" id="fk_brand" name="fk_brand" value="">';
-				print '<input type="hidden" id="fk_category" name="fk_category" value="">';
-				print '<input type="hidden" id="fk_subcategory" name="fk_subcategory" value="">';
-				print '<input type="hidden" id="fk_product" name="fk_product" value="">';
+				
 
 				
 				$picto = 'product';
@@ -1068,24 +1339,38 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print dol_get_fiche_head('');
 				print '<table class="border centpercent">';
 
-				// Model
-				print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-				print $formcompany->select_modelName($family_id, '0' ,'modelname');
-				print '</td>';
-				// Label
-				print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
-
 				// Brand
-				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
+				print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+				print $formcompany->select_brand('', '0' ,'fk_brand');
 				print '</td>';
 				
+				// Product Category
 
-				// Product Family
-				print '<td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td></tr>';
+				print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+				print '<select class="flat" id="fk_category" name="fk_category">';
+				print '<option value="0">Select Category</option>';
+				print '</select>';
+				print '</td></tr>';
 
-				// Product Family
-				print '<tr><td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('c_product_subfamily')).'"></td>';
+				// Product sub Category
+				print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+				print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+				print '<option value="0">Select Sub Category</option>';
+				print '</select>';
+				print '</td>';
+				// Model
+				print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+				print '<select class="flat" id="fk_model" name="fk_model">';
+				print '<option value="0">Select Model</option>';
+				print '</select>';
+				print '</td></tr>';
 
+				// Label
+				print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+				print '<select class="flat" id="fk_product" name="fk_product">';
+				print '<option value="0">Select Product</option>';
+				print '</select>';
+				print '</td>';
 				// Ac Capacity
 				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
 
@@ -1767,6 +2052,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
          * Product card
          */
 		// Fiche en mode edition
+
+
 		if ($action == 'edit' && $usercancreate)
 		{
 			//WYSIWYG Editor
@@ -1856,7 +2143,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 							});
                         });
 
-                        
+
                      });
 
                      	function getmodelinfo(id){

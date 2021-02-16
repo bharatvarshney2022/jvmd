@@ -839,7 +839,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
-		$sql  = "SELECT p.rowid as id, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
@@ -910,9 +910,9 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						
 						// Status
 						print '<td class="right">';
-						//print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&id='.$obj->rowid.'&backtopage='.urlencode($backtopage).'">';
+						
 						if($user_group_id == '4'){
-							print '<a class="editfielda paddingleft" href="#">';
+							print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&fk_soc='.$obj->fk_soc.'&custprodid='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
 								print img_edit();
 							print '</a>';
 						}	
