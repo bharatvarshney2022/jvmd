@@ -1173,7 +1173,7 @@ class FormCompany extends Form
 		}
 	}
 
-	public function select_brand($selected = '', $country_codeid = 0, $htmlname = 'family')
+	public function select_brand($selected = '', $country_codeid = 0, $htmlname = 'brand')
 	{
 				// phpcs:enable
 		global $conf, $langs;
@@ -1188,7 +1188,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="brand flat" id="'.$htmlname.'" name="'.$htmlname.'">';
 			print '<option value="0">Select Brand</option>';
 			echo $num = $this->db->num_rows($resql);
 			$i = 0;
@@ -1219,7 +1219,7 @@ class FormCompany extends Form
 		}
 	}
 
-	public function select_family($selected = '', $brand_id = 0, $htmlname = 'family')
+	public function select_family($selected = '', $brand_id = 0, $htmlname = 'category')
 	{
 				// phpcs:enable
 		global $conf, $langs;
@@ -1238,7 +1238,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="flat categorylist" id="'.$htmlname.'" name="'.$htmlname.'">';
 			echo $num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)

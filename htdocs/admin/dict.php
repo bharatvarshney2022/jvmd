@@ -193,8 +193,8 @@ $tablib[42] = "DictionaryProductNature";
 $tablib[43] = "DictionaryCity";
 $tablib[44] = "DictionaryPincode";
 $tablib[45] = "DictionaryProductBrands";
-$tablib[46] = "DictionaryProductFamily";
-$tablib[47] = "DictionaryProductSubFamily";
+$tablib[46] = "DictionaryProductCategory";
+$tablib[47] = "DictionaryProductSubCategory";
 $tablib[48] = "DictionaryProductModel";
 
 // Requests to extract data
@@ -250,9 +250,9 @@ $tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.acti
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_brands";
 $tabsql[46] = "SELECT f.rowid as rowid, f.code, f.nom, f.active, b.nom as brand FROM ".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE f.fk_brand = b.rowid";
 
-$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, sf.active, b.nom as brand, f.nom as family FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE sf.fk_brand = b.rowid AND sf.fk_family = f.rowid ";
+$tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, sf.fk_brand, sf.active, b.nom as brand, sf.fk_family, f.nom as category FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE sf.fk_brand = b.rowid AND sf.fk_family = f.rowid ";
 
-$tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, sf.nom as subfamily, f.nom as family, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
+$tabsql[48] = "SELECT pm.rowid as rowid, pm.code as modelno, pm.nom as name, pm.fk_subfamily, sf.nom as subcategory, pm.fk_family, f.nom as category, pm.fk_brand, b.nom as brand, pm.is_installable, pm.active FROM ".MAIN_DB_PREFIX."c_product_model as pm, ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f,".MAIN_DB_PREFIX."c_brands as b WHERE pm.fk_family = f.rowid and pm.fk_subfamily = sf.rowid AND pm.fk_brand = b.rowid ";
 
 
 // Criteria to sort dictionaries
@@ -354,8 +354,8 @@ $tabfield[43] = "code,libelle,state,region_id,region";
 $tabfield[44] = "code,libelle,city,state";
 $tabfield[45] = "code,nom";
 $tabfield[46] = "brand,code,nom";
-$tabfield[47] = "brand,family,code,label";
-$tabfield[48] = "brand,family,subfamily,modelno,name";
+$tabfield[47] = "brand,category,code,label";
+$tabfield[48] = "brand,category,subcategory,modelno,name";
 
 // Edit field names for editing a record
 $tabfieldvalue = array();
@@ -405,8 +405,8 @@ $tabfieldvalue[43] = "code,libelle,state,region"; //
 $tabfieldvalue[44] = "code,libelle,city,state";
 $tabfieldvalue[45] = "code,nom";
 $tabfieldvalue[46] = "code,nom,brand";
-$tabfieldvalue[47] = "code,label,brand,family";
-$tabfieldvalue[48] = "brand,family,subfamily,modelno,name";
+$tabfieldvalue[47] = "code,label,brand,category";
+$tabfieldvalue[48] = "brand,category,subcategory,modelno,name";
 
 // Field names in the table for inserting a record
 $tabfieldinsert = array();
@@ -1946,20 +1946,87 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			print '</td>';	
 		}elseif ($fieldlist[$field] == 'brand')
 		{
+			
 			print '<td>';
-			$formcompany->select_brand($brand_id, '0' ,'brand');
+			$formcompany->select_brand($obj->fk_brand, '0' ,'brand');
 			print '</td>';	
-		}elseif ($fieldlist[$field] == 'family')
+		}elseif ($fieldlist[$field] == 'category')
 		{
-			//print_r($fieldlist);
+			
+			print '<script type="text/javascript">
+						
+						$(document).ready(function () {
+	                        $("select[name=brand]").change(function() {
+	                        	var brand = $(this).val();
+	                        	
+	                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+								  	$("select[name=category]").html(html)
+									
+									
+								  }
+							});
+	                        });
+	                    });    ';
+	            print '</script>'."\n";  
+			//print_r($obj);
 			print '<td>';
-			$brand_id = (!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:0);
-			$formcompany->select_family($family_id, $brand_id ,'family');
+			if($context == 'add'){
+				print '<select class="flat" id="category" name="category"><option value="">Select Brand</option></select>';
+			}else{
+				$formcompany->select_family($family_id, $obj->fk_brand ,'category');
+			}
 			print '</td>';
-		}elseif ($fieldlist[$field] == 'subfamily')
+		}elseif ($fieldlist[$field] == 'subcategory')
 		{
+			print '<script type="text/javascript">
+						
+						$(document).ready(function () {
+	                        
+	                        $("select[name=brand]").change(function() {
+	                        	var brand = $(this).val();
+	                        	
+	                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+								  	$("select[name=category]").html(html)
+									
+									
+								  }
+								});
+	                        });
+
+	                        $("select[name=category]").change(function() {
+	                        	var category = $(this).val();
+	                        	var brand = $("select[name=brand]").val();
+	                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  //	alert(html);
+								  	$("select[name=subcategory]").html(html)
+									
+									
+								  }
+							});
+	                        });
+	                    });    ';
+	            print '</script>'."\n";  
+	           // print_r($obj);
 			print '<td>';
-			$formcompany->select_subfamily($subfamily_id, '0' ,'subfamily');
+			if($context == 'add'){
+				print '<select class="flat" id="subcategory" name="subcategory"><option value="">Select Category</option></select>';
+			}else{
+				$formcompany->select_subfamily($obj->fk_subfamily, $obj->fk_brand, $obj->fk_family ,'subcategory');
+			}
 			print '</td>';				
 		} elseif ($fieldlist[$field] == 'region_id')
 		{
