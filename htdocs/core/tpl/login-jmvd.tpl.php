@@ -115,6 +115,17 @@ print "<!--begin::Main-->";
 						<!--begin::Signin-->
 						<div class="login-form login-signin py-11">
 							<!--begin::Form-->
+							<?php
+								// Show error message if defined
+								if (!empty($_SESSION['dol_loginmesg']))
+								{
+									?>
+									<div class="alert alert-danger">
+									<?php echo $_SESSION['dol_loginmesg']; ?>
+									</div>
+									<?php
+								}
+							?>
 							<form class="form" novalidate="novalidate" id="kt_login_signin_form login" name="login" method="post" action="<?php echo $php_self; ?>">
 								<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
 								<input type="hidden" name="actionlogin" value="login">
@@ -230,16 +241,7 @@ print "<!--begin::Main-->";
 				<!--end: Aside Container-->
 			</div>
 			<?php
-			// Show error message if defined
-			if (!empty($_SESSION['dol_loginmesg']))
-			{
-				?>
-				<div class="center login_main_message"><div class="error">
-				<?php echo $_SESSION['dol_loginmesg']; ?>
-				</div></div>
-				<?php
-			}
-
+			
 			// Add commit strip
 			if (!empty($conf->global->MAIN_EASTER_EGG_COMMITSTRIP)) {
 				include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
@@ -328,24 +330,31 @@ print "<!--begin::Main-->";
 				}
 			}
 			?>
-			
+
 			<!--begin::Aside-->
 			<!--begin::Content-->
 			<div class="content order-1 order-lg-2 d-flex flex-column w-100 pb-0" style="background-color: #B1DCED;">
 				<!--begin::Title-->
-				<div class="d-flex flex-column justify-content-center text-center pt-lg-40 pt-md-5 pt-sm-5 px-lg-0 pt-5 px-7">
+				<div class="d-flex flex-column justify-content-center text-center pt-md-5 pt-sm-5 px-lg-0 pt-5 px-7">
 					<h3 class="display4 font-weight-bolder my-7 text-dark" style="color: #986923;">JMVD Group</h3>
 					<p class="font-weight-bolder font-size-h2-md font-size-lg text-dark opacity-70">A Climate Control Company</p>
 				</div>
 				<!--end::Title-->
 				<!--begin::Image-->
-					<div class="content-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/login-visual-2.svg")></div>
+					<div class="content-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/new-login-visual-2.svg');")></div>
 				<!--end::Image-->
 			</div>
 			<!--end::Content-->
 		</div>
 		<!--end::Login-->
 	</div>
+
+	<!--begin::Global Theme Bundle(used by all pages)-->
+	<script src="<?php echo DOL_URL_ROOT.'/theme/oblyon'; ?>/js/plugins.bundle.js?v=7.2.0"></script>
+	<script src="<?php echo DOL_URL_ROOT.'/theme/oblyon'; ?>/prismjs.bundle.js?v=7.2.0"></script>
+	<script src="<?php echo DOL_URL_ROOT.'/theme/oblyon'; ?>/scripts.bundle.js?v=7.2.0"></script>
+	<!--end::Global Theme Bundle-->
+
 	</body>
 	<!--end::Body-->
 </html>
