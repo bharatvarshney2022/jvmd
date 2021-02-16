@@ -31,7 +31,8 @@
  */
 
 if (!defined('DOL_APPLICATION_TITLE')) define('DOL_APPLICATION_TITLE', 'JMVD');
-if (!defined('DOL_VERSION')) define('DOL_VERSION', '13.0.0'); // a.b.c-alpha, a.b.c-beta, a.b.c-rcX or a.b.c
+if (!defined('DOL_VERSION')) define('DOL_VERSION', ''); // a.b.c-alpha, a.b.c-beta, a.b.c-rcX or a.b.c
+if (!defined('THEME_VERSION')) define('THEME_VERSION', '7.2.0'); // a.b.c-alpha, a.b.c-beta, a.b.c-rcX or a.b.c
 
 if (!defined('EURO')) define('EURO', chr(128));
 

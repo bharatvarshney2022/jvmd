@@ -1553,7 +1553,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 					foreach ($filesjs as $jsfile)
 					{
 						// jsfile is a relative path
-						print '<!-- Include JS added by module '.$modjs.'-->'."\n".'<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
+						print '<!-- Include JS added by module '.$modjs.'-->'."\n";
+						print '<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
 					}
 				}
 			}
@@ -1593,7 +1594,7 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 
 	top_httphead();
 
-	if (empty($conf->css)) $conf->css = '/theme/md/style.css.php'; // If not defined, eldy by default
+	if (empty($conf->css)) $conf->css = '/theme/oblyon/style.css.php'; // If not defined, eldy by default
 	
 	print '<!doctype html>'."\n";
 
@@ -1605,7 +1606,7 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 		if (!is_object($hookmanager)) $hookmanager = new HookManager($db);
 		$hookmanager->initHooks(array("main"));
 
-		$ext = 'layout='.$conf->browser->layout.'&amp;version='.urlencode(DOL_VERSION);
+		$ext = 'layout='.$conf->browser->layout.'&amp;version='.urlencode(THEME_VERSION);
 
 		print "	<!--begin::Head-->\n";
 
@@ -1673,7 +1674,19 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 		print "\n\n";
 
 		print "		<!--begin::Page Custom Styles(used by this page)-->\n";
-		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/md/css/login-3.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/login-2.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<!--end::Page Custom Styles-->
+		<!--begin::Global Theme Styles(used by all pages)-->'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/plugins.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/prismjs.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/style.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<!--end::Global Theme Styles-->'."\n";
+		print '		<!--begin::Layout Themes(used by all pages)-->'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/base/light.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/menu/light.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/brand/dark.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/aside/dark.css'.($ext ? '?'.$ext : '').'">'."\n";
+
 		//print_r($themepath); exit;
 
 		if (GETPOST('version', 'int')) $ext = 'version='.GETPOST('version', 'int'); // usefull to force no cache on css/js
@@ -1692,27 +1705,26 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 
 		if (!defined('DISABLE_JQUERY') && !$disablejs && $conf->use_javascript_ajax)
 		{
-			print '		<!-- Includes CSS for JQuery (Ajax library) -->'."\n";
+			print '		<!-- Includes CSS for JQuery (Ajax library) -->'."\n\n";
 			$jquerytheme = 'base';
 			if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
-			if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // Forced JQuery
-			else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui.css'.($ext ? '?'.$ext : '').'">'."\n"; // JQuery
-			if (!defined('DISABLE_JQUERY_JNOTIFY')) print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // JNotify
+			if (constant('JS_JQUERY_UI')) print '		<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // Forced JQuery
+			else print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui.css'.($ext ? '?'.$ext : '').'">'."\n"; // JQuery
+			if (!defined('DISABLE_JQUERY_JNOTIFY')) print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // JNotify
 			if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT')))     // jQuery plugin "mutiselect", "multiple-select", "select2"...
 			{
 				$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
-				print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/css/'.$tmpplugin.'.css'.($ext ? '?'.$ext : '').'">'."\n";
+				print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/css/'.$tmpplugin.'.css'.($ext ? '?'.$ext : '').'">'."\n\n";
 			}
 		}
 
 		if (!defined('DISABLE_FONT_AWSOME'))
 		{
-			print '<!-- Includes CSS for font awesome -->'."\n";
-			print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/all.min.css'.($ext ? '?'.$ext : '').'">'."\n";
-			print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/v4-shims.min.css'.($ext ? '?'.$ext : '').'">'."\n";
+			print '		<!-- Includes CSS for font awesome -->'."\n";
+			print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/all.min.css'.($ext ? '?'.$ext : '').'">'."\n";
+			print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/v4-shims.min.css'.($ext ? '?'.$ext : '').'">'."\n\n";
 		}
 
-		print '<!-- Includes CSS for JMVD theme -->'."\n";
 		// Output style sheets (optioncss='print' or ''). Note: $conf->css looks like '/theme/eldy/style.css.php'
 		$themepath = dol_buildpath($conf->css, 1);
 		$themesubdir = '';
@@ -1730,7 +1742,6 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 		}
 
 		//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
-		print '<link rel="stylesheet" type="text/css" href="'.$themepath.$themeparam.'">'."\n";
 		if (!empty($conf->global->MAIN_FIX_FLASH_ON_CHROME)) print '<!-- Includes CSS that does not exists as a workaround of flash bug of chrome -->'."\n".'<link rel="stylesheet" type="text/css" href="filethatdoesnotexiststosolvechromeflashbug">'."\n";
 
 		// CSS forced by modules (relative url starting with /)
@@ -1765,32 +1776,33 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 				print '<!-- Includes CSS added by page -->'."\n".'<link rel="stylesheet" type="text/css" title="default" href="'.$urltofile;
 				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
 				if (!preg_match('/\.css$/i', $cssfile)) print $themeparam;
-				print '">'."\n";
+				print '">'."\n\n";
 			}
 		}
 
+		// LOGIN PAGE
 		// Output standard javascript links
 		if (!defined('DISABLE_JQUERY') && !$disablejs && !empty($conf->use_javascript_ajax))
 		{
 			// JQuery. Must be before other includes
-			print '<!-- Includes JS for JQuery -->'."\n";
-			if (defined('JS_JQUERY') && constant('JS_JQUERY')) print '<script src="'.JS_JQUERY.'jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-			else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			print '		<!-- Includes JS for JQuery -->'."\n";
+			if (defined('JS_JQUERY') && constant('JS_JQUERY')) print '		<script src="'.JS_JQUERY.'jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			else print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
 			/*if (! empty($conf->global->MAIN_FEATURES_LEVEL) && ! defined('JS_JQUERY_MIGRATE_DISABLED'))
 			{
 				if (defined('JS_JQUERY_MIGRATE') && constant('JS_JQUERY_MIGRATE')) print '<script src="'.JS_JQUERY_MIGRATE.'jquery-migrate.min.js'.($ext?'?'.$ext:'').'"></script>'."\n";
 				else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-migrate.min.js'.($ext?'?'.$ext:'').'"></script>'."\n";
 			}*/
-			if (defined('JS_JQUERY_UI') && constant('JS_JQUERY_UI')) print '<script src="'.JS_JQUERY_UI.'jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-			else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-			if (!defined('DISABLE_JQUERY_TABLEDND')) print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tablednd/jquery.tablednd.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			if (defined('JS_JQUERY_UI') && constant('JS_JQUERY_UI')) print '		<script src="'.JS_JQUERY_UI.'jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			else print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			if (!defined('DISABLE_JQUERY_TABLEDND')) print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tablednd/jquery.tablednd.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
 			// jQuery jnotify
 			if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && !defined('DISABLE_JQUERY_JNOTIFY')) {
-				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
 			}
 			// Chart
 			if (empty($conf->global->MAIN_JS_GRAPH) || $conf->global->MAIN_JS_GRAPH == 'chart') {
-				print '<script src="'.DOL_URL_ROOT.'/includes/nnnick/chartjs/dist/Chart.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '		<script src="'.DOL_URL_ROOT.'/includes/nnnick/chartjs/dist/Chart.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
 			}
 
 			// jQuery jeditable for Edit In Place features
@@ -1820,11 +1832,11 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 			if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT'))) {
 				// jQuery plugin "mutiselect", "multiple-select", "select2", ...
 				$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
-				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/js/'.$tmpplugin.'.full.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n"; // We include full because we need the support of containerCssClass
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/js/'.$tmpplugin.'.full.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n"; // We include full because we need the support of containerCssClass
 			}
 			if (!defined('DISABLE_MULTISELECT'))     // jQuery plugin "mutiselect" to select with checkboxes. Can be removed once we have an enhanced search tool
 			{
-				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/jquery.multi-select.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/jquery.multi-select.js'.($ext ? '?'.$ext : '').'"></script>'."\n\n";
 			}
 		}
 
@@ -1832,28 +1844,28 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 			// CKEditor
 			if ((!empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor') && !defined('DISABLE_CKEDITOR')) || defined('FORCE_CKEDITOR'))
 			{
-				print '<!-- Includes JS for CKEditor -->'."\n";
+				print '		<!-- Includes JS for CKEditor -->'."\n";
 				$pathckeditor = DOL_URL_ROOT.'/includes/ckeditor/ckeditor/';
 				$jsckeditor = 'ckeditor.js';
 				if (constant('JS_CKEDITOR')) {
 					// To use external ckeditor 4 js lib
 					$pathckeditor = constant('JS_CKEDITOR');
 				}
-				print '<script><!-- enable ckeditor by main.inc.php -->';
-				print 'var CKEDITOR_BASEPATH = \''.$pathckeditor.'\';'."\n";
-				print 'var ckeditorConfig = \''.dol_buildpath($themesubdir.'/theme/'.$conf->theme.'/ckeditor/config.js'.($ext ? '?'.$ext : ''), 1).'\';'."\n"; // $themesubdir='' in standard usage
-				print 'var ckeditorFilebrowserBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
-				print 'var ckeditorFilebrowserImageBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Type=Image&Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
-				print '</script>'."\n";
-				print '<script src="'.$pathckeditor.$jsckeditor.($ext ? '?'.$ext : '').'"></script>'."\n";
-				print '<script>';
+				print '		<script>'."\n";
+				print '			var CKEDITOR_BASEPATH = \''.$pathckeditor.'\';'."\n";
+				print '			var ckeditorConfig = \''.dol_buildpath($themesubdir.'/theme/'.$conf->theme.'/ckeditor/config.js'.($ext ? '?'.$ext : ''), 1).'\';'."\n"; // $themesubdir='' in standard usage
+				print '			var ckeditorFilebrowserBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
+				print '			var ckeditorFilebrowserImageBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Type=Image&Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
+				print '		</script>'."\n";
+				print '		<script src="'.$pathckeditor.$jsckeditor.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '		<script>'."\n";
 				if (GETPOST('mode', 'aZ09') == 'Full_inline')
 				{
 					print 'CKEDITOR.disableAutoInline = false;'."\n";
 				} else {
-					print 'CKEDITOR.disableAutoInline = true;'."\n";
+					print '			CKEDITOR.disableAutoInline = true;'."\n";
 				}
-				print '</script>'."\n";
+				print '		</script>'."\n\n";
 			}
 
 			// Browser notifications (if NOREQUIREMENU is on, it is mostly a page for popup, so we do not enable notif too. We hide also for public pages).
@@ -1870,8 +1882,8 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 			}
 
 			// Global js function
-			print '<!-- Includes JS of JMVD -->'."\n";
-			print '<script src="'.DOL_URL_ROOT.'/core/js/lib_head.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n";
+			print '		<!-- Includes JS of JMVD -->'."\n";
+			print '		<script src="'.DOL_URL_ROOT.'/core/js/lib_head.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n\n";
 
 			// JS forced by modules (relative url starting with /)
 			if (!empty($conf->modules_parts['js']))		// $conf->modules_parts['js'] is array('module'=>array('file1','file2'))
@@ -1883,34 +1895,40 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 					foreach ($filesjs as $jsfile)
 					{
 						// jsfile is a relative path
-						print '<!-- Include JS added by module '.$modjs.'-->'."\n".'<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
+						print '		<!-- Include JS added by module '.$modjs.'-->'."\n";
+						print '		<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n\n";
 					}
 				}
 			}
 			// JS forced by page in top_htmlhead (relative url starting with /)
 			if (is_array($arrayofjs))
 			{
-				print '<!-- Includes JS added by page -->'."\n";
+				print '		<!-- Includes JS added by page -->'."\n";
 				foreach ($arrayofjs as $jsfile)
 				{
 					if (preg_match('/^(http|\/\/)/i', $jsfile))
 					{
-						print '<script src="'.$jsfile.'"></script>'."\n";
+						print '		<script src="'.$jsfile.'"></script>'."\n";
 					} else {
-						print '<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
+						print '		<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
 					}
 				}
 			}
 		}
+		print "\n";
 
-		if (!empty($head)) print $head."\n";
-		if (!empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER."\n";
+
+		
+		if (!empty($head)) print $head;
+		if (!empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER;
 
 		$parameters = array();
 		$result = $hookmanager->executeHooks('addHtmlHeader', $parameters); // Note that $action and $object may have been modified by some hooks
 		print $hookmanager->resPrint; // Replace Title to show
 
-		print "</head>\n\n";
+		print "	</head>\n";
+		print "	<!--end::Head-->
+	<!--begin::Body-->";
 	}
 
 	$conf->headerdone = 1; // To tell header was output

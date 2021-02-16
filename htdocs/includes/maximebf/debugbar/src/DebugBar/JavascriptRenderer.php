@@ -906,19 +906,19 @@ class JavascriptRenderer
         $html = '';
 
         foreach ($cssFiles as $file) {
-            $html .= sprintf('<link rel="stylesheet" type="text/css" href="%s">' . "\n", $file);
+            $html .= sprintf('        <link rel="stylesheet" type="text/css" href="%s">' . "\n", $file);
         }
 
         foreach ($inlineCss as $content) {
-            $html .= sprintf('<style type="text/css">%s</style>' . "\n", $content);
+            $html .= sprintf('        <style type="text/css">%s</style>' . "\n", $content);
         }
 
         foreach ($jsFiles as $file) {
-            $html .= sprintf('<script type="text/javascript" src="%s"></script>' . "\n", $file);
+            $html .= sprintf('        <script type="text/javascript" src="%s"></script>' . "\n", $file);
         }
 
         foreach ($inlineJs as $content) {
-            $html .= sprintf('<script type="text/javascript">%s</script>' . "\n", $content);
+            $html .= sprintf('        <script type="text/javascript">%s</script>' . "\n", $content);
         }
 
         foreach ($inlineHead as $content) {
@@ -926,7 +926,7 @@ class JavascriptRenderer
         }
 
         if ($this->enableJqueryNoConflict && !$this->useRequireJs) {
-            $html .= '<script type="text/javascript">jQuery.noConflict(true);</script>' . "\n";
+            $html .= '        <script type="text/javascript">jQuery.noConflict(true);</script>' . "\n";
         }
 
         return $html;

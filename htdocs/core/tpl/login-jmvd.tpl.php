@@ -72,7 +72,7 @@ if (!isset($conf->global->THEME_ELDY_TOPMENU_BACK1)) $conf->global->THEME_ELDY_T
 $colorbackhmenu1 = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->global->THEME_ELDY_TOPMENU_BACK1) ? $colorbackhmenu1 : $conf->global->THEME_ELDY_TOPMENU_BACK1) : (empty($user->conf->THEME_ELDY_TOPMENU_BACK1) ? $colorbackhmenu1 : $user->conf->THEME_ELDY_TOPMENU_BACK1);
 $colorbackhmenu1 = join(',', colorStringToArray($colorbackhmenu1)); // Normalize value to 'x,y,z'
 
-print "<!-- BEGIN PHP TEMPLATE LOGIN.TPL.PHP -->\n";
+print "\n\n 	<!-- BEGIN PHP TEMPLATE LOGIN-JMVD.TPL.PHP -->\n";
 
 if (!empty($conf->global->ADD_UNSPLASH_LOGIN_BACKGROUND)) {
 	// For example $conf->global->ADD_UNSPLASH_LOGIN_BACKGROUND = 'https://source.unsplash.com/random'
@@ -81,314 +81,256 @@ if (!empty($conf->global->ADD_UNSPLASH_LOGIN_BACKGROUND)) {
 	<?php
 } else {
 	?>
-	<body class="body bodylogin"<?php print empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file=logos/'.urlencode($conf->global->MAIN_LOGIN_BACKGROUND).'\')"'; ?>>
+	<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading"<?php print empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file=logos/'.urlencode($conf->global->MAIN_LOGIN_BACKGROUND).'\')"'; ?>>
 	<?php
 }
+
+print "<!--begin::Main-->";
 ?>
+
+
 
 <?php if (empty($conf->dol_use_jmobile)) { ?>
-<script>
-$(document).ready(function () {
-	/* Set focus on correct field */
-	<?php if ($focus_element) { ?>$('#<?php echo $focus_element; ?>').focus(); <?php } ?>		// Warning to use this only on visible element
-});
-</script>
+	<script>
+	$(document).ready(function () {
+		<?php if ($focus_element) { ?>$('#<?php echo $focus_element; ?>').focus(); <?php } ?>		// Warning to use this only on visible element
+	});
+	</script>
 <?php } ?>
 
-<div class="login_center center"<?php print empty($conf->global->MAIN_LOGIN_BACKGROUND) ? ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: linear-gradient(rgb('.$colorbackhmenu1.',0.3), rgb(240,240,240));"' : '' ?>>
-<div class="login_vertical_align">
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Login-->
+		<div class="login login-2 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" id="kt_login">
+			<!--begin::Aside-->
+			<div class="login-aside order-2 order-lg-1 d-flex flex-row-auto position-relative overflow-hidden">
+				<!--begin: Aside Container-->
+				<div class="d-flex flex-column-fluid flex-column justify-content-between py-9 px-7 py-lg-13 px-lg-35">
+					<!--begin::Logo-->
+					<a href="#" class="text-center pt-2">
+						<img src="<?php echo $urllogo; ?>" class="max-h-75px" alt="" />
+					</a>
+					<!--end::Logo-->
+					<!--begin::Aside body-->
+					<div class="d-flex flex-column-fluid flex-column flex-center">
+						<!--begin::Signin-->
+						<div class="login-form login-signin py-11">
+							<!--begin::Form-->
+							<form class="form" novalidate="novalidate" id="kt_login_signin_form login" name="login" method="post" action="<?php echo $php_self; ?>">
+								<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
+								<input type="hidden" name="actionlogin" value="login">
+								<input type="hidden" name="loginfunction" value="loginfunction" />
+								<!-- Add fields to send local user information -->
+								<input type="hidden" name="tz" id="tz" value="" />
+								<input type="hidden" name="tz_string" id="tz_string" value="" />
+								<input type="hidden" name="dst_observed" id="dst_observed" value="" />
+								<input type="hidden" name="dst_first" id="dst_first" value="" />
+								<input type="hidden" name="dst_second" id="dst_second" value="" />
+								<input type="hidden" name="screenwidth" id="screenwidth" value="" />
+								<input type="hidden" name="screenheight" id="screenheight" value="" />
+								<input type="hidden" name="dol_hide_topmenu" id="dol_hide_topmenu" value="<?php echo $dol_hide_topmenu; ?>" />
+								<input type="hidden" name="dol_hide_leftmenu" id="dol_hide_leftmenu" value="<?php echo $dol_hide_leftmenu; ?>" />
+								<input type="hidden" name="dol_optimize_smallscreen" id="dol_optimize_smallscreen" value="<?php echo $dol_optimize_smallscreen; ?>" />
+								<input type="hidden" name="dol_no_mouse_hover" id="dol_no_mouse_hover" value="<?php echo $dol_no_mouse_hover; ?>" />
+								<input type="hidden" name="dol_use_jmobile" id="dol_use_jmobile" value="<?php echo $dol_use_jmobile; ?>" />
 
-<form id="login" name="login" method="post" action="<?php echo $php_self; ?>">
-<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
-<input type="hidden" name="actionlogin" value="login">
-<input type="hidden" name="loginfunction" value="loginfunction" />
-<!-- Add fields to send local user information -->
-<input type="hidden" name="tz" id="tz" value="" />
-<input type="hidden" name="tz_string" id="tz_string" value="" />
-<input type="hidden" name="dst_observed" id="dst_observed" value="" />
-<input type="hidden" name="dst_first" id="dst_first" value="" />
-<input type="hidden" name="dst_second" id="dst_second" value="" />
-<input type="hidden" name="screenwidth" id="screenwidth" value="" />
-<input type="hidden" name="screenheight" id="screenheight" value="" />
-<input type="hidden" name="dol_hide_topmenu" id="dol_hide_topmenu" value="<?php echo $dol_hide_topmenu; ?>" />
-<input type="hidden" name="dol_hide_leftmenu" id="dol_hide_leftmenu" value="<?php echo $dol_hide_leftmenu; ?>" />
-<input type="hidden" name="dol_optimize_smallscreen" id="dol_optimize_smallscreen" value="<?php echo $dol_optimize_smallscreen; ?>" />
-<input type="hidden" name="dol_no_mouse_hover" id="dol_no_mouse_hover" value="<?php echo $dol_no_mouse_hover; ?>" />
-<input type="hidden" name="dol_use_jmobile" id="dol_use_jmobile" value="<?php echo $dol_use_jmobile; ?>" />
+								<!--begin::Title-->
+								<div class="text-center pb-8">
+									<h2 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Sign In</h2>
+									
+								</div>
+								<!--end::Title-->
+								<!--begin::Form group-->
+								<div class="form-group">
+									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $langs->trans("Login"); ?></label>
+									<input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="text" id="username" name="username" autocomplete="off" value="<?php echo dol_escape_htmltag($login); ?>" placeholder="<?php echo $langs->trans("Login"); ?>"  />
+								</div>
+								<!--end::Form group-->
+								<!--begin::Form group-->
+								<div class="form-group">
+									<div class="d-flex justify-content-between mt-n5">
+										<label class="font-size-h6 font-weight-bolder text-dark pt-5"><?php echo $langs->trans("Password"); ?></label>
+										<?php
+											if ($forgetpasslink || $helpcenterlink)
+											{
+												$moreparam = '';
+												if ($dol_hide_topmenu)   $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_topmenu='.$dol_hide_topmenu;
+												if ($dol_hide_leftmenu)  $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_leftmenu='.$dol_hide_leftmenu;
+												if ($dol_no_mouse_hover) $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_no_mouse_hover='.$dol_no_mouse_hover;
+												if ($dol_use_jmobile)    $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_use_jmobile='.$dol_use_jmobile;
 
+												if ($forgetpasslink) {
+													$url = DOL_URL_ROOT.'/user/passwordforgotten.php'.$moreparam;
+													if (!empty($conf->global->MAIN_PASSWORD_FORGOTLINK)) $url = $conf->global->MAIN_PASSWORD_FORGOTLINK;
+													echo '<a class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5" href="'.dol_escape_htmltag($url).'">';
+													echo $langs->trans('PasswordForgotten');
+													echo '</a>';
+												}
+											}
+										?>
+									</div>
+									<input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="password" id="password" placeholder="<?php echo $langs->trans("Password"); ?>" value="<?php echo dol_escape_htmltag($password); ?>" name="password" autocomplete="off" />
+								</div>
+								<!--end::Form group-->
 
+								<?php
+								if ($captcha) {
+									// Add a variable param to force not using cache (jmobile)
+									$php_self = preg_replace('/[&\?]time=(\d+)/', '', $php_self); // Remove param time
+									if (preg_match('/\?/', $php_self)) $php_self .= '&time='.dol_print_date(dol_now(), 'dayhourlog');
+									else $php_self .= '?time='.dol_print_date(dol_now(), 'dayhourlog');
+									// TODO: provide accessible captcha variants
+									?>
+									<!-- Captcha -->
+									<div class="form-group">
+										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $langs->trans("SecurityCode"); ?></label>
 
-<!-- Title with version -->
-<div class="login_table_title center" title="<?php echo dol_escape_htmltag($title); ?>">
-<?php
-/*if ($disablenofollow) echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank">';
-echo dol_escape_htmltag($title);
-if ($disablenofollow) echo '</a>';*/
-?>
-</div>
+										<input id="securitycode" placeholder="<?php echo $langs->trans("SecurityCode"); ?>" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="text" maxlength="5" name="code" />
 
+										<div class="nowrap inline-block pt-5">
+											<img class="inline-block valignmiddle" src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" id="img_securitycode" />
+											<a class="inline-block valignmiddle" href="<?php echo $php_self; ?>" tabindex="4" data-role="button"><?php echo $captcha_refresh; ?></a>
+										</div>
+									</div>
+									<?php
+								}
 
+								if (!empty($morelogincontent)) {
+									if (is_array($morelogincontent)) {
+										foreach ($morelogincontent as $format => $option)
+										{
+											if ($format == 'table') {
+												echo '<!-- Option by hook -->';
+												echo $option;
+											}
+										}
+									} else {
+										echo '<!-- Option by hook -->';
+										echo $morelogincontent;
+									}
+								}
+							?>
 
-<div class="login_table">
+							<!--begin::Action-->
+							<div class="text-center pt-2">
+								<button id="kt_login_signin_submit" type="submit" class="btn btn-dark font-weight-bolder font-size-h6 px-8 py-4 my-3">Sign In</button>
+							</div>
+							<!--end::Action-->
+						</form>
+						<!--end::Form-->
+					</div>
+					<!--end::Signin-->
+				</div>
+				<!--end::Aside body-->
+				<!--begin: Aside footer for desktop-->
+				<div class="text-center">
+					
+				</div>
+				<!--end: Aside footer for desktop-->
+			</div>
+			<!--end: Aside Container-->
+		</div>
 
-<div id="login_line1">
-
-<div id="login_left">
-<img alt="" src="<?php echo $urllogo; ?>" id="img_logo" />
-</div>
-
-<br>
-
-<div id="login_right">
-
-<div class="tagtable left centpercent" title="<?php echo $langs->trans("EnterLoginDetail"); ?>">
-
-<!-- Login -->
-<div class="trinputlogin">
-<div class="tagtd nowraponall center valignmiddle tdinputlogin">
-<?php if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) { ?><label for="username" class="hidden"><?php echo $langs->trans("Login"); ?></label><?php } ?>
-<!-- <span class="span-icon-user">-->
-<span class="fa fa-user"></span>
-<input type="text" id="username" placeholder="<?php echo $langs->trans("Login"); ?>" name="username" class="flat input-icon-user minwidth150" value="<?php echo dol_escape_htmltag($login); ?>" tabindex="1" autofocus="autofocus" />
-</div>
-</div>
-
-<!-- Password -->
-<div class="trinputlogin">
-<div class="tagtd nowraponall center valignmiddle tdinputlogin">
-<?php if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) { ?><label for="password" class="hidden"><?php echo $langs->trans("Password"); ?></label><?php } ?>
-<!--<span class="span-icon-password">-->
-<span class="fa fa-key"></span>
-<input id="password" placeholder="<?php echo $langs->trans("Password"); ?>" name="password" class="flat input-icon-password minwidth150" type="password" value="<?php echo dol_escape_htmltag($password); ?>" tabindex="2" autocomplete="<?php echo empty($conf->global->MAIN_LOGIN_ENABLE_PASSWORD_AUTOCOMPLETE) ? 'off' : 'on'; ?>" />
-</div></div>
-
-<?php
-if ($captcha) {
-	// Add a variable param to force not using cache (jmobile)
-	$php_self = preg_replace('/[&\?]time=(\d+)/', '', $php_self); // Remove param time
-	if (preg_match('/\?/', $php_self)) $php_self .= '&time='.dol_print_date(dol_now(), 'dayhourlog');
-	else $php_self .= '?time='.dol_print_date(dol_now(), 'dayhourlog');
-	// TODO: provide accessible captcha variants
-	?>
-	<!-- Captcha -->
-	<div class="trinputlogin">
-	<div class="tagtd none valignmiddle tdinputlogin">
-
-	<span class="fa fa-unlock"></span>
-	<span class="span-icon-security inline-block">
-	<input id="securitycode" placeholder="<?php echo $langs->trans("SecurityCode"); ?>" class="flat input-icon-security width150" type="text" maxlength="5" name="code" tabindex="3" />
-	</span>
-	<span class="nowrap inline-block">
-	<img class="inline-block valignmiddle" src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" id="img_securitycode" />
-	<a class="inline-block valignmiddle" href="<?php echo $php_self; ?>" tabindex="4" data-role="button"><?php echo $captcha_refresh; ?></a>
-	</span>
-
-	</div></div>
-	<?php
-}
-
-if (!empty($morelogincontent)) {
-	if (is_array($morelogincontent)) {
-		foreach ($morelogincontent as $format => $option)
+		<?php
+		// Show error message if defined
+		if (!empty($_SESSION['dol_loginmesg']))
 		{
-			if ($format == 'table') {
-				echo '<!-- Option by hook -->';
-				echo $option;
+			?>
+			<div class="center login_main_message"><div class="error">
+			<?php echo $_SESSION['dol_loginmesg']; ?>
+			</div></div>
+			<?php
+		}
+
+		// Add commit strip
+		if (!empty($conf->global->MAIN_EASTER_EGG_COMMITSTRIP)) {
+			include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+			if (substr($langs->defaultlang, 0, 2) == 'fr') {
+				$resgetcommitstrip = getURLContent("https://www.commitstrip.com/fr/feed/");
+			} else {
+				$resgetcommitstrip = getURLContent("https://www.commitstrip.com/en/feed/");
+			}
+			if ($resgetcommitstrip && $resgetcommitstrip['http_code'] == '200')
+			{
+				$xml = simplexml_load_string($resgetcommitstrip['content']);
+				$little = $xml->channel->item[0]->children('content', true);
+				print preg_replace('/width="650" height="658"/', '', $little->encoded);
 			}
 		}
-	} else {
-		echo '<!-- Option by hook -->';
-		echo $morelogincontent;
-	}
-}
 
-?>
-
-</div>
-
-</div> <!-- end div login_right -->
-
-</div> <!-- end div login_line1 -->
-
-
-<div id="login_line2" style="clear: both">
-
-<!-- Button Connection -->
-<br>
-<div id="login-submit-wrapper">
-<input type="submit" class="button" value="&nbsp; <?php echo $langs->trans('Connection'); ?> &nbsp;" tabindex="5" />
-</div>
-
-<?php
-if ($forgetpasslink || $helpcenterlink)
-{
-	$moreparam = '';
-	if ($dol_hide_topmenu)   $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_topmenu='.$dol_hide_topmenu;
-	if ($dol_hide_leftmenu)  $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_leftmenu='.$dol_hide_leftmenu;
-	if ($dol_no_mouse_hover) $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_no_mouse_hover='.$dol_no_mouse_hover;
-	if ($dol_use_jmobile)    $moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_use_jmobile='.$dol_use_jmobile;
-
-	echo '<br>';
-	echo '<div class="center" style="margin-top: 5px;">';
-	if ($forgetpasslink) {
-		$url = DOL_URL_ROOT.'/user/passwordforgotten.php'.$moreparam;
-		if (!empty($conf->global->MAIN_PASSWORD_FORGOTLINK)) $url = $conf->global->MAIN_PASSWORD_FORGOTLINK;
-		echo '<a class="alogin" href="'.dol_escape_htmltag($url).'">';
-		echo $langs->trans('PasswordForgotten');
-		echo '</a>';
-	}
-
-	if ($forgetpasslink && $helpcenterlink) echo '&nbsp;-&nbsp;';
-
-	if ($helpcenterlink) {
-		$url = DOL_URL_ROOT.'/support/index.php'.$moreparam;
-		if (!empty($conf->global->MAIN_HELPCENTER_LINKTOUSE)) $url = $conf->global->MAIN_HELPCENTER_LINKTOUSE;
-		echo '<a class="alogin" href="'.dol_escape_htmltag($url).'" target="_blank">';
-		echo $langs->trans('NeedHelpCenter');
-		echo '</a>';
-	}
-	echo '</div>';
-}
-
-if (isset($conf->file->main_authentication) && preg_match('/openid/', $conf->file->main_authentication))
-{
-	$langs->load("users");
-
-	//if (! empty($conf->global->MAIN_OPENIDURL_PERUSER)) $url=
-	echo '<br>';
-	echo '<div class="center" style="margin-top: 4px;">';
-
-	$url = $conf->global->MAIN_AUTHENTICATION_OPENID_URL;
-	if (!empty($url)) print '<a class="alogin" href="'.$url.'">'.$langs->trans("LoginUsingOpenID").'</a>';
-	else {
-		$langs->load("errors");
-		print '<font class="warning">'.$langs->trans("ErrorOpenIDSetupNotComplete", 'MAIN_AUTHENTICATION_OPENID_URL').'</font>';
-	}
-
-	echo '</div>';
-}
-
-
-?>
-
-</div> <!-- end login line 2 -->
-
-</div> <!-- end login table -->
-
-
-</form>
-
-
-<?php
-// Show error message if defined
-if (!empty($_SESSION['dol_loginmesg']))
-{
-	?>
-	<div class="center login_main_message"><div class="error">
-	<?php echo $_SESSION['dol_loginmesg']; ?>
-	</div></div>
-	<?php
-}
-
-// Add commit strip
-if (!empty($conf->global->MAIN_EASTER_EGG_COMMITSTRIP)) {
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-	if (substr($langs->defaultlang, 0, 2) == 'fr') {
-		$resgetcommitstrip = getURLContent("https://www.commitstrip.com/fr/feed/");
-	} else {
-		$resgetcommitstrip = getURLContent("https://www.commitstrip.com/en/feed/");
-	}
-	if ($resgetcommitstrip && $resgetcommitstrip['http_code'] == '200')
-	{
-		$xml = simplexml_load_string($resgetcommitstrip['content']);
-		$little = $xml->channel->item[0]->children('content', true);
-		print preg_replace('/width="650" height="658"/', '', $little->encoded);
-	}
-}
-
-?>
-
-<?php if ($main_home)
-{
-	?>
-	<div class="center login_main_home paddingtopbottom <?php echo empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' backgroundsemitransparent'; ?>" style="max-width: 70%">
-	<?php echo $main_home; ?>
-	</div><br>
-	<?php
-}
-?>
-
-<!-- authentication mode = <?php echo $main_authentication ?> -->
-<!-- cookie name used for this session = <?php echo $session_name ?> -->
-<!-- urlfrom in this session = <?php echo isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : ''; ?> -->
-
-<!-- Common footer is not used for login page, this is same than footer but inside login tpl -->
-
-<?php
-if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER;
-
-if (!empty($morelogincontent) && is_array($morelogincontent)) {
-	foreach ($morelogincontent as $format => $option)
-	{
-		if ($format == 'js') {
-			echo "\n".'<!-- Javascript by hook -->';
-			echo $option."\n";
-		}
-	}
-} elseif (!empty($moreloginextracontent)) {
-	echo '<!-- Javascript by hook -->';
-	echo $moreloginextracontent;
-}
-
-// Google Analytics
-// TODO Add a hook here
-if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AN_ID))
-{
-	$tmptagarray = explode(',', $conf->global->MAIN_GOOGLE_AN_ID);
-	foreach ($tmptagarray as $tmptag) {
-		print "\n";
-		print "<!-- JS CODE TO ENABLE for google analtics tag -->\n";
-		print "
-					<!-- Global site tag (gtag.js) - Google Analytics -->
-					<script async src=\"https://www.googletagmanager.com/gtag/js?id=".trim($tmptag)."\"></script>
-					<script>
-					window.dataLayer = window.dataLayer || [];
-					function gtag(){dataLayer.push(arguments);}
-					gtag('js', new Date());
-
-					gtag('config', '".trim($tmptag)."');
-					</script>";
-		print "\n";
-	}
-}
-
-// TODO Replace this with a hook
-// Google Adsense (need Google module)
-if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT))
-{
-	if (empty($conf->dol_use_jmobile))
-	{
 		?>
-	<div class="center"><br>
-		<script><!--
-			google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
-			google_ad_slot = "<?php echo $conf->global->MAIN_GOOGLE_AD_SLOT ?>";
-			google_ad_width = <?php echo $conf->global->MAIN_GOOGLE_AD_WIDTH ?>;
-			google_ad_height = <?php echo $conf->global->MAIN_GOOGLE_AD_HEIGHT ?>;
-			//-->
-		</script>
-		<script src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-	</div>
+
+		<?php if ($main_home)
+		{
+			?>
+			<div class="center login_main_home paddingtopbottom <?php echo empty($conf->global->MAIN_LOGIN_BACKGROUND) ? '' : ' backgroundsemitransparent'; ?>" style="max-width: 70%">
+			<?php echo $main_home; ?>
+			</div><br>
+			<?php
+		}
+		?>
+
+		<!-- authentication mode = <?php echo $main_authentication ?> -->
+		<!-- cookie name used for this session = <?php echo $session_name ?> -->
+		<!-- urlfrom in this session = <?php echo isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : ''; ?> -->
+
+		<!-- Common footer is not used for login page, this is same than footer but inside login tpl -->
+
 		<?php
-	}
-}
-?>
+		if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER;
 
+		if (!empty($morelogincontent) && is_array($morelogincontent)) {
+			foreach ($morelogincontent as $format => $option)
+			{
+				if ($format == 'js') {
+					echo "\n".'<!-- Javascript by hook -->';
+					echo $option."\n";
+				}
+			}
+		} elseif (!empty($moreloginextracontent)) {
+			echo '<!-- Javascript by hook -->';
+			echo $moreloginextracontent;
+		}
 
-</div>
-</div><!-- end of center -->
+		// Google Analytics
+		// TODO Add a hook here
+		if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AN_ID))
+		{
+			$tmptagarray = explode(',', $conf->global->MAIN_GOOGLE_AN_ID);
+			foreach ($tmptagarray as $tmptag) {
+				print "\n";
+				print "<!-- JS CODE TO ENABLE for google analtics tag -->\n";
+				print "
+							<!-- Global site tag (gtag.js) - Google Analytics -->
+							<script async src=\"https://www.googletagmanager.com/gtag/js?id=".trim($tmptag)."\"></script>
+							<script>
+							window.dataLayer = window.dataLayer || [];
+							function gtag(){dataLayer.push(arguments);}
+							gtag('js', new Date());
 
+							gtag('config', '".trim($tmptag)."');
+							</script>";
+				print "\n";
+			}
+		}
 
-</body>
-</html>
-<!-- END PHP TEMPLATE -->
+		// TODO Replace this with a hook
+		// Google Adsense (need Google module)
+		if (!empty($conf->google->enabled) && !empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT))
+		{
+			if (empty($conf->dol_use_jmobile))
+			{
+				?>
+			<div class="center"><br>
+				<script><!--
+					google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
+					google_ad_slot = "<?php echo $conf->global->MAIN_GOOGLE_AD_SLOT ?>";
+					google_ad_width = <?php echo $conf->global->MAIN_GOOGLE_AD_WIDTH ?>;
+					google_ad_height = <?php echo $conf->global->MAIN_GOOGLE_AD_HEIGHT ?>;
+					//-->
+				</script>
+				<script src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+			</div>
+				<?php
+			}
+		}
+		?>
