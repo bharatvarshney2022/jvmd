@@ -1189,6 +1189,82 @@ if (!function_exists("llxHeader"))
 	}
 }
 
+if (!function_exists("llxHeaderLayout"))
+{
+	/**
+	 *	Show HTML header HTML + BODY + Top menu + left menu + DIV
+	 *
+	 * @param 	string 			$head				Optionnal head lines
+	 * @param 	string 			$title				HTML title
+	 * @param	string			$help_url			Url links to help page
+	 * 		                            			Syntax is: For a wiki page: EN:EnglishPage|FR:FrenchPage|ES:SpanishPage
+	 *                                  			For other external page: http://server/url
+	 * @param	string			$target				Target to use on links
+	 * @param 	int    			$disablejs			More content into html header
+	 * @param 	int    			$disablehead		More content into html header
+	 * @param 	array|string  	$arrayofjs			Array of complementary js files
+	 * @param 	array|string  	$arrayofcss			Array of complementary css files
+	 * @param	string			$morequerystring	Query string to add to the link "print" to get same parameters (use only if autodetect fails)
+	 * @param   string  		$morecssonbody      More CSS on body tag. For example 'classforhorizontalscrolloftabs'.
+	 * @param	string			$replacemainareaby	Replace call to main_area() by a print of this string
+	 * @param	int				$disablenofollow	Disable the "nofollow" on page
+	 * @return	void
+	 */
+	function llxHeaderLayout($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $morecssonbody = '', $replacemainareaby = '', $disablenofollow = 0)
+	{
+		global $conf;
+
+
+		// html header
+		top_htmlhead_layout($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss, 0, $disablenofollow);
+
+		$tmpcsstouse = 'sidebar-collapse'.($morecssonbody ? ' '.$morecssonbody : '');
+		// If theme MD and classic layer, we open the menulayer by default.
+		if ($conf->theme == 'md' && !in_array($conf->browser->layout, array('phone', 'tablet')) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+		{
+			global $mainmenu;
+			if ($mainmenu != 'website') $tmpcsstouse = $morecssonbody; // We do not use sidebar-collpase by default to have menuhider open by default.
+		}
+
+		if (!empty($conf->global->MAIN_OPTIMIZEFORCOLORBLIND)) {
+			$tmpcsstouse .= ' colorblind-'.strip_tags($conf->global->MAIN_OPTIMIZEFORCOLORBLIND);
+		}
+
+		print "\n".'	<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading'.$tmpcsstouse.'">'."\n";
+
+		print '<!--end::Header Mobile-->
+				<div class="d-flex flex-column flex-root">
+					<!--begin::Page-->
+					<div class="d-flex flex-row flex-column-fluid page">
+						<!--begin::Aside-->';
+
+						// top menu and left menu area
+						if (empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int'))
+						{
+							top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring, $help_url);
+						}
+
+						if (empty($conf->dol_hide_leftmenu))
+						{
+							left_menu('', $help_url, '', '', 1, $title, 1); // $menumanager is retrieved with a global $menumanager inside this function
+						}
+
+						// main area
+						if ($replacemainareaby)
+						{
+							print $replacemainareaby;
+							return;
+						}
+						main_area($title);
+
+		print '</div>
+		<!--end::Demo Panel-->';
+
+		
+
+	}
+}
+
 
 /**
  *  Show HTTP header
@@ -1788,6 +1864,357 @@ function top_htmlhead_login($head, $title = '', $disablejs = 0, $disablehead = 0
 			print '		<!-- Includes JS for JQuery -->'."\n";
 			if (defined('JS_JQUERY') && constant('JS_JQUERY')) print '		<script src="'.JS_JQUERY.'jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
 			else print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			/*if (! empty($conf->global->MAIN_FEATURES_LEVEL) && ! defined('JS_JQUERY_MIGRATE_DISABLED'))
+			{
+				if (defined('JS_JQUERY_MIGRATE') && constant('JS_JQUERY_MIGRATE')) print '<script src="'.JS_JQUERY_MIGRATE.'jquery-migrate.min.js'.($ext?'?'.$ext:'').'"></script>'."\n";
+				else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-migrate.min.js'.($ext?'?'.$ext:'').'"></script>'."\n";
+			}*/
+			if (defined('JS_JQUERY_UI') && constant('JS_JQUERY_UI')) print '		<script src="'.JS_JQUERY_UI.'jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			else print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			if (!defined('DISABLE_JQUERY_TABLEDND')) print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tablednd/jquery.tablednd.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			// jQuery jnotify
+			if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && !defined('DISABLE_JQUERY_JNOTIFY')) {
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			}
+			// Chart
+			if (empty($conf->global->MAIN_JS_GRAPH) || $conf->global->MAIN_JS_GRAPH == 'chart') {
+				print '		<script src="'.DOL_URL_ROOT.'/includes/nnnick/chartjs/dist/Chart.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			}
+
+			// jQuery jeditable for Edit In Place features
+			if (!empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && !defined('DISABLE_JQUERY_JEDITABLE')) {
+				print '<!-- JS to manage editInPlace feature -->'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '<script>'."\n";
+				print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
+				print 'var urlLoadInPlace = \''.DOL_URL_ROOT.'/core/ajax/loadinplace.php\';'."\n";
+				print 'var tooltipInPlace = \''.$langs->transnoentities('ClickToEdit').'\';'."\n"; // Added in title attribute of span
+				print 'var placeholderInPlace = \'&nbsp;\';'."\n"; // If we put another string than $langs->trans("ClickToEdit") here, nothing is shown. If we put empty string, there is error, Why ?
+				print 'var cancelInPlace = \''.$langs->trans("Cancel").'\';'."\n";
+				print 'var submitInPlace = \''.$langs->trans('Ok').'\';'."\n";
+				print 'var indicatorInPlace = \'<img src="'.DOL_URL_ROOT."/theme/".$conf->theme."/img/working.gif".'">\';'."\n";
+				print 'var withInPlace = 300;'; // width in pixel for default string edit
+				print '</script>'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/core/js/editinplace.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			}
+			// jQuery Timepicker
+			if (!empty($conf->global->MAIN_USE_JQUERY_TIMEPICKER) || defined('REQUIRE_JQUERY_TIMEPICKER')) {
+				print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/timepicker/jquery-ui-timepicker-addon.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/core/js/timepicker.js.php?lang='.$langs->defaultlang.($ext ? '&amp;'.$ext : '').'"></script>'."\n";
+			}
+			if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT'))) {
+				// jQuery plugin "mutiselect", "multiple-select", "select2", ...
+				$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/js/'.$tmpplugin.'.full.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n"; // We include full because we need the support of containerCssClass
+			}
+			if (!defined('DISABLE_MULTISELECT'))     // jQuery plugin "mutiselect" to select with checkboxes. Can be removed once we have an enhanced search tool
+			{
+				print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/jquery.multi-select.js'.($ext ? '?'.$ext : '').'"></script>'."\n\n";
+			}
+		}
+
+		if (!$disablejs && !empty($conf->use_javascript_ajax)) {
+			// CKEditor
+			if ((!empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor') && !defined('DISABLE_CKEDITOR')) || defined('FORCE_CKEDITOR'))
+			{
+				print '		<!-- Includes JS for CKEditor -->'."\n";
+				$pathckeditor = DOL_URL_ROOT.'/includes/ckeditor/ckeditor/';
+				$jsckeditor = 'ckeditor.js';
+				if (constant('JS_CKEDITOR')) {
+					// To use external ckeditor 4 js lib
+					$pathckeditor = constant('JS_CKEDITOR');
+				}
+				print '		<script>'."\n";
+				print '			var CKEDITOR_BASEPATH = \''.$pathckeditor.'\';'."\n";
+				print '			var ckeditorConfig = \''.dol_buildpath($themesubdir.'/theme/'.$conf->theme.'/ckeditor/config.js'.($ext ? '?'.$ext : ''), 1).'\';'."\n"; // $themesubdir='' in standard usage
+				print '			var ckeditorFilebrowserBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
+				print '			var ckeditorFilebrowserImageBrowseUrl = \''.DOL_URL_ROOT.'/core/filemanagerdol/browser/default/browser.php?Type=Image&Connector='.DOL_URL_ROOT.'/core/filemanagerdol/connectors/php/connector.php\';'."\n";
+				print '		</script>'."\n";
+				print '		<script src="'.$pathckeditor.$jsckeditor.($ext ? '?'.$ext : '').'"></script>'."\n";
+				print '		<script>'."\n";
+				if (GETPOST('mode', 'aZ09') == 'Full_inline')
+				{
+					print 'CKEDITOR.disableAutoInline = false;'."\n";
+				} else {
+					print '			CKEDITOR.disableAutoInline = true;'."\n";
+				}
+				print '		</script>'."\n\n";
+			}
+
+			// Browser notifications (if NOREQUIREMENU is on, it is mostly a page for popup, so we do not enable notif too. We hide also for public pages).
+			if (!defined('NOBROWSERNOTIF') && !defined('NOREQUIREMENU') && !defined('NOLOGIN'))
+			{
+				$enablebrowsernotif = false;
+				if (!empty($conf->agenda->enabled) && !empty($conf->global->AGENDA_REMINDER_BROWSER)) $enablebrowsernotif = true;
+				if ($conf->browser->layout == 'phone') $enablebrowsernotif = false;
+				if ($enablebrowsernotif)
+				{
+					print '<!-- Includes JS of JMVD (browser layout = '.$conf->browser->layout.')-->'."\n";
+					print '<script src="'.DOL_URL_ROOT.'/core/js/lib_notification.js.php'.($ext ? '?'.$ext : '').'"></script>'."\n";
+				}
+			}
+
+			// Global js function
+			print '		<!-- Includes JS of JMVD -->'."\n";
+			print '		<script src="'.DOL_URL_ROOT.'/core/js/lib_head.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n\n";
+
+			// JS forced by modules (relative url starting with /)
+			if (!empty($conf->modules_parts['js']))		// $conf->modules_parts['js'] is array('module'=>array('file1','file2'))
+			{
+				$arrayjs = (array) $conf->modules_parts['js'];
+				foreach ($arrayjs as $modjs => $filesjs)
+				{
+					$filesjs = (array) $filesjs; // To be sure filejs is an array
+					foreach ($filesjs as $jsfile)
+					{
+						// jsfile is a relative path
+						print '		<!-- Include JS added by module '.$modjs.'-->'."\n";
+						print '		<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n\n";
+					}
+				}
+			}
+			// JS forced by page in top_htmlhead (relative url starting with /)
+			if (is_array($arrayofjs))
+			{
+				print '		<!-- Includes JS added by page -->'."\n";
+				foreach ($arrayofjs as $jsfile)
+				{
+					if (preg_match('/^(http|\/\/)/i', $jsfile))
+					{
+						print '		<script src="'.$jsfile.'"></script>'."\n";
+					} else {
+						print '		<script src="'.dol_buildpath($jsfile, 1).'"></script>'."\n";
+					}
+				}
+			}
+		}
+		print "\n";
+
+
+		
+		if (!empty($head)) print $head;
+		if (!empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER;
+
+		$parameters = array();
+		$result = $hookmanager->executeHooks('addHtmlHeader', $parameters); // Note that $action and $object may have been modified by some hooks
+		print $hookmanager->resPrint; // Replace Title to show
+
+		print "	</head>\n";
+		print "	<!--end::Head-->
+	<!--begin::Body-->";
+	}
+
+	$conf->headerdone = 1; // To tell header was output
+}
+
+// Added by Munjal for Login Header
+function top_htmlhead_layout($head, $title = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $disablejmobile = 0, $disablenofollow = 0)
+{
+	global $db, $conf, $langs, $user, $mysoc, $hookmanager;
+
+	top_httphead();
+
+	if (empty($conf->css)) $conf->css = '/theme/oblyon/style.css.php'; // If not defined, eldy by default
+	
+	print '<!doctype html>'."\n";
+
+	if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST)) print '<html lang="'.substr($langs->defaultlang, 0, 2).'" manifest="'.DOL_URL_ROOT.'/cache.manifest">'."\n";
+	else print '<html lang="'.substr($langs->defaultlang, 0, 2).'">'."\n";
+	//print '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'."\n";
+	if (empty($disablehead))
+	{
+		if (!is_object($hookmanager)) $hookmanager = new HookManager($db);
+		$hookmanager->initHooks(array("main"));
+
+		$ext = 'layout='.$conf->browser->layout.'&amp;version='.urlencode(THEME_VERSION);
+
+		print "	<!--begin::Head-->\n";
+
+		print "	<head>\n";
+
+		if (GETPOST('dol_basehref', 'alpha')) print '<base href="'.dol_escape_htmltag(GETPOST('dol_basehref', 'alpha')).'">'."\n";
+
+		// Displays meta
+		print '		<meta charset="utf-8">'."\n";
+		print '		<meta name="robots" content="index'.($disablenofollow ? '' : ', follow').'">'."\n"; // not index
+		print '		<meta name="viewport" content="width=device-width, initial-scale=1.0">'."\n"; // Scale for mobile device
+		print '		<meta name="author" content="Microprixs Development Team">'."\n";
+
+		print '		<!--begin::Fonts-->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+		<!--end::Fonts-->'."\n\n";
+
+		// Favicon
+		$favicon = DOL_URL_ROOT.'/theme/dolibarr_256x256_color.png';
+		if (!empty($mysoc->logo_squarred_mini)) $favicon = DOL_URL_ROOT.'/viewimage.php?cache=1&modulepart=mycompany&file='.urlencode('logos/thumbs/'.$mysoc->logo_squarred_mini);
+		if (!empty($conf->global->MAIN_FAVICON_URL)) $favicon = $conf->global->MAIN_FAVICON_URL;
+		if (empty($conf->dol_use_jmobile)) print '		<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>'."\n\n"; // Not required into an Android webview
+
+		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="top" title="'.$langs->trans("Home").'" href="'.(DOL_URL_ROOT?DOL_URL_ROOT:'/').'">'."\n";
+		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="copyright" title="GNU General Public License" href="https://www.gnu.org/copyleft/gpl.html#SEC1">'."\n";
+		//if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="Microprixs Development Team" href="https://www.dolibarr.org">'."\n";
+
+		// Mobile appli like icon
+		$manifest = DOL_URL_ROOT.'/theme/'.$conf->theme.'/manifest.json.php';
+		if (!empty($manifest)) {
+			print '		<link rel="manifest" href="'.$manifest.'" />'."\n";
+		}
+
+		if (!empty($conf->global->THEME_ELDY_TOPMENU_BACK1)) {
+			// TODO: use auto theme color switch
+			print '<meta name="theme-color" content="rgb('.$conf->global->THEME_ELDY_TOPMENU_BACK1.')">'."\n";
+		}
+
+		// Auto refresh page
+		if (GETPOST('autorefresh', 'int') > 0) print '<meta http-equiv="refresh" content="'.GETPOST('autorefresh', 'int').'">';
+
+		// Displays title
+		$appli = constant('DOL_APPLICATION_TITLE');
+		if (!empty($conf->global->MAIN_APPLICATION_TITLE)) $appli = $conf->global->MAIN_APPLICATION_TITLE;
+
+		print '		<title>';
+		$titletoshow = '';
+		if ($title && !empty($conf->global->MAIN_HTML_TITLE) && preg_match('/noapp/', $conf->global->MAIN_HTML_TITLE)) {
+			$titletoshow = dol_htmlentities($title);
+		}
+		elseif ($title) {
+			$titletoshow = dol_htmlentities($appli.' - '.$title);
+		}
+		else $titletoshow = dol_htmlentities($appli);
+
+
+		$parameters = array('title'=>$titletoshow);
+		$result = $hookmanager->executeHooks('setHtmlTitle', $parameters); // Note that $action and $object may have been modified by some hooks
+		if ($result > 0) $titletoshow = $hookmanager->resPrint; // Replace Title to show
+		else $titletoshow .= $hookmanager->resPrint; // Concat to Title to show
+
+		print $titletoshow;
+		print '</title>';
+
+		print "\n\n";
+
+		print "		<!--begin::Page Custom Styles(used by this page)-->\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/login-2.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<!--end::Page Custom Styles-->
+		<!--begin::Global Theme Styles(used by all pages)-->'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/plugins.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/prismjs.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/style.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<!--end::Global Theme Styles-->'."\n";
+		print '		<!--begin::Layout Themes(used by all pages)-->'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/base/light.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/menu/light.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/brand/dark.css'.($ext ? '?'.$ext : '').'">'."\n";
+		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/header/aside/dark.css'.($ext ? '?'.$ext : '').'">'."\n";
+
+		//print_r($themepath); exit;
+
+		if (GETPOST('version', 'int')) $ext = 'version='.GETPOST('version', 'int'); // usefull to force no cache on css/js
+
+		$themeparam = '?lang='.$langs->defaultlang.'&amp;theme='.$conf->theme.(GETPOST('optioncss', 'aZ09') ? '&amp;optioncss='.GETPOST('optioncss', 'aZ09', 1) : '').'&amp;userid='.$user->id.'&amp;entity='.$conf->entity;
+		$themeparam .= ($ext ? '&amp;'.$ext : '').'&amp;revision='.$conf->global->MAIN_IHM_PARAMS_REV;
+		if (!empty($_SESSION['dol_resetcache'])) $themeparam .= '&amp;dol_resetcache='.$_SESSION['dol_resetcache'];
+		if (GETPOSTISSET('dol_hide_topmenu')) { $themeparam .= '&amp;dol_hide_topmenu='.GETPOST('dol_hide_topmenu', 'int'); }
+		if (GETPOSTISSET('dol_hide_leftmenu')) { $themeparam .= '&amp;dol_hide_leftmenu='.GETPOST('dol_hide_leftmenu', 'int'); }
+		if (GETPOSTISSET('dol_optimize_smallscreen')) { $themeparam .= '&amp;dol_optimize_smallscreen='.GETPOST('dol_optimize_smallscreen', 'int'); }
+		if (GETPOSTISSET('dol_no_mouse_hover')) { $themeparam .= '&amp;dol_no_mouse_hover='.GETPOST('dol_no_mouse_hover', 'int'); }
+		if (GETPOSTISSET('dol_use_jmobile')) { $themeparam .= '&amp;dol_use_jmobile='.GETPOST('dol_use_jmobile', 'int'); $conf->dol_use_jmobile = GETPOST('dol_use_jmobile', 'int'); }
+		if (GETPOSTISSET('THEME_DARKMODEENABLED')) { $themeparam .= '&amp;THEME_DARKMODEENABLED='.GETPOST('THEME_DARKMODEENABLED', 'int'); }
+		if (GETPOSTISSET('THEME_SATURATE_RATIO')) { $themeparam .= '&amp;THEME_SATURATE_RATIO='.GETPOST('THEME_SATURATE_RATIO', 'int'); }
+
+
+		if (!defined('DISABLE_JQUERY') && !$disablejs && $conf->use_javascript_ajax)
+		{
+			print '		<!-- Includes CSS for JQuery (Ajax library) -->'."\n\n";
+			$jquerytheme = 'base';
+			if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
+			if (constant('JS_JQUERY_UI')) print '		<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // Forced JQuery
+			else print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui.css'.($ext ? '?'.$ext : '').'">'."\n"; // JQuery
+			if (!defined('DISABLE_JQUERY_JNOTIFY')) print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // JNotify
+			if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT')))     // jQuery plugin "mutiselect", "multiple-select", "select2"...
+			{
+				$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
+				print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/css/'.$tmpplugin.'.css'.($ext ? '?'.$ext : '').'">'."\n\n";
+			}
+		}
+
+		if (!defined('DISABLE_FONT_AWSOME'))
+		{
+			print '		<!-- Includes CSS for font awesome -->'."\n";
+			print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/all.min.css'.($ext ? '?'.$ext : '').'">'."\n";
+			print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome-5/css/v4-shims.min.css'.($ext ? '?'.$ext : '').'">'."\n\n";
+		}
+
+		// Output style sheets (optioncss='print' or ''). Note: $conf->css looks like '/theme/eldy/style.css.php'
+		$themepath = dol_buildpath($conf->css, 1);
+		$themesubdir = '';
+		if (!empty($conf->modules_parts['theme']))	// This slow down
+		{
+			foreach ($conf->modules_parts['theme'] as $reldir)
+			{
+				if (file_exists(dol_buildpath($reldir.$conf->css, 0)))
+				{
+					$themepath = dol_buildpath($reldir.$conf->css, 1);
+					$themesubdir = $reldir;
+					break;
+				}
+			}
+		}
+
+		//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
+		if (!empty($conf->global->MAIN_FIX_FLASH_ON_CHROME)) print '<!-- Includes CSS that does not exists as a workaround of flash bug of chrome -->'."\n".'<link rel="stylesheet" type="text/css" href="filethatdoesnotexiststosolvechromeflashbug">'."\n";
+
+		// CSS forced by modules (relative url starting with /)
+		if (!empty($conf->modules_parts['css']))
+		{
+			$arraycss = (array) $conf->modules_parts['css'];
+			foreach ($arraycss as $modcss => $filescss)
+			{
+				$filescss = (array) $filescss; // To be sure filecss is an array
+				foreach ($filescss as $cssfile)
+				{
+					if (empty($cssfile)) dol_syslog("Warning: module ".$modcss." declared a css path file into its descriptor that is empty.", LOG_WARNING);
+					// cssfile is a relative path
+					print '<!-- Includes CSS added by module '.$modcss.' -->'."\n".'<link rel="stylesheet" type="text/css" href="'.dol_buildpath($cssfile, 1);
+					// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
+					if (!preg_match('/\.css$/i', $cssfile)) print $themeparam;
+					print '">'."\n";
+				}
+			}
+		}
+		// CSS forced by page in top_htmlhead call (relative url starting with /)
+		if (is_array($arrayofcss))
+		{
+			foreach ($arrayofcss as $cssfile)
+			{
+				if (preg_match('/^(http|\/\/)/i', $cssfile))
+				{
+					$urltofile = $cssfile;
+				} else {
+					$urltofile = dol_buildpath($cssfile, 1);
+				}
+				print '<!-- Includes CSS added by page -->'."\n".'<link rel="stylesheet" type="text/css" title="default" href="'.$urltofile;
+				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
+				if (!preg_match('/\.css$/i', $cssfile)) print $themeparam;
+				print '">'."\n\n";
+			}
+		}
+
+		// LOGIN PAGE
+		// Output standard javascript links
+		if (!defined('DISABLE_JQUERY') && !$disablejs && !empty($conf->use_javascript_ajax))
+		{
+			// JQuery. Must be before other includes
+			print '		<!-- Includes JS for JQuery -->'."\n";
+			if (defined('JS_JQUERY') && constant('JS_JQUERY')) print '		<script src="'.JS_JQUERY.'jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
+			else print '		<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n\n";
+
+			print '		<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/plugins.bundle.js?v=7.2.0"></script>'."\n";
+			
+			
 			/*if (! empty($conf->global->MAIN_FEATURES_LEVEL) && ! defined('JS_JQUERY_MIGRATE_DISABLED'))
 			{
 				if (defined('JS_JQUERY_MIGRATE') && constant('JS_JQUERY_MIGRATE')) print '<script src="'.JS_JQUERY_MIGRATE.'jquery-migrate.min.js'.($ext?'?'.$ext:'').'"></script>'."\n";
@@ -3331,4 +3758,245 @@ if (!function_exists("llxFooter"))
 		print "</body>\n";
 		print "</html>\n";
 	}
+
+
+	if (!function_exists("llxFooterLayout"))
+	{
+		/**
+		 * Show HTML footer
+		 * Close div /DIV class=fiche + /DIV id-right + /DIV id-container + /BODY + /HTML.
+		 * If global var $delayedhtmlcontent was filled, we output it just before closing the body.
+		 *
+		 * @param	string	$comment    				A text to add as HTML comment into HTML generated page
+		 * @param	string	$zone						'private' (for private pages) or 'public' (for public pages)
+		 * @param	int		$disabledoutputofmessages	Clear all messages stored into session without diplaying them
+		 * @return	void
+		 */
+		function llxFooterLayout($comment = '', $zone = 'private', $disabledoutputofmessages = 0)
+		{
+			global $conf, $db, $langs, $user, $mysoc, $object;
+			global $delayedhtmlcontent;
+			global $contextpage, $page, $limit;
+			global $dolibarr_distrib;
+
+			$ext = 'layout='.$conf->browser->layout.'&version='.urlencode(DOL_VERSION);
+
+			// Global html output events ($mesgs, $errors, $warnings)
+			dol_htmloutput_events($disabledoutputofmessages);
+
+			// Code for search criteria persistence.
+			// $user->lastsearch_values was set by the GETPOST when form field search_xxx exists
+			if (is_object($user) && !empty($user->lastsearch_values_tmp) && is_array($user->lastsearch_values_tmp))
+			{
+				// Clean and save data
+				foreach ($user->lastsearch_values_tmp as $key => $val)
+				{
+					unset($_SESSION['lastsearch_values_tmp_'.$key]); // Clean array to rebuild it just after
+					if (count($val) && empty($_POST['button_removefilter']))	// If there is search criteria to save and we did not click on 'Clear filter' button
+					{
+						if (empty($val['sortfield'])) unset($val['sortfield']);
+						if (empty($val['sortorder'])) unset($val['sortorder']);
+						dol_syslog('Save lastsearch_values_tmp_'.$key.'='.json_encode($val, 0)." (systematic recording of last search criterias)");
+						$_SESSION['lastsearch_values_tmp_'.$key] = json_encode($val);
+						unset($_SESSION['lastsearch_values_'.$key]);
+					}
+				}
+			}
+
+
+			$relativepathstring = $_SERVER["PHP_SELF"];
+			// Clean $relativepathstring
+			if (constant('DOL_URL_ROOT')) $relativepathstring = preg_replace('/^'.preg_quote(constant('DOL_URL_ROOT'), '/').'/', '', $relativepathstring);
+			$relativepathstring = preg_replace('/^\//', '', $relativepathstring);
+			$relativepathstring = preg_replace('/^custom\//', '', $relativepathstring);
+			if (preg_match('/list\.php$/', $relativepathstring))
+			{
+				unset($_SESSION['lastsearch_contextpage_tmp_'.$relativepathstring]);
+				unset($_SESSION['lastsearch_page_tmp_'.$relativepathstring]);
+				unset($_SESSION['lastsearch_limit_tmp_'.$relativepathstring]);
+
+				if (!empty($contextpage))                     $_SESSION['lastsearch_contextpage_tmp_'.$relativepathstring] = $contextpage;
+				if (!empty($page) && $page > 0)               $_SESSION['lastsearch_page_tmp_'.$relativepathstring] = $page;
+				if (!empty($limit) && $limit != $conf->liste_limit) $_SESSION['lastsearch_limit_tmp_'.$relativepathstring] = $limit;
+
+				unset($_SESSION['lastsearch_contextpage_'.$relativepathstring]);
+				unset($_SESSION['lastsearch_page_'.$relativepathstring]);
+				unset($_SESSION['lastsearch_limit_'.$relativepathstring]);
+			}
+
+			// Core error message
+			if (!empty($conf->global->MAIN_CORE_ERROR))
+			{
+				// Ajax version
+				if ($conf->use_javascript_ajax)
+				{
+					$title = img_warning().' '.$langs->trans('CoreErrorTitle');
+					print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
+				} else {
+					// html version
+					$msg = img_warning().' '.$langs->trans('CoreErrorMessage');
+					print '<div class="error">'.$msg.'</div>';
+				}
+
+				//define("MAIN_CORE_ERROR",0);      // Constant was defined and we can't change value of a constant
+			}
+
+			print "\n\n";
+
+			print '</div> <!-- End div class="fiche" -->'."\n"; // End div fiche
+
+			if (empty($conf->dol_hide_leftmenu)) print '</div> <!-- End div id-right -->'."\n"; // End div id-right
+
+			if (empty($conf->dol_hide_leftmenu) && empty($conf->dol_use_jmobile)) print '</div> <!-- End div id-container -->'."\n"; // End div container
+
+			print "\n";
+			if ($comment) print '<!-- '.$comment.' -->'."\n";
+
+			printCommonFooter($zone);
+
+			if (!empty($delayedhtmlcontent)) print $delayedhtmlcontent;
+
+			if (!empty($conf->use_javascript_ajax))
+			{
+				print "\n".'<!-- Includes JS Footer of JMVD -->'."\n";
+				print '<script src="'.DOL_URL_ROOT.'/core/js/lib_foot.js.php?lang='.$langs->defaultlang.($ext ? '&'.$ext : '').'"></script>'."\n";
+			}
+
+			// Wrapper to add log when clicking on download or preview
+			if (!empty($conf->blockedlog->enabled) && is_object($object) && $object->id > 0 && $object->statut > 0)
+			{
+				if (in_array($object->element, array('facture')))       // Restrict for the moment to element 'facture'
+				{
+					print "\n<!-- JS CODE TO ENABLE log when making a download or a preview of a document -->\n";
+					?>
+	    			<script>
+	    			jQuery(document).ready(function () {
+	    				$('a.documentpreview').click(function() {
+	    					$.post('<?php echo DOL_URL_ROOT."/blockedlog/ajax/block-add.php" ?>'
+	    							, {
+	    								id:<?php echo $object->id; ?>
+	    								, element:'<?php echo $object->element ?>'
+	    								, action:'DOC_PREVIEW'
+	    							}
+	    					);
+	    				});
+	    				$('a.documentdownload').click(function() {
+	    					$.post('<?php echo DOL_URL_ROOT."/blockedlog/ajax/block-add.php" ?>'
+	    							, {
+	    								id:<?php echo $object->id; ?>
+	    								, element:'<?php echo $object->element ?>'
+	    								, action:'DOC_DOWNLOAD'
+	    							}
+	    					);
+	    				});
+	    			});
+	    			</script>
+					<?php
+				}
+		   	}
+
+			// A div for the address popup
+			print "\n<!-- A div to allow dialog popup -->\n";
+			print '		<div id="dialogforpopup" style="display: none;"></div>'."\n\n";
+
+			// Add code for the asynchronous anonymous first ping (for telemetry)
+			// You can use &forceping=1 in parameters to force the ping if the ping was already sent.
+			$forceping = GETPOST('forceping', 'alpha');
+			if (($_SERVER["PHP_SELF"] == DOL_URL_ROOT.'/index.php') || $forceping)
+			{
+				//print '<!-- instance_unique_id='.$conf->file->instance_unique_id.' MAIN_FIRST_PING_OK_ID='.$conf->global->MAIN_FIRST_PING_OK_ID.' -->';
+				$hash_unique_id = md5('dolibarr'.$conf->file->instance_unique_id);
+				if (empty($conf->global->MAIN_FIRST_PING_OK_DATE)
+					|| (!empty($conf->file->instance_unique_id) && ($hash_unique_id != $conf->global->MAIN_FIRST_PING_OK_ID) && ($conf->global->MAIN_FIRST_PING_OK_ID != 'disabled'))
+				|| $forceping)
+				{
+					// No ping done if we are into an alpha version
+					if (strpos('alpha', DOL_VERSION) > 0 && !$forceping) {
+						print "\n<!-- NO JS CODE TO ENABLE the anonymous Ping. It is an alpha version -->\n";
+					} elseif (empty($_COOKIE['DOLINSTALLNOPING_'.$hash_unique_id]) || $forceping)	// Cookie is set when we uncheck the checkbox in the installation wizard.
+					{
+						// MAIN_LAST_PING_KO_DATE
+						// Disable ping if MAIN_LAST_PING_KO_DATE is set and is recent
+						if (!empty($conf->global->MAIN_LAST_PING_KO_DATE) && substr($conf->global->MAIN_LAST_PING_KO_DATE, 0, 6) == dol_print_date(dol_now(), '%Y%m') && !$forceping) {
+							print "\n<!-- NO JS CODE TO ENABLE the anonymous Ping. An error already occured this month, we will try later. -->\n";
+						} else {
+							include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+
+							print "\n".'<!-- Includes JS for Ping of JMVD forceping='.$forceping.' MAIN_FIRST_PING_OK_DATE='.$conf->global->MAIN_FIRST_PING_OK_DATE.' MAIN_FIRST_PING_OK_ID='.$conf->global->MAIN_FIRST_PING_OK_ID.' MAIN_LAST_PING_KO_DATE='.$conf->global->MAIN_LAST_PING_KO_DATE.' -->'."\n";
+							print "\n<!-- JS CODE TO ENABLE the anonymous Ping -->\n";
+							$url_for_ping = (empty($conf->global->MAIN_URL_FOR_PING) ? "https://ping.dolibarr.org/" : $conf->global->MAIN_URL_FOR_PING);
+							// Try to guess the distrib used
+							$distrib = 'standard';
+							if ($_SERVER["SERVER_ADMIN"] == 'doliwamp@localhost') $distrib = 'doliwamp';
+							if (!empty($dolibarr_distrib)) $distrib = $dolibarr_distrib;
+							?>
+				    			<script>
+				    			jQuery(document).ready(function (tmp) {
+				    				$.ajax({
+				    					  method: "POST",
+				    					  url: "<?php echo $url_for_ping ?>",
+				    					  timeout: 500,     // timeout milliseconds
+				    					  cache: false,
+				    					  data: {
+					    					  hash_algo: 'md5',
+					    					  hash_unique_id: '<?php echo dol_escape_js($hash_unique_id); ?>',
+					    					  action: 'dolibarrping',
+					    					  version: '<?php echo (float) DOL_VERSION; ?>',
+					    					  entity: '<?php echo (int) $conf->entity; ?>',
+					    					  dbtype: '<?php echo dol_escape_js($db->type); ?>',
+					    					  country_code: '<?php echo $mysoc->country_code ? dol_escape_js($mysoc->country_code) : 'unknown'; ?>',
+					    					  php_version: '<?php echo dol_escape_js(phpversion()); ?>',
+					    					  os_version: '<?php echo dol_escape_js(version_os('smr')); ?>',
+					    					  distrib: '<?php echo $distrib ? dol_escape_js($distrib) : 'unknown'; ?>'
+					    				  },
+				    					  success: function (data, status, xhr) {   // success callback function (data contains body of response)
+				      					    	console.log("Ping ok");
+				        	    				$.ajax({
+				      	    					  method: 'GET',
+				      	    					  url: '<?php echo DOL_URL_ROOT.'/core/ajax/pingresult.php'; ?>',
+				      	    					  timeout: 500,     // timeout milliseconds
+				      	    					  cache: false,
+				      	        				  data: { hash_algo: 'md5', hash_unique_id: '<?php echo dol_escape_js($hash_unique_id); ?>', action: 'firstpingok' },	// for update
+				    					  		});
+				    					  },
+				    					  error: function (data,status,xhr) {   // error callback function
+				        					    console.log("Ping ko: " + data);
+				        	    				$.ajax({
+				        	    					  method: 'GET',
+				        	    					  url: '<?php echo DOL_URL_ROOT.'/core/ajax/pingresult.php'; ?>',
+				        	    					  timeout: 500,     // timeout milliseconds
+				        	    					  cache: false,
+				        	        				  data: { hash_algo: 'md5', hash_unique_id: '<?php echo dol_escape_js($hash_unique_id); ?>', action: 'firstpingko' },
+				      					  		});
+				    					  }
+				    				});
+				    			});
+				    			</script>
+							<?php
+						}
+					} else {
+						$now = dol_now();
+						print "\n<!-- NO JS CODE TO ENABLE the anonymous Ping. It was disabled -->\n";
+						include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+						dolibarr_set_const($db, 'MAIN_FIRST_PING_OK_DATE', dol_print_date($now, 'dayhourlog', 'gmt'));
+						dolibarr_set_const($db, 'MAIN_FIRST_PING_OK_ID', 'disabled');
+					}
+				}
+			}
+
+		print '		<!--begin::Global Config(global config for global JS scripts)-->
+		<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3699FF", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#E1F0FF", "secondary": "#EBEDF3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
+		<!--end::Global Config-->
+		<!--begin::Global Theme Bundle(used by all pages)-->';
+
+		print '<!--begin::Global Theme Bundle(used by all pages)-->
+		<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/prismjs.bundle.js?v=7.2.0"></script>
+		<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/scripts.bundle.js?v=7.2.0"></script>
+		<!--end::Global Theme Bundle-->'."\n";
+
+			print "	</body>\n";
+			print "</html>\n";
+		}
+	}
+
 }
