@@ -2547,7 +2547,8 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			if ($menu_array[$i]['enabled']) {
 				if($i == 0)
 				{
-					print '												<li class="menu-item menu-item-rel menu-item-active">'."\n";	
+					//echo '<pre>';print_r($menu_array[$i]);
+					print '												<li class="menu-item menu-item-rel menu-item-submenu menu-item-active" data-menu-toggle="click" aria-haspopup="true">'."\n";	
 					//
 				}
 				else

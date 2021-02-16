@@ -6821,6 +6821,53 @@ class Form
 	 *	@return	string					HTML multiselect string
 	 *  @see selectarray()
 	 */
+	public static function multiSelectArrayWithCheckboxLayout($htmlname, &$array, $varpage)
+	{
+		global $conf, $langs, $user, $extrafields;
+
+		if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) return '';
+
+		$tmpvar = "MAIN_SELECTEDFIELDS_".$varpage; // To get list of saved seleteced properties
+		if (!empty($user->conf->$tmpvar))
+		{
+			$tmparray = explode(',', $user->conf->$tmpvar);
+			foreach ($array as $key => $val)
+			{
+				//var_dump($key);
+				//var_dump($tmparray);
+				if (in_array($key, $tmparray)) $array[$key]['checked'] = 1;
+				else $array[$key]['checked'] = 0;
+			}
+		}
+
+		$lis = '';
+		$listcheckedstring = '';
+
+		foreach ($array as $key => $val)
+		{
+			/* var_dump($val);
+            var_dump(array_key_exists('enabled', $val));
+            var_dump(!$val['enabled']);*/
+			if (array_key_exists('enabled', $val) && isset($val['enabled']) && !$val['enabled'])
+			{
+				unset($array[$key]); // We don't want this field
+				continue;
+			}
+			if ($val['label'])
+			{
+				if (!empty($val['langfile']) && is_object($langs)) {
+					$langs->load($val['langfile']);
+				}
+
+				$lis .= '<li><input type="checkbox" id="checkbox'.$key.'" value="'.$key.'"'.(empty($val['checked']) ? '' : ' checked="checked"').'/><label for="checkbox'.$key.'">'.dol_escape_htmltag($langs->trans($val['label'])).'</label></li>';
+				$listcheckedstring .= (empty($val['checked']) ? '' : $key.',');
+			}
+		}
+
+		$out = '';
+		return $out;
+	}
+
 	public static function multiSelectArrayWithCheckbox($htmlname, &$array, $varpage)
 	{
 		global $conf, $langs, $user, $extrafields;
@@ -7848,6 +7895,36 @@ class Form
 		$out = '';
 
 		if (!empty($conf->use_javascript_ajax)) $out .= '<div class="inline-block checkallactions"><input type="checkbox" id="'.$cssclass.'s" name="'.$cssclass.'s" class="checkallactions"></div>';
+		$out .= '<script>
+            $(document).ready(function() {
+                $("#' . $cssclass.'s").click(function() {
+                    if($(this).is(\':checked\')){
+                        console.log("We check all '.$cssclass.' and trigger the change method");
+                		$(".'.$cssclass.'").prop(\'checked\', true).trigger(\'change\');
+                    }
+                    else
+                    {
+                        console.log("We uncheck all");
+                		$(".'.$cssclass.'").prop(\'checked\', false).trigger(\'change\');
+                    }'."\n";
+				if ($calljsfunction) $out .= 'if (typeof initCheckForSelect == \'function\') { initCheckForSelect(0, "'.$massactionname.'", "'.$cssclass.'"); } else { console.log("No function initCheckForSelect found. Call won\'t be done."); }';
+		$out .= '         });
+        	        $(".' . $cssclass.'").change(function() {
+					$(this).closest("tr").toggleClass("highlight", this.checked);
+				});
+		 	});
+    	</script>';
+
+		return $out;
+	}
+
+	public function showCheckAddButtonsLayout($cssclass = 'checkforaction', $calljsfunction = 0, $massactionname = "massaction")
+	{
+		global $conf, $langs;
+
+		$out = '';
+
+		if (!empty($conf->use_javascript_ajax)) $out .= '<input type="checkbox" id="'.$cssclass.'s" name="'.$cssclass.'s" class="checkallactions">';
 		$out .= '<script>
             $(document).ready(function() {
                 $("#' . $cssclass.'s").click(function() {

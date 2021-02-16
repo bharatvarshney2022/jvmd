@@ -4255,6 +4255,11 @@ function print_liste_field_titre($name, $file = "", $field = "", $begin = "", $m
 	print getTitleFieldOfList($name, 0, $file, $field, $begin, $moreparam, $moreattrib, $sortfield, $sortorder, $prefix, 0, $tooltip, $forcenowrapcolumntitle);
 }
 
+function print_liste_field_titre_layout($name, $file = "", $field = "", $begin = "", $moreparam = "", $moreattrib = "", $sortfield = "", $sortorder = "", $prefix = "", $tooltip = "", $forcenowrapcolumntitle = 0)
+{
+	print "													".getTitleFieldOfListLayout($name, 0, $file, $field, $begin, $moreparam, $moreattrib, $sortfield, $sortorder, $prefix, 0, $tooltip, $forcenowrapcolumntitle)."\n\n";
+}
+
 /**
  *	Get title line of an array
  *
@@ -4273,6 +4278,118 @@ function print_liste_field_titre($name, $file = "", $field = "", $begin = "", $m
  *  @param	string	$forcenowrapcolumntitle		No need for use 'wrapcolumntitle' css style
  *	@return	string
  */
+
+function getTitleFieldOfListLayout($name, $thead = 0, $file = "", $field = "", $begin = "", $moreparam = "", $moreattrib = "", $sortfield = "", $sortorder = "", $prefix = "", $disablesortlink = 0, $tooltip = '', $forcenowrapcolumntitle = 0)
+{
+	global $conf, $langs, $form;
+	//print "$name, $file, $field, $begin, $options, $moreattrib, $sortfield, $sortorder<br>\n";
+
+	if ($moreattrib == 'class="right"') $prefix .= 'right '; // For backward compatibility
+
+	$sortorder = strtoupper($sortorder);
+	$out = '';
+	$sortimg = '';
+
+	$tag = 'th';
+	if ($thead == 2) $tag = 'div';
+
+	$tmpsortfield = explode(',', $sortfield);
+	$sortfield1 = trim($tmpsortfield[0]); // If $sortfield is 'd.datep,d.id', it becomes 'd.datep'
+	$tmpfield = explode(',', $field);
+	$field1 = trim($tmpfield[0]); // If $field is 'd.datep,d.id', it becomes 'd.datep'
+
+	if (empty($conf->global->MAIN_DISABLE_WRAPPING_ON_COLUMN_TITLE) && empty($forcenowrapcolumntitle)) {
+		$prefix = ' '.$prefix;
+	}
+
+	//var_dump('field='.$field.' field1='.$field1.' sortfield='.$sortfield.' sortfield1='.$sortfield1);
+	// If field is used as sort criteria we use a specific css class liste_titre_sel
+	// Example if (sortfield,field)=("nom","xxx.nom") or (sortfield,field)=("nom","nom")
+	$liste_titre = '';
+	if ($field1 && ($sortfield1 == $field1 || $sortfield1 == preg_replace("/^[^\.]+\./", "", $field1))) {
+		$liste_titre = 'liste_titre_sel';
+	}
+	$out .= '<'.$tag.' class="'.$prefix.$liste_titre.'" '.$moreattrib;
+	//$out .= (($field && empty($conf->global->MAIN_DISABLE_WRAPPING_ON_COLUMN_TITLE) && preg_match('/^[a-zA-Z_0-9\s\.\-:&;]*$/', $name)) ? ' title="'.dol_escape_htmltag($langs->trans($name)).'"' : '');
+	$out .= ($name && empty($conf->global->MAIN_DISABLE_WRAPPING_ON_COLUMN_TITLE) && empty($forcenowrapcolumntitle) && !dol_textishtml($name)) ? ' title="'.dol_escape_htmltag($langs->trans($name)).'"' : '';
+	$out .= '>';
+
+	if (empty($thead) && $field && empty($disablesortlink))    // If this is a sort field
+	{
+		$options = preg_replace('/sortfield=([a-zA-Z0-9,\s\.]+)/i', '', (is_scalar($moreparam) ? $moreparam : ''));
+		$options = preg_replace('/sortorder=([a-zA-Z0-9,\s\.]+)/i', '', $options);
+		$options = preg_replace('/&+/i', '&', $options);
+		if (!preg_match('/^&/', $options)) $options = '&'.$options;
+
+		$sortordertouseinlink = '';
+		if ($field1 != $sortfield1) // We are on another field than current sorted field
+		{
+			if (preg_match('/^DESC/i', $sortorder))
+			{
+				$sortordertouseinlink .= str_repeat('desc,', count(explode(',', $field)));
+			} else // We reverse the var $sortordertouseinlink
+			{
+				$sortordertouseinlink .= str_repeat('asc,', count(explode(',', $field)));
+			}
+		} else // We are on field that is the first current sorting criteria
+		{
+			if (preg_match('/^ASC/i', $sortorder))	// We reverse the var $sortordertouseinlink
+			{
+				$sortordertouseinlink .= str_repeat('desc,', count(explode(',', $field)));
+			} else {
+				$sortordertouseinlink .= str_repeat('asc,', count(explode(',', $field)));
+			}
+		}
+		$sortordertouseinlink = preg_replace('/,$/', '', $sortordertouseinlink);
+		$out .= '<a class="" href="'.$file.'?sortfield='.$field.'&sortorder='.$sortordertouseinlink.'&begin='.$begin.$options.'"';
+		//$out .= (empty($conf->global->MAIN_DISABLE_WRAPPING_ON_COLUMN_TITLE) ? ' title="'.dol_escape_htmltag($langs->trans($name)).'"' : '');
+		$out .= '>';
+	}
+
+	if ($tooltip) {
+		// You can also use 'TranslationString:keyfortooltiponlick' for a tooltip on click.
+		$tmptooltip = explode(':', $tooltip);
+		$out .= $form->textwithpicto($langs->trans($name), $langs->trans($tmptooltip[0]), 1, 'help', '', 0, 3, (empty($tmptooltip[1]) ? '' : 'extra_'.str_replace('.', '_', $field).'_'.$tmptooltip[1]));
+	}
+	else $out .= $langs->trans($name);
+
+	if (empty($thead) && $field && empty($disablesortlink))    // If this is a sort field
+	{
+		$out .= '</a>';
+	}
+
+	if (empty($thead) && $field)    // If this is a sort field
+	{
+		$options = preg_replace('/sortfield=([a-zA-Z0-9,\s\.]+)/i', '', (is_scalar($moreparam) ? $moreparam : ''));
+		$options = preg_replace('/sortorder=([a-zA-Z0-9,\s\.]+)/i', '', $options);
+		$options = preg_replace('/&+/i', '&', $options);
+		if (!preg_match('/^&/', $options)) $options = '&'.$options;
+
+		if (!$sortorder || $field1 != $sortfield1)
+		{
+			//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=asc&begin='.$begin.$options.'">'.img_down("A-Z",0).'</a>';
+			//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=desc&begin='.$begin.$options.'">'.img_up("Z-A",0).'</a>';
+		} else {
+			if (preg_match('/^DESC/', $sortorder)) {
+				//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=asc&begin='.$begin.$options.'">'.img_down("A-Z",0).'</a>';
+				//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=desc&begin='.$begin.$options.'">'.img_up("Z-A",1).'</a>';
+				$sortimg .= '<span class="nowrap">'.img_up("Z-A", 0, 'paddingleft').'</span>';
+			}
+			if (preg_match('/^ASC/', $sortorder)) {
+				//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=asc&begin='.$begin.$options.'">'.img_down("A-Z",1).'</a>';
+				//$out.= '<a href="'.$file.'?sortfield='.$field.'&sortorder=desc&begin='.$begin.$options.'">'.img_up("Z-A",0).'</a>';
+				$sortimg .= '<span class="nowrap">'.img_down("A-Z", 0, 'paddingleft').'</span>';
+			}
+		}
+	}
+
+	$out .= $sortimg;
+
+	$out .= '</'.$tag.'>';
+
+	return $out;
+}
+
 function getTitleFieldOfList($name, $thead = 0, $file = "", $field = "", $begin = "", $moreparam = "", $moreattrib = "", $sortfield = "", $sortorder = "", $prefix = "", $disablesortlink = 0, $tooltip = '', $forcenowrapcolumntitle = 0)
 {
 	global $conf, $langs, $form;

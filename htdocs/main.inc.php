@@ -4539,8 +4539,7 @@ if (!function_exists("llxFooter"))
 		<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/scripts.bundle.js?v=7.2.0"></script>
 		<!--end::Global Theme Bundle-->'."\n";
 
-			print "	</body>\n";
-			print "</html>\n";
+			
 		}
 	}
 

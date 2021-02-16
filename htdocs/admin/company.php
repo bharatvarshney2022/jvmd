@@ -855,4 +855,8 @@ print '<!--begin::Entry-->
 
 // End of page
 llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
