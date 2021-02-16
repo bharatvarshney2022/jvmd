@@ -126,7 +126,7 @@ print "<!--begin::Main-->";
 									<?php
 								}
 							?>
-							<form class="form" novalidate="novalidate" id="kt_login_signin_form login" name="login" method="post" action="<?php echo $php_self; ?>">
+							<form class="form" novalidate="novalidate" id="kt_login_signin_form" name="login" method="post" action="<?php echo $php_self; ?>">
 								<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
 								<input type="hidden" name="actionlogin" value="login">
 								<input type="hidden" name="loginfunction" value="loginfunction" />
@@ -358,6 +358,35 @@ print "<!--begin::Main-->";
 	<script src="<?php echo DOL_URL_ROOT.'/theme/oblyon'; ?>/js/prismjs.bundle.js?v=7.2.0"></script>
 	<script src="<?php echo DOL_URL_ROOT.'/theme/oblyon'; ?>/js/scripts.bundle.js?v=7.2.0"></script>
 	<!--end::Global Theme Bundle-->
+
+	<script>
+		"use strict";
+		var KTLogin = function() {
+		    var t, i = function(i) {
+		        var o = "login-" + i + "-on";
+		        i = "kt_login_" + i + "_form";
+		        t = $("#kt_login");
+		        t.removeClass("login-forgot-on"),
+		        t.removeClass("login-signin-on"),
+		        t.removeClass("login-signup-on"),
+		        
+		        t.addClass(o);
+		        KTUtil.animateClass(KTUtil.getById(i), "animate__animated animate__backInUp")
+		    };
+
+		    return {
+        		init: function() {
+        			i('signin');
+        		}
+        	};
+			
+		}();
+
+		jQuery(document).ready((function(){
+			KTLogin.init();
+
+		}));
+	</script>
 
 	</body>
 	<!--end::Body-->

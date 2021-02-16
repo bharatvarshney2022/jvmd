@@ -226,4 +226,4 @@ $parameters = array('entity' => GETPOST('entity', 'int'));
 $reshook = $hookmanager->executeHooks('getPasswordForgottenPageExtraOptions', $parameters); // Note that $action and $object may have been modified by some hooks.
 $moreloginextracontent = $hookmanager->resPrint;
 
-include $template_dir.'passwordforgotten.tpl.php'; // To use native PHP
+include $template_dir.'passwordforgotten-jmvd.tpl.php'; // To use native PHP
