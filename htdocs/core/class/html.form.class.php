@@ -848,9 +848,14 @@ class Form
 			dol_print_error($this->db);
 		}
 
+		$out .= '
+		<script>
+			$("#select'.$htmlname.'").select2();
+		</script>';
+
 		// Make select dynamic
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
-		$out .= ajax_combobox('select'.$htmlname);
+		//include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+		//$out .= ajax_combobox('select'.$htmlname);
 
 		return $out;
 	}
@@ -5141,8 +5146,8 @@ class Form
 		//if ($user->admin) $out .= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 
 		// Make select dynamic
-		//include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
-		//$out .= ajax_combobox($htmlname);
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+		$out .= ajax_combobox($htmlname);
 
 		return $out;
 	}

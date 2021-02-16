@@ -333,7 +333,7 @@ class FormCompany extends Form
 				}
 			}
 			if (!empty($htmlname)) $out .= '</select>';
-			if (!empty($htmlname) && $user->admin) $out .= ' '.info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
+			//if (!empty($htmlname) && $user->admin) $out .= ' '.info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 		} else {
 			dol_print_error($this->db);
 		}

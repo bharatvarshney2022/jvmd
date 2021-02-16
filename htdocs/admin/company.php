@@ -401,9 +401,8 @@ print '<!--begin::Entry-->
 								print '
 								<div class="card-body">';
 
-								print '<p>'.$langs->trans("CompanyFundationDesc", $langs->transnoentities("Save"))."</p><br>\n";
-								print "<br>\n";
-
+								print '<p>'.$langs->trans("CompanyFundationDesc", $langs->transnoentities("Save"))."</p>\n";
+								
 								print '<div class="table-responsive-lg">
 									<table class="table editmode"><thead>';
 								print '<tr><th class="titlefield ">'.$langs->trans("CompanyInfo").'</th><th>'.$langs->trans("Value").'</th></tr></thead><tbody>'."\n";
@@ -427,7 +426,7 @@ print '<!--begin::Entry-->
 								print '<tr class=""><td class="fieldrequired"><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="maxwidthonsmartphone">';
 								print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 								print $form->select_country($mysoc->country_id, 'country_id');
-								if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
+								//if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 								print '</td></tr>'."\n";
 
 								print '<tr class=""><td><label for="state_id">'.$langs->trans("State").'</label></td><td class="maxwidthonsmartphone">';
