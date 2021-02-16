@@ -1232,22 +1232,33 @@ if (!function_exists("llxHeaderLayout"))
 
 		print "\n".'	<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading'.$tmpcsstouse.'">'."\n";
 
-		print '<!--end::Header Mobile-->
-				<div class="d-flex flex-column flex-root">
-					<!--begin::Page-->
-					<div class="d-flex flex-row flex-column-fluid page">
-						<!--begin::Aside-->';
+		print '		<div class="d-flex flex-column flex-root">
+			<!--begin::Page-->
+			<div class="d-flex flex-row flex-column-fluid page">
+				<!--begin::Aside-->';
 
 						// top menu and left menu area
-						if (empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int'))
-						{
-							top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring, $help_url);
-						}
-
 						if (empty($conf->dol_hide_leftmenu))
 						{
-							left_menu('', $help_url, '', '', 1, $title, 1); // $menumanager is retrieved with a global $menumanager inside this function
+							left_menu_layout('', $help_url, '', '', 1, $title, 1); // $menumanager is retrieved with a global $menumanager inside this function
 						}
+
+						print '<!--begin::Wrapper-->
+						<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+							<!--begin::Header-->
+							<div id="kt_header" class="header header-fixed">
+								<!--begin::Container-->
+								<div class="container-fluid d-flex align-items-stretch justify-content-between">
+									<!--begin::Header Menu Wrapper-->
+									<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+										<!--begin::Header Menu-->';
+
+						if (empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int'))
+						{
+							top_menu_layout($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring, $help_url);
+						}
+
+						
 
 						// main area
 						if ($replacemainareaby)
@@ -1258,6 +1269,7 @@ if (!function_exists("llxHeaderLayout"))
 						main_area($title);
 
 		print '</div>
+		</div>
 		<!--end::Demo Panel-->';
 
 		
@@ -2096,8 +2108,6 @@ function top_htmlhead_layout($head, $title = '', $disablejs = 0, $disablehead = 
 
 		print "\n\n";
 
-		print "		<!--begin::Page Custom Styles(used by this page)-->\n";
-		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/login-2.css'.($ext ? '?'.$ext : '').'">'."\n";
 		print '		<!--end::Page Custom Styles-->
 		<!--begin::Global Theme Styles(used by all pages)-->'."\n";
 		print '		<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/oblyon/css/plugins.bundle.css'.($ext ? '?'.$ext : '').'">'."\n";
@@ -2378,6 +2388,230 @@ function top_htmlhead_layout($head, $title = '', $disablejs = 0, $disablehead = 
  * 						                    For other external page: http://server/url
  *  @return		void
  */
+function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $helppagename = '')
+{
+	global $user, $conf, $langs, $db;
+	global $dolibarr_main_authentication, $dolibarr_main_demo;
+	global $hookmanager, $menumanager;
+
+	$searchform = '';
+	$bookmarks = '';
+
+	// Instantiate hooks for external modules
+	$hookmanager->initHooks(array('toprightmenu'));
+
+	$toprightmenu = '';
+
+	// For backward compatibility with old modules
+	if (empty($conf->headerdone))
+	{
+		$disablenofollow = 0;
+		top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss, 0, $disablenofollow);
+		print '<body id="mainbody">';
+	}
+
+	/*
+     * Top menu
+     */
+	if ((empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int')) && (!defined('NOREQUIREMENU') || !constant('NOREQUIREMENU')))
+	{
+		if (!isset($form) || !is_object($form)) {
+			include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+			$form = new Form($db);
+		}
+
+		//print "\n".'<!-- Start top horizontal -->'."\n";
+
+		print "\n".'										<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default'.(GETPOST('dol_invisible_topmenu', 'int') ? ' hidden' : '').'">
+											<!--begin::Header Nav-->
+											<ul class="menu-nav">';
+		// dol_invisible_topmenu differs from dol_hide_topmenu: dol_invisible_topmenu means we output menu but we make it invisible.
+
+		// Show menu entries
+		//print '<div id="tmenu_tooltip'.(empty($conf->global->MAIN_MENU_INVERT) ? '' : 'invert').'" class="tmenu">'."\n";
+		$menumanager->atarget = $target;
+		$menumanager->showmenuLayout('top', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // This contains a \n
+		//print "</div>\n";
+
+		// Define link to login card
+		/*$appli = constant('DOL_APPLICATION_TITLE');
+		if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+		{
+			$appli = $conf->global->MAIN_APPLICATION_TITLE;
+			if (preg_match('/\d\.\d/', $appli))
+			{
+				if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) $appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
+			} else $appli .= " ".DOL_VERSION;
+		} else $appli .= " ".DOL_VERSION;
+*/
+		if (!empty($conf->global->MAIN_FEATURES_LEVEL)) $appli .= "<br>".$langs->trans("LevelOfFeature").': '.$conf->global->MAIN_FEATURES_LEVEL;
+
+		$logouttext = '';
+		$logouthtmltext = '';
+		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+		{
+			//$logouthtmltext=$appli.'<br>';
+			if ($_SESSION["dol_authmode"] != 'forceuser' && $_SESSION["dol_authmode"] != 'http')
+			{
+				$logouthtmltext .= $langs->trans("Logout").'<br>';
+
+				$logouttext .= '<a accesskey="l" href="'.DOL_URL_ROOT.'/user/logout.php">';
+				$logouttext .= img_picto($langs->trans('Logout'), 'sign-out', '', false, 0, 0, '', 'atoplogin');
+				$logouttext .= '</a>';
+			} else {
+				$logouthtmltext .= $langs->trans("NoLogoutProcessWithAuthMode", $_SESSION["dol_authmode"]);
+				$logouttext .= img_picto($langs->trans('Logout'), 'sign-out', '', false, 0, 0, '', 'atoplogin opacitymedium');
+			}
+		}
+
+		print '<div class="login_block usedropdown">'."\n";
+
+		$toprightmenu .= '<div class="login_block_other">';
+
+		// Execute hook printTopRightMenu (hooks should output string like '<div class="login"><a href="">mylink</a></div>')
+		$parameters = array();
+		$result = $hookmanager->executeHooks('printTopRightMenu', $parameters); // Note that $action and $object may have been modified by some hooks
+		if (is_numeric($result))
+		{
+			if ($result == 0)
+				$toprightmenu .= $hookmanager->resPrint; // add
+			else {
+				$toprightmenu = $hookmanager->resPrint; // replace
+			}
+		} else {
+			$toprightmenu .= $result; // For backward compatibility
+		}
+
+		// Link to module builder
+		if (!empty($conf->modulebuilder->enabled))
+		{
+			$text = '<a href="'.DOL_URL_ROOT.'/modulebuilder/index.php?mainmenu=home&leftmenu=admintools" target="modulebuilder">';
+			//$text.= img_picto(":".$langs->trans("ModuleBuilder"), 'printer_top.png', 'class="printer"');
+			$text .= '<span class="fa fa-bug atoplogin valignmiddle"></span>';
+			$text .= '</a>';
+			$toprightmenu .= $form->textwithtooltip('', $langs->trans("ModuleBuilder"), 2, 1, $text, 'login_block_elem', 2);
+		}
+
+		// Link to print main content area
+		if (empty($conf->global->MAIN_PRINT_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && $conf->browser->layout != 'phone')
+		{
+			$qs = dol_escape_htmltag($_SERVER["QUERY_STRING"]);
+
+			if (is_array($_POST))
+			{
+				foreach ($_POST as $key=>$value) {
+					if ($key !== 'action' && $key !== 'password' && !is_array($value)) $qs .= '&'.$key.'='.urlencode($value);
+				}
+			}
+			$qs .= (($qs && $morequerystring) ? '&' : '').$morequerystring;
+			$text = '<a href="'.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.$qs.($qs ? '&' : '').'optioncss=print" target="_blank">';
+			//$text.= img_picto(":".$langs->trans("PrintContentArea"), 'printer_top.png', 'class="printer"');
+			$text .= '<span class="fa fa-print atoplogin valignmiddle"></span>';
+			$text .= '</a>';
+			$toprightmenu .= $form->textwithtooltip('', $langs->trans("PrintContentArea"), 2, 1, $text, 'login_block_elem', 2);
+		}
+
+		// Link to JMVD wiki pages
+		/*if (empty($conf->global->MAIN_HELP_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+		{
+			$langs->load("help");
+
+			$helpbaseurl = '';
+			$helppage = '';
+			$mode = '';
+			$helppresent = '';
+
+			if (empty($helppagename)) {
+				$helppagename = 'EN:User_documentation|FR:Documentation_utilisateur|ES:Documentación_usuarios';
+			} else {
+				$helppresent = 'helppresent';
+			}
+
+			// Get helpbaseurl, helppage and mode from helppagename and langs
+			$arrayres = getHelpParamFor($helppagename, $langs);
+			$helpbaseurl = $arrayres['helpbaseurl'];
+			$helppage = $arrayres['helppage'];
+			$mode = $arrayres['mode'];
+
+			// Link to help pages
+			if ($helpbaseurl && $helppage)
+			{
+				$text = '';
+				$title = $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage').'...';
+				if ($mode == 'wiki') {
+					$title .= '<br>'.$langs->trans("PageWiki").' '.dol_escape_htmltag('"'.strtr($helppage, '_', ' ').'"');
+					if ($helppresent) $title .= ' <span class="opacitymedium">('.$langs->trans("DedicatedPageAvailable").')</span>';
+					else $title .= ' <span class="opacitymedium">('.$langs->trans("HomePage").')</span>';
+				}
+				$text .= '<a class="help" target="_blank" rel="noopener" href="';
+				if ($mode == 'wiki') $text .= sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
+				else $text .= sprintf($helpbaseurl, $helppage);
+				$text .= '">';
+				$text .= '<span class="fa fa-question-circle atoplogin valignmiddle'.($helppresent ? ' '.$helppresent : '').'"></span>';
+				if ($helppresent) $text .= '<span class="fa fa-circle helppresentcircle"></span>';
+				$text .= '</a>';
+				$toprightmenu .= $form->textwithtooltip('', $title, 2, 1, $text, 'login_block_elem', 2);
+			}
+
+			// Version
+			if (!empty($conf->global->MAIN_SHOWDATABASENAMEINHELPPAGESLINK)) {
+				$langs->load('admin');
+				$appli .= '<br>'.$langs->trans("Database").': '.$db->database_name;
+			}
+		}*/
+
+		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
+			$text = '<span class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
+			$toprightmenu .= $form->textwithtooltip('', $appli, 2, 1, $text, 'login_block_elem', 2);
+		}
+
+		// Logout link
+		$toprightmenu .= $form->textwithtooltip('', $logouthtmltext, 2, 1, $logouttext, 'login_block_elem logout-btn', 2);
+
+		$toprightmenu .= '</div>'; // end div class="login_block_other"
+
+
+		// Add login user link
+		$toprightmenu .= '<div class="login_block_user">';
+
+		// Login name with photo and tooltip
+		$mode = -1;
+		$toprightmenu .= '<div class="inline-block nowrap"><div class="inline-block login_block_elem login_block_elem_name" style="padding: 0px;">';
+
+		if (!empty($conf->global->MAIN_USE_TOP_MENU_SEARCH_DROPDOWN)) {
+			// Add search dropdown
+			$toprightmenu .= top_menu_search();
+		}
+
+		if (!empty($conf->global->MAIN_USE_TOP_MENU_QUICKADD_DROPDOWN)) {
+			// Add search dropdown
+			$toprightmenu .= top_menu_quickadd();
+		}
+
+		// Add bookmark dropdown
+		$toprightmenu .= top_menu_bookmark();
+
+		// Add user dropdown
+		$toprightmenu .= top_menu_user();
+
+		$toprightmenu .= '</div></div>';
+
+		$toprightmenu .= '</div>'."\n";
+
+
+		print $toprightmenu;
+
+		print "</div>\n"; // end div class="login_block"
+
+		print '</div></div>';
+
+		print '<div style="clear: both;"></div>';
+		print "<!-- End top horizontal menu -->\n\n";
+	}
+
+	if (empty($conf->dol_hide_leftmenu) && empty($conf->dol_use_jmobile)) print '<!-- Begin div id-container --><div id="id-container" class="id-container">';
+}
+
 function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $helppagename = '')
 {
 	global $user, $conf, $langs, $db;
@@ -3213,6 +3447,222 @@ function top_menu_search()
  *  @param  string  $acceptdelayedhtml          1 if caller request to have html delayed content not returned but saved into global $delayedhtmlcontent (so caller can show it at end of page to avoid flash FOUC effect)
  *  @return	void
  */
+function left_menu_layout($menu_array_before, $helppagename = '', $notused = '', $menu_array_after = '', $leftmenuwithoutmainarea = 0, $title = '', $acceptdelayedhtml = 0)
+{
+	global $user, $conf, $langs, $db, $form, $mysoc, $dolibarr_main_url_root;
+	global $hookmanager, $menumanager;
+
+	$searchform = '';
+	$bookmarks = '';
+
+	if (!empty($menu_array_before)) dol_syslog("Deprecated parameter menu_array_before was used when calling main::left_menu function. Menu entries of module should now be defined into module descriptor and not provided when calling left_menu.", LOG_WARNING);
+
+	if (empty($conf->dol_hide_leftmenu) && (!defined('NOREQUIREMENU') || !constant('NOREQUIREMENU')))
+	{
+		// Instantiate hooks for external modules
+		$hookmanager->initHooks(array('searchform', 'leftblock'));
+
+		$mysoc->logo_squarred_mini=(empty($conf->global->MAIN_INFO_SOCIETE_LOGO_SQUARRED_MINI)?'':$conf->global->MAIN_INFO_SOCIETE_LOGO_SQUARRED_MINI);
+		if (! empty($mysoc->logo_squarred_mini) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_squarred_mini))
+        {
+            $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.$mysoc->logo_squarred_mini);
+        }
+        /*elseif (! empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_mini))
+        {
+            $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.$mysoc->logo_mini);
+        }*/
+        else
+        {
+            $urllogo=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
+        }
+
+		print "\n".'				<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
+					<!--begin::Brand-->
+					<div class="brand flex-column-auto" id="kt_brand">
+						<!--begin::Logo-->';
+
+		print "\n".'						<a href="'.$dolibarr_main_url_root.'" class="brand-logo white-background">
+							<img alt="Logo" src="'.$urllogo.'" />
+						</a>
+						<!--end::Logo-->
+						<!--begin::Toggle-->
+						<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+							<span class="svg-icon svg-icon svg-icon-xl">
+								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+									<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+										<polygon points="0 0 24 0 24 24 0 24" />
+										<path d="M5.29288961,6.70710318 C4.90236532,6.31657888 4.90236532,5.68341391 5.29288961,5.29288961 C5.68341391,4.90236532 6.31657888,4.90236532 6.70710318,5.29288961 L12.7071032,11.2928896 C13.0856821,11.6714686 13.0989277,12.281055 12.7371505,12.675721 L7.23715054,18.675721 C6.86395813,19.08284 6.23139076,19.1103429 5.82427177,18.7371505 C5.41715278,18.3639581 5.38964985,17.7313908 5.76284226,17.3242718 L10.6158586,12.0300721 L5.29288961,6.70710318 Z" fill="#000000" fill-rule="nonzero" transform="translate(8.999997, 11.999999) scale(-1, 1) translate(-8.999997, -11.999999)" />
+										<path d="M10.7071009,15.7071068 C10.3165766,16.0976311 9.68341162,16.0976311 9.29288733,15.7071068 C8.90236304,15.3165825 8.90236304,14.6834175 9.29288733,14.2928932 L15.2928873,8.29289322 C15.6714663,7.91431428 16.2810527,7.90106866 16.6757187,8.26284586 L22.6757187,13.7628459 C23.0828377,14.1360383 23.1103407,14.7686056 22.7371482,15.1757246 C22.3639558,15.5828436 21.7313885,15.6103465 21.3242695,15.2371541 L16.0300699,10.3841378 L10.7071009,15.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" transform="translate(15.999997, 11.999999) scale(-1, 1) rotate(-270.000000) translate(-15.999997, -11.999999)" />
+									</g>
+								</svg>
+								<!--end::Svg Icon-->
+							</span>
+						</button>
+						<!--end::Toolbar-->
+					</div>
+					<!--end::Brand-->';
+
+		if ($conf->browser->layout == 'phone') $conf->global->MAIN_USE_OLD_SEARCH_FORM = 1; // Select into select2 is awfull on smartphone. TODO Is this still true with select2 v4 ?
+
+		print "\n";
+
+		if (!is_object($form)) $form = new Form($db);
+		$selected = -1;
+		if (empty($conf->global->MAIN_USE_TOP_MENU_SEARCH_DROPDOWN)) {
+			$usedbyinclude = 1;
+			$arrayresult = null;
+			include DOL_DOCUMENT_ROOT.'/core/ajax/selectsearchbox.php'; // This set $arrayresult
+
+			if ($conf->use_javascript_ajax && empty($conf->global->MAIN_USE_OLD_SEARCH_FORM)) {
+				$searchform .= $form->selectArrayFilter ('form-control searchselectcombo', $arrayresult, $selected, '', 1, 0, (empty($conf->global->MAIN_SEARCHBOX_CONTENT_LOADED_BEFORE_KEY) ? 1 : 0), 'vmenusearchselectcombo', 1, $langs->trans("Search"), 1);
+			} else {
+				if (is_array($arrayresult)) {
+					foreach ($arrayresult as $key => $val) {
+						$searchform .= printSearchForm($val['url'], $val['url'], $val['label'], 'maxwidth125', 'sall', $val['shortcut'], 'searchleft'.$key, $val['img']);
+					}
+				}
+			}
+
+			// Execute hook printSearchForm
+			$parameters = array('searchform' => $searchform);
+			$reshook = $hookmanager->executeHooks('printSearchForm', $parameters); // Note that $action and $object may have been modified by some hooks
+			if (empty($reshook)) {
+				$searchform .= $hookmanager->resPrint;
+			} else $searchform = $hookmanager->resPrint;
+
+			// Force special value for $searchform
+			if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) || empty($conf->use_javascript_ajax)) {
+				$urltosearch = DOL_URL_ROOT.'/core/search_page.php?showtitlebefore=1';
+				$searchform = '<div id="divsearchforms1"><a href="'.$urltosearch.'" accesskey="s" alt="'.dol_escape_htmltag($langs->trans("ShowSearchFields")).'">'.$langs->trans("Search").'...</a></div>';
+			} elseif ($conf->use_javascript_ajax && !empty($conf->global->MAIN_USE_OLD_SEARCH_FORM)) {
+				$searchform = '<div class="blockvmenuimpair blockvmenusearchphone"><div id="divsearchforms1"><a href="#" alt="'.dol_escape_htmltag($langs->trans("ShowSearchFields")).'">'.$langs->trans("Search").'...</a></div><div id="divsearchforms2" style="display: none">'.$searchform.'</div>';
+				$searchform .= '<script>
+            	jQuery(document).ready(function () {
+            		jQuery("#divsearchforms1").click(function(){
+	                   jQuery("#divsearchforms2").toggle();
+	               });
+            	});
+                </script>' . "\n";
+				$searchform .= '</div>';
+			}
+		}
+
+		// Left column
+		print '					<!--begin::Aside Menu-->'."\n";
+
+		print '					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+						<!--begin::Menu Container-->
+						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+							<!--begin::Menu Nav-->'."\n";
+
+		// Show left menu with other forms
+		$menumanager->menu_array = $menu_array_before;
+		$menumanager->menu_array_after = $menu_array_after;
+		$menumanager->showmenuLayout('left', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // output menu_array and menu found in database
+
+		// JMVD version + help + bug report link
+		print "\n";
+		//print '<div id="blockvmenuhelp" class="blockvmenuhelp">'."\n";
+
+		// Version
+		if (!empty($conf->global->MAIN_SHOW_VERSION))    // Version is already on help picto and on login page.
+		{
+			$doliurl = 'https://www.dolibarr.org';
+			//local communities
+			if (preg_match('/fr/i', $langs->defaultlang)) $doliurl = 'https://www.dolibarr.fr';
+			if (preg_match('/es/i', $langs->defaultlang)) $doliurl = 'https://www.dolibarr.es';
+			if (preg_match('/de/i', $langs->defaultlang)) $doliurl = 'https://www.dolibarr.de';
+			if (preg_match('/it/i', $langs->defaultlang)) $doliurl = 'https://www.dolibarr.it';
+			if (preg_match('/gr/i', $langs->defaultlang)) $doliurl = 'https://www.dolibarr.gr';
+
+			$appli = constant('DOL_APPLICATION_TITLE');
+			if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+			{
+				$appli = $conf->global->MAIN_APPLICATION_TITLE; $doliurl = '';
+				if (preg_match('/\d\.\d/', $appli))
+				{
+					if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) $appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
+				} else $appli .= " ".DOL_VERSION;
+			} else $appli .= " ".DOL_VERSION;
+			print '<div id="blockvmenuhelpapp" class="blockvmenuhelp">';
+			if ($doliurl) print '<a class="help" target="_blank" rel="noopener" href="'.$doliurl.'">';
+			else print '<span class="help">';
+			//print $appli;
+			if ($doliurl) print '</a>';
+			else print '</span>';
+			print '</div>'."\n";
+		}
+
+		// Link to bugtrack
+		if (!empty($conf->global->MAIN_BUGTRACK_ENABLELINK))
+		{
+			require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+
+			$bugbaseurl = 'https://github.com/Dolibarr/dolibarr/issues/new?labels=Bug';
+			$bugbaseurl .= '&title=';
+			$bugbaseurl .= urlencode("Bug: ");
+			$bugbaseurl .= '&body=';
+			$bugbaseurl .= urlencode("# Instructions\n");
+			$bugbaseurl .= urlencode("*This is a template to help you report good issues. You may use [Github Markdown](https://help.github.com/articles/getting-started-with-writing-and-formatting-on-github/) syntax to format your issue report.*\n");
+			$bugbaseurl .= urlencode("*Please:*\n");
+			$bugbaseurl .= urlencode("- *replace the bracket enclosed texts with meaningful information*\n");
+			$bugbaseurl .= urlencode("- *remove any unused sub-section*\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("# Bug\n");
+			$bugbaseurl .= urlencode("[*Short description*]\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("## Environment\n");
+			//$bugbaseurl .= urlencode("- **Version**: ".DOL_VERSION."\n");
+			$bugbaseurl .= urlencode("- **OS**: ".php_uname('s')."\n");
+			$bugbaseurl .= urlencode("- **Web server**: ".$_SERVER["SERVER_SOFTWARE"]."\n");
+			$bugbaseurl .= urlencode("- **PHP**: ".php_sapi_name().' '.phpversion()."\n");
+			$bugbaseurl .= urlencode("- **Database**: ".$db::LABEL.' '.$db->getVersion()."\n");
+			$bugbaseurl .= urlencode("- **URL(s)**: ".$_SERVER["REQUEST_URI"]."\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("## Expected and actual behavior\n");
+			$bugbaseurl .= urlencode("[*Verbose description*]\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("## Steps to reproduce the behavior\n");
+			$bugbaseurl .= urlencode("[*Verbose description*]\n");
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("## [Attached files](https://help.github.com/articles/issue-attachments) (Screenshots, screencasts, dolibarr.log, debugging informations…)\n");
+			$bugbaseurl .= urlencode("[*Files*]\n");
+			$bugbaseurl .= urlencode("\n");
+
+
+			// Execute hook printBugtrackInfo
+			$parameters = array('bugbaseurl'=>$bugbaseurl);
+			$reshook = $hookmanager->executeHooks('printBugtrackInfo', $parameters); // Note that $action and $object may have been modified by some hooks
+			if (empty($reshook))
+			{
+				$bugbaseurl .= $hookmanager->resPrint;
+			} else $bugbaseurl = $hookmanager->resPrint;
+
+			$bugbaseurl .= urlencode("\n");
+			$bugbaseurl .= urlencode("## Report\n");
+			print '<div id="blockvmenuhelpbugreport" class="blockvmenuhelp">';
+			print '<a class="help" target="_blank" rel="noopener" href="'.$bugbaseurl.'">'.$langs->trans("FindBug").'</a>';
+			print '</div>';
+		}
+		//print "<!-- End Help Block-->\n";
+		print "\n";
+
+		print "\n";
+
+		// Execute hook printLeftBlock
+		$parameters = array();
+		$reshook = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
+		print $hookmanager->resPrint;
+		 // End div id="side-nav" div id="id-left"
+	}
+
+	print "\n";
+	//print '<!-- Begin right area -->'."\n";
+
+	if (empty($leftmenuwithoutmainarea)) main_area_layout($title);
+}
+
 function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_array_after = '', $leftmenuwithoutmainarea = 0, $title = '', $acceptdelayedhtml = 0)
 {
 	global $user, $conf, $langs, $db, $form;
@@ -3401,6 +3851,49 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
  *  @param	string	$title		Title
  *  @return	void
  */
+function main_area_layout($title = '')
+{
+	global $conf, $langs;
+
+	if (empty($conf->dol_hide_leftmenu)) print '<!--begin::Wrapper--><div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">';
+
+	print "\n";
+
+	print '<!-- Begin div class="fiche" -->'."\n".'<div class="fiche">'."\n";
+
+	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED), 0, 0, 1, 'warning maintenancemode');
+
+	// Permit to add user company information on each printed document by setting SHOW_SOCINFO_ON_PRINT
+	if (!empty($conf->global->SHOW_SOCINFO_ON_PRINT) && GETPOST('optioncss', 'aZ09') == 'print' && empty(GETPOST('disable_show_socinfo_on_print', 'az09')))
+	{
+		global $hookmanager;
+		$hookmanager->initHooks(array('main'));
+		$parameters = array();
+		$reshook = $hookmanager->executeHooks('showSocinfoOnPrint', $parameters);
+		if (empty($reshook))
+		{
+			print '<!-- Begin show mysoc info header -->'."\n";
+			print '<div id="mysoc-info-header">'."\n";
+			print '<table class="centpercent div-table-responsive">'."\n";
+			print '<tbody>';
+			print '<tr><td rowspan="0" class="width20p">';
+			if ($conf->global->MAIN_SHOW_LOGO && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && !empty($conf->global->MAIN_INFO_SOCIETE_LOGO)) {
+				print '<img id="mysoc-info-header-logo" style="max-width:100%" alt="" src="'.DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_LOGO)).'">';
+			}
+			print '</td><td  rowspan="0" class="width50p"></td></tr>'."\n";
+			print '<tr><td class="titre bold">'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_NOM).'</td></tr>'."\n";
+			print '<tr><td>'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_ADDRESS).'<br>'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_ZIP).' '.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_TOWN).'</td></tr>'."\n";
+			if (!empty($conf->global->MAIN_INFO_SOCIETE_TEL)) print '<tr><td style="padding-left: 1em" class="small">'.$langs->trans("Phone").' : '.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_TEL).'</td></tr>';
+			if (!empty($conf->global->MAIN_INFO_SOCIETE_MAIL)) print '<tr><td style="padding-left: 1em" class="small">'.$langs->trans("Email").' : '.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_MAIL).'</td></tr>';
+			if (!empty($conf->global->MAIN_INFO_SOCIETE_WEB)) print '<tr><td style="padding-left: 1em" class="small">'.$langs->trans("Web").' : '.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_WEB).'</td></tr>';
+			print '</tbody>';
+			print '</table>'."\n";
+			print '</div>'."\n";
+			print '<!-- End show mysoc info header -->'."\n";
+		}
+	}
+}
+
 function main_area($title = '')
 {
 	global $conf, $langs;
