@@ -248,7 +248,7 @@ $tabsql[43] = "SELECT ct.rowid as rowid, ct.code_city as code, ct.nom as libelle
 $tabsql[44] = "SELECT p.rowid as rowid, p.code as code, p.zip as libelle, p.active, p.fk_city as city_id, ct.nom as city, p.fk_county as state_id, d.nom as state FROM ".MAIN_DB_PREFIX."c_pincodes as p, ".MAIN_DB_PREFIX."c_cities as ct, ".MAIN_DB_PREFIX."c_departements as d WHERE p.fk_city = ct.rowid and p.fk_county = d.rowid and d.active=1 and ct.active=1";
 
 $tabsql[45] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_brands";
-$tabsql[46] = "SELECT f.rowid as rowid, f.code, f.nom, f.active, b.nom as brand FROM ".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE f.fk_brand = b.rowid";
+$tabsql[46] = "SELECT f.rowid as rowid, f.code, f.nom, f.active, b.nom as brand, f.fk_brand FROM ".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE f.fk_brand = b.rowid";
 
 $tabsql[47] = "SELECT sf.rowid as rowid, sf.code as code, sf.nom as label, sf.fk_brand, sf.active, b.nom as brand, sf.fk_family, f.nom as category FROM ".MAIN_DB_PREFIX."c_product_subfamily as sf,".MAIN_DB_PREFIX."c_product_family as f, ".MAIN_DB_PREFIX."c_brands b WHERE sf.fk_brand = b.rowid AND sf.fk_family = f.rowid ";
 
