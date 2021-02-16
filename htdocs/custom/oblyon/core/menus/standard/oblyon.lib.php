@@ -928,7 +928,7 @@ function print_start_menu_entry($idsel,$itemsel,$showmode) {
 
 function print_start_menu_entry_layout($idsel,$itemsel,$showmode) {
 	if ($showmode) {
-		print '								<li class="menu-item'.(($itemsel)?'':'').'"  aria-haspopup="true" id="mainmenutd_'.$idsel.'">'."\n";
+		print '								<li class="menu-item'.(($itemsel)?' menu-item-open':'').'"  aria-haspopup="true" id="mainmenutd_'.$idsel.'">'."\n";
 	}
 }
 
