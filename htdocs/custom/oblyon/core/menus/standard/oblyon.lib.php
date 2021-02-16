@@ -2564,7 +2564,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 
 			if (!empty($menu_array[$i+1]['level'])) {
 				print '													<div class="menu-submenu menu-submenu-classic menu-submenu-left">
-														<ul class="menu-subnav">';//<ul class="blockvmenu sec-nav__sub-list">'; 
+														<ul class="menu-subnav">'."\n";//<ul class="blockvmenu sec-nav__sub-list">'; 
 			}
 		}
 
@@ -2573,20 +2573,22 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		if ($level > 0) {
 
 			if ($menu_array[$i]['enabled']) {
-				print '<li class="menu-item item-level'.$menu_array[$i]['level'].'">';
-				if ($menu_array[$i]['url']) print '<a class="menu-link" href="'.$url.'"'.($menu_array[$i]['target']?' target="'.$menu_array[$i]['target'].'"':'').'>'.$tabstring;
-				print $menu_array[$i]['titre'];
+				print '															<li class="menu-item item-level'.$menu_array[$i]['level'].'"  aria-haspopup="true">'."\n";
+				if ($menu_array[$i]['url']) print '																<a class="menu-link" href="'.$url.'"'.($menu_array[$i]['target']?' target="'.$menu_array[$i]['target'].'"':'').'>'.$tabstring;
+				print '<span class="menu-text">'.$menu_array[$i]['titre'].'</span>';
 				if ($menu_array[$i]['url']) print '</a>';
 			} else if ($showmenu) {
 				print '<li class="sec-nav__sub-item	is-disabled"><a class="vsmenu tmenudisabled sec-nav__link is-disabled" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$tabstring. '' .$menu_array[$i]['titre'].'</a>'."\n";
 			}
 
 			if ( empty($menu_array[$i+1]['level']) ) { 
-				print "</ul>
-				</div>
-			</li> \n "; 
+				print "
+															</li>
+														</ul>
+													</div>
+												</li> \n "; 
 			} else {
-			 print "</li> \n "; 
+			 	print "\n 															</li> \n "; 
 			}
 		}
 		else

@@ -1210,7 +1210,7 @@ if (!function_exists("llxHeaderLayout"))
 	 * @param	int				$disablenofollow	Disable the "nofollow" on page
 	 * @return	void
 	 */
-	function llxHeaderLayout($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $morecssonbody = '', $replacemainareaby = '', $disablenofollow = 0)
+	function llxHeaderLayout($head = '', $page_title = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $morecssonbody = '', $replacemainareaby = '', $disablenofollow = 0)
 	{
 		global $conf;
 
@@ -1266,12 +1266,9 @@ if (!function_exists("llxHeaderLayout"))
 							print $replacemainareaby;
 							return;
 						}
-						main_area($title);
+						main_area_content($title, $page_title);
 
-		print '</div>
-		</div>
-		<!--end::Demo Panel-->';
-
+		
 		
 
 	}
@@ -2464,152 +2461,172 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 			}
 		}
 
-		print '<div class="login_block usedropdown">'."\n";
+		print '											</ul>
+											<!--begin::Header Nav-->
+										</div>
+										<!--end::Header Menu-->
+									</div>
+									<!--end::Header Menu Wrapper-->
+									<!--begin::Topbar-->
+									<div class="topbar">'."\n";
 
-		$toprightmenu .= '<div class="login_block_other">';
+										// Execute hook printTopRightMenu (hooks should output string like '<div class="login"><a href="">mylink</a></div>')
+										$parameters = array();
+										$result = $hookmanager->executeHooks('printTopRightMenu', $parameters); // Note that $action and $object may have been modified by some hooks
+										if (is_numeric($result))
+										{
+											if ($result == 0)
+												$toprightmenu .= $hookmanager->resPrint; // add
+											else {
+												$toprightmenu = $hookmanager->resPrint; // replace
+											}
+										} else {
+											$toprightmenu .= $result; // For backward compatibility
+										}
 
-		// Execute hook printTopRightMenu (hooks should output string like '<div class="login"><a href="">mylink</a></div>')
-		$parameters = array();
-		$result = $hookmanager->executeHooks('printTopRightMenu', $parameters); // Note that $action and $object may have been modified by some hooks
-		if (is_numeric($result))
-		{
-			if ($result == 0)
-				$toprightmenu .= $hookmanager->resPrint; // add
-			else {
-				$toprightmenu = $hookmanager->resPrint; // replace
-			}
-		} else {
-			$toprightmenu .= $result; // For backward compatibility
-		}
+										// Link to module builder
+										if (!empty($conf->modulebuilder->enabled))
+										{
+											//$text = '<a href="'.DOL_URL_ROOT.'/modulebuilder/index.php?mainmenu=home&leftmenu=admintools" target="modulebuilder">';
+											//$text.= img_picto(":".$langs->trans("ModuleBuilder"), 'printer_top.png', 'class="printer"');
+											//$text .= '<span class="fa fa-bug atoplogin valignmiddle"></span>';
+											//$text .= '</a>';
+											//$toprightmenu .= $form->textwithtooltip('', $langs->trans("ModuleBuilder"), 2, 1, $text, 'login_block_elem', 2);
+										}
 
-		// Link to module builder
-		if (!empty($conf->modulebuilder->enabled))
-		{
-			$text = '<a href="'.DOL_URL_ROOT.'/modulebuilder/index.php?mainmenu=home&leftmenu=admintools" target="modulebuilder">';
-			//$text.= img_picto(":".$langs->trans("ModuleBuilder"), 'printer_top.png', 'class="printer"');
-			$text .= '<span class="fa fa-bug atoplogin valignmiddle"></span>';
-			$text .= '</a>';
-			$toprightmenu .= $form->textwithtooltip('', $langs->trans("ModuleBuilder"), 2, 1, $text, 'login_block_elem', 2);
-		}
+										// Link to print main content area
+										if (empty($conf->global->MAIN_PRINT_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && $conf->browser->layout != 'phone')
+										{
+											$qs = dol_escape_htmltag($_SERVER["QUERY_STRING"]);
 
-		// Link to print main content area
-		if (empty($conf->global->MAIN_PRINT_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && $conf->browser->layout != 'phone')
-		{
-			$qs = dol_escape_htmltag($_SERVER["QUERY_STRING"]);
-
-			if (is_array($_POST))
-			{
-				foreach ($_POST as $key=>$value) {
-					if ($key !== 'action' && $key !== 'password' && !is_array($value)) $qs .= '&'.$key.'='.urlencode($value);
-				}
-			}
-			$qs .= (($qs && $morequerystring) ? '&' : '').$morequerystring;
-			$text = '<a href="'.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.$qs.($qs ? '&' : '').'optioncss=print" target="_blank">';
-			//$text.= img_picto(":".$langs->trans("PrintContentArea"), 'printer_top.png', 'class="printer"');
-			$text .= '<span class="fa fa-print atoplogin valignmiddle"></span>';
-			$text .= '</a>';
-			$toprightmenu .= $form->textwithtooltip('', $langs->trans("PrintContentArea"), 2, 1, $text, 'login_block_elem', 2);
-		}
-
-		// Link to JMVD wiki pages
-		/*if (empty($conf->global->MAIN_HELP_DISABLELINK) && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-		{
-			$langs->load("help");
-
-			$helpbaseurl = '';
-			$helppage = '';
-			$mode = '';
-			$helppresent = '';
-
-			if (empty($helppagename)) {
-				$helppagename = 'EN:User_documentation|FR:Documentation_utilisateur|ES:Documentación_usuarios';
-			} else {
-				$helppresent = 'helppresent';
-			}
-
-			// Get helpbaseurl, helppage and mode from helppagename and langs
-			$arrayres = getHelpParamFor($helppagename, $langs);
-			$helpbaseurl = $arrayres['helpbaseurl'];
-			$helppage = $arrayres['helppage'];
-			$mode = $arrayres['mode'];
-
-			// Link to help pages
-			if ($helpbaseurl && $helppage)
-			{
-				$text = '';
-				$title = $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage').'...';
-				if ($mode == 'wiki') {
-					$title .= '<br>'.$langs->trans("PageWiki").' '.dol_escape_htmltag('"'.strtr($helppage, '_', ' ').'"');
-					if ($helppresent) $title .= ' <span class="opacitymedium">('.$langs->trans("DedicatedPageAvailable").')</span>';
-					else $title .= ' <span class="opacitymedium">('.$langs->trans("HomePage").')</span>';
-				}
-				$text .= '<a class="help" target="_blank" rel="noopener" href="';
-				if ($mode == 'wiki') $text .= sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
-				else $text .= sprintf($helpbaseurl, $helppage);
-				$text .= '">';
-				$text .= '<span class="fa fa-question-circle atoplogin valignmiddle'.($helppresent ? ' '.$helppresent : '').'"></span>';
-				if ($helppresent) $text .= '<span class="fa fa-circle helppresentcircle"></span>';
-				$text .= '</a>';
-				$toprightmenu .= $form->textwithtooltip('', $title, 2, 1, $text, 'login_block_elem', 2);
-			}
-
-			// Version
-			if (!empty($conf->global->MAIN_SHOWDATABASENAMEINHELPPAGESLINK)) {
-				$langs->load('admin');
-				$appli .= '<br>'.$langs->trans("Database").': '.$db->database_name;
-			}
-		}*/
-
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
-			$text = '<span class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
-			$toprightmenu .= $form->textwithtooltip('', $appli, 2, 1, $text, 'login_block_elem', 2);
-		}
-
-		// Logout link
-		$toprightmenu .= $form->textwithtooltip('', $logouthtmltext, 2, 1, $logouttext, 'login_block_elem logout-btn', 2);
-
-		$toprightmenu .= '</div>'; // end div class="login_block_other"
+											if (is_array($_POST))
+											{
+												foreach ($_POST as $key=>$value) {
+													if ($key !== 'action' && $key !== 'password' && !is_array($value)) $qs .= '&'.$key.'='.urlencode($value);
+												}
+											}
+											$qs .= (($qs && $morequerystring) ? '&' : '').$morequerystring;
+											//$text = '<a href="'.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.$qs.($qs ? '&' : '').'optioncss=print" target="_blank">';
+											//$text.= img_picto(":".$langs->trans("PrintContentArea"), 'printer_top.png', 'class="printer"');
+											//$text .= '<span class="fa fa-print atoplogin valignmiddle"></span>';
+											//$text .= '</a>';
+											//$toprightmenu .= $form->textwithtooltip('', $langs->trans("PrintContentArea"), 2, 1, $text, 'login_block_elem', 2);
+										}
 
 
-		// Add login user link
-		$toprightmenu .= '<div class="login_block_user">';
+										if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
+											$text = '<span class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
+											$toprightmenu .= $form->textwithtooltip('', $appli, 2, 1, $text, 'login_block_elem', 2);
+										}
 
-		// Login name with photo and tooltip
-		$mode = -1;
-		$toprightmenu .= '<div class="inline-block nowrap"><div class="inline-block login_block_elem login_block_elem_name" style="padding: 0px;">';
+										// Logout link
+										//$toprightmenu .= $form->textwithtooltip('', $logouthtmltext, 2, 1, $logouttext, 'login_block_elem logout-btn', 2);
 
-		if (!empty($conf->global->MAIN_USE_TOP_MENU_SEARCH_DROPDOWN)) {
-			// Add search dropdown
-			$toprightmenu .= top_menu_search();
-		}
+										//$toprightmenu .= '</div>'; // end div class="login_block_other"
 
-		if (!empty($conf->global->MAIN_USE_TOP_MENU_QUICKADD_DROPDOWN)) {
-			// Add search dropdown
-			$toprightmenu .= top_menu_quickadd();
-		}
+										$toprightmenu .= top_menu_user();
 
-		// Add bookmark dropdown
-		$toprightmenu .= top_menu_bookmark();
+										print '									<!--begin::User-->
+										<div class="topbar-item">
+											<div class="btn btn-icon btn-icon-mobile w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+												<span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
+												<span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">'.$user->login.'</span>
+												<span class="symbol symbol-lg-35 symbol-25 symbol-light-success">
+													<span class="symbol-label font-size-h5 font-weight-bold">'.substr(strtoupper($user->login),0,1).'</span>
+												</span>
+											</div>
+										</div>
+										<!--end::User-->'."\n";
 
-		// Add user dropdown
-		$toprightmenu .= top_menu_user();
+										global $user;
+										$userImage = $userDropDownImage = '';
+										if (!empty($user->photo))
+										{
+											$userImage          = Form::showphoto('userphoto', $user, 0, 0, 0, 'photouserphoto userphoto', 'small', 0, 1);
+											$userDropDownImage  = Form::showphoto('userphoto', $user, 0, 0, 0, 'dropdown-user-image', 'small', 0, 1);
+										} else {
+											$nophoto = '/public/theme/common/user_anonymous.png';
+											if ($user->gender == 'man') $nophoto = '/public/theme/common/user_man.png';
+											if ($user->gender == 'woman') $nophoto = '/public/theme/common/user_woman.png';
 
-		$toprightmenu .= '</div></div>';
+											$userImage = '<img class="photo photouserphoto userphoto" alt="No photo" src="'.DOL_URL_ROOT.$nophoto.'">';
+											$userDropDownImage = '<img class="photo dropdown-user-image" alt="No photo" src="'.DOL_URL_ROOT.$nophoto.'">';
+										}
 
-		$toprightmenu .= '</div>'."\n";
+										print '										<!-- begin::User Panel-->
+										<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+											<!--begin::Header-->
+											<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+												<h3 class="font-weight-bold m-0">User Profile 
+												<small class="text-muted font-size-sm ml-2"></small></h3>
+												<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+													<i class="ki ki-close icon-xs text-muted"></i>
+												</a>
+											</div>
+											<!--end::Header-->
+											<!--begin::Content-->
+											<div class="offcanvas-content pr-5 mr-n5">
+												<!--begin::Header-->
+												<div class="d-flex align-items-center mt-5">
+													<div class="symbol symbol-100 mr-5">
+														<div class="symbol-label"></div>
+														<i class="symbol-badge bg-success"></i>
+													</div>
+													<div class="d-flex flex-column">
+														<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">'.($user->firstname ? $user->firstname.' '.$user->lastname : $user->login).'</a>
+														<div class="text-muted mt-1"></div>
+													</div>
+												</div>
+												<!--end::Header-->
+												<!--begin::Separator-->
+												<div class="separator separator-dashed mt-8 mb-5"></div>
+												<!--end::Separator-->
+											</div>
+											<!--end::Content-->
+										</div>';
 
 
-		print $toprightmenu;
+										// Add login user link
+										//$toprightmenu .= '<div class="login_block_user">';
 
-		print "</div>\n"; // end div class="login_block"
+										// Login name with photo and tooltip
+										$mode = -1;
+										//$toprightmenu .= '<div class="inline-block nowrap"><div class="inline-block login_block_elem login_block_elem_name" style="padding: 0px;">';
 
-		print '</div></div>';
+										if (!empty($conf->global->MAIN_USE_TOP_MENU_SEARCH_DROPDOWN)) {
+											// Add search dropdown
+											$toprightmenu .= top_menu_search();
+										}
 
-		print '<div style="clear: both;"></div>';
-		print "<!-- End top horizontal menu -->\n\n";
+										if (!empty($conf->global->MAIN_USE_TOP_MENU_QUICKADD_DROPDOWN)) {
+											// Add search dropdown
+											$toprightmenu .= top_menu_quickadd();
+										}
+
+										// Add bookmark dropdown
+										$toprightmenu .= top_menu_bookmark();
+
+										// Add user dropdown
+										$toprightmenu .= top_menu_user();
+
+										$toprightmenu .= '</div></div>';
+
+										$toprightmenu .= '</div>'."\n";
+
+
+										//print $toprightmenu;
+
+										print '									</div>
+									<!--end::Topbar-->
+								</div>
+								<!--end::Container-->
+							</div>
+							<!--end::Header-->'."\n";
 	}
 
-	if (empty($conf->dol_hide_leftmenu) && empty($conf->dol_use_jmobile)) print '<!-- Begin div id-container --><div id="id-container" class="id-container">';
+	if (empty($conf->dol_hide_leftmenu) && empty($conf->dol_use_jmobile)) print '
+							<!--begin::Content-->
+							<div class="content d-flex flex-column flex-column-fluid" id="kt_content">';
 }
 
 function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '', $helppagename = '')
@@ -3476,7 +3493,7 @@ function left_menu_layout($menu_array_before, $helppagename = '', $notused = '',
             $urllogo=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
         }
 
-		print "\n".'				<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
+		print "\n".'				<div class="aside aside-left d-flex flex-column flex-row-auto" id="kt_aside">
 					<!--begin::Brand-->
 					<div class="brand flex-column-auto" id="kt_brand">
 						<!--begin::Logo-->';
@@ -3892,6 +3909,41 @@ function main_area_layout($title = '')
 			print '<!-- End show mysoc info header -->'."\n";
 		}
 	}
+}
+
+
+function main_area_content($title = '', $page_title = '')
+{
+	global $conf, $langs;
+
+	if (empty($conf->dol_hide_leftmenu)) print '';
+
+	print "\n";
+
+	print '								<!--begin::Subheader-->
+								<div class="subheader py-2 py-lg-6 subheader-solid" id="kt_subheader">
+									<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+										<!--begin::Info-->
+										<div class="d-flex align-items-center flex-wrap mr-1">
+											<!--begin::Page Heading-->
+											<div class="d-flex align-items-baseline flex-wrap mr-5">
+												<!--begin::Page Title-->
+												<h5 class="text-dark font-weight-bold my-1 mr-5">'.$title.'</h5>
+												<!--end::Page Title-->
+												<!--begin::Breadcrumb-->
+												<ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
+													<li class="breadcrumb-item text-muted">
+														<a href="" class="text-muted">'.$page_title.'</a>
+													</li>
+												</ul>
+												<!--end::Breadcrumb-->
+											</div>
+											<!--end::Page Heading-->
+										</div>
+										<!--end::Info-->
+									</div>
+								</div>
+								<!--end::Subheader-->';
 }
 
 function main_area($title = '')

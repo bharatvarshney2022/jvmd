@@ -938,7 +938,7 @@ class FormOther
 		if ($longlabel) $montharray = monthArray($langs, 0); // Get array
 		else $montharray = monthArray($langs, 1);
 
-		$select_month = '<select class="flat'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
+		$select_month = '<select class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
 		if ($useempty)
 		{
 			$select_month .= '<option value="0">&nbsp;</option>';
