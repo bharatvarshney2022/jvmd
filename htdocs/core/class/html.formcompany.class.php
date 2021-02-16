@@ -1118,7 +1118,7 @@ class FormCompany extends Form
 		print $this->select_allcity($selected, $country_codeid, $htmlname);
 	}
 
-	public function select_modelName($selected = '', $country_codeid = 0, $htmlname = 'family')
+	public function select_modelName($selected = '', $brand_id = 0, $category_id = 0, $subcategory_id = 0, $htmlname = 'family')
 	{
 				// phpcs:enable
 		global $conf, $langs;
@@ -1127,6 +1127,15 @@ class FormCompany extends Form
 		$sql = "SELECT rowid, code";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model ";
 		$sql .= " WHERE active = 1";
+		if($brand_id != 0){
+			$sql .= " AND fk_brand = '".$brand_id."' ";	
+		}
+		if($category_id != 0){
+			$sql .= " AND fk_family = '".$category_id."' ";	
+		}
+		if($category_id != 0){
+			$sql .= " AND fk_subfamily = '".$subcategory_id."' ";	
+		}
 		$sql .= " ORDER BY nom ASC";
 
 		dol_syslog(get_class($this)."::select_model", LOG_DEBUG);
@@ -1218,10 +1227,11 @@ class FormCompany extends Form
 
 		$sql = "SELECT rowid, nom";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family ";
-		if($brand_id != 0){
-			$sql .= " WHERE fk_brand = '".$brand_id."' ";	
-		}
 		$sql .= " WHERE active = 1";
+		if($brand_id != 0){
+			$sql .= " AND fk_brand = '".$brand_id."' ";	
+		}
+		
 		$sql .= " ORDER BY nom ASC";
 
 		dol_syslog(get_class($this)."::select_family", LOG_DEBUG);
@@ -1238,7 +1248,7 @@ class FormCompany extends Form
 				{
 					$obj = $this->db->fetch_object($resql);
 					if ($obj->rowid == 0) {
-						print '<option value="0">&nbsp;</option>';
+						print '<option value="0">Select Category</option>';
 					} else {
 						
 						if ($selected > 0 && $selected == $obj->rowid)
@@ -1258,7 +1268,7 @@ class FormCompany extends Form
 		}
 	}
 
-	public function select_subfamily($selected = '', $country_codeid = 0, $htmlname = 'family')
+	public function select_subfamily($selected = '', $brand_id = 0, $subcategory = 0, $htmlname = 'family')
 	{
 				// phpcs:enable
 		global $conf, $langs;
@@ -1267,6 +1277,12 @@ class FormCompany extends Form
 		$sql = "SELECT rowid, nom";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily ";
 		$sql .= " WHERE active = 1";
+		if($brand_id != 0){
+			$sql .= " AND fk_brand = '".$brand_id."' ";	
+		}
+		if($subcategory != 0){
+			$sql .= " AND fk_family = '".$subcategory."' ";	
+		}
 		$sql .= " ORDER BY nom ASC";
 
 		dol_syslog(get_class($this)."::select_subfamily", LOG_DEBUG);
