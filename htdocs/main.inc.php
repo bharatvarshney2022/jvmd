@@ -1237,40 +1237,36 @@ if (!function_exists("llxHeaderLayout"))
 			<div class="d-flex flex-row flex-column-fluid page">
 				<!--begin::Aside-->';
 
-						// top menu and left menu area
-						if (empty($conf->dol_hide_leftmenu))
-						{
-							left_menu_layout('', $help_url, '', '', 1, $title, 1); // $menumanager is retrieved with a global $menumanager inside this function
-						}
+		// top menu and left menu area
+		if (empty($conf->dol_hide_leftmenu))
+		{
+			left_menu_layout('', $help_url, '', '', 1, $title, 1); // $menumanager is retrieved with a global $menumanager inside this function
+		}
 
-						print '<!--begin::Wrapper-->
-						<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
-							<!--begin::Header-->
-							<div id="kt_header" class="header header-fixed">
-								<!--begin::Container-->
-								<div class="container-fluid d-flex align-items-stretch justify-content-between">
-									<!--begin::Header Menu Wrapper-->
-									<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
-										<!--begin::Header Menu-->';
+		print '<!--begin::Wrapper-->
+		<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+			<!--begin::Header-->
+			<div id="kt_header" class="header header-fixed">
+				<!--begin::Container-->
+				<div class="container-fluid d-flex align-items-stretch justify-content-between">
+					<!--begin::Header Menu Wrapper-->
+					<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+						<!--begin::Header Menu-->';
 
-						if (empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int'))
-						{
-							top_menu_layout($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring, $help_url);
-						}
-
-						
-
-						// main area
-						if ($replacemainareaby)
-						{
-							print $replacemainareaby;
-							return;
-						}
-						main_area_content($title, $page_title);
+		if (empty($conf->dol_hide_topmenu) || GETPOST('dol_invisible_topmenu', 'int'))
+		{
+			top_menu_layout($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring, $help_url);
+		}
 
 		
-		
 
+		// main area
+		if ($replacemainareaby)
+		{
+			print $replacemainareaby;
+			return;
+		}
+		main_area_content($title, $page_title);
 	}
 }
 
