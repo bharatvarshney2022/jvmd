@@ -4341,9 +4341,9 @@ function getTitleFieldOfListLayout($name, $thead = 0, $file = "", $field = "", $
 			}
 		}
 		$sortordertouseinlink = preg_replace('/,$/', '', $sortordertouseinlink);
-		$out .= '<a class="" href="'.$file.'?sortfield='.$field.'&sortorder='.$sortordertouseinlink.'&begin='.$begin.$options.'"';
+		//$out .= '<a class="" href="'.$file.'?sortfield='.$field.'&sortorder='.$sortordertouseinlink.'&begin='.$begin.$options.'"';
 		//$out .= (empty($conf->global->MAIN_DISABLE_WRAPPING_ON_COLUMN_TITLE) ? ' title="'.dol_escape_htmltag($langs->trans($name)).'"' : '');
-		$out .= '>';
+		//$out .= '>';
 	}
 
 	if ($tooltip) {
@@ -4355,7 +4355,7 @@ function getTitleFieldOfListLayout($name, $thead = 0, $file = "", $field = "", $
 
 	if (empty($thead) && $field && empty($disablesortlink))    // If this is a sort field
 	{
-		$out .= '</a>';
+		//$out .= '</a>';
 	}
 
 	if (empty($thead) && $field)    // If this is a sort field
