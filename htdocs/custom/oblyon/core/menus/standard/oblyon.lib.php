@@ -2591,7 +2591,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 												</li> \n "; 
 			} else {
 				if ($menu_array[$i]['enabled']) {
-				 	print "\n 															</li> \n "; 
+				 	print "\n 															</li>2 \n "; 
 				}
 			}
 		}
@@ -2599,7 +2599,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		{
 			if($i == 0)
 			{
-				print '												</li>'."\n";
+				print '												</li>1'."\n";
 			}
 		}
 
