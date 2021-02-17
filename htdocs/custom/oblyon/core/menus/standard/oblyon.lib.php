@@ -2590,7 +2590,9 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 													</div>
 												</li> \n "; 
 			} else {
-			 	print "\n 															</li> \n "; 
+				if ($menu_array[$i]['enabled']) {
+				 	print "\n 															</li> \n "; 
+				}
 			}
 		}
 		else
