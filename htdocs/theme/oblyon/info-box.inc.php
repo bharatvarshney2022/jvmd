@@ -304,11 +304,11 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 	/*justify-content: space-between;*/
 }
 .box-flex-item{
-	flex-grow : 1;
-	flex-shrink: 1;
+	/*flex-grow : 1;
+	flex-shrink: 1;*/
 	flex-basis: auto;
 
-	width: 280px;
+	width: 23.5%;
 	margin: 5px 0px 0px 15px;
 }
 .box-flex-item.filler{

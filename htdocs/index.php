@@ -879,7 +879,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 	$boxwork .= '</table>'; // End table array of working board
 	$boxwork .= '</div>';
 
-	if(1)//$user->admin)
+	if(1 == 2)//$user->admin)
 	{
 		print '
 		<!--begin::Entry-->
@@ -993,14 +993,25 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 	}
 
 	if (!empty($isIntopOpenedDashBoard)) {
-		//print '<div class="fichecenter">';
-		//print '<div class="opened-dash-board-wrap"><div class="box-flex-container">'.$openedDashBoard.'</div></div>';
-		//print '</div>';
+		print '<!--begin::Entry-->
+		<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">';
+				print '<div class="fichecenter">';
+				print '<div class="opened-dash-board-wrap"><div class="box-flex-container">'.$openedDashBoard.'</div></div>';
+				print '</div>';
+			print '</div>';
+		print '</div>';
 	}
 }
 
 
 print '<div class="clearboth"></div>';
+
+print '<!--begin::Entry-->
+		<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">';
 
 print '<div class="fichecenter fichecenterbis">';
 
@@ -1034,7 +1045,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 	}
 
 	if (!empty($boxstatFromHook) || !empty($boxstatItems)) {
-		/*$boxstat .= '<!-- Database statistics -->'."\n";
+		$boxstat .= '<!-- Database statistics -->'."\n";
 		$boxstat .= '<div class="box">';
 		$boxstat .= '<table summary="'.dol_escape_htmltag($langs->trans("DolibarrStateBoard")).'" class="noborder boxtable boxtablenobottom nohover widgetstats" width="100%">';
 		$boxstat .= '<tr class="liste_titre box_titre">';
@@ -1062,7 +1073,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 
 		$boxstat .= '</td></tr>';
 		$boxstat .= '</table>';
-		$boxstat .= '</div>';*/
+		$boxstat .= '</div>';
 	}
 }
 
@@ -1080,6 +1091,10 @@ $boxlist .= '</div>';
 print $boxlist;
 
 print '</div>';
+
+print '</div>';
+print '</div>';
+
 
 
 /*

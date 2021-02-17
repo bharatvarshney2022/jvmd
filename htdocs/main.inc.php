@@ -2168,6 +2168,8 @@ function top_htmlhead_layout($head, $title = '', $disablejs = 0, $disablehead = 
 		}
 
 		//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
+		print '<!-- Includes CSS for JMVD theme -->'."\n";
+		print '<link rel="stylesheet" type="text/css" href="'.$themepath.$themeparam.'">'."\n";
 		if (!empty($conf->global->MAIN_FIX_FLASH_ON_CHROME)) print '<!-- Includes CSS that does not exists as a workaround of flash bug of chrome -->'."\n".'<link rel="stylesheet" type="text/css" href="filethatdoesnotexiststosolvechromeflashbug">'."\n";
 
 		// CSS forced by modules (relative url starting with /)

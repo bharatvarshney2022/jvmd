@@ -205,144 +205,148 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 
 			$out .= "\n<!-- Box ".get_class($this)." start -->\n";
 
-			$out .= '<div class="box boxdraggable" id="boxto_'.$this->box_id.'">'."\n";
-
-			if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
+			if (!empty($head['text']))
 			{
-				$out .= '<table summary="boxtable'.$this->box_id.'" width="100%" class="noborder boxtable">'."\n";
-			}
 
-			// Show box title
-			if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']))
-			{
-				$out .= '<tr class="liste_titre box_titre">';
-				$out .= '<td';
-				if ($nbcol > 0) { $out .= ' colspan="'.$nbcol.'"'; }
-				$out .= '>';
-				if (!empty($conf->use_javascript_ajax))
-				{
-					//$out.= '<table summary="" class="nobordernopadding" width="100%"><tr><td class="tdoverflowmax150 maxwidth150onsmartphone">';
-					$out .= '<div class="tdoverflowmax250 maxwidth150onsmartphone float">';
-				}
-				if (!empty($head['text']))
-				{
-					$s = dol_trunc($head['text'], isset($head['limit']) ? $head['limit'] : $MAXLENGTHBOX);
-					$out .= $s;
-				}
-				if (!empty($conf->use_javascript_ajax))
-				{
-					$out .= '</div>';
-				}
-				//$out.= '</td>';
+				$out .= '<div class="box boxdraggable" id="boxto_'.$this->box_id.'">'."\n";
 
-				if (!empty($conf->use_javascript_ajax))
+				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
 				{
-					$sublink = '';
-					if (!empty($head['sublink']))  $sublink .= '<a href="'.$head['sublink'].'"'.(empty($head['target']) ? '' : ' target="'.$head['target'].'"').'>';
-					if (!empty($head['subpicto'])) $sublink .= img_picto($head['subtext'], $head['subpicto'], 'class="opacitymedium marginleftonly '.(empty($head['subclass']) ? '' : $head['subclass']).'" id="idsubimg'.$this->boxcode.'"');
-					if (!empty($head['sublink']))  $sublink .= '</a>';
-
-					//$out.= '<td class="nocellnopadd boxclose right nowraponall">';
-					$out .= '<div class="nocellnopadd boxclose floatright nowraponall">';
-					$out .= $sublink;
-					// The image must have the class 'boxhandle' beause it's value used in DOM draggable objects to define the area used to catch the full object
-					$out .= img_picto($langs->trans("MoveBox", $this->box_id), 'grip_title', 'class="opacitymedium boxhandle hideonsmartphone cursormove marginleftonly"');
-					$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
-					$label = $head['text'];
-					//if (! empty($head['graph'])) $label.=' ('.$langs->trans("Graph").')';
-					if (!empty($head['graph'])) $label .= ' <span class="opacitymedium fa fa-bar-chart"></span>';
-					$out .= '<input type="hidden" id="boxlabelentry'.$this->box_id.'" value="'.dol_escape_htmltag($label).'">';
-					//$out.= '</td></tr></table>';
-					$out .= '</div>';
+					$out .= '<table summary="boxtable'.$this->box_id.'" width="100%" class="noborder boxtable">'."\n";
 				}
 
-				$out .= "</td>";
-				$out .= "</tr>\n";
-			}
-
-			// Show box lines
-			if ($nblines)
-			{
-				// Loop on each record
-				for ($i = 0, $n = $nblines; $i < $n; $i++)
+				// Show box title
+				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']))
 				{
-					if (isset($contents[$i]))
+					$out .= '<tr class="liste_titre box_titre">';
+					$out .= '<td';
+					if ($nbcol > 0) { $out .= ' colspan="'.$nbcol.'"'; }
+					$out .= '>';
+					if (!empty($conf->use_javascript_ajax))
 					{
-						// TR
-						if (isset($contents[$i][0]['tr'])) $out .= '<tr '.$contents[$i][0]['tr'].'>';
-						else $out .= '<tr class="oddeven">';
+						//$out.= '<table summary="" class="nobordernopadding" width="100%"><tr><td class="tdoverflowmax150 maxwidth150onsmartphone">';
+						$out .= '<div class="tdoverflowmax250 maxwidth150onsmartphone float">';
+					}
+					if (!empty($head['text']))
+					{
+						$s = dol_trunc($head['text'], isset($head['limit']) ? $head['limit'] : $MAXLENGTHBOX);
+						$out .= $s;
+					}
+					if (!empty($conf->use_javascript_ajax))
+					{
+						$out .= '</div>';
+					}
+					//$out.= '</td>';
 
-						// Loop on each TD
-						$nbcolthisline = count($contents[$i]);
-						for ($j = 0; $j < $nbcolthisline; $j++) {
-							// Define tdparam
-							$tdparam = '';
-							if (!empty($contents[$i][$j]['td'])) $tdparam .= ' '.$contents[$i][$j]['td'];
+					if (!empty($conf->use_javascript_ajax))
+					{
+						$sublink = '';
+						if (!empty($head['sublink']))  $sublink .= '<a href="'.$head['sublink'].'"'.(empty($head['target']) ? '' : ' target="'.$head['target'].'"').'>';
+						if (!empty($head['subpicto'])) $sublink .= img_picto($head['subtext'], $head['subpicto'], 'class="opacitymedium marginleftonly '.(empty($head['subclass']) ? '' : $head['subclass']).'" id="idsubimg'.$this->boxcode.'"');
+						if (!empty($head['sublink']))  $sublink .= '</a>';
 
-							$text = isset($contents[$i][$j]['text']) ? $contents[$i][$j]['text'] : '';
-							$textwithnotags = preg_replace('/<([^>]+)>/i', '', $text);
-							$text2 = isset($contents[$i][$j]['text2']) ? $contents[$i][$j]['text2'] : '';
-							$text2withnotags = preg_replace('/<([^>]+)>/i', '', $text2);
+						//$out.= '<td class="nocellnopadd boxclose right nowraponall">';
+						$out .= '<div class="nocellnopadd boxclose floatright nowraponall">';
+						$out .= $sublink;
+						// The image must have the class 'boxhandle' beause it's value used in DOM draggable objects to define the area used to catch the full object
+						$out .= img_picto($langs->trans("MoveBox", $this->box_id), 'grip_title', 'class="opacitymedium boxhandle hideonsmartphone cursormove marginleftonly"');
+						$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
+						$label = $head['text'];
+						//if (! empty($head['graph'])) $label.=' ('.$langs->trans("Graph").')';
+						if (!empty($head['graph'])) $label .= ' <span class="opacitymedium fa fa-bar-chart"></span>';
+						$out .= '<input type="hidden" id="boxlabelentry'.$this->box_id.'" value="'.dol_escape_htmltag($label).'">';
+						//$out.= '</td></tr></table>';
+						$out .= '</div>';
+					}
 
-							$textnoformat = isset($contents[$i][$j]['textnoformat']) ? $contents[$i][$j]['textnoformat'] : '';
-							//$out.= "xxx $textwithnotags y";
-							if (empty($contents[$i][$j]['tooltip'])) $contents[$i][$j]['tooltip'] = "";
-							$tooltip = isset($contents[$i][$j]['tooltip']) ? $contents[$i][$j]['tooltip'] : '';
+					$out .= "</td>";
+					$out .= "</tr>\n";
+				}
 
-							$out .= '<td'.$tdparam.'>'."\n";
+				// Show box lines
+				if ($nblines)
+				{
+					// Loop on each record
+					for ($i = 0, $n = $nblines; $i < $n; $i++)
+					{
+						if (isset($contents[$i]))
+						{
+							// TR
+							if (isset($contents[$i][0]['tr'])) $out .= '<tr '.$contents[$i][0]['tr'].'>';
+							else $out .= '<tr class="oddeven">';
 
-							// Url
-							if (!empty($contents[$i][$j]['url']) && empty($contents[$i][$j]['logo']))
-							{
-								$out .= '<a href="'.$contents[$i][$j]['url'].'"';
-								if (!empty($tooltip)) {
-									$out .= ' title="'.dol_escape_htmltag($langs->trans("Show").' '.$tooltip, 1).'" class="classfortooltip"';
+							// Loop on each TD
+							$nbcolthisline = count($contents[$i]);
+							for ($j = 0; $j < $nbcolthisline; $j++) {
+								// Define tdparam
+								$tdparam = '';
+								if (!empty($contents[$i][$j]['td'])) $tdparam .= ' '.$contents[$i][$j]['td'];
+
+								$text = isset($contents[$i][$j]['text']) ? $contents[$i][$j]['text'] : '';
+								$textwithnotags = preg_replace('/<([^>]+)>/i', '', $text);
+								$text2 = isset($contents[$i][$j]['text2']) ? $contents[$i][$j]['text2'] : '';
+								$text2withnotags = preg_replace('/<([^>]+)>/i', '', $text2);
+
+								$textnoformat = isset($contents[$i][$j]['textnoformat']) ? $contents[$i][$j]['textnoformat'] : '';
+								//$out.= "xxx $textwithnotags y";
+								if (empty($contents[$i][$j]['tooltip'])) $contents[$i][$j]['tooltip'] = "";
+								$tooltip = isset($contents[$i][$j]['tooltip']) ? $contents[$i][$j]['tooltip'] : '';
+
+								$out .= '<td'.$tdparam.'>'."\n";
+
+								// Url
+								if (!empty($contents[$i][$j]['url']) && empty($contents[$i][$j]['logo']))
+								{
+									$out .= '<a href="'.$contents[$i][$j]['url'].'"';
+									if (!empty($tooltip)) {
+										$out .= ' title="'.dol_escape_htmltag($langs->trans("Show").' '.$tooltip, 1).'" class="classfortooltip"';
+									}
+									//$out.= ' alt="'.$textwithnotags.'"';      // Pas de alt sur un "<a href>"
+									$out .= isset($contents[$i][$j]['target']) ? ' target="'.$contents[$i][$j]['target'].'"' : '';
+									$out .= '>';
 								}
-								//$out.= ' alt="'.$textwithnotags.'"';      // Pas de alt sur un "<a href>"
-								$out .= isset($contents[$i][$j]['target']) ? ' target="'.$contents[$i][$j]['target'].'"' : '';
-								$out .= '>';
+
+								// Logo
+								if (!empty($contents[$i][$j]['logo']))
+								{
+									$logo = preg_replace("/^object_/i", "", $contents[$i][$j]['logo']);
+									$out .= '<a href="'.$contents[$i][$j]['url'].'">';
+									$out .= img_object($langs->trans("Show").' '.$tooltip, $logo, 'class="classfortooltip"');
+								}
+
+								$maxlength = $MAXLENGTHBOX;
+								if (!empty($contents[$i][$j]['maxlength'])) $maxlength = $contents[$i][$j]['maxlength'];
+
+								if ($maxlength) $textwithnotags = dol_trunc($textwithnotags, $maxlength);
+								if (preg_match('/^<(img|div|span)/i', $text) || !empty($contents[$i][$j]['asis'])) $out .= $text; // show text with no html cleaning
+								else $out .= $textwithnotags; // show text with html cleaning
+
+								// End Url
+								if (!empty($contents[$i][$j]['url'])) $out .= '</a>';
+
+								if (preg_match('/^<(img|div|span)/i', $text2) || !empty($contents[$i][$j]['asis2'])) $out .= $text2; // show text with no html cleaning
+								else $out .= $text2withnotags; // show text with html cleaning
+
+								if (!empty($textnoformat)) $out .= "\n".$textnoformat."\n";
+
+								$out .= "</td>\n";
 							}
 
-							// Logo
-							if (!empty($contents[$i][$j]['logo']))
-							{
-								$logo = preg_replace("/^object_/i", "", $contents[$i][$j]['logo']);
-								$out .= '<a href="'.$contents[$i][$j]['url'].'">';
-								$out .= img_object($langs->trans("Show").' '.$tooltip, $logo, 'class="classfortooltip"');
-							}
-
-							$maxlength = $MAXLENGTHBOX;
-							if (!empty($contents[$i][$j]['maxlength'])) $maxlength = $contents[$i][$j]['maxlength'];
-
-							if ($maxlength) $textwithnotags = dol_trunc($textwithnotags, $maxlength);
-							if (preg_match('/^<(img|div|span)/i', $text) || !empty($contents[$i][$j]['asis'])) $out .= $text; // show text with no html cleaning
-							else $out .= $textwithnotags; // show text with html cleaning
-
-							// End Url
-							if (!empty($contents[$i][$j]['url'])) $out .= '</a>';
-
-							if (preg_match('/^<(img|div|span)/i', $text2) || !empty($contents[$i][$j]['asis2'])) $out .= $text2; // show text with no html cleaning
-							else $out .= $text2withnotags; // show text with html cleaning
-
-							if (!empty($textnoformat)) $out .= "\n".$textnoformat."\n";
-
-							$out .= "</td>\n";
+							$out .= "</tr>\n";
 						}
-
-						$out .= "</tr>\n";
 					}
 				}
+
+				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
+				{
+					$out .= "</table>\n";
+				}
+
+				// If invisible box with no contents
+				if (empty($head['text']) && empty($head['sublink']) && empty($head['subpicto']) && !$nblines) $out .= "<br>\n";
+
+				$out .= "</div>\n";
 			}
-
-			if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
-			{
-				$out .= "</table>\n";
-			}
-
-			// If invisible box with no contents
-			if (empty($head['text']) && empty($head['sublink']) && empty($head['subpicto']) && !$nblines) $out .= "<br>\n";
-
-			$out .= "</div>\n";
 
 			$out .= "<!-- Box ".get_class($this)." end -->\n\n";
 			if (!empty($conf->global->MAIN_ACTIVATE_FILECACHE)) {
