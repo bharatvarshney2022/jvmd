@@ -2570,6 +2570,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		}
 
 		// Menu Level = 1 or 2
+		echo $level.">".$menu_array[$i]['enabled'].'::';		
 
 		if ($level > 0) {
 
