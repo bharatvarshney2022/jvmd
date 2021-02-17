@@ -1165,85 +1165,89 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			$newmenu->add("/index.php?mainmenu=home&amp;leftmenu=home", $langs->trans("MyDashboard"), 0, 1, '', $mainmenu, 'home');
 
 			// Setup
-			$newmenu->add("/admin/index.php?mainmenu=home&amp;leftmenu=setup", $langs->trans("Setup"), 0, $user->admin, '', $mainmenu, 'setup');
-
-            if (! empty($menu_invert)) $leftmenu= 'setup';
-
-			if ($usemenuhider || empty($leftmenu) || $leftmenu=="setup")
+			if($user->admin)
 			{
-				// Load translation files required by the page
-				$langs->loadLangs(array('admin', 'help'));
+				$newmenu->add("/admin/index.php?mainmenu=home&amp;leftmenu=setup", $langs->trans("Setup"), 0, $user->admin, '', $mainmenu, 'setup');
 
-				$warnpicto='';
-				if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY))
+	            if (! empty($menu_invert)) $leftmenu= 'setup';
+
+				if ($usemenuhider || empty($leftmenu) || $leftmenu=="setup")
 				{
-					$langs->load("errors");
-					$warnpicto =' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
+					// Load translation files required by the page
+					$langs->loadLangs(array('admin', 'help'));
+
+					$warnpicto='';
+					if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY))
+					{
+						$langs->load("errors");
+						$warnpicto =' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
+					}
+					$newmenu->add("/admin/company.php?mainmenu=home", $langs->trans("MenuCompanySetup").$warnpicto,1);
+					$warnpicto='';
+					if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING)?1:$conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
+					{
+						$langs->load("errors");
+						$warnpicto = ' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
+					}
+					$newmenu->add("/admin/modules.php?mainmenu=home", $langs->trans("Modules").$warnpicto,1,$user->admin);
+					$newmenu->add("/admin/menus.php?mainmenu=home", $langs->trans("Menus"),1,$user->admin);
+					$newmenu->add("/admin/ihm.php?mainmenu=home", $langs->trans("GUISetup"),1,$user->admin);
+
+					$newmenu->add("/admin/translation.php?mainmenu=home", $langs->trans("Translation"),1,$user->admin);
+					$newmenu->add("/admin/defaultvalues.php?mainmenu=home", $langs->trans("DefaultValues"),1,$user->admin);
+					$newmenu->add("/admin/boxes.php?mainmenu=home", $langs->trans("Boxes"),1,$user->admin);
+					$newmenu->add("/admin/delais.php?mainmenu=home",$langs->trans("MenuWarnings"),1,$user->admin);
+					$newmenu->add("/admin/security_other.php?mainmenu=home", $langs->trans("Security"),1,$user->admin);
+					$newmenu->add("/admin/limits.php?mainmenu=home", $langs->trans("MenuLimits"),1,$user->admin);
+					$newmenu->add("/admin/pdf.php?mainmenu=home", $langs->trans("PDF"),1,$user->admin);
+					$newmenu->add("/admin/mails.php?mainmenu=home", $langs->trans("Emails"),1,$user->admin);
+					$newmenu->add("/admin/sms.php?mainmenu=home", $langs->trans("SMS"),1,$user->admin);
+					$newmenu->add("/admin/dict.php?mainmenu=home", $langs->trans("Dictionary"),1,$user->admin);
+					$newmenu->add("/admin/const.php?mainmenu=home", $langs->trans("OtherSetup"),1,$user->admin);
 				}
-				$newmenu->add("/admin/company.php?mainmenu=home", $langs->trans("MenuCompanySetup").$warnpicto,1);
-				$warnpicto='';
-				if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING)?1:$conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
+
+
+				// System tools
+				$newmenu->add("/admin/tools/index.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("AdminTools"), 0, $user->admin, '', $mainmenu, 'admintools');
+
+	            if (! empty($menu_invert)) $leftmenu= 'admintools';
+
+				if ($usemenuhider || empty($leftmenu) || preg_match('/^(admintools|all)/',$leftmenu))
 				{
-					$langs->load("errors");
-					$warnpicto = ' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
-				}
-				$newmenu->add("/admin/modules.php?mainmenu=home", $langs->trans("Modules").$warnpicto,1,$user->admin);
-				$newmenu->add("/admin/menus.php?mainmenu=home", $langs->trans("Menus"),1,$user->admin);
-				$newmenu->add("/admin/ihm.php?mainmenu=home", $langs->trans("GUISetup"),1,$user->admin);
+					// Load translation files required by the page
+					$langs->loadLangs(array('admin', 'help', 'cron'));
 
-				$newmenu->add("/admin/translation.php?mainmenu=home", $langs->trans("Translation"),1,$user->admin);
-				$newmenu->add("/admin/defaultvalues.php?mainmenu=home", $langs->trans("DefaultValues"),1,$user->admin);
-				$newmenu->add("/admin/boxes.php?mainmenu=home", $langs->trans("Boxes"),1,$user->admin);
-				$newmenu->add("/admin/delais.php?mainmenu=home",$langs->trans("MenuWarnings"),1,$user->admin);
-				$newmenu->add("/admin/security_other.php?mainmenu=home", $langs->trans("Security"),1,$user->admin);
-				$newmenu->add("/admin/limits.php?mainmenu=home", $langs->trans("MenuLimits"),1,$user->admin);
-				$newmenu->add("/admin/pdf.php?mainmenu=home", $langs->trans("PDF"),1,$user->admin);
-				$newmenu->add("/admin/mails.php?mainmenu=home", $langs->trans("Emails"),1,$user->admin);
-				$newmenu->add("/admin/sms.php?mainmenu=home", $langs->trans("SMS"),1,$user->admin);
-				$newmenu->add("/admin/dict.php?mainmenu=home", $langs->trans("Dictionary"),1,$user->admin);
-				$newmenu->add("/admin/const.php?mainmenu=home", $langs->trans("OtherSetup"),1,$user->admin);
-			}
+					$newmenu->add('/admin/system/dolibarr.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('InfoDolibarr'), 1);
 
-			// System tools
-			$newmenu->add("/admin/tools/index.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("AdminTools"), 0, $user->admin, '', $mainmenu, 'admintools');
+	                if (! empty($menu_invert)) $leftmenu= 'admintools_info';
 
-            if (! empty($menu_invert)) $leftmenu= 'admintools';
+	                if ($usemenuhider || empty($leftmenu) || $leftmenu=='admintools_info') {
+	                    $newmenu->add('/admin/system/modules.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Modules'), 2);
+	                    $newmenu->add('/admin/triggers.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Triggers'), 2);
+	                    $newmenu->add('/admin/system/filecheck.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('FileCheck'), 2);
+	                }
+					//$newmenu->add('/admin/system/browser.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoBrowser'), //1);
+					//$newmenu->add('/admin/system/os.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoOS'), 1);
+					//$newmenu->add('/admin/system/web.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoWebServer'), 1);
+					//$newmenu->add('/admin/system/phpinfo.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoPHP'), 1);
+					//if (function_exists('xdebug_is_enabled')) $newmenu->add('/admin/system/xdebug.php', $langs->trans('XDebug'),1);
+					//$newmenu->add('/admin/system/database.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoDatabase'), 1);
+					if (function_exists('eaccelerator_info')) $newmenu->add("/admin/tools/eaccelerator.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("EAccelerator"),1);
+					//$newmenu->add("/admin/system/perf.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("InfoPerf"),1);
+					$newmenu->add("/admin/tools/dolibarr_export.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Backup"),1);
+					$newmenu->add("/admin/tools/dolibarr_import.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Restore"),1);
+					//$newmenu->add("/admin/tools/update.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("MenuUpgrade"),1);
+					$newmenu->add("/admin/tools/purge.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Purge"),1);
+					$newmenu->add("/admin/tools/listevents.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Audit"),1);
+					$newmenu->add("/admin/tools/listsessions.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Sessions"),1);
+					//$newmenu->add('/admin/system/about.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('ExternalResources'), 1);
+	                //$newmenu->add('/cron/list.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('CronList'), 1);
 
-			if ($usemenuhider || empty($leftmenu) || preg_match('/^(admintools|all)/',$leftmenu))
-			{
-				// Load translation files required by the page
-				$langs->loadLangs(array('admin', 'help', 'cron'));
-
-				$newmenu->add('/admin/system/dolibarr.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('InfoDolibarr'), 1);
-
-                if (! empty($menu_invert)) $leftmenu= 'admintools_info';
-
-                if ($usemenuhider || empty($leftmenu) || $leftmenu=='admintools_info') {
-                    $newmenu->add('/admin/system/modules.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Modules'), 2);
-                    $newmenu->add('/admin/triggers.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Triggers'), 2);
-                    $newmenu->add('/admin/system/filecheck.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('FileCheck'), 2);
-                }
-				//$newmenu->add('/admin/system/browser.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoBrowser'), //1);
-				//$newmenu->add('/admin/system/os.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoOS'), 1);
-				//$newmenu->add('/admin/system/web.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoWebServer'), 1);
-				//$newmenu->add('/admin/system/phpinfo.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoPHP'), 1);
-				//if (function_exists('xdebug_is_enabled')) $newmenu->add('/admin/system/xdebug.php', $langs->trans('XDebug'),1);
-				//$newmenu->add('/admin/system/database.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoDatabase'), 1);
-				if (function_exists('eaccelerator_info')) $newmenu->add("/admin/tools/eaccelerator.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("EAccelerator"),1);
-				//$newmenu->add("/admin/system/perf.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("InfoPerf"),1);
-				$newmenu->add("/admin/tools/dolibarr_export.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Backup"),1);
-				$newmenu->add("/admin/tools/dolibarr_import.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Restore"),1);
-				//$newmenu->add("/admin/tools/update.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("MenuUpgrade"),1);
-				$newmenu->add("/admin/tools/purge.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Purge"),1);
-				$newmenu->add("/admin/tools/listevents.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Audit"),1);
-				$newmenu->add("/admin/tools/listsessions.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Sessions"),1);
-				//$newmenu->add('/admin/system/about.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('ExternalResources'), 1);
-                //$newmenu->add('/cron/list.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('CronList'), 1);
-
-				if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
-				{
-					$langs->load("products");
-					$newmenu->add("/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("ProductVatMassChange"), 1, $user->admin);
+					if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
+					{
+						$langs->load("products");
+						$newmenu->add("/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("ProductVatMassChange"), 1, $user->admin);
+					}
 				}
 			}
 
@@ -2570,7 +2574,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		}
 
 		// Menu Level = 1 or 2
-		echo $level.">";print_r($menu_array[$i]);
+		//echo $level.">";print_r($menu_array[$i]);
 
 		if ($level > 0) {
 
