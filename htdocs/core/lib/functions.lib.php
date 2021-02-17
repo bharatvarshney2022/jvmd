@@ -4596,6 +4596,125 @@ function load_fiche_titre($titre, $morehtmlright = '', $picto = 'generic', $pict
  *  @param	string		$morehtmlrightbeforearrow	More html to show (before arrows)
  *	@return	void
  */
+
+function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfield = '', $sortorder = '', $morehtmlcenter = '', $num = -1, $totalnboflines = '', $picto = 'generic', $pictoisfullpath = 0, $morehtmlright = '', $morecss = '', $limit = -1, $hideselectlimit = 0, $hidenavigation = 0, $pagenavastextinput = 0, $morehtmlrightbeforearrow = '')
+{
+	global $conf, $langs;
+
+	$savlimit = $limit;
+	$savtotalnboflines = $totalnboflines;
+	$totalnboflines = abs((int) $totalnboflines);
+
+	if ($picto == 'setup') $picto = 'title_setup.png';
+	if (($conf->browser->name == 'ie') && $picto == 'generic') $picto = 'title.gif';
+	if ($limit < 0) $limit = $conf->liste_limit;
+	if ($savlimit != 0 && (($num > $limit) || ($num == -1) || ($limit == 0)))
+	{
+		$nextpage = 1;
+	} else {
+		$nextpage = 0;
+	}
+	//print 'totalnboflines='.$totalnboflines.'-savlimit='.$savlimit.'-limit='.$limit.'-num='.$num.'-nextpage='.$nextpage;
+
+	print "\n";
+	print "<!-- Begin title '".$titre."' -->\n";
+	print "<div class='table-responsive'>";
+	print '<table class="table '.($morecss ? ' '.$morecss : '').'"><tr>'; // maring bottom must be same than into load_fiche_tire
+
+	// Left
+
+	///if ($picto && $titre) print '<td class="nobordernopadding widthpictotitle valignmiddle col-picto">'.img_picto('', $picto, 'class="valignmiddle pictotitle widthpictotitle"', $pictoisfullpath).'</td>';
+	/*print '<td class="nobordernopadding valignmiddle col-title">';
+	print '<div class="titre inline-block">'.$titre;
+	if (!empty($titre) && $savtotalnboflines >= 0 && (string) $savtotalnboflines != '') print '<span class="opacitymedium colorblack paddingleft">('.$totalnboflines.')</span>';
+	print '</div></td>';*/
+
+	// Center
+	if ($morehtmlcenter)
+	{
+		//print '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
+	}
+
+	// Right
+	print '<td class="">';
+	print '<input type="hidden" name="pageplusoneold" value="'.((int) $page + 1).'">';
+	if ($sortfield) $options .= "&sortfield=".urlencode($sortfield);
+	if ($sortorder) $options .= "&sortorder=".urlencode($sortorder);
+	// Show navigation bar
+	$pagelist = '';
+	if ($savlimit != 0 && ($page > 0 || $num > $limit))
+	{
+		if ($totalnboflines)	// If we know total nb of lines
+		{
+			// Define nb of extra page links before and after selected page + ... + first or last
+			$maxnbofpage = (empty($conf->dol_optimize_smallscreen) ? 4 : 0);
+
+			if ($limit > 0) $nbpages = ceil($totalnboflines / $limit);
+			else $nbpages = 1;
+			$cpt = ($page - $maxnbofpage);
+			if ($cpt < 0) { $cpt = 0; }
+
+			if ($cpt >= 1)
+			{
+				if (empty($pagenavastextinput)) {
+					//$pagelist .= '<li class="pagination"><a href="'.$file.'?page=0'.$options.'">1</a></li>';
+					//if ($cpt > 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
+					//elseif ($cpt == 2) $pagelist .= '<li class="pagination"><a href="'.$file.'?page=1'.$options.'">2</a></li>';
+				}
+			}
+
+			do {
+				if ($pagenavastextinput) {
+					if ($cpt == $page)
+					{
+						//$pagelist .= '<li class="pagination"><input type="text" class="width25 center pageplusone" name="pageplusone" value="'.($page + 1).'"></li>';
+						$pagelist .= '/';
+						//if (($cpt + 1) < $nbpages) $pagelist .= '/';
+					}
+				} else {
+					if ($cpt == $page)
+					{
+						//$pagelist .= '<li class="pagination"><span class="active">'.($page + 1).'</span></li>';
+					} else {
+						//$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.$cpt.$options.'">'.($cpt + 1).'</a></li>';
+					}
+				}
+				$cpt++;
+			} while ($cpt < $nbpages && $cpt <= ($page + $maxnbofpage));
+
+			if (empty($pagenavastextinput)) {
+				if ($cpt < $nbpages)
+				{
+					/*if ($cpt < $nbpages - 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
+					elseif ($cpt == $nbpages - 2) $pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 2).$options.'">'.($nbpages - 1).'</a></li>';
+					$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';*/
+				}
+			} else {
+				//var_dump($page.' '.$cpt.' '.$nbpages);
+				//if (($page + 1) < $nbpages) {
+					//$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';
+				//}
+			}
+		} else {
+			//$pagelist .= '<li class="pagination"><span class="active">'.($page + 1)."</li>";
+		}
+	}
+
+	if ($savlimit || $morehtmlright || $morehtmlrightbeforearrow) {
+		print_fleche_navigation_layout($page, $file, $options, $nextpage, $pagelist, $morehtmlright, $savlimit, $totalnboflines, $hideselectlimit, $morehtmlrightbeforearrow); // output the div and ul for previous/last completed with page numbers into $pagelist
+	}
+
+	// js to autoselect page field on focus
+	if ($pagenavastextinput) {
+		print ajax_autoselect('.pageplusone');
+	}
+
+	print '</td>';
+
+	print '</tr></table></div>'."\n";
+	print "<!-- End title -->\n\n";
+}
+
 function print_barre_liste($titre, $page, $file, $options = '', $sortfield = '', $sortorder = '', $morehtmlcenter = '', $num = -1, $totalnboflines = '', $picto = 'generic', $pictoisfullpath = 0, $morehtmlright = '', $morecss = '', $limit = -1, $hideselectlimit = 0, $hidenavigation = 0, $pagenavastextinput = 0, $morehtmlrightbeforearrow = '')
 {
 	global $conf, $langs;
@@ -4728,6 +4847,50 @@ function print_barre_liste($titre, $page, $file, $options = '', $sortfield = '',
  *  @param	string			$beforearrows		HTML content to show before arrows. Must NOT contains '<li> </li>' tags.
  *	@return	void
  */
+
+function print_fleche_navigation_layout($page, $file, $options = '', $nextpage = 0, $betweenarrows = '', $afterarrows = '', $limit = -1, $totalnboflines = 0, $hideselectlimit = 0, $beforearrows = '')
+{
+	global $conf, $langs;
+
+	print '<div class="pagination pull-right"><ul>';
+	if ($beforearrows)
+	{
+		print '<li class="paginationbeforearrows">';
+		print $beforearrows;
+		print '</li>';
+	}
+	if ((int) $limit > 0 && empty($hideselectlimit))
+	{
+		$pagesizechoices = '10:10,15:15,20:20,30:30,40:40,50:50,100:100,250:250,500:500,1000:1000,5000:5000,25000:25000';
+		//$pagesizechoices.=',0:'.$langs->trans("All");     // Not yet supported
+		//$pagesizechoices.=',2:2';
+		if (!empty($conf->global->MAIN_PAGESIZE_CHOICES)) $pagesizechoices = $conf->global->MAIN_PAGESIZE_CHOICES;
+
+		
+	}
+	if ($page > 0)
+	{
+		print '<li class="pagination paginationpage paginationpageleft"><a class="paginationprevious" href="'.$file.'?page='.($page - 1).$options.'"><i class="fa fa-chevron-left" title="'.dol_escape_htmltag($langs->trans("Previous")).'"></i></a></li>';
+	}
+	if ($betweenarrows)
+	{
+		print '<!--<div class="betweenarrows nowraponall inline-block">-->';
+		print $betweenarrows;
+		print '<!--</div>-->';
+	}
+	if ($nextpage > 0)
+	{
+		print '<li class="pagination paginationpage paginationpageright"><a class="paginationnext" href="'.$file.'?page='.($page + 1).$options.'"><i class="fa fa-chevron-right" title="'.dol_escape_htmltag($langs->trans("Next")).'"></i></a></li>';
+	}
+	if ($afterarrows)
+	{
+		print '<li class="">';
+		print $afterarrows;
+		print '</li>';
+	}
+	print '</ul></div>'."\n";
+}
+
 function print_fleche_navigation($page, $file, $options = '', $nextpage = 0, $betweenarrows = '', $afterarrows = '', $limit = -1, $totalnboflines = 0, $hideselectlimit = 0, $beforearrows = '')
 {
 	global $conf, $langs;
@@ -8899,6 +9062,94 @@ function dolGetButtonTitle($label, $helpText = '', $iconClass = 'fa fa-file', $u
 
 	$class = 'btnTitle';
 	if (in_array($iconClass, array('fa fa-plus-circle', 'fa fa-comment-dots'))) $class .= ' btnTitlePlus';
+	$useclassfortooltip = 1;
+
+	if (!empty($params['morecss'])) $class .= ' '.$params['morecss'];
+
+	$attr = array(
+		'class' => $class,
+		'href' => empty($url) ? '' : $url
+	);
+
+	if (!empty($helpText)) {
+		$attr['title'] = dol_escape_htmltag($helpText);
+	} elseif (empty($attr['title']) && $label) {
+		$attr['title'] = $label;
+		$useclassfortooltip = 0;
+	}
+
+	if ($status <= 0) {
+		$attr['class'] .= ' refused';
+
+		$attr['href'] = '';
+
+		if ($status == -1) { // disable
+			$attr['title'] = dol_escape_htmltag($langs->transnoentitiesnoconv("FeatureDisabled"));
+		} elseif ($status == 0) { // Not enough permissions
+			$attr['title'] = dol_escape_htmltag($langs->transnoentitiesnoconv("NotEnoughPermissions"));
+		}
+	}
+
+	if (!empty($attr['title']) && $useclassfortooltip) {
+		$attr['class'] .= ' classfortooltip';
+	}
+
+	if (!empty($id)) {
+		$attr['id'] = $id;
+	}
+
+	// Override attr
+	if (!empty($params['attr']) && is_array($params['attr'])) {
+		foreach ($params['attr'] as $key => $value) {
+			if ($key == 'class') {
+				$attr['class'] .= ' '.$value;
+			} elseif ($key == 'classOverride') {
+				$attr['class'] = $value;
+			} else {
+				$attr[$key] = $value;
+			}
+		}
+	}
+
+	if (isset($attr['href']) && empty($attr['href'])) {
+		unset($attr['href']);
+	}
+
+	// TODO : add a hook
+
+	// escape all attribute
+	$attr = array_map('dol_escape_htmltag', $attr);
+
+	$TCompiledAttr = array();
+	foreach ($attr as $key => $value) {
+		$TCompiledAttr[] = $key.'="'.$value.'"';
+	}
+
+	$compiledAttributes = (empty($TCompiledAttr) ? '' : implode(' ', $TCompiledAttr));
+
+	$tag = (empty($attr['href']) ? 'span' : 'a');
+
+	$button = '<'.$tag.' '.$compiledAttributes.'>';
+	$button .= '<span class="'.$iconClass.' valignmiddle btnTitle-icon"></span>';
+	if (!empty($params['forcenohideoftext'])) {
+		$button .= '<span class="valignmiddle text-plus-circle btnTitle-label'.(empty($params['forcenohideoftext']) ? ' hideonsmartphone' : '').'">'.$label.'</span>';
+	}
+	$button .= '</'.$tag.'>';
+
+	return $button;
+}
+
+function dolGetButtonTitleLayout($label, $helpText = '', $iconClass = 'fa fa-file', $url = '', $id = '', $status = 1, $params = array())
+{
+	global $langs, $conf, $user;
+
+	// Actually this conf is used in css too for external module compatibility and smooth transition to this function
+	if (!empty($conf->global->MAIN_BUTTON_HIDE_UNAUTHORIZED) && (!$user->admin) && $status <= 0) {
+		return '';
+	}
+
+	$class = 'btn button btn-primary';
+	if (in_array($iconClass, array('fa fa-plus-circle', 'fa fa-comment-dots'))) $class .= ' ';
 	$useclassfortooltip = 1;
 
 	if (!empty($params['morecss'])) $class .= ' '.$params['morecss'];

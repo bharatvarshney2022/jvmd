@@ -245,7 +245,7 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 .fa-dol-invoice_supplier:before {
 	content: "\f571";
 }
-.fa-dol-project:before {
+.fa-dol-project:before, .fa-dol-project1:before {
 	content: "\f0e8";
 }
 .fa-dol-commande:before,
@@ -267,7 +267,7 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 .fa-dol-holiday:before {
 	content: "\f5ca";
 }
-.fa-dol-ticket:before {
+.fa-dol-ticket:before, .fa-dol-ticket1:before {
     content: "\f3ff";
 }
 

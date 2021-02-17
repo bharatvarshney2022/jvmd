@@ -1776,8 +1776,8 @@ div.fichehalfleft {
 	<?php if ($conf->browser->layout != 'phone')   { print "width: calc(50% - 10px);\n"; } ?>
 }
 div.fichehalfright {
-	<?php if ($conf->browser->layout != 'phone')   { /*print "float: ".$right.";\n";*/ } ?>
-	<?php if ($conf->browser->layout != 'phone')   { /*print "width: calc(50% - 10px);\n";*/ } ?>
+	<?php if ($conf->browser->layout != 'phone')   { print "float: ".$right.";\n"; } ?>
+	<?php if ($conf->browser->layout != 'phone')   { print "width: calc(50% - 10px);\n"; } ?>
 }
 div.fichehalfright {
 	<?php if ($conf->browser->layout == 'phone')   { /*print "margin-top: 10px;\n";*/ } ?>
@@ -1786,7 +1786,7 @@ div.firstcolumn div.box {
 padding-right: 10px;
 }
 div.secondcolumn div.box {
-    padding-right: 10px;
+    padding-left: 10px;
 }
 
 /* Force values for small screen */

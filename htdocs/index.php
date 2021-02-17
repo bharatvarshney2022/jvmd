@@ -497,6 +497,12 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
+		'project1' =>
+			array(
+				'groupName' => 'Leads1',
+				'globalStatsKey' => 'projects',
+				'stats' => array('project', 'project_task'),
+			),
 		'propal' =>
 			array(
 				'groupName' => 'Proposals',
@@ -547,6 +553,13 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				array('contrat_inactive', 'contrat_active'),
 			),
 		'ticket' =>
+			array(
+				'groupName' => 'Tickets',
+				'globalStatsKey' => 'ticket',
+				'stats' =>
+					array('ticket_opened'),
+			),
+		'ticket1' =>
 			array(
 				'groupName' => 'Tickets',
 				'globalStatsKey' => 'ticket',
@@ -1022,7 +1035,7 @@ print '<div class="fichecenter fichecenterbis">';
 
 $boxlist .= '<div class="twocolumns">';
 
-$boxlist .= '<div class="firstcolumn boxhalfleft" id="boxhalfleft">';
+$boxlist .= '<div class="firstcolumn" id="boxhalfleft">';
 if (!empty($nbworkboardcount))
 {
 	$boxlist .= $boxwork;
@@ -1077,7 +1090,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 	}
 }
 
-$boxlist .= '<div class="secondcolumn fichehalfright boxhalfright" id="boxhalfright">';
+$boxlist .= '<div class=" boxhalfright" id="boxhalfright">';
 
 $boxlist .= $boxstat;
 $boxlist .= $resultboxes['boxlistb'];

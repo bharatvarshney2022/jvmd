@@ -619,11 +619,11 @@ if ($contextpage == 'poslist' && $type == 't' && (!empty($conf->global->PRODUIT_
 if ($contextpage != 'poslist') {
 	$url = DOL_URL_ROOT.'/societe/card.php?action=create'.$typefilter;
 	if (!empty($socid)) $url .= '&socid='.$socid;
-	$newcardbutton = dolGetButtonTitle($langs->trans($label), '', 'fa fa-plus-circle', $url, '', $user->rights->societe->creer);
+	$newcardbutton = dolGetButtonTitleLayout($langs->trans($label), '', 'fa fa-plus-circle', $url, '', $user->rights->societe->creer);
 } elseif ($user->rights->societe->creer) {
 	$url = DOL_URL_ROOT.'/societe/card.php?action=create&type=t&contextpage=poslist&optioncss=print&backtopage='.urlencode($_SERVER["PHP_SELF"].'?type=t&contextpage=poslist&nomassaction=1&optioncss=print&place='.$place);
 	$label = 'MenuNewCustomer';
-	$newcardbutton .= dolGetButtonTitle($langs->trans($label), '', 'fa fa-plus-circle', $url);
+	$newcardbutton .= dolGetButtonTitleLayout($langs->trans($label), '', 'fa fa-plus-circle', $url);
 }
 
 $totalnboflines = abs((int) $nbtotalofrecords);
@@ -653,6 +653,8 @@ print '<!--begin::Entry-->
 											print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 											//print '<input type="hidden" name="page" value="'.$page.'">';
 											print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+
+										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'building', 0, $newcardbutton, '', $limit, 0, 0, 1);
 
 										print '
 										<!--begin: Search Form-->
