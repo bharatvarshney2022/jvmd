@@ -440,6 +440,14 @@ class Project extends CommonObject
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
 			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
 			$sql .= ", tech_assigndatetime = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
+			
+			$sql .= ", fk_customer_product = ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
+			$sql .= ", fk_brand = ".($this->fk_brand > 0 ? $this->fk_brand : "null");
+			$sql .= ", fk_category = ".($this->fk_category > 0 ? $this->fk_category : "null");
+			$sql .= ", fk_sub_category = ".($this->fk_sub_category > 0 ? $this->fk_sub_category : "null");
+			$sql .= ", fk_model = ".($this->fk_model > 0 ? $this->fk_model : "null");
+			$sql .= ", fk_product = ".($this->fk_product > 0 ? $this->fk_product : "null");
+
 			$sql .= ", fk_statut = ".$this->statut;
 			$sql .= ", fk_opp_status = ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'null');
 			$sql .= ", opp_percent = ".((is_numeric($this->opp_percent) && $this->opp_percent != '') ? $this->opp_percent : 'null');

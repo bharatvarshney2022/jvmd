@@ -662,7 +662,9 @@ if (empty($reshook))
 			   			header("Location: ".$backtopage);
 						exit;
 					} else {
-						$url = $_SERVER["PHP_SELF"]."?socid=".$object->id; // Old method
+						//$url = $_SERVER["PHP_SELF"]."?socid=".$object->id; // Old method
+						$url = DOL_URL_ROOT."/societe/contact.php?socid=".$object->id; // Old method
+						
 						if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $url = DOL_URL_ROOT."/comm/card.php?socid=".$object->id;
 						elseif ($object->fournisseur == 1) $url = DOL_URL_ROOT."/fourn/card.php?socid=".$object->id;
 
@@ -1559,7 +1561,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print dol_get_fiche_end();
 
 		print '<div class="center">';
-		print '<input type="submit" class="button" name="create" value="'.$langs->trans('AddThirdParty').'">';
+		print '<input type="submit" class="button" name="create" value="'.$langs->trans('Add Customer').'">';
 		if (!empty($backtopage))
 		{
 			print ' &nbsp; &nbsp; ';

@@ -709,11 +709,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 					});
 				});
 
-								
-
 			});
-
-			
 
 			';
 
@@ -861,7 +857,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print dol_get_fiche_end();
 
 	print '<div class="center">';
-	print '<input type="submit" class="button" value="'.$langs->trans("CreateDraft").'">';
+	print '<input type="submit" class="button" value="'.$langs->trans("Create Lead").'">';
 	if (!empty($backtopage))
 	{
 		print ' &nbsp; &nbsp; ';
@@ -968,13 +964,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print '<input type="hidden" name="action" value="update">';
 	print '<input type="hidden" name="id" value="'.$object->id.'">';
 	print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
-	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="">';
+	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="'.$object->fk_customer_product.'">';
 
 	$head = project_prepare_head($object);
 
 	if ($action == 'edit' && $userWrite > 0)
 	{
-		print dol_get_fiche_head($head, 'project', $langs->trans("Project"), 0, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head($head, 'project', $langs->trans("Leads"), 0, ($object->public ? 'projectpub' : 'project'));
 
 		print '<table class="border centpercent">';
 
@@ -1001,12 +997,38 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// fetch optionals attributes and labels
 				$leadextrafields = new ExtraFields($db);
 				$leadextrafields = $extrafields->fetch_name_optionals_label($object->table_element);
-				echo $modelid = $object->fetch_optionals($object->id,$leadextrafields);
+				$modelid = $object->fetch_optionals($object->id,$leadextrafields);
+		
 		print '<script>';
-		print '<script>';
-		print '$( document ).ready(function() {
-				jQuery("#socid").change(function() {
+		print '
+		
+		$( document ).ready(function() {';
+		if($object->thirdparty->id > 0 && $object->fk_brand > 0){
+			print '   
+				
+			jQuery("#fk_brand").val('.$object->fk_brand.');
+			';	
+		}
+		if($object->thirdparty->id > 0 && $object->fk_category > 0){
+			print '   
+				
+			jQuery("#fk_category").val('.$object->fk_category.');
+			';	
+		}
+		if($object->thirdparty->id > 0 && $object->fk_sub_category > 0){
+			print '   
+			jQuery("#fk_sub_category").val('.$object->fk_sub_category.');
+			
+			';	
+		}
+		if($object->thirdparty->id > 0 && $object->fk_model > 0){
+			print '   
+			jQuery("#fk_model").val('.$object->fk_model.');
+			';	
+		}
+		print '	jQuery("#socid").change(function() {
 					var socid = $(this).val();
+					alert(socid);
                 	$.ajax({
 						  dataType: "html",
 						  url: "customerproductBrand_data.php",
@@ -1014,7 +1036,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 						  success: function(html) {
 						  	//alert(html);
 							$("#fk_brand").html(html);
-						  }
+							
+						 }
 					});
 				});
 
@@ -1198,10 +1221,39 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '/> '.$langs->trans("ProjectReportDate");*/
 		print '</td>';
 
+		// Technician 
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		if($user_group_id == '4'){
+			print '<td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td>';
+			print '<select class="flat" name="technician"><option value="">Select </option>';
+			
+			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+			$resqlTech = $db->query($sqlTechnician);
+			$numtech = $db->num_rows($resqlTech);
+			if($numtech > 0){
+				while ($objtech = $db -> fetch_object($resqlTech))
+				{
+					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->fk_technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+				}
+			}	
+			print '</select>';
+			print '</td></tr>';
+		}
 		// Date end
-		print '<td>'.$langs->trans("DateEnd").'</td><td>';
+		/*print '<td>'.$langs->trans("DateEnd").'</td><td>';
 		print $form->selectDate($object->date_end ? $object->date_end : -1, 'projectend', 0, 0, 0, '', 1, 0);
-		print '</td></tr>';
+		print '</td></tr>';*/
  
 		// Budget
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td>';
@@ -1214,6 +1266,46 @@ if ($action == 'create' && $user->rights->projet->creer)
 		$doleditor = new DolEditor('description', $object->description, '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
 		$doleditor->Create();
 		print '</td></tr>';
+		require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+		$prdobject = new Product($db);
+		// Brand
+		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+		print '<select class="flat" id="fk_brand" name="fk_brand">';
+		print $prdobject->getCustomerProductBrand($object->thirdparty->id);
+		print '</select>';
+		print '</td>';
+		
+		// Product Category
+
+		print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+		print '<select class="flat" id="fk_category" name="fk_category">';
+		print $prdobject->getCustomerProductCategory($object->thirdparty->id,$object->fk_brand);
+		print '</select>';
+		print '</td></tr>';
+
+		// Product sub Category
+		print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print $prdobject->getCustomerProductSubCategory($object->thirdparty->id,$object->fk_brand,$object->fk_category);
+		print '</select>';
+		print '</td>';
+		// Model
+		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		print '<select class="flat" id="fk_model" name="fk_model">';
+		print $prdobject->getCustomerProductModel($object->thirdparty->id,$object->fk_brand,$object->fk_category,$object->fk_sub_category,$object->fk_model);
+		print '</select>';
+		print '</td></tr>';
+		$productjson =  $prdobject->getCustomerProductModelInfo($object->thirdparty->id,$object->fk_brand,$object->fk_category,$object->fk_sub_category,$object->fk_model);
+		$prdarr = json_decode($productjson);
+		
+		// Label
+		print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+		print '<select class="flat" id="fk_product" name="fk_product">';
+		print $prdarr->prdstr;
+		print '</select>';
+		print '</td>';
+		// Ac Capacity
+		print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="minwidth300 maxwidth400onsmartphone" readonly maxlength="255" value="'.dol_escape_htmltag($prdarr->ac_capacity).'"></td></tr>';
 
 		// Tags-Categories
 		if ($conf->categorie->enabled)
@@ -1229,35 +1321,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print "</td></tr>";
 		}
 
-		// Technician 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-		$user_group_id = 0;
-		$usergroup = new UserGroup($db);
-		$groupslist = $usergroup->listGroupsForUser($user->id);
-
-		if ($groupslist != '-1')
-		{
-			foreach ($groupslist as $groupforuser)
-			{
-				$user_group_id = $groupforuser->id;
-			}
-		}
-		if($user_group_id == '4'){
-			print '<tr><td>'.$langs->trans("Assign Technician").'</td><td colspan="3">';
-			print '<select class="flat" name="technician"><option value="">Select </option>';
-			
-			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
-			$resqlTech = $db->query($sqlTechnician);
-			$numtech = $db->num_rows($resqlTech);
-			if($numtech > 0){
-				while ($objtech = $db -> fetch_object($resqlTech))
-				{
-					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
-				}
-			}	
-			print '</select>';
-			print '</td></tr>';
-		}
+		
 		// Other options
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
