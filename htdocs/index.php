@@ -499,7 +499,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 			),
 		'project1' =>
 			array(
-				'groupName' => 'Leads1',
+				'groupName' => 'Close Leads',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),

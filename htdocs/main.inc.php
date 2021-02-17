@@ -3577,7 +3577,7 @@ function left_menu_layout($menu_array_before, $helppagename = '', $notused = '',
 						<!--begin::Menu Container-->
 							<div id="kt_aside_menu" class="aside-menu" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
 								<!--begin::Toggle-->
-								<div class="brand flex-column-auto"
+							<div class="brand flex-column-auto d-none">
 									
 
 								<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">

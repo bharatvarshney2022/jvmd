@@ -131,10 +131,10 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 	$idsel='home';
 
 	if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
-	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Home"), 1, DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=', $id, $idsel, $atarget);
+	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=', $id, $idsel, $atarget);
 	if (empty($noout)) print_end_menu_entry_layout($showmode);
 
-	$menu->add('/index.php?mainmenu=home&amp;leftmenu=', $langs->trans("Home"), 0, $showmode, $atarget, "home", '');
+	$menu->add('/index.php?mainmenu=home&amp;leftmenu=', $langs->trans("Dashboard"), 0, $showmode, $atarget, "home", '');
 
 	// Members
 	$tmpentry=array('enabled'=>(! empty($conf->adherent->enabled)),
