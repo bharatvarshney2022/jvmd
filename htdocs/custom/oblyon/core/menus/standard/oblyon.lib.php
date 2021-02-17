@@ -2570,7 +2570,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		}
 
 		// Menu Level = 1 or 2
-		//echo $level.">";print_r($menu_array[$i]);
+		echo $level.">";print_r($menu_array[$i]);
 
 		if ($level > 0) {
 
@@ -2595,7 +2595,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 												</li> \n "; 
 			} else {
 				if ($menu_array[$i]['enabled']) {
-				 	print "\n 															</li>1 \n "; 
+				 	print "\n 															</li> \n "; 
 				}
 			}
 		}
@@ -2604,7 +2604,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			if($i == 0)
 			{
 				if ($menu_array[$i]['enabled']) {
-					//print '												</li>1'."\n";
+					print '												</li>'."\n";
 				}
 			}
 		}
