@@ -687,16 +687,19 @@ print '<!--begin::Entry-->
 													print '</select>
 												</div>
 												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Status:</label>
-													<select class="form-control datatable-input" data-col-index="6">
-														<option value="">Select</option>
-														$formcompany->typent_array(0)
-													</select>
+													<label>Phone:</label>
+													<input type="text" name="search_phone" class="form-control datatable-input" placeholder="Phone" data-col-index="4" />
 												</div>
 												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Type:</label>
-													<select class="form-control datatable-input" data-col-index="7">
+													<label>Area Pincode:</label>
+													<input type="text" name="search_options_fk_pincode" class="form-control datatable-input" placeholder="Area Pincode" data-col-index="4" />
+												</div>
+												<div class="col-lg-3 mb-lg-0 mb-6">
+													<label>Status:</label>
+													<select class="form-control datatable-input" name="search_status" data-col-index="6">
 														<option value="">Select</option>
+														<option value="0">'.$langs->trans('ActivityCeased').'</option>
+														<option value="1">'.$langs->trans('InActivity').'</option>
 													</select>
 												</div>
 											</div>
