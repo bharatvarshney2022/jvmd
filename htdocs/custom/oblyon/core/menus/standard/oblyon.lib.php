@@ -2584,14 +2584,18 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			}
 
 			if ( empty($menu_array[$i+1]['level']) ) { 
-				print "
-															</li>
+				if ($menu_array[$i]['enabled']) {
+					print "
+														</li>";
+				}
+
+					print "
 														</ul>
 													</div>
 												</li> \n "; 
 			} else {
 				if ($menu_array[$i]['enabled']) {
-				 	print "\n 															</li>2 \n "; 
+				 	print "\n 															</li> \n "; 
 				}
 			}
 		}
@@ -2599,7 +2603,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		{
 			if($i == 0)
 			{
-				print '												</li>1'."\n";
+				print '												</li>'."\n";
 			}
 		}
 
