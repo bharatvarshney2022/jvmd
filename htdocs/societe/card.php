@@ -665,8 +665,9 @@ if (empty($reshook))
 						//$url = $_SERVER["PHP_SELF"]."?socid=".$object->id; // Old method
 						
 						
-						if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $url = DOL_URL_ROOT."/comm/card.php?socid=".$object->id;
+						/*if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $url = DOL_URL_ROOT."/comm/card.php?socid=".$object->id;
 						elseif ($object->fournisseur == 1) $url = DOL_URL_ROOT."/fourn/card.php?socid=".$object->id;
+*/
 
 						$url = DOL_URL_ROOT."/societe/contact.php?socid=".$object->id; // Old method
 						header("Location: ".$url);
