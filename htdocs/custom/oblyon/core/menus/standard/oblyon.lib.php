@@ -92,10 +92,10 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
     {
         if ($menu_invert)
         {
-		    print "\n".'								<li class="menu-section">
+		    /*print "\n".'								<li class="menu-section">
 									<h4 class="menu-text">'. $conf->global->MAIN_INFO_SOCIETE_NOM .'</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>'."\n";
+								</li>'."\n";*/
         }
     }
 

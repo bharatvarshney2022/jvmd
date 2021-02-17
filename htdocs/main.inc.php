@@ -2431,7 +2431,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 
 		print "\n".'										<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default'.(GETPOST('dol_invisible_topmenu', 'int') ? ' hidden' : '').'">
 											<!--begin::Brand-->
-											<div class="brand flex-column-auto" id="kt_brand">
+											<div class="brand flex-column-auto brand-border" id="kt_brand">
 												<!--begin::Logo-->';
 
 								print "\n".'						<a href="'.$dolibarr_main_url_root.'" class="brand-logo white-background">
@@ -3572,7 +3572,16 @@ function left_menu_layout($menu_array_before, $helppagename = '', $notused = '',
 							<div id="kt_aside_menu" class="aside-menu" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
 								<!--begin::Toggle-->
 								<div class="brand flex-column-auto"
+									
+
 								<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+									<!--begin::Logo-->';
+
+				print "\n".'						<a href="'.$dolibarr_main_url_root.'" class="brand-logo white-background">
+									<img alt="Logo" src="'.$urllogo.'" />													
+								</a>
+								<!--end::Logo-->
+
 									<span class="svg-icon svg-icon svg-icon-xl">
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
