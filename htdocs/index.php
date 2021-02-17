@@ -503,6 +503,12 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
+		'project2' =>
+			array(
+				'groupName' => 'Leads2',
+				'globalStatsKey' => 'projects',
+				'stats' => array('project', 'project_task'),
+			),
 		'propal' =>
 			array(
 				'groupName' => 'Proposals',
@@ -560,6 +566,13 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 					array('ticket_opened'),
 			),
 		'ticket1' =>
+			array(
+				'groupName' => 'Tickets',
+				'globalStatsKey' => 'ticket',
+				'stats' =>
+					array('ticket_opened'),
+			),
+		'ticket2' =>
 			array(
 				'groupName' => 'Tickets',
 				'globalStatsKey' => 'ticket',
@@ -708,18 +721,9 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 					}
 				}
 
-				$openedDashBoard .= '<div class="box-flex-item"><div class="box-flex-item-with-margin">'."\n";
+				$openedDashBoard .= '<div class="box-flex-item"><div class="box-flex-item-with-margin bg-'.$groupKeyLowerCase.'">'."\n";
 				$openedDashBoard .= '	<div class="info-box '.$openedDashBoardSize.'">'."\n";
-				$openedDashBoard .= '		<span class="info-box-icon bg-infobox-'.$groupKeyLowerCase.'">'."\n";
-				$openedDashBoard .= '		<i class="fa fa-dol-'.$groupKeyLowerCase.'"></i>'."\n";
-
-				// Show the span for the total of record
-				if (!empty($groupElement['globalStats'])) {
-					$globalStatInTopOpenedDashBoard[] = $globalStatsKey;
-					$openedDashBoard .= '<span class="info-box-icon-text" title="'.$groupElement['globalStats']['text'].'">'.$nbTotal.'</span>';
-				}
-
-				$openedDashBoard .= '</span>'."\n";
+				
 				$openedDashBoard .= '<div class="info-box-content">'."\n";
 
 				$openedDashBoard .= '<div class="info-box-title" title="'.strip_tags($groupName).'">'.$groupName.'</div>'."\n";
@@ -774,6 +778,18 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				// TODO Add hook here to add more "info-box-line"
 
 				$openedDashBoard .= '		</div><!-- /.info-box-lines --></div><!-- /.info-box-content -->'."\n";
+
+				$openedDashBoard .= '		<span class="info-box-icon bg-infobox-'.$groupKeyLowerCase.'">'."\n";
+				$openedDashBoard .= '		<i class="fa fa-dol-'.$groupKeyLowerCase.'"></i>'."\n";
+
+				// Show the span for the total of record
+				if (!empty($groupElement['globalStats'])) {
+					$globalStatInTopOpenedDashBoard[] = $globalStatsKey;
+					$openedDashBoard .= '<span class="info-box-icon-text" title="'.$groupElement['globalStats']['text'].'">'.$nbTotal.'</span>';
+				}
+
+				$openedDashBoard .= '</span> <!-- info-box-icon -->'."\n";
+
 				$openedDashBoard .= '	</div><!-- /.info-box -->'."\n";
 				$openedDashBoard .= '</div><!-- /.box-flex-item-with-margin -->'."\n";
 				$openedDashBoard .= '</div><!-- /.box-flex-item -->'."\n";

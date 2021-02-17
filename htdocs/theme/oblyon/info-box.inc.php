@@ -15,12 +15,49 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 	box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 3px rgba(0,0,0,.2);
     border-top-right-radius: 0.25em;
     border-top-left-radius: 0.50em;
+    border-bottom-right-radius: 0.25em;
+    border-bottom-left-radius: 0.50em;
+
     border-bottom-left-radius: 0.50em;
     border-bottom-right-radius: 0.25em;
     margin-bottom: 15px;
 }
+
+.bg-project .info-box {
+	background: #00c0ef !important;
+	color: white;
+}
+
+.bg-project1 .info-box {
+	background: #39cccc !important;
+	color: white;
+}
+
+.bg-project2 .info-box {
+	background: #d2d6de !important;
+	color: black;
+}
+
+.bg-ticket .info-box {
+	background: palegoldenrod !important;
+	color: black;
+}
+
+.bg-ticket1 .info-box {
+	background: ivory !important;
+	color: black;
+}
+
+.bg-ticket2 .info-box {
+	background: lightblue !important;
+	color: black;
+}
+
+.info-box-sm .info-box-icon i {
+	color: rgba(0, 0, 0, 0.15);
+}
 .info-box.info-box-sm{
-    min-height: 80px;
+    min-height: 130px;
     margin-bottom: 10px;
 }
 
@@ -53,25 +90,55 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
     transition: width .6s ease;
 }
 .info-box-icon {
-	border-top-left-radius: 0.25em;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0.25em;
+	border-top-left-radius: 0;
+    border-top-right-radius: 0.25em;
+    border-bottom-right-radius: 0.25em;
+    border-bottom-left-radius: 0;
 	display: block;
     overflow: hidden;
-	float: left;
+	float: right;
 	height: 90px;
 	width: 90px;
 	text-align: center;
 	font-size: 45px;
 	line-height: 90px;
-	background: rgba(0, 0, 0, 0.2);
+	/*background: rgba(0, 0, 0, 0.2);*/
 }
+
+.info-box-lines {
+    margin-top: 30px;
+}
+
+.info-box-line a {
+	color: white;
+}
+
+.bg-project2 .info-box-line a {
+	color: black;
+}
+
+.bg-ticket .info-box-line a {
+	color: black;
+}
+
+.bg-ticket1 .info-box-line a {
+	color: black;
+}
+
+.bg-ticket2 .info-box-line a {
+	color: black;
+}
+
+
+
 .info-box-sm .info-box-icon{
-    height: 80px;
+    height: 120px;
     width: 80px;
-    font-size: 25px;
-    line-height: 80px;
+    font-size: 50px;
+    line-height: 120px;
+    top: 0%;
+    position: absolute;
+    right: 0%;
 }
 .info-box-icon > img {
 	max-width: 100%;
@@ -142,12 +209,12 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 }
 
 .info-box-content {
-	padding: 5px 10px;
-	margin-left: 90px;
+	padding: 15px 10px;
+	margin-right: 90px;
 }
 
 .info-box-sm .info-box-content{
-    margin-left: 80px;
+    margin-right: 40px;
 }
 .info-box-number {
 	display: block;
@@ -205,7 +272,7 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 }
 
 .bg-infobox-project{
-	background-color: <?php print colorAgressiveness($conf->global->OBLYON_INFOXBOX_PROJECT_COLOR, $conf->global->THEME_AGRESSIVENESS_RATIO); ?> !important;
+	/*background-color: <?php //print colorAgressiveness($conf->global->OBLYON_INFOXBOX_PROJECT_COLOR, $conf->global->THEME_AGRESSIVENESS_RATIO); ?> !important;*/
 }
 .bg-infobox-propal,
 .bg-infobox-facture,
@@ -245,7 +312,7 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 .fa-dol-invoice_supplier:before {
 	content: "\f571";
 }
-.fa-dol-project:before, .fa-dol-project1:before {
+.fa-dol-project:before, .fa-dol-project1:before, .fa-dol-project2:before {
 	content: "\f0e8";
 }
 .fa-dol-commande:before,
@@ -267,7 +334,7 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 .fa-dol-holiday:before {
 	content: "\f5ca";
 }
-.fa-dol-ticket:before, .fa-dol-ticket1:before {
+.fa-dol-ticket:before, .fa-dol-ticket1:before, .fa-dol-ticket2:before {
     content: "\f3ff";
 }
 
@@ -308,8 +375,8 @@ if (GETPOSTISSET('THEME_AGRESSIVENESS_RATIO')) $conf->global->THEME_AGRESSIVENES
 	flex-shrink: 1;*/
 	flex-basis: auto;
 
-	width: 23.5%;
-	margin: 5px 0px 0px 15px;
+	width: 15%;
+	margin: 5px 0px 0px 17px;
 }
 .box-flex-item.filler{
 	margin: 0px 0px 0px 15px !important;
