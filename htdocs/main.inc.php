@@ -2578,6 +2578,8 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 											$userDropDownImage = '<img class="photo dropdown-user-image" alt="No photo" src="'.DOL_URL_ROOT.$nophoto.'">';
 										}
 
+										$nexturl = DOL_URL_ROOT.'/user/logout.php';
+
 										print '										<!-- begin::User Panel-->
 										<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 											<!--begin::Header-->
@@ -2598,8 +2600,10 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 														<i class="symbol-badge bg-success"></i>
 													</div>
 													<div class="d-flex flex-column">
-														<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">'.($user->firstname ? $user->firstname.' '.$user->lastname : $user->login).'</a>
-														<div class="text-muted mt-1"></div>
+														<a href="'.DOL_URL_ROOT.'/user/card.php?id='.$user->id.'" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">'.($user->firstname ? $user->firstname.' '.$user->lastname : $user->login).'</a>
+														<div class="text-muted mt-1">
+															<a href="'.$nexturl.'" class="text-dark-75 text-hover-primary">Logout</a>
+														</div>
 													</div>
 												</div>
 												<!--end::Header-->
