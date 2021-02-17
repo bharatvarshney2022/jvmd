@@ -301,6 +301,12 @@ class Project extends CommonObject
 		$sql .= ", description";
 		$sql .= ", fk_soc";
 		$sql .= ", fk_technician";
+		$sql .= ", fk_customer_product";
+		$sql .= ", fk_brand";
+		$sql .= ", fk_category";
+		$sql .= ", fk_sub_category";
+		$sql .= ", fk_model";
+		$sql .= ", fk_product";
 		$sql .= ", fk_user_creat";
 		$sql .= ", fk_statut";
 		$sql .= ", fk_opp_status";
@@ -325,6 +331,12 @@ class Project extends CommonObject
 		$sql .= ", '".$this->db->escape($this->description)."'";
 		$sql .= ", ".($this->socid > 0 ? $this->socid : "null");
 		$sql .= ", ".($this->technician > 0 ? $this->technician : "null");
+		$sql .= ", ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
+		$sql .= ", ".($this->fk_brand > 0 ? $this->fk_brand : "null");
+		$sql .= ", ".($this->fk_category > 0 ? $this->fk_category : "null");
+		$sql .= ", ".($this->fk_sub_category > 0 ? $this->fk_sub_category : "null");
+		$sql .= ", ".($this->fk_model > 0 ? $this->fk_model : "null");
+		$sql .= ", ".($this->fk_product > 0 ? $this->fk_product : "null");
 		$sql .= ", ".$user->id;
 		$sql .= ", ".(is_numeric($this->statut) ? $this->statut : '0');
 		$sql .= ", ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'NULL');
@@ -427,6 +439,7 @@ class Project extends CommonObject
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
 			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
+			$sql .= ", tech_assigndatetime = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
 			$sql .= ", fk_statut = ".$this->statut;
 			$sql .= ", fk_opp_status = ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'null');
 			$sql .= ", opp_percent = ".((is_numeric($this->opp_percent) && $this->opp_percent != '') ? $this->opp_percent : 'null');
@@ -531,8 +544,8 @@ class Project extends CommonObject
 		if (empty($id) && empty($ref)) return -1;
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
-		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_technician, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
-		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid";
+		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
+		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
 		{
@@ -547,7 +560,7 @@ class Project extends CommonObject
 				$sql .= " AND email_msgid = '".$this->db->escape($email_msgid)."'";
 			}
 		}
-
+		
 		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -573,7 +586,15 @@ class Project extends CommonObject
 				$this->note_private = $obj->note_private;
 				$this->note_public = $obj->note_public;
 				$this->socid = $obj->fk_soc;
-				$this->technician = $obj->fk_technician;
+				$this->fk_technician = $obj->fk_technician;
+				$this->tech_assigndatetime = $this->db->jdate($obj->tech_assigndatetime); // TODO deprecated
+				$this->fk_customer_product = $obj->fk_customer_product;
+				$this->fk_brand = $obj->fk_brand;
+				$this->fk_category = $obj->fk_category;
+				$this->fk_sub_category = $obj->fk_sub_category;
+				$this->fk_model = $obj->fk_model;
+				$this->fk_product = $obj->fk_product;
+
 				$this->user_author_id = $obj->fk_user_creat;
 				$this->user_modification_id = $obj->fk_user_modif;
 				$this->user_close_id = $obj->fk_user_close;
@@ -2198,5 +2219,22 @@ class Project extends CommonObject
 		$taskstatic = new Task($this->db);
 
 		$this->lines = $taskstatic->getTasksArray(0, $user, $this->id, 0, 0);
+	}
+
+	public function getValuebyid($id,$table,$value)
+	{
+		$sql = "SELECT ".$value." FROM ".MAIN_DB_PREFIX.$table." WHERE rowid = '".$id."' ";
+
+		$result = $this->db->query($sql);
+		if ($result) {
+			if ($this->db->num_rows($result)) {
+				$obj = $this->db->fetch_object($result);
+				return $obj->$value;
+			}else{
+				return 'N/A';
+			}
+		}else{
+			return 'N/A';
+		}	
 	}
 }

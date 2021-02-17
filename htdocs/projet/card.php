@@ -150,8 +150,17 @@ if (empty($reshook))
 
 			$object->ref             = GETPOST('ref', 'alphanohtml');
 			$object->title           = GETPOST('title', 'alphanohtml');
+			
 			$object->socid           = GETPOST('socid', 'int');
 			$object->technician      = '0';
+			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
+			$object->fk_brand      = GETPOST('fk_brand', 'int');
+			$object->fk_category      = GETPOST('fk_category', 'int');
+			$object->fk_sub_category      = GETPOST('fk_sub_category', 'int');
+			$object->fk_model      = GETPOST('fk_model', 'int');
+			$object->fk_product      = GETPOST('fk_product', 'int');
+			
+
 			$object->description     = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public          = GETPOST('public', 'alphanohtml');
 			$object->opp_amount      = price2num(GETPOST('opp_amount', 'alphanohtml'));
@@ -282,6 +291,16 @@ if (empty($reshook))
 			$object->statut       = GETPOST('status', 'int');
 			$object->socid        = GETPOST('socid', 'int');
 			$object->technician        = GETPOST('technician', 'int');
+			if($object->technician > 0){
+				$object->tech_assigndatetime   = dol_now();
+			}
+			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
+			$object->fk_brand      = GETPOST('fk_brand', 'int');
+			$object->fk_category      = GETPOST('fk_category', 'int');
+			$object->fk_sub_category      = GETPOST('fk_sub_category', 'int');
+			$object->fk_model      = GETPOST('fk_model', 'int');
+			$object->fk_product      = GETPOST('fk_product', 'int');
+
 			$object->description  = GETPOST('description', 'restricthtml'); // Do not use 'alpha' here, we want field as it is
 			$object->public       = GETPOST('public', 'alpha');
 			$object->date_start   = (!GETPOST('projectstart')) ? '' : $date_start;
@@ -520,6 +539,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="add">';
 	print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="">';
 
 	print dol_get_fiche_head();
 
@@ -583,9 +603,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				});
 
 
-				jQuery("#socid").change(function() {
-					alert("his");
-				});
+				
 
 			});';
 		print '</script>';
@@ -618,37 +636,84 @@ if ($action == 'create' && $user->rights->projet->creer)
 					var socid = $(this).val();
                 	$.ajax({
 						  dataType: "html",
-						  url: "customerproductmodeldata.php",
+						  url: "customerproductBrand_data.php",
 						  data: {socid: socid},
 						  success: function(html) {
 						  	//alert(html);
-							$("#options_fk_product_model").html(html);
+							$("#fk_brand").html(html);
 						  }
 					});
 				});
 
-				jQuery("#options_fk_product_model").change(function() {
-					var modelid = $(this).val();
+
+				jQuery("#fk_brand").change(function() {
+					var brandid = $(this).val();
 					var socid = $("#socid").val();
-					getmodelinfo(modelid,socid);
-				});					
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductCategory_data.php",
+						  data: {socid: socid,brandid: brandid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_category").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_category").change(function() {
+					var catid = $(this).val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductSubCategory_data.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_sub_category").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_sub_category").change(function() {
+					var scatid = $(this).val();
+					var catid = $("#fk_category").val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductmodeldata.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_model").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_model").change(function() {
+					var model = $(this).val();
+					var scatid = $("#fk_sub_category").val();
+					var catid = $("#fk_category").val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "json",
+						  url: "productmodeldata.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid,model: model},
+						  success: function(data) {
+						  	$("#fk_product").html(data.prdstr);
+						  	$("#ac_capacity").val(data.ac_capacity);
+						  	$("#fk_customer_product").val(data.id);
+						  }
+					});
+				});
+
+								
 
 			});
 
-			function getmodelinfo(id,socid){
-         		var model = id;
-            	$.ajax({
-					  dataType: "json",
-					  url: "productmodeldata.php",
-					  data: {model: model, socid: socid},
-					  success: function(data) {
-						$("#options_fk_brand").val(data.branid);
-						$("#options_fk_category").val(data.category);
-						$("#options_fk_sub_category").val(data.subcategory);
-						$("#options_fk_product").val(data.product_id);
-					  }
-				});
-         	}
+			
 
 			';
 
@@ -734,6 +799,44 @@ if ($action == 'create' && $user->rights->projet->creer)
 	$doleditor = new DolEditor('description', GETPOST("description", 'restricthtml'), '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
+
+
+	// Brand
+	print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+	print '<select class="flat" id="fk_brand" name="fk_brand">';
+	print '<option value="0">Select Brand</option>';
+	print '</select>';
+	print '</td>';
+	
+	// Product Category
+
+	print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+	print '<select class="flat" id="fk_category" name="fk_category">';
+	print '<option value="0">Select Category</option>';
+	print '</select>';
+	print '</td></tr>';
+
+	// Product sub Category
+	print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+	print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+	print '<option value="0">Select Sub Category</option>';
+	print '</select>';
+	print '</td>';
+	// Model
+	print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+	print '<select class="flat" id="fk_model" name="fk_model">';
+	print '<option value="0">Select Model</option>';
+	print '</select>';
+	print '</td></tr>';
+
+	// Label
+	print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+	print '<select class="flat" id="fk_product" name="fk_product">';
+	print '<option value="0">Select Product</option>';
+	print '</select>';
+	print '</td>';
+	// Ac Capacity
+	print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="minwidth300 maxwidth400onsmartphone" readonly maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
 
 	if ($conf->categorie->enabled) {
 		// Categories
@@ -865,6 +968,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print '<input type="hidden" name="action" value="update">';
 	print '<input type="hidden" name="id" value="'.$object->id.'">';
 	print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
+	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="">';
 
 	$head = project_prepare_head($object);
 
@@ -899,56 +1003,90 @@ if ($action == 'create' && $user->rights->projet->creer)
 				$leadextrafields = $extrafields->fetch_name_optionals_label($object->table_element);
 				echo $modelid = $object->fetch_optionals($object->id,$leadextrafields);
 		print '<script>';
-		print '$( document ).ready(function() {';
-				if($object->thirdparty->id > 0){
-					print '$("socid").val("'.$object->thirdparty->id.'");
-							getcustomermodelinfo("'.$object->thirdparty->id.'");
-
-							getmodelinfo("'.$modelid.'","'.$object->thirdparty->id.'");
-						';
-				}	
-				print 'jQuery("#socid").change(function() {
+		print '<script>';
+		print '$( document ).ready(function() {
+				jQuery("#socid").change(function() {
 					var socid = $(this).val();
-                	getcustomermodelinfo(socid);
-				});
-
-				jQuery("#options_fk_c_product_model").change(function() {
-					var modelid = $(this).val();
-					var socid = $("#socid").val();
-					getmodelinfo(modelid,socid);
-				});					
-
-			});
-
-			function getcustomermodelinfo(id){
-         		var socid = id;
-            	$.ajax({
+                	$.ajax({
 						  dataType: "html",
-						  url: "customerproductmodeldata.php",
+						  url: "customerproductBrand_data.php",
 						  data: {socid: socid},
 						  success: function(html) {
 						  	//alert(html);
-							$("#options_fk_c_product_model").html(html);
+							$("#fk_brand").html(html);
 						  }
 					});
-         	}
-
-			function getmodelinfo(id,socid){
-         		var model = id;
-         		//alert(socid);
-            	$.ajax({
-					  dataType: "json",
-					  url: "productmodeldata.php",
-					  data: { model: model,socid: socid},
-					  success: function(data) {
-					  	//alert(data);
-						$("#options_fk_brand").val(data.branid);
-						$("#options_fk_category").val(data.category);
-						$("#options_fk_sub_category").val(data.subcategory);
-						$("#options_fk_product").val(data.product_id);
-					  }
 				});
-         	}
+
+
+				jQuery("#fk_brand").change(function() {
+					var brandid = $(this).val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductCategory_data.php",
+						  data: {socid: socid,brandid: brandid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_category").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_category").change(function() {
+					var catid = $(this).val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductSubCategory_data.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_sub_category").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_sub_category").change(function() {
+					var scatid = $(this).val();
+					var catid = $("#fk_category").val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "html",
+						  url: "customerproductmodeldata.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid},
+						  success: function(html) {
+						  	//alert(html);
+							$("#fk_model").html(html);
+						  }
+					});
+				});
+
+				jQuery("#fk_model").change(function() {
+					var model = $(this).val();
+					var scatid = $("#fk_sub_category").val();
+					var catid = $("#fk_category").val();
+					var brandid = $("#fk_brand").val();
+					var socid = $("#socid").val();
+                	$.ajax({
+						  dataType: "json",
+						  url: "productmodeldata.php",
+						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid,model: model},
+						  success: function(data) {
+						  	$("#fk_product").html(data.prdstr);
+						  	$("#ac_capacity").val(data.ac_capacity);
+						  	$("#fk_customer_product").val(data.id);
+						  }
+					});
+				});
+
+								
+
+			});
+
+			
 
 			';
 
@@ -1131,7 +1269,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '</table>';
 	} else {
-		print dol_get_fiche_head($head, 'project', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head($head, 'project', $langs->trans("Leads"), -1, ($object->public ? 'projectpub' : 'project'));
 
 		// Project card
 
@@ -1227,15 +1365,25 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Date start - end
-		print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
-		$start = dol_print_date($object->date_start, 'day');
+		//print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
+		print '<tr><td>'.$langs->trans("Start Date and Time").'</td><td colspan="4">';
+		$start = dol_print_date($object->date_c, 'dayhoursec');
 		print ($start ? $start : '?');
 		$end = dol_print_date($object->date_end, 'day');
-		print ' - ';
+		/*print ' - ';
 		print ($end ? $end : '?');
 		if ($object->hasDelay()) print img_warning("Late");
+		print '</td></tr>';*/
+
+		// Technician name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Technician name").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_technician,'user','firstname').' '.$object->getValuebyid($object->fk_technician,'user','lastname'));
 		print '</td></tr>';
 
+		// Technician Assigne Date and time
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Technician Assign Time").'</td><td>';
+		print dol_print_date($object->tech_assigndatetime, 'dayhoursec');
+		print '</td></tr>';
 
 		// Budget
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
@@ -1252,9 +1400,40 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '<table class="border tableforfield" width="100%">';
 
+		// Title
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Title").'</td><td>';
+		print dol_htmlentitiesbr($object->title);
+		print '</td></tr>';
+
+
 		// Description
-		print '<td class="titlefield tdtop">'.$langs->trans("Description").'</td><td>';
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Description").'</td><td>';
 		print dol_htmlentitiesbr($object->description);
+		print '</td></tr>';
+
+		// Brand name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Brand").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_brand,'c_brands','nom'));
+		print '</td></tr>';
+
+		// Category name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Category").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_category,'c_product_family','nom'));
+		print '</td></tr>';
+
+		// Sub Category name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Sub Category").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_sub_category,'c_product_subfamily','nom'));
+		print '</td></tr>';
+
+		// Model name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Model No.").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_model,'c_product_model','code'));
+		print '</td></tr>';
+
+		// Product name
+		print '<tr><td class="titlefield tdtop">'.$langs->trans("Product name").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_model,'c_product_model','nom'));
 		print '</td></tr>';
 
 		// Categories

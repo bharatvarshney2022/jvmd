@@ -31,14 +31,11 @@ if (!defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX', '1');
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-
 $socid = GETPOST('socid');
 $brandid = GETPOST('brandid');
 $catid = GETPOST('catid');
-$scatid = GETPOST('scatid');
-$model = GETPOST('model');
 //top_httphead();
 $object = new Product($db);
 $output = array();
-$output = $object->getCustomerProductModelInfo($socid,$brandid,$catid,$scatid,$model);
+$output = $object->getCustomerProductSubCategory($socid,$brandid,$catid);
 echo $output;

@@ -32,8 +32,11 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 $socid = GETPOST('socid');
+$brandid = GETPOST('brandid');
+$catid = GETPOST('catid');
+$scatid = GETPOST('scatid');
 //top_httphead();
 $object = new Product($db);
 $output = array();
-$output = $object->getCustomerProductModel($socid);
+$output = $object->getCustomerProductModel($socid,$brandid,$catid,$scatid);
 echo $output;

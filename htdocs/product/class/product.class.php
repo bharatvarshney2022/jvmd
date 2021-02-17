@@ -5848,10 +5848,11 @@ class Product extends CommonObject
 	}
 
 	/* Get model info by model id*/
-	public function getCustomerProductModelInfo($model_id,$socid)
+	public function getCustomerProductModelInfo($socid,$brandid,$catid,$scatid,$model)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno, p.fk_brand,p.fk_category, p.fk_subcategory, p.fk_product FROM ".MAIN_DB_PREFIX."product_customer as p LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid AND p.fk_model = '".$model_id."' AND p.fk_soc = '".$socid."' ";
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno, p.fk_brand,p.fk_category, p.fk_subcategory, p.fk_product, m.nom as prdname,p.ac_capacity FROM ".MAIN_DB_PREFIX."product_customer as p, ".MAIN_DB_PREFIX."c_product_model as m WHERE p.fk_model = m.rowid AND p.fk_soc = '".$socid."' AND p.fk_brand = '".$brandid."' AND p.fk_category = '".$catid."' AND p.fk_subcategory = '".$scatid."' AND p.fk_model = '".$model."' group by p.fk_model ";
+		$prdstr = '';
 		$result = $this->db->query($sql);
 		if ($result) {
 			$num = $this->db->num_rows($result);
@@ -5862,8 +5863,9 @@ class Product extends CommonObject
 					$obj = $this->db->fetch_object($result);
 
 					$id = $obj->rowid;
+					$prdstr = '<option value="'.$obj->fk_product.'">'.$obj->prdname.'</option>';
 
-					$outjson = array('id' => $obj->rowid, 'branid' => $obj->fk_brand, 'category' => $obj->fk_category, 'subcategory' => $obj->fk_subcategory, 'product_id' => $obj->fk_product, 'model' => $obj->modelno);
+					$outjson = array('id' => $obj->rowid, 'branid' => $obj->fk_brand, 'category' => $obj->fk_category, 'subcategory' => $obj->fk_subcategory, 'product_id' => $obj->fk_product, 'model' => $obj->modelno, 'prdstr' => $prdstr,'ac_capacity' => $obj->ac_capacity);
 					$i++;
 				}
 			}
@@ -5871,11 +5873,96 @@ class Product extends CommonObject
 		return json_encode($outjson);
 	}
 
-	/* Get product info by customer id*/
-	public function getCustomerProductModel($socid)
+	/* Get product Brand by customer id*/
+	public function getCustomerProductBrand($socid)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_model as m where p.fk_model = m.rowid AND p.fk_soc = '".$socid."' ";
+		$sql = "SELECT p.rowid as rowid, p.fk_brand as brandid, b.nom as brandname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_brands as b where p.fk_brand = b.rowid AND p.fk_soc = '".$socid."' group by p.fk_brand ";
+
+		$result = $this->db->query($sql);
+		$str = '<option value="0">Select Brand</option>';
+		if ($result) {
+			$num = $this->db->num_rows($result);
+			
+			if ($this->db->num_rows($result)) {
+				$i = 0;
+				
+				while ($i < $num) {
+					
+					$obj = $this->db->fetch_object($result);
+
+					$id = $obj->rowid;
+					$str .= '<option value="'.$obj->brandid.'">'.$obj->brandname.'</option>';
+					
+					$i++;
+				}
+			}
+		}	
+		return $str;
+	}
+
+	/* Get product Categories by customer id*/
+	public function getCustomerProductCategory($socid,$brandid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_category as catid, c.nom as catname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_family as c where p.fk_category = c.rowid AND p.fk_soc = '".$socid."' and p.fk_brand = '".$brandid."' group by p.fk_category ";
+
+		$result = $this->db->query($sql);
+		$str = '<option value="0">Select Category</option>';
+		if ($result) {
+			$num = $this->db->num_rows($result);	
+			
+			if ($this->db->num_rows($result)) {
+				$i = 0;
+				
+				while ($i < $num) {
+					
+					$obj = $this->db->fetch_object($result);
+
+					$id = $obj->rowid;
+					$str .= '<option value="'.$obj->catid.'">'.$obj->catname.'</option>';
+					
+					$i++;
+				}
+			}
+		}	
+		return $str;
+	}
+
+
+	/* Get product Categories by customer id*/
+	public function getCustomerProductSubCategory($socid,$brandid,$catid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_category as catid, p.fk_subcategory as subcatid, sc.nom as catname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_subfamily as sc where p.fk_subcategory  = sc.rowid AND p.fk_soc = '".$socid."' and p.fk_brand = '".$brandid."' AND p.fk_category = '".$catid."' group by p.fk_subcategory ";
+
+		$result = $this->db->query($sql);
+		$str = '<option value="0">Select Sub Category</option>';
+		if ($result) {
+			$num = $this->db->num_rows($result);	
+			
+			if ($this->db->num_rows($result)) {
+				$i = 0;
+				
+				while ($i < $num) {
+					
+					$obj = $this->db->fetch_object($result);
+
+					$id = $obj->rowid;
+					$str .= '<option value="'.$obj->subcatid.'">'.$obj->catname.'</option>';
+					
+					$i++;
+				}
+			}
+		}	
+		return $str;
+	}
+
+	/* Get product info by customer id*/
+	public function getCustomerProductModel($socid,$brandid,$catid,$scatid)
+	{
+		$outjson = array();
+		$sql = "SELECT p.rowid as rowid, p.fk_model as modelid, m.code as modelno FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_model as m where p.fk_model = m.rowid AND p.fk_soc = '".$socid."' AND p.fk_brand = '".$brandid."' AND p.fk_category = '".$catid."' AND p.fk_subcategory = '".$scatid."' ";
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Model No</option>';
