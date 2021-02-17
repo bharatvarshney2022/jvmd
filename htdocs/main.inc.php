@@ -2602,7 +2602,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 													<div class="d-flex flex-column">
 														<a href="'.DOL_URL_ROOT.'/user/card.php?id='.$user->id.'" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">'.($user->firstname ? $user->firstname.' '.$user->lastname : $user->login).'</a>
 														<div class="text-muted mt-1">
-															<a href="'.$nexturl.'" class="text-dark-75 text-hover-primary">Logout</a>
+															<a href="'.$nexturl.'" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">'.$langs->trans("Logout").'</a>
 														</div>
 													</div>
 												</div>
