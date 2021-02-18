@@ -102,12 +102,12 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
     if (is_array($moredata) && ! empty($moredata['searchform']))	// searchform can contains select2 code or link to show old search form or link to switch on search page
     {
         print "\n";
-        print '<li class="menu-item">';
+        print '								<li class="menu-item">';
         print '<div class="quick-search quick-search-dropdown">';
         print $moredata['searchform'];
-		print "</div>";        
-        print "</li>";
-        print "<!-- End SearchForm -->\n";
+		print "</div>"."\n";        
+        print "								</li>"."\n";
+        print "								<!-- End SearchForm -->\n";
     }
 
     if (is_array($moredata) && ! empty($moredata['bookmarks']))
@@ -126,15 +126,18 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 
 	// Home
 	$showmode=1;
-	if ($_SESSION["mainmenu"] && $_SESSION["mainmenu"] == "home") { $itemsel=TRUE; $_SESSION['idmenu']=''; }
+	if ($_SESSION["mainmenu"] && $_SESSION["mainmenu"] == "home") { $itemsel=0; $_SESSION['idmenu']=''; }
 	else $itemsel=FALSE;
 	$idsel='home';
 
-	if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
-	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=', $id, $idsel, $atarget);
+	if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
+	//if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=', $id, $idsel, $atarget);
+	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, 'javascript:;', $id, $idsel, $atarget);
 	if (empty($noout)) print_end_menu_entry_layout($showmode);
 
 	$menu->add('/index.php?mainmenu=home&amp;leftmenu=', $langs->trans("Dashboard"), 0, $showmode, $atarget, "home", '');
+
+	// Add Submenu
 
 	// Members
 	$tmpentry=array('enabled'=>(! empty($conf->adherent->enabled)),
@@ -161,7 +164,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		else $itemsel=FALSE;
 		$idsel='companies';
 
-		if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
+		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
 		if (empty($noout)) print_text_menu_entry_layout($langs->trans("ThirdParties"), $showmode, DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=', $id, $idsel, $atarget);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$menu->add('/societe/index.php?mainmenu=companies&amp;leftmenu=', $langs->trans("ThirdParties"), 0, $showmode, $atarget, "companies", '');
@@ -191,7 +194,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		*/
 		$chaine.=$langs->trans("Products");
 
-		if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
+		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
 		if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/product/index.php?mainmenu=products&amp;leftmenu=', $id, $idsel, $atarget);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$menu->add('/product/index.php?mainmenu=products&amp;leftmenu=', $chaine, 0, $showmode, $atarget, "products", '');
@@ -213,7 +216,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 
         $chaine.=$langs->trans("TMenuMRP");
 
-        if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
+        if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
         if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/mrp/index.php?mainmenu=mrp&amp;leftmenu=', $id, $idsel, $atarget);
         if (empty($noout)) print_end_menu_entry_layout($showmode);
         $menu->add('/mrp/index.php?mainmenu=mrp&amp;leftmenu=', $chaine, 0, $showmode, $atarget, "mrp", '');
@@ -239,9 +242,9 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 	else $itemsel=FALSE;
 	$idsel='commercial';
 
-	if (empty($noout)) print_start_menu_entry($idsel,$itemsel,$showmode);
-	if (empty($noout)) print_text_menu_entry($langs->trans("Commercial"), $showmode, DOL_URL_ROOT.'/comm/index.php?mainmenu=commercial&amp;leftmenu=', $id, $idsel, $atarget);
-	if (empty($noout)) print_end_menu_entry($showmode);
+	if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
+	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Commercial"), $showmode, DOL_URL_ROOT.'/comm/index.php?mainmenu=commercial&amp;leftmenu=', $id, $idsel, $atarget);
+	if (empty($noout)) print_end_menu_entry_layout($showmode);
 	$menu->add('/comm/index.php?mainmenu=commercial&amp;leftmenu=', $langs->trans("Commercial"), 0, $showmode, $atarget, "commercial", "");
 	}
 
@@ -304,7 +307,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		else $itemsel=FALSE;
 		$idsel='project';
 
-		if (empty($noout)) print_start_menu_entry_layout($idsel,$itemsel,$showmode);
+		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
 		if (empty($noout)) print_text_menu_entry_layout($langs->trans("Leads"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$title = $langs->trans("Leads");	// Leads and opportunities by default
@@ -926,6 +929,13 @@ function print_start_menu_entry($idsel,$itemsel,$showmode) {
 	}
 }
 
+
+function print_start_menu_entry_left_layout($idsel,$itemsel,$showmode) {
+	if ($showmode) {
+		print '								<li class="menu-item menu-item-submenu'.(($itemsel)?' menu-item-open':'').'"  aria-haspopup="true"  data-menu-toggle="hover" id="mainmenutd_'.$idsel.'">'."\n";
+	}
+}
+
 function print_start_menu_entry_layout($idsel,$itemsel,$showmode) {
 	if ($showmode) {
 		print '								<li class="menu-item'.(($itemsel)?' menu-item-open':'').'"  aria-haspopup="true" id="mainmenutd_'.$idsel.'">'."\n";
@@ -971,29 +981,51 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 
 	if ($showmode == 1)
 	{
-		print '									<a class="menu-link" id="main-nav__'.$idsel.'" href="'.$url.'"'.($atarget?' target="'.$atarget.'"':'').' title="'.dol_escape_htmltag($text).'">';
+		print '									<a class="menu-toggle menu-link" id="main-nav__'.$idsel.'" href="'.$url.'"'.($atarget?' target="'.$atarget.'"':'').' title="'.dol_escape_htmltag($text).'">';
 		if($idsel == "home")
 		{
 			print '
-				<span class="svg-icon menu-icon">
-					<i class="fa fa-tachometer"></i>
-					<!--end::Svg Icon-->
-				</span>';
+										<span class="svg-icon menu-icon">
+											<i class="fa fa-tachometer"></i>
+											<!--end::Svg Icon-->
+										</span>';
 		}
 		else if($idsel == "companies" || $idsel == "products" || $idsel == "project")
 		{
 			print '
-				<span class="svg-icon menu-icon">
-					<i class="nav-icon fa fa-group"></i>
-					<!--end::Svg Icon-->
-				</span>';
-}
+									<span class="svg-icon menu-icon">
+										<i class="nav-icon fa fa-group"></i>
+										<!--end::Svg Icon-->
+									</span>';
+		}
 		else
 		{
 			print '<i class="tmenuimage icon icon--'.$idsel.'"></i> ';
 		}
 		print "\n".'										<span class="menu-text">'.$text.'</span>';
+		print "\n".'										<i class="menu-arrow"></i>';
 		print "\n".'									</a>';
+
+		print '<div class="menu-submenu">
+					<i class="menu-arrow"></i>
+					<ul class="menu-subnav">
+						<li class="menu-item menu-item-parent" aria-haspopup="true">
+							<span class="menu-link">
+								<span class="menu-text">'.$text.'</span>
+							</span>
+						</li>
+
+						<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+							<a href="javascript:;" class="menu-link menu-toggle">
+								<i class="menu-bullet menu-bullet-line">
+									<span></span>
+								</i>
+								<span class="menu-text">Users</span>
+								<i class="menu-arrow"></i>
+							</a>
+						</li>
+					</ul>
+				</div>';
 	}
 	if ($showmode == 2)
 	{
