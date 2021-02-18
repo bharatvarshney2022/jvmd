@@ -1006,6 +1006,24 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	if ($action == 'edit' && $userWrite > 0)
 	{
+		
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		$readonly = '';
+		if($user_group_id == '4'){
+			$readonly = 'readonly';
+		}	
+
 		print dol_get_fiche_head($head, 'project', $langs->trans("Leads"), 0, ($object->public ? 'projectpub' : 'project'));
 
 		print '<table class="border centpercent">';
@@ -1013,13 +1031,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// Ref
 		$suggestedref = $object->ref;
 		print '<tr><td width="15%" class="fieldrequired">'.$langs->trans("Ref").'</td>';
-		print '<td><input size="12" class="minwidth200"  name="ref" value="'.$suggestedref.'">';
+		print '<td><input size="12" class="minwidth200" readonly name="ref" value="'.$suggestedref.'">';
 		print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 		print '</td>';
 
 		// Label
 		print '<td width="15%" class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
-		print '<td><input class="quatrevingtpercent"  class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
+		print '<td><input class="quatrevingtpercent" '.$readonly.' class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
 
 		// Status
 		print '<tr><td class="fieldrequired">'.$langs->trans("Status").'</td><td>';
@@ -1038,7 +1056,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<script>';
 		print '
 		
-		$( document ).ready(function() {';
+		$( document ).ready(function() {
+
+			
+			';
+			if($user_group_id == '4'){
+				print '$("#socid").attr("disabled", true);';
+			}	
 		if($object->thirdparty->id > 0 && $object->fk_brand > 0){
 			print '   
 				
@@ -1064,7 +1088,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		print '	jQuery("#socid").change(function() {
 					var socid = $(this).val();
-					alert(socid);
+					//alert(socid);
                 	$.ajax({
 						  dataType: "html",
 						  url: "customerproductBrand_data.php",
@@ -1251,7 +1275,11 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Date start
 		print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-		print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
+		if($user_group_id == '4'){
+			print dol_print_date($object->date_c, 'dayhoursec');
+		}else{
+			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
+		}
 		/*print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
 		if ($comefromclone) {print ' checked '; }
 		print '/> '.$langs->trans("ProjectReportDate");*/
