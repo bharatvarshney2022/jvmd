@@ -978,6 +978,7 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 {
 	global $langs, $user;
 	global $conf;
+	global $db,$langs,$dolibarr_main_db_name,$mysoc;
 
 	if ($showmode == 1)
 	{
@@ -1319,24 +1320,238 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 															<span class="menu-text">'.$langs->trans("CronList").'</span>
 														</a>
 													</li>';
+
+												if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
+												{
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("ProductVatMassChange").'</span>
+														</a>
+													</li>';
+												}
 											print '</ul>
 										</div>
 									</li>';
-								}
+								} // User->admin
 
-								/*
+								$langs->load("users");
+								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">
+													<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/user/home.php?leftmenu=users" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+														</a>
+													</li>';
+
+													if ($user->rights->user->user->lire)
+													{
+
+														$leftmenu= 'users';
+
+														print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+																	<a href="javascript:;" class="menu-link menu-toggle">
+																		<i class="menu-bullet menu-bullet-dot">
+																			<span></span>
+																		</i>
+																		<span class="menu-text">'.$langs->trans("Users").'</span>
+																		<i class="menu-arrow"></i>
+																	</a>';
+
+														$is_newuser = 0;
+														if($user->admin)
+														{
+															$is_newuser = 1;
+															print '<div class="menu-submenu">
+																		<i class="menu-arrow"></i>
+																		<ul class="menu-subnav">';
+																			print '<li class="menu-item" aria-haspopup="true">
+																				<a href="'.DOL_URL_ROOT.'/user/card.php?leftmenu=users&action=create" class="menu-link">
+																					<i class="menu-bullet menu-bullet-dot">
+																						<span></span>
+																					</i>
+																					<span class="menu-text">'.$langs->trans("NewUser").'</span>
+																				</a>
+																			</li>';
+														}
+														else
+														{
+															$user_group_id = 0;
+															$usergroup = new UserGroup($db);
+															$groupslist = $usergroup->listGroupsForUser($user->id);
+
+															if ($groupslist != '-1')
+															{
+																foreach ($groupslist as $groupforuser)
+																{
+																	$user_group_id = $groupforuser->id;
+																}
+															}
+
+															if($user_group_id == '13')
+															{
+																$is_newuser = 1;
+																print '<div class="menu-submenu">
+																		<i class="menu-arrow"></i>
+																		<ul class="menu-subnav">';
+																			print '<li class="menu-item" aria-haspopup="true">
+																				<a href="'.DOL_URL_ROOT.'/user/create_vendor.php?leftmenu=users&action=create" class="menu-link">
+																					<i class="menu-bullet menu-bullet-dot">
+																						<span></span>
+																					</i>
+																					<span class="menu-text">'.$langs->trans("NewUserVendor").'</span>
+																				</a>
+																			</li>
+																</li>';
+															}
+														}
+
+														if($is_newuser == 0)
+														{
+															print '
+																<div class="menu-submenu">
+																	<i class="menu-arrow"></i>
+																		<ul class="menu-subnav">
+																			<li class="menu-item" aria-haspopup="true">
+																			<a href="'.DOL_URL_ROOT.'/user/list.php?leftmenu=users" class="menu-link">
+																				<i class="menu-bullet menu-bullet-dot">
+																					<span></span>
+																				</i>
+																				<span class="menu-text">'.$langs->trans("ListOfUsers").'</span>
+																			</a>
+																		</li>';
+														}
+														else
+														{
+															print '	
+																<li class="menu-item" aria-haspopup="true">
+																	<a href="'.DOL_URL_ROOT.'/user/list.php?leftmenu=users" class="menu-link">
+																		<i class="menu-bullet menu-bullet-dot">
+																			<span></span>
+																		</i>
+																		<span class="menu-text">'.$langs->trans("ListOfUsers").'</span>
+																	</a>
+																</li>';	
+														}
+
+														if($user->admin)
+														{
+															print '<li class="menu-item" aria-haspopup="true">
+																	<a href="'.DOL_URL_ROOT.'/user/hierarchy.php?leftmenu=users" class="menu-link">
+																		<i class="menu-bullet menu-bullet-dot">
+																			<span></span>
+																		</i>
+																		<span class="menu-text">'.$langs->trans("HierarchicView").'</span>
+																	</a>
+																</li>';
+														}
+
+
+														print '</ul><!-- menu-subnav -->
+														</div><!-- menu-submenu -->
+														</li><!--sub-nav -->';
+
+														if (! empty($conf->categorie->enabled) && $user->admin)
+														{
+															print '<li class="menu-item" aria-haspopup="true">
+																	<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=users&type=7" class="menu-link">
+																		<i class="menu-bullet menu-bullet-dot">
+																			<span></span>
+																		</i>
+																		<span class="menu-text">'.$langs->trans("UsersCategoriesShort").'</span>
+																	</a>
+																</li>';
+														}
+
+														if($user->admin)
+														{
+															print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+																		<a href="javascript:;" class="menu-link menu-toggle">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("Groups").'</span>
+																			<i class="menu-arrow"></i>
+																		</a>';
+
+															print '<div class="menu-submenu">
+																		<i class="menu-arrow"></i>
+																		<ul class="menu-subnav">';
+
+															print '<li class="menu-item" aria-haspopup="true">
+																		<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("Groups").'</span>
+																		</a>
+																	</li>';
+
+															print '<li class="menu-item" aria-haspopup="true">
+																		<a href="'.DOL_URL_ROOT.'/user/group/card.php?leftmenu=users&action=create" class="menu-link">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("NewGroup").'</span>
+																		</a>
+																	</li>';
+
+															print '<li class="menu-item" aria-haspopup="true">
+																		<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("ListOfGroups").'</span>
+																		</a>
+																	</li>';
+
+
+															print '		</ul><!-- menu-subnav -->
+															</div><!-- menu-submenu -->
+															</li><!--sub-nav -->';
+														}
+													}
+												print '</ul>
+											</div>
+										</li>';
+
+
+							/*// Users & Groups
+
+							    if ($usemenuhider || empty($leftmenu) || $leftmenu=="users")
+								{
+									
 									
 
-									$newmenu->add("/admin/", $langs->trans(""),1);
-									$newmenu->add("/admin/", $langs->trans(""),1);
-									$newmenu->add('/', $langs->trans(''), 1);
-
-									if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
+									
+									if (! empty($conf->categorie->enabled))
 									{
-										$langs->load("products");
-										$newmenu->add("/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("ProductVatMassChange"), 1, $user->admin);
+										$langs->load("categories");
+										$newmenu->add("/", $langs->trans(""), 2, $user->rights->categorie->lire, '', $mainmenu, 'cat');
 									}
-								}*/
+
+									if($user->admin)
+									{
+										
+										$newmenu->add("/", $langs->trans(""), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->write:$user->rights->user->user->creer) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
+										$newmenu->add("/", $langs->trans(""), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
+									}
+								}
+							}*/
 						}
 					
 					print '</ul>
@@ -1492,117 +1707,7 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 		/*
 		 * Menu HOME
 		 */
-		if ($mainmenu == 'home')
-		{
-			$langs->load("users");
-
-			// Home - dashboard
-			//$newmenu->add("/index.php?mainmenu=home&amp;leftmenu=home", $langs->trans("MyDashboard"), 0, 1, '', $mainmenu, 'home');
-
-			// Setup
-			if($user->admin)
-			{
-				// System tools
-				$newmenu->add("/admin/tools/index.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("AdminTools"), 0, $user->admin, '', $mainmenu, 'admintools');
-
-	            if (! empty($menu_invert)) $leftmenu= 'admintools';
-
-				if ($usemenuhider || empty($leftmenu) || preg_match('/^(admintools|all)/',$leftmenu))
-				{
-					// Load translation files required by the page
-					$langs->loadLangs(array('admin', 'help', 'cron'));
-
-					$newmenu->add('/admin/system/dolibarr.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('InfoDolibarr'), 1);
-
-	                if (! empty($menu_invert)) $leftmenu= 'admintools_info';
-
-	                if ($usemenuhider || empty($leftmenu) || $leftmenu=='admintools_info') {
-	                    $newmenu->add('/admin/system/modules.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Modules'), 2);
-	                    $newmenu->add('/admin/triggers.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('Triggers'), 2);
-	                    $newmenu->add('/admin/system/filecheck.php?mainmenu=home&amp;leftmenu=admintools_info', $langs->trans('FileCheck'), 2);
-	                }
-					//$newmenu->add('/admin/system/browser.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoBrowser'), //1);
-					//$newmenu->add('/admin/system/os.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoOS'), 1);
-					//$newmenu->add('/admin/system/web.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoWebServer'), 1);
-					//$newmenu->add('/admin/system/phpinfo.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoPHP'), 1);
-					//if (function_exists('xdebug_is_enabled')) $newmenu->add('/admin/system/xdebug.php', $langs->trans('XDebug'),1);
-					//$newmenu->add('/admin/system/database.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('InfoDatabase'), 1);
-					if (function_exists('eaccelerator_info')) $newmenu->add("/admin/tools/eaccelerator.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("EAccelerator"),1);
-					//$newmenu->add("/admin/system/perf.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("InfoPerf"),1);
-					$newmenu->add("/admin/tools/dolibarr_export.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Backup"),1);
-					$newmenu->add("/admin/tools/dolibarr_import.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Restore"),1);
-					//$newmenu->add("/admin/tools/update.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("MenuUpgrade"),1);
-					$newmenu->add("/admin/tools/purge.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Purge"),1);
-					$newmenu->add("/admin/tools/listevents.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Audit"),1);
-					$newmenu->add("/admin/tools/listsessions.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("Sessions"),1);
-					//$newmenu->add('/admin/system/about.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('ExternalResources'), 1);
-	                //$newmenu->add('/cron/list.php?mainmenu=home&amp;leftmenu=admintools', $langs->trans('CronList'), 1);
-
-					if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
-					{
-						$langs->load("products");
-						$newmenu->add("/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("ProductVatMassChange"), 1, $user->admin);
-					}
-				}
-			}
-
-			// Users & Groups
-			$newmenu->add("/user/home.php?leftmenu=users", $langs->trans("MenuUsersAndGroups"), 0, $user->rights->user->user->lire, '', $mainmenu, 'users');
-			if ($user->rights->user->user->lire)
-			{
-                if (! empty($menu_invert)) $leftmenu= 'users';
-
-			    if ($usemenuhider || empty($leftmenu) || $leftmenu=="users")
-				{
-					$newmenu->add("/user/list.php?leftmenu=users", $langs->trans("Users"), 1, $user->rights->user->user->lire || $user->admin, '', '', '', 0, '', '', 'is-disabled ');
-
-					if($user->admin)
-					{
-						$newmenu->add("/user/card.php?leftmenu=users&action=create", $langs->trans("NewUser"),2, ($user->rights->user->user->creer || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE), '', 'home');
-					}
-					else
-					{
-						$user_group_id = 0;
-						$usergroup = new UserGroup($db);
-						$groupslist = $usergroup->listGroupsForUser($user->id);
-
-						if ($groupslist != '-1')
-						{
-							foreach ($groupslist as $groupforuser)
-							{
-								$user_group_id = $groupforuser->id;
-							}
-						}
-
-						if($user_group_id == '13')
-						{
-							$newmenu->add("/user/create_vendor.php?leftmenu=users&action=create", $langs->trans("NewUserVendor"),2, ($user->rights->user->user->creer || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE), '', 'home');
-						}
-					}
-
-					$newmenu->add("/user/list.php?leftmenu=users", $langs->trans("ListOfUsers"), 2, $user->rights->user->user->lire || $user->admin);
-					if($user->admin)
-					{
-						$newmenu->add("/user/hierarchy.php?leftmenu=users", $langs->trans("HierarchicView"), 2, $user->rights->user->user->lire || $user->admin);
-					}
-					if (! empty($conf->categorie->enabled))
-					{
-						$langs->load("categories");
-						$newmenu->add("/categories/index.php?leftmenu=users&type=7", $langs->trans("UsersCategoriesShort"), 2, $user->rights->categorie->lire, '', $mainmenu, 'cat');
-					}
-
-					if($user->admin)
-					{
-						$newmenu->add("/user/group/list.php?leftmenu=users", $langs->trans("Groups"), 1, ($user->rights->user->user->lire || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE), '', '', '', 0, '', '', 'is-disabled ');
-						$newmenu->add("/user/group/card.php?leftmenu=users&action=create", $langs->trans("NewGroup"), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->write:$user->rights->user->user->creer) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
-						$newmenu->add("/user/group/list.php?leftmenu=users", $langs->trans("ListOfGroups"), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
-					}
-				}
-			}
-
-		} // end Menu Home
-
-
+		
 		/*
 		 * Menu THIRDPARTIES
 		 */
