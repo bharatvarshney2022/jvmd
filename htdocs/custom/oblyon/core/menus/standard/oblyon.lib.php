@@ -165,7 +165,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		$idsel='companies';
 
 		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-		if (empty($noout)) print_text_menu_entry_layout($langs->trans("ThirdParties"), $showmode, DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
+		if (empty($noout)) print_text_menu_entry_layout($langs->trans("ThirdParties"), $showmode, 'javascript:;', $id, $idsel, $atarget, $mainmenu);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$menu->add('/societe/index.php?mainmenu=companies&amp;leftmenu=', $langs->trans("ThirdParties"), 0, $showmode, $atarget, "companies", '');
 	}
@@ -1339,219 +1339,233 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 
 								$langs->load("users");
 								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
-											<a href="javascript:;" class="menu-link menu-toggle">
-												<i class="menu-bullet menu-bullet-line">
-													<span></span>
-												</i>
-												<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
-												<i class="menu-arrow"></i>
-											</a>
-											<div class="menu-submenu">
-												<i class="menu-arrow"></i>
-												<ul class="menu-subnav">
-													<li class="menu-item" aria-haspopup="true">
-														<a href="'.DOL_URL_ROOT.'/user/home.php?leftmenu=users" class="menu-link">
-															<i class="menu-bullet menu-bullet-dot">
-																<span></span>
-															</i>
-															<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
-														</a>
-													</li>';
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<i class="menu-bullet menu-bullet-line">
+											<span></span>
+										</i>
+										<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item" aria-haspopup="true">
+												<a href="'.DOL_URL_ROOT.'/user/home.php?leftmenu=users" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+												</a>
+											</li>';
 
-													if ($user->rights->user->user->lire)
+											if ($user->rights->user->user->lire)
+											{
+
+												$leftmenu= 'users';
+
+												print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+															<a href="javascript:;" class="menu-link menu-toggle">
+																<i class="menu-bullet menu-bullet-dot">
+																	<span></span>
+																</i>
+																<span class="menu-text">'.$langs->trans("Users").'</span>
+																<i class="menu-arrow"></i>
+															</a>';
+
+												$is_newuser = 0;
+												if($user->admin)
+												{
+													$is_newuser = 1;
+													print '<div class="menu-submenu">
+																<i class="menu-arrow"></i>
+																<ul class="menu-subnav">';
+																	print '<li class="menu-item" aria-haspopup="true">
+																		<a href="'.DOL_URL_ROOT.'/user/card.php?leftmenu=users&action=create" class="menu-link">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("NewUser").'</span>
+																		</a>
+																	</li>';
+												}
+												else
+												{
+													$user_group_id = 0;
+													$usergroup = new UserGroup($db);
+													$groupslist = $usergroup->listGroupsForUser($user->id);
+
+													if ($groupslist != '-1')
 													{
-
-														$leftmenu= 'users';
-
-														print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-																	<a href="javascript:;" class="menu-link menu-toggle">
-																		<i class="menu-bullet menu-bullet-dot">
-																			<span></span>
-																		</i>
-																		<span class="menu-text">'.$langs->trans("Users").'</span>
-																		<i class="menu-arrow"></i>
-																	</a>';
-
-														$is_newuser = 0;
-														if($user->admin)
+														foreach ($groupslist as $groupforuser)
 														{
-															$is_newuser = 1;
-															print '<div class="menu-submenu">
-																		<i class="menu-arrow"></i>
-																		<ul class="menu-subnav">';
-																			print '<li class="menu-item" aria-haspopup="true">
-																				<a href="'.DOL_URL_ROOT.'/user/card.php?leftmenu=users&action=create" class="menu-link">
-																					<i class="menu-bullet menu-bullet-dot">
-																						<span></span>
-																					</i>
-																					<span class="menu-text">'.$langs->trans("NewUser").'</span>
-																				</a>
-																			</li>';
+															$user_group_id = $groupforuser->id;
 														}
-														else
-														{
-															$user_group_id = 0;
-															$usergroup = new UserGroup($db);
-															$groupslist = $usergroup->listGroupsForUser($user->id);
+													}
 
-															if ($groupslist != '-1')
-															{
-																foreach ($groupslist as $groupforuser)
-																{
-																	$user_group_id = $groupforuser->id;
-																}
-															}
+													if($user_group_id == '13')
+													{
+														$is_newuser = 1;
+														print '<div class="menu-submenu">
+																<i class="menu-arrow"></i>
+																<ul class="menu-subnav">';
+																	print '<li class="menu-item" aria-haspopup="true">
+																		<a href="'.DOL_URL_ROOT.'/user/create_vendor.php?leftmenu=users&action=create" class="menu-link">
+																			<i class="menu-bullet menu-bullet-dot">
+																				<span></span>
+																			</i>
+																			<span class="menu-text">'.$langs->trans("NewUserVendor").'</span>
+																		</a>
+																	</li>
+														</li>';
+													}
+												}
 
-															if($user_group_id == '13')
-															{
-																$is_newuser = 1;
-																print '<div class="menu-submenu">
-																		<i class="menu-arrow"></i>
-																		<ul class="menu-subnav">';
-																			print '<li class="menu-item" aria-haspopup="true">
-																				<a href="'.DOL_URL_ROOT.'/user/create_vendor.php?leftmenu=users&action=create" class="menu-link">
-																					<i class="menu-bullet menu-bullet-dot">
-																						<span></span>
-																					</i>
-																					<span class="menu-text">'.$langs->trans("NewUserVendor").'</span>
-																				</a>
-																			</li>
-																</li>';
-															}
-														}
-
-														if($is_newuser == 0)
-														{
-															print '
-																<div class="menu-submenu">
-																	<i class="menu-arrow"></i>
-																		<ul class="menu-subnav">
-																			<li class="menu-item" aria-haspopup="true">
-																			<a href="'.DOL_URL_ROOT.'/user/list.php?leftmenu=users" class="menu-link">
-																				<i class="menu-bullet menu-bullet-dot">
-																					<span></span>
-																				</i>
-																				<span class="menu-text">'.$langs->trans("ListOfUsers").'</span>
-																			</a>
-																		</li>';
-														}
-														else
-														{
-															print '	
-																<li class="menu-item" aria-haspopup="true">
+												if($is_newuser == 0)
+												{
+													print '
+														<div class="menu-submenu">
+															<i class="menu-arrow"></i>
+																<ul class="menu-subnav">
+																	<li class="menu-item" aria-haspopup="true">
 																	<a href="'.DOL_URL_ROOT.'/user/list.php?leftmenu=users" class="menu-link">
 																		<i class="menu-bullet menu-bullet-dot">
 																			<span></span>
 																		</i>
 																		<span class="menu-text">'.$langs->trans("ListOfUsers").'</span>
 																	</a>
-																</li>';	
-														}
-
-														if($user->admin)
-														{
-															print '<li class="menu-item" aria-haspopup="true">
-																	<a href="'.DOL_URL_ROOT.'/user/hierarchy.php?leftmenu=users" class="menu-link">
-																		<i class="menu-bullet menu-bullet-dot">
-																			<span></span>
-																		</i>
-																		<span class="menu-text">'.$langs->trans("HierarchicView").'</span>
-																	</a>
 																</li>';
-														}
+												}
+												else
+												{
+													print '	
+														<li class="menu-item" aria-haspopup="true">
+															<a href="'.DOL_URL_ROOT.'/user/list.php?leftmenu=users" class="menu-link">
+																<i class="menu-bullet menu-bullet-dot">
+																	<span></span>
+																</i>
+																<span class="menu-text">'.$langs->trans("ListOfUsers").'</span>
+															</a>
+														</li>';	
+												}
+
+												if($user->admin)
+												{
+													print '<li class="menu-item" aria-haspopup="true">
+															<a href="'.DOL_URL_ROOT.'/user/hierarchy.php?leftmenu=users" class="menu-link">
+																<i class="menu-bullet menu-bullet-dot">
+																	<span></span>
+																</i>
+																<span class="menu-text">'.$langs->trans("HierarchicView").'</span>
+															</a>
+														</li>';
+												}
 
 
-														print '</ul><!-- menu-subnav -->
-														</div><!-- menu-submenu -->
-														</li><!--sub-nav -->';
+												print '</ul><!-- menu-subnav -->
+												</div><!-- menu-submenu -->
+												</li><!--sub-nav -->';
 
-														if (! empty($conf->categorie->enabled) && $user->admin)
-														{
-															print '<li class="menu-item" aria-haspopup="true">
-																	<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=users&type=7" class="menu-link">
-																		<i class="menu-bullet menu-bullet-dot">
-																			<span></span>
-																		</i>
-																		<span class="menu-text">'.$langs->trans("UsersCategoriesShort").'</span>
-																	</a>
-																</li>';
-														}
+												if (! empty($conf->categorie->enabled) && $user->admin)
+												{
+													print '<li class="menu-item" aria-haspopup="true">
+															<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=users&type=7" class="menu-link">
+																<i class="menu-bullet menu-bullet-dot">
+																	<span></span>
+																</i>
+																<span class="menu-text">'.$langs->trans("UsersCategoriesShort").'</span>
+															</a>
+														</li>';
+												}
 
-														if($user->admin)
-														{
-															print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-																		<a href="javascript:;" class="menu-link menu-toggle">
-																			<i class="menu-bullet menu-bullet-dot">
-																				<span></span>
-																			</i>
-																			<span class="menu-text">'.$langs->trans("Groups").'</span>
-																			<i class="menu-arrow"></i>
-																		</a>';
+												if($user->admin)
+												{
+													print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+																<a href="javascript:;" class="menu-link menu-toggle">
+																	<i class="menu-bullet menu-bullet-dot">
+																		<span></span>
+																	</i>
+																	<span class="menu-text">'.$langs->trans("Groups").'</span>
+																	<i class="menu-arrow"></i>
+																</a>';
 
-															print '<div class="menu-submenu">
-																		<i class="menu-arrow"></i>
-																		<ul class="menu-subnav">';
+													print '<div class="menu-submenu">
+																<i class="menu-arrow"></i>
+																<ul class="menu-subnav">';
 
-															print '<li class="menu-item" aria-haspopup="true">
-																		<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
-																			<i class="menu-bullet menu-bullet-dot">
-																				<span></span>
-																			</i>
-																			<span class="menu-text">'.$langs->trans("Groups").'</span>
-																		</a>
-																	</li>';
+													print '<li class="menu-item" aria-haspopup="true">
+																<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
+																	<i class="menu-bullet menu-bullet-dot">
+																		<span></span>
+																	</i>
+																	<span class="menu-text">'.$langs->trans("Groups").'</span>
+																</a>
+															</li>';
 
-															print '<li class="menu-item" aria-haspopup="true">
-																		<a href="'.DOL_URL_ROOT.'/user/group/card.php?leftmenu=users&action=create" class="menu-link">
-																			<i class="menu-bullet menu-bullet-dot">
-																				<span></span>
-																			</i>
-																			<span class="menu-text">'.$langs->trans("NewGroup").'</span>
-																		</a>
-																	</li>';
+													print '<li class="menu-item" aria-haspopup="true">
+																<a href="'.DOL_URL_ROOT.'/user/group/card.php?leftmenu=users&action=create" class="menu-link">
+																	<i class="menu-bullet menu-bullet-dot">
+																		<span></span>
+																	</i>
+																	<span class="menu-text">'.$langs->trans("NewGroup").'</span>
+																</a>
+															</li>';
 
-															print '<li class="menu-item" aria-haspopup="true">
-																		<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
-																			<i class="menu-bullet menu-bullet-dot">
-																				<span></span>
-																			</i>
-																			<span class="menu-text">'.$langs->trans("ListOfGroups").'</span>
-																		</a>
-																	</li>';
-
-
-															print '		</ul><!-- menu-subnav -->
-															</div><!-- menu-submenu -->
-															</li><!--sub-nav -->';
-														}
-													}
-												print '</ul>
-											</div>
-										</li>';
+													print '<li class="menu-item" aria-haspopup="true">
+																<a href="'.DOL_URL_ROOT.'/user/group/list.php?leftmenu=users" class="menu-link">
+																	<i class="menu-bullet menu-bullet-dot">
+																		<span></span>
+																	</i>
+																	<span class="menu-text">'.$langs->trans("ListOfGroups").'</span>
+																</a>
+															</li>';
 
 
-							/*// Users & Groups
+													print '		</ul><!-- menu-subnav -->
+													</div><!-- menu-submenu -->
+													</li><!--sub-nav -->';
+												}
+											}
+										print '</ul>
+									</div>
+								</li>';
+						} // If Home
+						else if($idsel == 'companies')
+						{
+							// Customer setup
 
-							    if ($usemenuhider || empty($leftmenu) || $leftmenu=="users")
-								{
-									
-									
+							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
+										<a href="'.DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=" class="menu-link menu-toggle">
+											<i class="menu-bullet menu-bullet-line">
+												<span></span>
+											</i>
+											<span class="menu-text">'.$langs->trans("ThirdParties").'</span>
+										</a>
+									</li>';
 
-									
-									if (! empty($conf->categorie->enabled))
-									{
-										$langs->load("categories");
-										$newmenu->add("/", $langs->trans(""), 2, $user->rights->categorie->lire, '', $mainmenu, 'cat');
-									}
+							print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<i class="menu-bullet menu-bullet-line">
+											<span></span>
+										</i>
+										<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item" aria-haspopup="true">
+												<a href="'.DOL_URL_ROOT.'/user/home.php?leftmenu=users" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
+												</a>
+											</li>';
 
-									if($user->admin)
-									{
-										
-										$newmenu->add("/", $langs->trans(""), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->write:$user->rights->user->user->creer) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
-										$newmenu->add("/", $langs->trans(""), 2, (($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin) && !(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE));
-									}
-								}
-							}*/
+							print '
+										</ul>
+									</div>
+								</li>';
 						}
 					
 					print '</ul>
