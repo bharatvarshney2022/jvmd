@@ -6603,7 +6603,7 @@ class Form
 		// TODO Use an internal dolibarr component instead of select2
 		if (empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) && !defined('REQUIRE_JQUERY_MULTISELECT')) return '';
 
-		$out = '<select type="text" class="'.$htmlname.($morecss ? ' '.$morecss : '').'" '.($moreparam ? $moreparam.' ' : '').'name="'.$htmlname.'"><option></option></select>';
+		$out = '<select class="'.$htmlname.($morecss ? ' '.$morecss : '').'" '.($moreparam ? $moreparam.' ' : '').'name="'.$htmlname.'"><option></option></select>';
 
 		$formattedarrayresult = array();
 
@@ -6683,6 +6683,8 @@ class Form
 
 			});
 			</script>';
+
+		//echo $acceptdelayedhtml; exit;
 
 		if ($acceptdelayedhtml)
 		{

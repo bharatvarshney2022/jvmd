@@ -2452,6 +2452,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 		// Show menu entries
 		//print '<div id="tmenu_tooltip'.(empty($conf->global->MAIN_MENU_INVERT) ? '' : 'invert').'" class="tmenu">'."\n";
 		$menumanager->atarget = $target;
+		// Comment Top Menu as putting as sub-menu on left
 		$menumanager->showmenuLayout('top', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // This contains a \n
 		//print "</div>\n";
 
@@ -3537,7 +3538,8 @@ function left_menu_layout($menu_array_before, $helppagename = '', $notused = '',
 			include DOL_DOCUMENT_ROOT.'/core/ajax/selectsearchbox.php'; // This set $arrayresult
 
 			if ($conf->use_javascript_ajax && empty($conf->global->MAIN_USE_OLD_SEARCH_FORM)) {
-				$searchform .= $form->selectArrayFilter ('form-control searchselectcombo', $arrayresult, $selected, '', 1, 0, (empty($conf->global->MAIN_SEARCHBOX_CONTENT_LOADED_BEFORE_KEY) ? 1 : 0), 'vmenusearchselectcombo', 1, $langs->trans("Search"), 1);
+				$searchform .= $form->selectArrayFilter ('searchselectcombo', $arrayresult, $selected, '', 1, 0, (empty($conf->global->MAIN_SEARCHBOX_CONTENT_LOADED_BEFORE_KEY) ? 1 : 0), 'form-control', 1, $langs->trans("Search"), 1);
+				//print_r($arrayresult);echo $searchform; exit;
 			} else {
 				if (is_array($arrayresult)) {
 					foreach ($arrayresult as $key => $val) {
@@ -3569,6 +3571,7 @@ function left_menu_layout($menu_array_before, $helppagename = '', $notused = '',
 				$searchform .= '</div>';
 			}
 		}
+
 
 		// Left column
 		print '					<!--begin::Aside Menu-->'."\n";

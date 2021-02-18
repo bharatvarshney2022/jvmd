@@ -101,13 +101,13 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 
     if (is_array($moredata) && ! empty($moredata['searchform']))	// searchform can contains select2 code or link to show old search form or link to switch on search page
     {
-        /*print "\n";
-        print '<li class="menu-section">';
-        print "<!-- Begin SearchForm -->\n";
+        print "\n";
+        print '<li class="menu-item">';
+        print '<div class="quick-search quick-search-dropdown">';
         print $moredata['searchform'];
-        print '</div>'."\n";
+		print "</div>";        
         print "</li>";
-        print "<!-- End SearchForm -->\n";*/
+        print "<!-- End SearchForm -->\n";
     }
 
     if (is_array($moredata) && ! empty($moredata['bookmarks']))
