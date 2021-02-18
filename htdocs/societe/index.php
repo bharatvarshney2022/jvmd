@@ -64,7 +64,22 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 /*
  * Statistics area
  */
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
 
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+$vendor_pincode = false;
+if($user_group_id == '4'){
+	$vendor_pincode = 't';
+}
 $third = array(
 		'customer' => 0,
 		'prospect' => 0,
@@ -75,9 +90,14 @@ $total = 0;
 
 $sql = "SELECT s.rowid, s.client, s.fournisseur";
 $sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
+$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as ef on (s.rowid = ef.fk_object)";
 if (!$user->rights->societe->client->voir && !$socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql .= ' WHERE s.entity IN ('.getEntity('societe').')';
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".$user->id;
+
+if($vendor_pincode){
+	$sql .= " AND FIND_IN_SET(ef.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+}
 if ($socid)	$sql .= " AND s.rowid = ".$socid;
 if (!$user->rights->fournisseur->lire) $sql .= " AND (s.fournisseur <> 1 OR s.client <> 0)"; // client=0, fournisseur=0 must be visible
 //print $sql;
@@ -224,7 +244,12 @@ print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
 /*
  * Latest modified third parties
  */
-$max = 15;
+
+$vendor_pincode = false;
+if($user_group_id == '4'){
+	$vendor_pincode = 't';
+}
+$max = '';
 $sql = "SELECT s.rowid, s.nom as name, s.email, s.client, s.fournisseur";
 $sql .= ", s.code_client";
 $sql .= ", s.code_fournisseur";
@@ -234,10 +259,14 @@ $sql .= ", s.logo";
 $sql .= ", s.entity";
 $sql .= ", s.canvas, s.tms as date_modification, s.status as status";
 $sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
+$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as ef on (s.rowid = ef.fk_object)";
 if (!$user->rights->societe->client->voir && !$socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql .= ' WHERE s.entity IN ('.getEntity('societe').')';
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".$user->id;
 if ($socid)	$sql .= " AND s.rowid = ".$socid;
+if($vendor_pincode){
+	$sql .= " AND FIND_IN_SET(ef.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+}
 if (!$user->rights->fournisseur->lire) $sql .= " AND (s.fournisseur != 1 OR s.client != 0)";
 $sql .= $db->order("s.tms", "DESC");
 $sql .= $db->plimit($max, 0);

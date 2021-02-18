@@ -302,8 +302,23 @@ $formother = new FormOther($db);
 
 //$help_url="EN:Module_MyObject|FR:Module_MyObject_FR|ES:Módulo_MyObject";
 $help_url = '';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
 if ($contextpage == 'employeelist' && $search_employee == 1) {
 	$text = $langs->trans("ListOfEmployees");
+}elseif($user_group_id == '4'){	
+	$text = $langs->trans("List Of Technician");
 } else {
 	$text = $langs->trans("ListOfUsers");
 }

@@ -390,6 +390,22 @@ if ($resql)
 	}
 } else dol_print_error($db);
 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+$vendor_pincode = false;
+if($user_group_id == '4'){
+	$vendor_pincode = 't';
+}
 $sql = "SELECT s.rowid, s.nom as name, s.name_alias, s.barcode, s.address, s.town, s.zip, s.datec, s.code_client, s.code_fournisseur, s.logo,";
 $sql .= " s.entity,";
 $sql .= " st.libelle as stcomm, st.picto as stcomm_picto, s.fk_stcomm as stcomm_id, s.fk_prospectlevel, s.prefix_comm, s.client, s.fournisseur, s.canvas, s.status as status,";
@@ -432,6 +448,9 @@ if ($search_sale == -2) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciau
 elseif ($search_sale || (!$user->rights->societe->client->voir && !$socid)) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql .= " WHERE s.entity IN (".getEntity('societe').")";
 if (!$user->rights->societe->client->voir && !$socid)	$sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".$user->id;
+if($vendor_pincode){
+	$sql .= " AND FIND_IN_SET(ef.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+}
 if ($search_sale && $search_sale != -2)    $sql .= " AND s.rowid = sc.fk_soc"; // Join for the needed table to filter by sale
 if (!$user->rights->fournisseur->lire) $sql .= " AND (s.fournisseur <> 1 OR s.client <> 0)"; // client=0, fournisseur=0 must be visible
 if ($search_sale == -2)    $sql .= " AND sc.fk_user IS NULL";

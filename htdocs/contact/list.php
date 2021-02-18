@@ -329,6 +329,24 @@ if ($resql)
 }
 else dol_print_error($db);
 
+
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+$vendor_pincode = false;
+if($user_group_id == '4'){
+	$vendor_pincode = 't';
+}
+
 $sql = "SELECT s.rowid as socid, s.nom as name,";
 $sql .= " p.rowid, p.lastname as lastname, p.statut, p.firstname, p.zip, p.town, p.poste, p.email, p.no_email,";
 $sql .= " p.socialnetworks, p.photo,";
@@ -352,6 +370,7 @@ if (!empty($search_categ)) $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX."categorie_conta
 if (!empty($search_categ_thirdparty)) $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX."categorie_societe as cs ON s.rowid = cs.fk_soc"; // We need this table joined to the select in order to filter by categ
 if (!empty($search_categ_supplier)) $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX."categorie_fournisseur as cs2 ON s.rowid = cs2.fk_soc"; // We need this table joined to the select in order to filter by categ
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON s.rowid = sc.fk_soc";
+
 $sql .= ' WHERE p.entity IN ('.getEntity('socpeople').')';
 if (!$user->rights->societe->client->voir && !$socid) //restriction
 {
@@ -360,6 +379,9 @@ if (!$user->rights->societe->client->voir && !$socid) //restriction
 if (!empty($userid))    // propre au commercial
 {
 	$sql .= " AND p.fk_user_creat=".$db->escape($userid);
+}
+if($vendor_pincode){
+	$sql .= " AND p.fk_soc IN (select fk_object from ".MAIN_DB_PREFIX."societe_extrafields where  FIND_IN_SET(fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."'))) ";
 }
 if ($search_level)  $sql .= natural_search("p.fk_prospectcontactlevel", join(',', $search_level), 3);
 if ($search_stcomm != '' && $search_stcomm != -2) $sql .= natural_search("p.fk_stcommcontact", $search_stcomm, 2);
