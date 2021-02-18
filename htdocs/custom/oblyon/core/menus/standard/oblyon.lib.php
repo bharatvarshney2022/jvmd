@@ -823,10 +823,10 @@ function print_oblyon_menu($db,$atarget,$type_user,&$tabMenu,&$menu,$noout=0,$fo
 		else $itemsel=FALSE;
 		$idsel='tools';
 
-		//if (empty($noout)) print_start_menu_entry($idsel,$itemsel,$showmode);
-		//if (empty($noout)) print_text_menu_entry($langs->trans("Tools"), $showmode, DOL_URL_ROOT.'/core/tools.php?mainmenu=tools&amp;leftmenu=', $id, $idsel, $atarget);
-		//if (empty($noout)) print_end_menu_entry($showmode);
-		//$menu->add('/core/tools.php?mainmenu=tools&amp;leftmenu=', $langs->trans("Tools"), 0, $showmode, $atarget, "tools", '');
+		if (empty($noout)) print_start_menu_entry($idsel,$itemsel,$showmode);
+		if (empty($noout)) print_text_menu_entry($langs->trans("Tools"), $showmode, DOL_URL_ROOT.'/core/tools.php?mainmenu=tools&amp;leftmenu=', $id, $idsel, $atarget);
+		if (empty($noout)) print_end_menu_entry($showmode);
+		$menu->add('/core/tools.php?mainmenu=tools&amp;leftmenu=', $langs->trans("Tools"), 0, $showmode, $atarget, "tools", '');
 	}
 
 	// Members
@@ -4303,15 +4303,15 @@ function print_left_oblyon_menu($db,$menu_array_before,$menu_array_after,&$tabMe
 			if (empty($user->socid)) // limit to internal users
 			{
 				$langs->load("mails");
-				$newmenu->add("/admin/mails_templates.php?leftmenu=email_templates", $langs->trans("EMailTemplates"), 0, 1, '', $mainmenu, 'email_templates');
+				//$newmenu->add("/admin/mails_templates.php?leftmenu=email_templates", $langs->trans("EMailTemplates"), 0, 1, '', $mainmenu, 'email_templates');
 			}
 
-			if (! empty($conf->mailing->enabled))
+			/*if (! empty($conf->mailing->enabled))
 			{
 				$newmenu->add("/comm/mailing/index.php?leftmenu=mailing", $langs->trans("EMailings"), 0, $user->rights->mailing->lire, '', $mainmenu, 'mailing');
 				$newmenu->add("/comm/mailing/card.php?leftmenu=mailing&amp;action=create", $langs->trans("NewMailing"), 1, $user->rights->mailing->creer);
 				$newmenu->add("/comm/mailing/list.php?leftmenu=mailing", $langs->trans("List"), 1, $user->rights->mailing->lire);
-			}
+			}*/
 
 			if (! empty($conf->export->enabled))
 			{
