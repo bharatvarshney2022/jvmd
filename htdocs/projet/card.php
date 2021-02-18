@@ -130,6 +130,42 @@ if (empty($reshook))
 			$error++;
 		}
 
+		if (!GETPOST('socid'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Customer")), null, 'errors');
+			$error++;
+		}
+
+		if (!GETPOST('fk_brand'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Brand")), null, 'errors');
+			$error++;
+		}
+
+		if (!GETPOST('fk_category'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Category")), null, 'errors');
+			$error++;
+		}
+
+		if (!GETPOST('fk_sub_category'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Sub Category")), null, 'errors');
+			$error++;
+		}
+
+		if (!GETPOST('fk_model'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Model No")), null, 'errors');
+			$error++;
+		}
+
+		if (!GETPOST('fk_product'))
+		{
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Product")), null, 'errors');
+			$error++;
+		}
+
 		if (GETPOST('opp_amount') != '' && !(GETPOST('opp_status') > 0))
 		{
 			$error++;
