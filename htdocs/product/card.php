@@ -1557,23 +1557,23 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		
 
 		// ERP Invoice No
-		print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td></tr>';
 
 		// Component No.
-		print '<td>'.$langs->trans("Component No.").'</td><td><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
+		print '<tr><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
 
 		// Invoice Date
-		print '<tr><td>'.$langs->trans("Invoice Date").'</td><td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'</td><td>';
 		print $form->selectDate($invoicedate, 'invoicedate', 0, 0, 1, '', 1, 0);
 		print '</td>';
 
 		// Ship Date.
-		print '<td>'.$langs->trans("Ship Date").'</td><td>';
+		print '<td style="display:none;">'.$langs->trans("Ship Date").'</td><td>';
 		print $form->selectDate($ship_date, 'ship_date', 0, 0, 1, '', 1, 0);
 		print '</td></tr>';
 
 		// Customer Sale
-		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
+		print '<tr style="display:none;" ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
 		$custsalearray = array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
 		print $form->selectarray('custsale', $custsalearray, GETPOST('custsale'));
 		print '</td>';
@@ -2244,13 +2244,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			
 
 			// ERP Invoice No
-			print '<tr><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td></tr>';
 
 			// Component No.
-			print '<td>'.$langs->trans("Component No.").'</td><td><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
+			print '<tr><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
 
 			// Invoice Date
-			print '<tr><td>'.$langs->trans("Invoice Date").'-'.date("m/d/Y",$object->invoicedate).'</td><td>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'-'.date("m/d/Y",$object->invoicedate).'</td><td>';
 			print $form->selectDate($invoicedate ? $invoicedate : $object->invoicedate, 'invoicedate', 0, 0, 1, 'updateproduct', 1, 0);
 			
 			print '</td>';
@@ -2261,7 +2261,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 		// Customer Sale
-		print '<tr ><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
 		
 		print '<select class="flat" name="custsale">';
 			if ($object->custsale)

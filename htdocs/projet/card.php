@@ -185,24 +185,24 @@ if (empty($reshook))
 			/* 
 				Assign lead to vendor default by customer pincode
 			*/
-				require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-				$societetmp = new Societe($db);
-				$societetmp->fetch($object->socid);
-				// fetch optionals attributes and labels
-				$extrafields = new ExtraFields($db);
-				$extralabels = $extrafields->fetch_name_optionals_label($societetmp->table_element);
-				$ret = $societetmp->fetch_optionals($object->socid,$extralabels);
-				if($ret){
-
 				
-					$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+				$sqlCustpincode = "Select se.fk_pincode as pincode from ".MAIN_DB_PREFIX."societe_extrafields as se, ".MAIN_DB_PREFIX."societe as s where s.rowid = se.fk_object and se.fk_object = '".$object->socid."' ";
+				$resqlSociate = $db->query($sqlCustpincode);
+				$numSociate = $db->num_rows($resqlSociate);
+				if($numSociate > 0){
+					$pinobj = $db->fetch_object($resqlSociate);
+					$ret = $pinobj->pincode;
+					
+					$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, jvm_user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
 					$resqlVendor = $db->query($sqlVendors);
 					$numvendor = $db->num_rows($resqlVendor);
 					$objvendor = $resqlVendor->fetch_all();
-					foreach ($objvendor as $rsvendor) {
-						$vendorid = $rsvendor[0];
-						$typeid = '160';
-						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+					if($numvendor > 0){
+						foreach ($objvendor as $rsvendor) {
+							$vendorid = $rsvendor[0];
+							$typeid = '160';
+							$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+						}
 					}
 				}
 				//print_r($objvendor);
@@ -718,7 +718,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	// Thirdparty
 	if ($conf->societe->enabled)
 	{
-		print '<tr><td>';
+		print '<tr><td class="fieldrequired">';
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
 		print $langs->trans("ThirdParty");
 		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
