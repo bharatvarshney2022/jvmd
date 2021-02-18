@@ -126,13 +126,13 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 
 	// Home
 	$showmode=1;
-	if ($_SESSION["mainmenu"] && $_SESSION["mainmenu"] == "home") { $itemsel=0; $_SESSION['idmenu']=''; }
+	if ($_SESSION["mainmenu"] && $_SESSION["mainmenu"] == "home") { $itemsel=1; $_SESSION['idmenu']=''; }
 	else $itemsel=FALSE;
 	$idsel='home';
 
 	if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
 	//if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=', $id, $idsel, $atarget);
-	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, 'javascript:;', $id, $idsel, $atarget);
+	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Dashboard"), 1, 'javascript:;', $id, $idsel, $atarget, $mainmenu);
 	if (empty($noout)) print_end_menu_entry_layout($showmode);
 
 	$menu->add('/index.php?mainmenu=home&amp;leftmenu=', $langs->trans("Dashboard"), 0, $showmode, $atarget, "home", '');
@@ -165,7 +165,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		$idsel='companies';
 
 		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-		if (empty($noout)) print_text_menu_entry_layout($langs->trans("ThirdParties"), $showmode, DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=', $id, $idsel, $atarget);
+		if (empty($noout)) print_text_menu_entry_layout($langs->trans("ThirdParties"), $showmode, DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$menu->add('/societe/index.php?mainmenu=companies&amp;leftmenu=', $langs->trans("ThirdParties"), 0, $showmode, $atarget, "companies", '');
 	}
@@ -195,7 +195,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		$chaine.=$langs->trans("Products");
 
 		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-		if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/product/index.php?mainmenu=products&amp;leftmenu=', $id, $idsel, $atarget);
+		if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/product/index.php?mainmenu=products&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$menu->add('/product/index.php?mainmenu=products&amp;leftmenu=', $chaine, 0, $showmode, $atarget, "products", '');
 	}
@@ -217,7 +217,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
         $chaine.=$langs->trans("TMenuMRP");
 
         if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-        if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/mrp/index.php?mainmenu=mrp&amp;leftmenu=', $id, $idsel, $atarget);
+        if (empty($noout)) print_text_menu_entry_layout($chaine, $showmode, DOL_URL_ROOT.'/mrp/index.php?mainmenu=mrp&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
         if (empty($noout)) print_end_menu_entry_layout($showmode);
         $menu->add('/mrp/index.php?mainmenu=mrp&amp;leftmenu=', $chaine, 0, $showmode, $atarget, "mrp", '');
     }
@@ -243,7 +243,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 	$idsel='commercial';
 
 	if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Commercial"), $showmode, DOL_URL_ROOT.'/comm/index.php?mainmenu=commercial&amp;leftmenu=', $id, $idsel, $atarget);
+	if (empty($noout)) print_text_menu_entry_layout($langs->trans("Commercial"), $showmode, DOL_URL_ROOT.'/comm/index.php?mainmenu=commercial&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
 	if (empty($noout)) print_end_menu_entry_layout($showmode);
 	$menu->add('/comm/index.php?mainmenu=commercial&amp;leftmenu=', $langs->trans("Commercial"), 0, $showmode, $atarget, "commercial", "");
 	}
@@ -308,7 +308,7 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		$idsel='project';
 
 		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
-		if (empty($noout)) print_text_menu_entry_layout($langs->trans("Leads"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget);
+		if (empty($noout)) print_text_menu_entry_layout($langs->trans("Support Ticket"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
 		$title = $langs->trans("Leads");	// Leads and opportunities by default
 		$showmodel = $showmodep = $showmode;
@@ -974,9 +974,9 @@ function print_text_menu_entry($text, $showmode, $url, $id, $idsel, $atarget)
 	}
 }
 
-function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atarget)
+function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atarget, $mainmenu)
 {
-	global $langs;
+	global $langs, $user;
 	global $conf;
 
 	if ($showmode == 1)
@@ -1006,25 +1006,340 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 		print "\n".'										<i class="menu-arrow"></i>';
 		print "\n".'									</a>';
 
-		print '<div class="menu-submenu">
+		print '<div class="menu-submenu menu-animation">
 					<i class="menu-arrow"></i>
 					<ul class="menu-subnav">
 						<li class="menu-item menu-item-parent" aria-haspopup="true">
 							<span class="menu-link">
 								<span class="menu-text">'.$text.'</span>
 							</span>
-						</li>
+						</li>';
 
-						<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-							<a href="javascript:;" class="menu-link menu-toggle">
-								<i class="menu-bullet menu-bullet-line">
-									<span></span>
-								</i>
-								<span class="menu-text">Users</span>
-								<i class="menu-arrow"></i>
-							</a>
-						</li>
-					</ul>
+						if($idsel == 'home')
+						{
+							// Home setup
+
+							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
+										<a href="'.DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=home" class="menu-link menu-toggle">
+											<i class="menu-bullet menu-bullet-line">
+												<span></span>
+											</i>
+											<span class="menu-text">'.$langs->trans("MyDashboard").'</span>
+										</a>
+									</li>';
+
+									if($user->admin)
+									{
+
+										print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("Setup").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">
+													<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/index.php?mainmenu=home&amp;leftmenu=setup" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Setup").'</span>
+														</a>
+													</li>';
+
+													$langs->loadLangs(array('admin', 'help'));
+
+													$warnpicto='';
+													if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY))
+													{
+														$langs->load("errors");
+														$warnpicto =' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
+													}
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/company.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("MenuCompanySetup").$warnpicto.'</span>
+														</a>
+													</li>';
+
+													$warnpicto='';
+													if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING)?1:$conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
+													{
+														$langs->load("errors");
+														$warnpicto = ' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
+													}
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/modules.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Modules").$warnpicto.'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/menus.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Menus").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/ihm.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("GUISetup").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/translation.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Translation").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/defaultvalues.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("DefaultValues").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/boxes.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Boxes").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/delais.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("MenuWarnings").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/security_other.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Security").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/limits.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("MenuLimits").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/pdf.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("PDF").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/mails.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Emails").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/sms.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("SMS").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/dict.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Dictionary").'</span>
+														</a>
+													</li>';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/const.php?mainmenu=home" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("OtherSetup").'</span>
+														</a>
+													</li>';												
+											print '</ul>
+										</div>
+									</li>';
+
+
+									print '<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+										<a href="javascript:;" class="menu-link menu-toggle">
+											<i class="menu-bullet menu-bullet-line">
+												<span></span>
+											</i>
+											<span class="menu-text">'.$langs->trans("AdminTools").'</span>
+											<i class="menu-arrow"></i>
+										</a>
+										<div class="menu-submenu">
+											<i class="menu-arrow"></i>
+											<ul class="menu-subnav">
+												<li class="menu-item" aria-haspopup="true">
+													<a href="'.DOL_URL_ROOT.'/admin/index.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+														<i class="menu-bullet menu-bullet-dot">
+															<span></span>
+														</i>
+														<span class="menu-text">'.$langs->trans("AdminTools").'</span>
+													</a>
+												</li>';
+
+												// Load translation files required by the page
+												$leftmenu= 'admintools';
+												$langs->loadLangs(array('admin', 'help', 'cron'));
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/system/dolibarr.php?mainmenu=home&amp;leftmenu=admintools_info" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("InfoDolibarr").'</span>
+														</a>
+													</li>';
+
+													$leftmenu= 'admintools_info';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/system/modules.php?mainmenu=home&amp;leftmenu=admintools_info" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Modules").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/triggers.php?mainmenu=home&amp;leftmenu=admintools_info" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Triggers").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/system/filecheck.php?mainmenu=home&amp;leftmenu=admintools_info" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("FileCheck").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/tools/dolibarr_export.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Backup").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/tools/dolibarr_import.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Restore").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/tools/purge.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Purge").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/tools/listevents.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Audit").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/admin/tools/listsessions.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Sessions").'</span>
+														</a>
+													</li>';
+
+												print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/cron/list.php?mainmenu=home&amp;leftmenu=admintools" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("CronList").'</span>
+														</a>
+													</li>';
+											print '</ul>
+										</div>
+									</li>';
+								}
+
+								/*
+									
+
+									$newmenu->add("/admin/", $langs->trans(""),1);
+									$newmenu->add("/admin/", $langs->trans(""),1);
+									$newmenu->add('/', $langs->trans(''), 1);
+
+									if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
+									{
+										$langs->load("products");
+										$newmenu->add("/product/admin/product_tools.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("ProductVatMassChange"), 1, $user->admin);
+									}
+								}*/
+						}
+					
+					print '</ul>
 				</div>';
 	}
 	if ($showmode == 2)
@@ -1182,51 +1497,11 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			$langs->load("users");
 
 			// Home - dashboard
-			$newmenu->add("/index.php?mainmenu=home&amp;leftmenu=home", $langs->trans("MyDashboard"), 0, 1, '', $mainmenu, 'home');
+			//$newmenu->add("/index.php?mainmenu=home&amp;leftmenu=home", $langs->trans("MyDashboard"), 0, 1, '', $mainmenu, 'home');
 
 			// Setup
 			if($user->admin)
 			{
-				$newmenu->add("/admin/index.php?mainmenu=home&amp;leftmenu=setup", $langs->trans("Setup"), 0, $user->admin, '', $mainmenu, 'setup');
-
-	            if (! empty($menu_invert)) $leftmenu= 'setup';
-
-				if ($usemenuhider || empty($leftmenu) || $leftmenu=="setup")
-				{
-					// Load translation files required by the page
-					$langs->loadLangs(array('admin', 'help'));
-
-					$warnpicto='';
-					if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY))
-					{
-						$langs->load("errors");
-						$warnpicto =' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
-					}
-					$newmenu->add("/admin/company.php?mainmenu=home", $langs->trans("MenuCompanySetup").$warnpicto,1);
-					$warnpicto='';
-					if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING)?1:$conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
-					{
-						$langs->load("errors");
-						$warnpicto = ' '.img_warning($langs->trans("WarningMandatorySetupNotComplete"));
-					}
-					$newmenu->add("/admin/modules.php?mainmenu=home", $langs->trans("Modules").$warnpicto,1,$user->admin);
-					$newmenu->add("/admin/menus.php?mainmenu=home", $langs->trans("Menus"),1,$user->admin);
-					$newmenu->add("/admin/ihm.php?mainmenu=home", $langs->trans("GUISetup"),1,$user->admin);
-
-					$newmenu->add("/admin/translation.php?mainmenu=home", $langs->trans("Translation"),1,$user->admin);
-					$newmenu->add("/admin/defaultvalues.php?mainmenu=home", $langs->trans("DefaultValues"),1,$user->admin);
-					$newmenu->add("/admin/boxes.php?mainmenu=home", $langs->trans("Boxes"),1,$user->admin);
-					$newmenu->add("/admin/delais.php?mainmenu=home",$langs->trans("MenuWarnings"),1,$user->admin);
-					$newmenu->add("/admin/security_other.php?mainmenu=home", $langs->trans("Security"),1,$user->admin);
-					$newmenu->add("/admin/limits.php?mainmenu=home", $langs->trans("MenuLimits"),1,$user->admin);
-					$newmenu->add("/admin/pdf.php?mainmenu=home", $langs->trans("PDF"),1,$user->admin);
-					$newmenu->add("/admin/mails.php?mainmenu=home", $langs->trans("Emails"),1,$user->admin);
-					$newmenu->add("/admin/sms.php?mainmenu=home", $langs->trans("SMS"),1,$user->admin);
-					$newmenu->add("/admin/dict.php?mainmenu=home", $langs->trans("Dictionary"),1,$user->admin);
-					$newmenu->add("/admin/const.php?mainmenu=home", $langs->trans("OtherSetup"),1,$user->admin);
-				}
-
-
 				// System tools
 				$newmenu->add("/admin/tools/index.php?mainmenu=home&amp;leftmenu=admintools", $langs->trans("AdminTools"), 0, $user->admin, '', $mainmenu, 'admintools');
 

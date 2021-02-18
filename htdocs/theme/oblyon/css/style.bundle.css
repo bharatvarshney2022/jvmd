@@ -10,4 +10,9 @@
     margin-right: 15px;
 }
 
- .no-padding { padding: 0px !important; }}
+ .no-padding { padding: 0px !important; }
+
+.menu-animation {
+	-webkit-animation: header-menu-submenu-fade-in .3s ease 1,header-menu-submenu-move-down .3s ease-out 1;
+    animation: header-menu-submenu-fade-in .3s ease 1,header-menu-submenu-move-down .3s ease-out 1;
+}
