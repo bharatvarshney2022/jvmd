@@ -41,13 +41,13 @@ function project_prepare_head(Project $project)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/projet/card.php?id='.$project->id;
-	$head[$h][1] = $langs->trans("Leads");
+	$head[$h][1] = $langs->trans("Support Ticket");
 	$head[$h][2] = 'project';
 	$h++;
 
 	$nbContact = count($project->liste_contact(-1, 'internal')) + count($project->liste_contact(-1, 'external'));
 	$head[$h][0] = DOL_URL_ROOT.'/projet/contact.php?id='.$project->id;
-	$head[$h][1] = $langs->trans("Lead Contact");
+	$head[$h][1] = $langs->trans("Support Ticket Contact");
 	if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 	$head[$h][2] = 'contact';
 	$h++;
@@ -2106,7 +2106,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 	$project_year_filter = 0;
 
 	$title = $langs->trans("Projects");
-	if (strcmp($status, '') && $status >= 0) $title = $langs->trans("Projects").' '.$langs->trans($projectstatic->statuts_long[$status]);
+	if (strcmp($status, '') && $status >= 0) $title = $langs->trans("Support Ticket").' '.$langs->trans($projectstatic->statuts_long[$status]);
 
 	$arrayidtypeofcontact = array();
 

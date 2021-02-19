@@ -53,7 +53,7 @@ $contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'pro
 
 //$title = $langs->trans("Projects");
 
-$title = $langs->trans("Leads");
+$title = $langs->trans("Support Tickets");
 // Security check
 $socid = (is_numeric($_GET["socid"]) ? $_GET["socid"] : 0);
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignement.
@@ -282,7 +282,7 @@ $formproject = new FormProjets($db);
 
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 //$title = $langs->trans("Projects");
-$title = $langs->trans("Leads");
+$title = $langs->trans("Support Tickets");
 
 
 // Get list of project id allowed to user (in a string list separated by comma)
@@ -468,7 +468,7 @@ $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
 $url = DOL_URL_ROOT.'/projet/card.php?action=create';
 if (!empty($socid)) $url .= '&socid='.$socid;
-$newcardbutton = dolGetButtonTitle($langs->trans('New Lead'), '', 'fa fa-plus-circle', $url, '', $user->rights->projet->creer);
+$newcardbutton = dolGetButtonTitle($langs->trans('New Support Ticket'), '', 'fa fa-plus-circle', $url, '', $user->rights->projet->creer);
 
 print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">';
 if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
@@ -512,9 +512,9 @@ if (!empty($conf->categorie->enabled) && $user->rights->categorie->lire)
 }
 
 // If the user can view user other than himself
-$moreforfilter .= '<div class="divsearchfield">';
+$moreforfilter .= '<div class="divsearchfield" >';
 //$moreforfilter .= $langs->trans('ProjectsWithThisUserAsContact').': ';
-$moreforfilter .= $langs->trans('Leads With This User As Contact').': ';
+$moreforfilter .= $langs->trans('Support Ticket With This User As Contact').': ';
 //$includeonly = 'hierarchyme';
 $includeonly = '';
 if (empty($user->rights->user->user->lire)) $includeonly = array($user->id);

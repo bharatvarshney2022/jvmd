@@ -549,15 +549,15 @@ $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 
 llxHeader("", $title, $help_url);
 
-$titleboth = $langs->trans("Leads");
-$titlenew = $langs->trans("New Lead"); // Leads and opportunities by default
+$titleboth = $langs->trans("Support Tickets");
+$titlenew = $langs->trans("New Support Ticket"); // Leads and opportunities by default
 if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0) {
-	$titleboth = $langs->trans("Leads");
-	$titlenew = $langs->trans("New Lead");
+	$titleboth = $langs->trans("Support Tickets");
+	$titlenew = $langs->trans("New Support Ticket");
 }
 if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
-	$titleboth = $langs->trans("Leads");
-	$titlenew = $langs->trans("New Lead");
+	$titleboth = $langs->trans("Support Tickets");
+	$titlenew = $langs->trans("New Support Ticket");
 }
 
 if ($action == 'create' && $user->rights->projet->creer)
@@ -1032,7 +1032,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			$readonly = 'readonly';
 		}	
 
-		print dol_get_fiche_head($head, 'project', $langs->trans("Leads"), 0, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
 
 		print '<table class="border centpercent">';
 
@@ -1405,7 +1405,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '</table>';
 	} else {
-		print dol_get_fiche_head($head, 'project', $langs->trans("Leads"), -1, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), -1, ($object->public ? 'projectpub' : 'project'));
 
 		// Project card
 

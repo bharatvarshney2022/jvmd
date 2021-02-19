@@ -310,15 +310,15 @@ function print_oblyon_menu_layout($db,$atarget,$type_user,&$tabMenu,&$menu,$noou
 		if (empty($noout)) print_start_menu_entry_left_layout($idsel,$itemsel,$showmode);
 		if (empty($noout)) print_text_menu_entry_layout($langs->trans("Support Ticket"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget, $mainmenu);
 		if (empty($noout)) print_end_menu_entry_layout($showmode);
-		$title = $langs->trans("Leads");	// Leads and opportunities by default
+		$title = $langs->trans("Support Tickets");	// Leads and opportunities by default
 		$showmodel = $showmodep = $showmode;
 		if (empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 		{
-			$title = $langs->trans("Leads");
+			$title = $langs->trans("Support Tickets");
 			$showmodel = 0;
 		}
 		if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {
-			$title = $langs->trans("Leads");
+			$title = $langs->trans("Support Tickets");
 			$showmodep = 0;
 		}
 		$menu->add('/projet/index.php?mainmenu=project&amp;leftmenu=', $title, 0, $showmode, $atarget, "project", '', 70, $id, $idsel, $classname);
@@ -738,17 +738,17 @@ function print_oblyon_menu($db,$atarget,$type_user,&$tabMenu,&$menu,$noout=0,$fo
 		$idsel='project';
 
 		if (empty($noout)) print_start_menu_entry($idsel,$itemsel,$showmode);
-		if (empty($noout)) print_text_menu_entry($langs->trans("Leads"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget);
+		if (empty($noout)) print_text_menu_entry($langs->trans("Support Tickets"), $showmode, DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=', $id, $idsel, $atarget);
 		if (empty($noout)) print_end_menu_entry($showmode);
-		$title = $langs->trans("Leads");	// Leads and opportunities by default
+		$title = $langs->trans("Support Tickets");	// Leads and opportunities by default
 		$showmodel = $showmodep = $showmode;
 		if (empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 		{
-			$title = $langs->trans("Leads");
+			$title = $langs->trans("Support Tickets");
 			$showmodel = 0;
 		}
 		if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {
-			$title = $langs->trans("Leads");
+			$title = $langs->trans("Support Tickets");
 			$showmodep = 0;
 		}
 		$menu->add('/projet/index.php?mainmenu=project&amp;leftmenu=', $title, 0, $showmode, $atarget, "project", '', 70, $id, $idsel, $classname);
@@ -2370,16 +2370,16 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 				'perms'=>(! empty($user->rights->projet->lire)),
 				'module'=>'projet');
 				$showmode=isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal);
- 				$titleboth=$langs->trans("Leads");
+ 				$titleboth=$langs->trans("Support Tickets");
 				$titlenew = $langs->trans("New Lead");	// Leads and opportunities by default
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0)
 				{
-					$titleboth=$langs->trans("Leads");
-					$titlenew = $langs->trans("New Leads");
+					$titleboth=$langs->trans("Support Tickets");
+					$titlenew = $langs->trans("New Support Ticket");
 				}
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
-					$titleboth=$langs->trans("Leads");
-					$titlenew = $langs->trans("NewLead");
+					$titleboth=$langs->trans("Support Tickets");
+					$titlenew = $langs->trans("New Support Ticket");
 				}
 
 				// Project assigned to user
@@ -3913,12 +3913,12 @@ function print_left_oblyon_menu($db,$menu_array_before,$menu_array_after,&$tabMe
 				'perms'=>(! empty($user->rights->projet->lire)),
 				'module'=>'projet');
 				$showmode=isVisibleToUserType($type_user, $tmpentry, $listofmodulesforexternal);
- 				$titleboth=$langs->trans("Leads");
-				$titlenew = $langs->trans("New Lead");	// Leads and opportunities by default
+ 				$titleboth=$langs->trans("Support Tickets");
+				$titlenew = $langs->trans("New Support Ticket");	// Leads and opportunities by default
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0)
 				{
-					$titleboth=$langs->trans("Leads");
-					$titlenew = $langs->trans("New Leads");
+					$titleboth=$langs->trans("Support Tickets");
+					$titlenew = $langs->trans("New Support Ticket");
 				}
 				if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
 					$titleboth=$langs->trans("Leads");
