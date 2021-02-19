@@ -110,7 +110,7 @@ function societe_prepare_head(Societe $object)
 
 	if (!empty($conf->projet->enabled) && (!empty($user->rights->projet->lire))) {
 		$head[$h][0] = DOL_URL_ROOT.'/societe/project.php?socid='.$object->id;
-		$head[$h][1] = $langs->trans("Leads");
+		$head[$h][1] = $langs->trans("Support Tickets");
 		$nbNote = 0;
 		$sql = "SELECT COUNT(n.rowid) as nb";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet as n";
@@ -713,7 +713,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		}
 
 		print "\n";
-		print load_fiche_titre($langs->trans("Leads Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
+		print load_fiche_titre($langs->trans("Support Tickets Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
