@@ -579,7 +579,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	print dol_get_fiche_head();
 
-	echo $socid;
+	
 	print '<table class="border centpercent tableforfieldcreate">';
 
 	$defaultref = '';
