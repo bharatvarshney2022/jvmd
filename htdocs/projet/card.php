@@ -579,6 +579,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	print dol_get_fiche_head();
 
+	echo $socid;
 	print '<table class="border centpercent tableforfieldcreate">';
 
 	$defaultref = '';
@@ -668,6 +669,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	print '<script>';
 		print '$( document ).ready(function() {
+
 				jQuery("#socid").change(function() {
 					var socid = $(this).val();
                 	$.ajax({
@@ -832,11 +834,17 @@ if ($action == 'create' && $user->rights->projet->creer)
 	$doleditor->Create();
 	print '</td></tr>';
 
-
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	$prdobject = new Product($db);
+	
 	// Brand
 	print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
 	print '<select class="flat" id="fk_brand" name="fk_brand">';
-	print '<option value="0">Select Brand</option>';
+	if(GETPOST('socid', 'int')){
+		print $prdobject->getCustomerProductBrand(GETPOST('socid', 'int'));
+	}else{
+		print '<option value="0">Select Brand</option>';
+	}
 	print '</select>';
 	print '</td>';
 	
