@@ -677,68 +677,84 @@ print '<!--begin::Entry-->
 
 										print '
 										<!--begin: Search Form-->
-											<div class="row mb-6">
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Customer Name:</label>
-													<input type="text" name="search_nom" class="form-control datatable-input" placeholder="Customer Name" data-col-index="0" />
+										<div class="gutter-b card card-custom card-collapsed" data-card="true" id="kt_card_4">
+											<div class="card-header">
+												<div class="card-title">
+													<h3 class="card-label">Filters</h3>
 												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Alias Name:</label>
-													<input type="text" name="search_alias" class="form-control datatable-input" placeholder="ACustomer lias" data-col-index="1" />
-												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Customer Code:</label>
-													<input type="text" name="search_customer_code" class="form-control datatable-input" placeholder="Customer Code" data-col-index="1" />
-												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Zip Code:</label>
-													<input type="text" name="search_zip" class="form-control datatable-input" placeholder="Zip Code" data-col-index="4" />
+												<div class="card-toolbar">
+													<a href="#" class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-card-tool="toggle" data-toggle="tooltip" data-placement="top" title="Toggle Card">
+														<i class="ki ki-arrow-down icon-nm"></i>
+													</a>
 												</div>
 											</div>
-											<div class="row mb-8">
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Customer Type:</label>
-													<select class="form-control datatable-input" name="search_type_thirdparty" data-col-index="6">
-														';
-														$thirdParty = $formcompany->typent_array(0);
-														foreach($thirdParty as $third_id => $third_name)
-														{
-															print '<option value="'.$third_id.'">'.$third_name.'</option>';
-														}
-													print '</select>
+
+											<div class="card-body">
+												<div class="row mb-6">
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Customer Name:</label>
+															<input type="text" name="search_nom" class="form-control datatable-input" placeholder="Customer Name" data-col-index="0" />
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Alias Name:</label>
+															<input type="text" name="search_alias" class="form-control datatable-input" placeholder="ACustomer lias" data-col-index="1" />
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Customer Code:</label>
+															<input type="text" name="search_customer_code" class="form-control datatable-input" placeholder="Customer Code" data-col-index="1" />
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Zip Code:</label>
+															<input type="text" name="search_zip" class="form-control datatable-input" placeholder="Zip Code" data-col-index="4" />
+														</div>
+													</div>
+													<div class="row mb-8">
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Customer Type:</label>
+															<select class="form-control datatable-input" name="search_type_thirdparty" data-col-index="6">
+																';
+																$thirdParty = $formcompany->typent_array(0);
+																foreach($thirdParty as $third_id => $third_name)
+																{
+																	print '<option value="'.$third_id.'">'.$third_name.'</option>';
+																}
+															print '</select>
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Phone:</label>
+															<input type="text" name="search_phone" class="form-control datatable-input" placeholder="Phone" data-col-index="4" />
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Area Pincode:</label>
+															<input type="text" name="search_options_fk_pincode" class="form-control datatable-input" placeholder="Area Pincode" data-col-index="4" />
+														</div>
+														<div class="col-lg-3 mb-lg-0 mb-6">
+															<label>Status:</label>
+															<select class="form-control datatable-input" name="search_status" data-col-index="6">
+																<option value="">Select</option>
+																<option value="0">'.$langs->trans('ActivityCeased').'</option>
+																<option value="1">'.$langs->trans('InActivity').'</option>
+															</select>
+														</div>
+													</div>
+													<div class="row mt-8">
+														<div class="col-lg-12">
+														<button class="btn btn-primary btn-primary--icon" id="kt_search">
+															<span>
+																<i class="la la-search"></i>
+																<span>Search</span>
+															</span>
+														</button>&#160;&#160; 
+														<button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+															<span>
+																<i class="la la-close"></i>
+																<span>Reset</span>
+															</span>
+														</button></div>
+													</div>
 												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Phone:</label>
-													<input type="text" name="search_phone" class="form-control datatable-input" placeholder="Phone" data-col-index="4" />
-												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Area Pincode:</label>
-													<input type="text" name="search_options_fk_pincode" class="form-control datatable-input" placeholder="Area Pincode" data-col-index="4" />
-												</div>
-												<div class="col-lg-3 mb-lg-0 mb-6">
-													<label>Status:</label>
-													<select class="form-control datatable-input" name="search_status" data-col-index="6">
-														<option value="">Select</option>
-														<option value="0">'.$langs->trans('ActivityCeased').'</option>
-														<option value="1">'.$langs->trans('InActivity').'</option>
-													</select>
-												</div>
-											</div>
-											<div class="row mt-8">
-												<div class="col-lg-12">
-												<button class="btn btn-primary btn-primary--icon" id="kt_search">
-													<span>
-														<i class="la la-search"></i>
-														<span>Search</span>
-													</span>
-												</button>&#160;&#160; 
-												<button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
-													<span>
-														<i class="la la-close"></i>
-														<span>Reset</span>
-													</span>
-												</button></div>
-											</div>
+										</div>
+
 										<!--begin: Datatable-->
 										<table class="table table-separate table-head-custom table-checkable" id="kt_datatable1">
 											<thead>
@@ -1228,6 +1244,7 @@ llxFooterLayout();
 print '<!--begin::Page Vendors(used by this page)-->
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
 <!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
 <!--end::Page Vendors-->';
 

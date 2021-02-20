@@ -214,7 +214,7 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 				{
 					$s = dol_trunc($head['text'], isset($head['limit']) ? $head['limit'] : $MAXLENGTHBOX);
 					$out .= '<div class="card-header border-0 pt-5"><h3 class="card-title font-weight-bolder">'.$s.'</h3>';
-					$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
+					$out .= '<span class="boxclose" rel="x:y" id="imgclose'.$this->box_id.'"><i class="ki ki-close icon-nm"></i></span>';// img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="boxclose" rel="x:y" id="imgclose'.$this->box_id.'"');
 					$out .= '</div><div class="card-body d-flex flex-column">';
 				}
 
