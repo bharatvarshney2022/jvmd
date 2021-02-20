@@ -51,7 +51,7 @@ for ($i = 0; $i < $length; $i++)
 $sessionkey = 'dol_antispam_value';
 $_SESSION[$sessionkey] = $string;
 
-$img = imagecreate(80, 32);
+$img = imagecreate(120, 48);
 if (empty($img))
 {
 	dol_print_error('', "Problem with GD creation");
@@ -63,5 +63,5 @@ top_httphead('image/png', 1);
 
 $background_color = imagecolorallocate($img, 250, 250, 250);
 $ecriture_color = imagecolorallocate($img, 0, 0, 0);
-imagestring($img, 4, 24, 8, $string, $ecriture_color);
+imagestring($img, 4, 44, 16, $string, $ecriture_color);
 imagepng($img);

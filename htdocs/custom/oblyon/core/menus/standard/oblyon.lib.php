@@ -1019,7 +1019,6 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 						if($idsel == 'home')
 						{
 							// Home setup
-
 							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
 										<a href="'.DOL_URL_ROOT.'/index.php?mainmenu=home&amp;leftmenu=home" class="menu-link menu-toggle">
 											<i class="menu-bullet menu-bullet-line">
@@ -1532,41 +1531,247 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 						else if($idsel == 'companies')
 						{
 							// Customer setup
-
 							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
 										<a href="'.DOL_URL_ROOT.'/societe/index.php?mainmenu=companies&amp;leftmenu=" class="menu-link menu-toggle">
 											<i class="menu-bullet menu-bullet-line">
 												<span></span>
 											</i>
 											<span class="menu-text">'.$langs->trans("ThirdParties").'</span>
-										</a>
-									</li>';
+										</a>';
+							
+								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("ThirdParty").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">';
 
-							print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<i class="menu-bullet menu-bullet-line">
-											<span></span>
-										</i>
-										<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item" aria-haspopup="true">
-												<a href="'.DOL_URL_ROOT.'/user/home.php?leftmenu=users" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">'.$langs->trans("MenuUsersAndGroups").'</span>
-												</a>
-											</li>';
+								if (! empty($conf->societe->enabled))
+								{
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/societe/card.php?leftmenu=customers&amp;action=create&amp;type=c" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("MenuNewCustomer").'</span>
+														</a>
+													</li>';
+								}
 
-							print '
-										</ul>
-									</div>
-								</li>';
+								if (! empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))
+								{
+
+								print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/societe/list.php?type=c&amp;leftmenu=customers" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("ListCustomersShort").'</span>
+														</a>
+													</li>';
+								}
+
+								print '
+												</ul>
+											</div>
+										</li>';
+
+								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("Contacts").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">';
+
+													print '<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/societe/index.php?leftmenu=thirdparties" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("ContactsAddresses").'</span>
+														</a>
+													</li>';
+								
+
+								print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/contact/card.php?leftmenu=contacts&amp;action=create" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("NewContactAddress").'</span>
+														</a>
+													</li>';
+
+								print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/contact/list.php?leftmenu=contacts&type=c" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("List Customers").'</span>
+														</a>
+													</li>';
+
+								print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/contact/list.php?leftmenu=contacts&type=o" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("List ContactOthers").'</span>
+														</a>
+													</li>';
+								
+
+								print '
+												</ul>
+											</div>
+										</li>';
 						}
+						else if($idsel == 'products')
+						{
+							// Product setup
+							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
+										<a href="'.DOL_URL_ROOT.'/product/index.php?leftmenu=product&amp;type=0" class="menu-link menu-toggle">
+											<i class="menu-bullet menu-bullet-line">
+												<span></span>
+											</i>
+											<span class="menu-text">'.$langs->trans("Products").'</span>
+										</a>';
+
+							if (! empty($conf->product->enabled))
+							{							
+								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("Products").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/product/card.php?leftmenu=product&amp;action=create&amp;type=0" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("NewProduct").'</span>
+														</a>
+													</li>';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/product/list.php?leftmenu=product&amp;type=0" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("List").'</span>
+														</a>
+													</li>';
+							}
+
+
+
+								print '
+												</ul>
+											</div>
+										</li>';
+						}
+						else if($idsel == 'project')
+						{
+							// Lead setup
+							print '	<li class="menu-item menu-item-submenu '.$active.'" aria-haspopup="true" data-menu-toggle="click">
+										<a href="'.DOL_URL_ROOT.'/projet/index.php?mainmenu=project&amp;leftmenu=" class="menu-link menu-toggle">
+											<i class="menu-bullet menu-bullet-line">
+												<span></span>
+											</i>
+											<span class="menu-text">'.$langs->trans("Support Tickets").'</span>
+										</a>';
+
+							if (! empty($conf->projet->enabled))
+							{
+								$langs->load("projects");
+
+								$titleboth=$langs->trans("Support Tickets");
+								$titlenew = $langs->trans("New Lead");	// Leads and opportunities by default
+								if ($conf->global->PROJECT_USE_OPPORTUNITIES == 0)
+								{
+									$titleboth=$langs->trans("Support Tickets");
+									$titlenew = $langs->trans("New Support Ticket");
+								}
+								if ($conf->global->PROJECT_USE_OPPORTUNITIES == 2) {	// 2 = leads only
+									$titleboth=$langs->trans("Support Tickets");
+									$titlenew = $langs->trans("New Support Ticket");
+								}
+								$search_project_user = GETPOST('search_project_user','int');
+
+								print '	<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="click">
+											<a href="javascript:;" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-line">
+													<span></span>
+												</i>
+												<span class="menu-text">'.$langs->trans("Support Tickets").'</span>
+												<i class="menu-arrow"></i>
+											</a>
+											<div class="menu-submenu">
+												<i class="menu-arrow"></i>
+												<ul class="menu-subnav">';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/projet/index.php?leftmenu=projects"'.($search_project_user?'&search_project_user='.$search_project_user:'').'" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$titleboth.'</span>
+														</a>
+													</li>';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/projet/card.php?leftmenu=projects&action=create"'.($search_project_user?'&search_project_user='.$search_project_user:'').'" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$titlenew.'</span>
+														</a>
+													</li>';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/projet/list.php?leftmenu=projets'.($search_project_user?'&search_project_user='.$search_project_user:'').'&search_status=99" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("List").'</span>
+														</a>
+													</li>';
+
+									print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/projet/stats/index.php?leftmenu=projects" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("Statistics").'</span>
+														</a>
+													</li>';
+							}
+
+
+
+								print '
+												</ul>
+											</div>
+										</li>';
+						}
+
 					
 					print '</ul>
 				</div>';
