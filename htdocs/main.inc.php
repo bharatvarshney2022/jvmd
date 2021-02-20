@@ -2419,6 +2419,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 		if (! empty($mysoc->logo_squarred_mini) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_squarred_mini))
         {
             $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.$mysoc->logo_squarred_mini);
+            $urllogo1=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/thumbs/logo-jmvd.gif');
         }
         /*elseif (! empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_mini))
         {
@@ -2427,9 +2428,11 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
         else
         {
             $urllogo=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
+            $urllogo1=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
         }
 
 		//print "\n".'<!-- Start top horizontal -->'."\n";
+		//&nbsp;&nbsp;&nbsp; '. $conf->global->MAIN_INFO_SOCIETE_NOM .'
 
 		print "\n".'										<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default'.(GETPOST('dol_invisible_topmenu', 'int') ? ' hidden' : '').'">
 											<!--begin::Brand-->
@@ -2440,7 +2443,14 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 													<img alt="Logo" src="'.$urllogo.'" />													
 												</a>
 												<!--end::Logo-->
-												&nbsp;&nbsp;&nbsp; '. $conf->global->MAIN_INFO_SOCIETE_NOM .'
+
+												<!--begin::Logo-->';
+
+								print "\n".'						<a href="'.$dolibarr_main_url_root.'" class="brand-logo white-background">
+													<img alt="Logo" src="'.$urllogo1.'" />													
+												</a>
+												<!--end::Logo-->
+												
 												
 											</div>
 											<!--end::Brand-->
