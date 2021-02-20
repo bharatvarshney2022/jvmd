@@ -208,17 +208,25 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 			if (!empty($head['text']))
 			{
 
-				$out .= '<div class="box boxdraggable" id="boxto_'.$this->box_id.'">'."\n";
+				$out .= '<div class="box boxdraggable card card-custom card-stretch gutter-b" id="boxto_'.$this->box_id.'">'."\n";
+
+				if (!empty($head['text']))
+				{
+					$s = dol_trunc($head['text'], isset($head['limit']) ? $head['limit'] : $MAXLENGTHBOX);
+					$out .= '<div class="card-header border-0 pt-5"><h3 class="card-title font-weight-bolder">'.$s.'</h3>';
+					$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
+					$out .= '</div><div class="card-body d-flex flex-column">';
+				}
 
 				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
 				{
-					$out .= '<table summary="boxtable'.$this->box_id.'" width="100%" class="noborder boxtable">'."\n";
+					$out .= '<div class="table-responsive"><table summary="boxtable'.$this->box_id.'" width="100%" class="table">'."\n";
 				}
 
 				// Show box title
 				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']))
 				{
-					$out .= '<tr class="liste_titre box_titre">';
+					/*$out .= '<tr class="liste_titre box_titre">';
 					$out .= '<td';
 					if ($nbcol > 0) { $out .= ' colspan="'.$nbcol.'"'; }
 					$out .= '>';
@@ -230,7 +238,7 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 					if (!empty($head['text']))
 					{
 						$s = dol_trunc($head['text'], isset($head['limit']) ? $head['limit'] : $MAXLENGTHBOX);
-						$out .= $s;
+						//$out .= $s;
 					}
 					if (!empty($conf->use_javascript_ajax))
 					{
@@ -249,8 +257,8 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 						$out .= '<div class="nocellnopadd boxclose floatright nowraponall">';
 						$out .= $sublink;
 						// The image must have the class 'boxhandle' beause it's value used in DOM draggable objects to define the area used to catch the full object
-						$out .= img_picto($langs->trans("MoveBox", $this->box_id), 'grip_title', 'class="opacitymedium boxhandle hideonsmartphone cursormove marginleftonly"');
-						$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
+						//$out .= img_picto($langs->trans("MoveBox", $this->box_id), 'grip_title', 'class="opacitymedium boxhandle hideonsmartphone cursormove marginleftonly"');
+						//$out .= img_picto($langs->trans("CloseBox", $this->box_id), 'close_title', 'class="opacitymedium boxclose cursorpointer marginleftonly" rel="x:y" id="imgclose'.$this->box_id.'"');
 						$label = $head['text'];
 						//if (! empty($head['graph'])) $label.=' ('.$langs->trans("Graph").')';
 						if (!empty($head['graph'])) $label .= ' <span class="opacitymedium fa fa-bar-chart"></span>';
@@ -260,7 +268,7 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 					}
 
 					$out .= "</td>";
-					$out .= "</tr>\n";
+					$out .= "</tr>\n";*/
 				}
 
 				// Show box lines
@@ -339,11 +347,16 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 
 				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
 				{
-					$out .= "</table>\n";
+					$out .= "</table></div>\n";
 				}
 
 				// If invisible box with no contents
 				if (empty($head['text']) && empty($head['sublink']) && empty($head['subpicto']) && !$nblines) $out .= "<br>\n";
+
+				if (!empty($head['text']))
+				{
+					$out .= "</div>\n";
+				}
 
 				$out .= "</div>\n";
 			}

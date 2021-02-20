@@ -4545,6 +4545,35 @@ function print_fiche_titre($title, $mesg = '', $picto = 'generic', $pictoisfullp
  * 	@return	string
  *  @see print_barre_liste()
  */
+
+function load_fiche_titre_layout($titre, $morehtmlright = '', $picto = 'generic', $pictoisfullpath = 0, $id = '', $morecssontable = '', $morehtmlcenter = '')
+{
+	global $conf;
+
+	$return = '';
+
+	if ($picto == 'setup') $picto = 'generic';
+
+	$return .= "\n";
+	$return .= '<div class="table-responsive"><table '.($id ? 'id="'.$id.'" ' : '').'class="table'.($morecssontable ? ' '.$morecssontable : '').'">'; // maring bottom must be same than into print_barre_list
+	$return .= '<tr class="titre">';
+	if ($picto) $return .= '<td class="nobordernopadding widthpictotitle valignmiddle col-picto">'.img_picto('', $picto, 'class="valignmiddle widthpictotitle pictotitle"', $pictoisfullpath).'</td>';
+	$return .= '<td class="nobordernopadding valignmiddle col-title">';
+	$return .= '<div class="titre inline-block">'.$titre.'</div>';
+	$return .= '</td>';
+	if (dol_strlen($morehtmlcenter))
+	{
+		$return .= '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
+	}
+	if (dol_strlen($morehtmlright))
+	{
+		$return .= '<td class="nobordernopadding titre_right wordbreakimp right valignmiddle">'.$morehtmlright.'</td>';
+	}
+	$return .= '</tr></table></div>'."\n";
+
+	return $return;
+}
+
 function load_fiche_titre($titre, $morehtmlright = '', $picto = 'generic', $pictoisfullpath = 0, $id = '', $morecssontable = '', $morehtmlcenter = '')
 {
 	global $conf;
