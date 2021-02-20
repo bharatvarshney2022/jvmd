@@ -8411,6 +8411,10 @@ input#sew_keyword {
     color: inherit;;
 }
 
+.logo-gif img {
+    max-width: 100%;
+}
+
 <?php
 include dol_buildpath($path.'/theme/'.$theme.'/dropdown.inc.php', 0);
 include dol_buildpath($path.'/theme/'.$theme.'/info-box.inc.php', 0);
