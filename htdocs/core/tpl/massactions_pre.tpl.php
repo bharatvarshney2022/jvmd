@@ -33,7 +33,7 @@ if ($massaction == 'predeletedraft')
 
 if ($massaction == 'predelete')
 {
-	print $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans("ConfirmMassDeletion"), $langs->trans("ConfirmMassDeletionQuestion", count($toselect)), "delete", null, '', 0, 200, 500, 1);
+	print $form->formconfirmLayout($_SERVER["PHP_SELF"], $langs->trans("ConfirmMassDeletion"), $langs->trans("ConfirmMassDeletionQuestion", count($toselect)), "delete", null, '', 0, 200, 500, 1);
 }
 
 if ($massaction == 'presend')

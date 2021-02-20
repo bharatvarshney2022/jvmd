@@ -672,7 +672,7 @@ class Form
 
 		// Warning: if you set submit button to disabled, post using 'Enter' will no more work if there is no another input submit. So we add a hidden button
 		$ret .= '<input type="submit" name="confirmmassactioninvisible" style="display: none" tabindex="-1">'; // Hidden button BEFORE so it is the one used when we submit with ENTER.
-				$ret .= '<input type="submit" disabled name="confirmmassaction" class="button'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'confirmed" value="'.dol_escape_htmltag($langs->trans("Confirm")).'">';
+				$ret .= '<input type="submit" disabled name="confirmmassaction" class="btn btn-danger'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'confirmed" value="'.dol_escape_htmltag($langs->trans("Confirm")).'">';
 		
 
 		if (!empty($conf->use_javascript_ajax))
@@ -4336,7 +4336,304 @@ class Form
 	 *     @param	int				$width				Force width of box ('999' or '90%'). Ignored and forced to 90% on smartphones.
 	 *     @param	int				$disableformtag		1=Disable form tag. Can be used if we are already inside a <form> section.
 	 *     @return 	string      		    			HTML ajax code if a confirm ajax popup is required, Pure HTML code if it's an html form
-	 */
+	 */	
+	public function formconfirmLayout($page, $title, $question, $action, $formquestion = '', $selectedchoice = '', $useajax = 0, $height = 0, $width = 500, $disableformtag = 0)
+	{
+		global $langs, $conf;
+
+		$more = '<!-- formconfirm for page='.dol_escape_htmltag($page).' -->';
+		$formconfirm = '';
+		$inputok = array();
+		$inputko = array();
+
+		// Clean parameters
+		$newselectedchoice = empty($selectedchoice) ? "no" : $selectedchoice;
+		if ($conf->browser->layout == 'phone') $width = '95%';
+
+		// Set height automatically if not defined
+		if (empty($height)) {
+			$height = 220;
+			if (is_array($formquestion) && count($formquestion) > 2) {
+				$height += ((count($formquestion) - 2) * 24);
+			}
+		}
+
+		if (is_array($formquestion) && !empty($formquestion))
+		{
+			// First add hidden fields and value
+			foreach ($formquestion as $key => $input)
+			{
+				if (is_array($input) && !empty($input))
+				{
+					if ($input['type'] == 'hidden')
+					{
+						$more .= '<input type="hidden" id="'.$input['name'].'" name="'.$input['name'].'" value="'.dol_escape_htmltag($input['value']).'">'."\n";
+					}
+				}
+			}
+
+			// Now add questions
+			$moreonecolumn = '';
+			$more .= '<div class="tagtable paddingtopbottomonly centpercent noborderspacing">'."\n";
+			foreach ($formquestion as $key => $input)
+			{
+				if (is_array($input) && !empty($input))
+				{
+					$size = (!empty($input['size']) ? ' size="'.$input['size'].'"' : '');
+					$moreattr = (!empty($input['moreattr']) ? ' '.$input['moreattr'] : '');
+					$morecss = (!empty($input['morecss']) ? ' '.$input['morecss'] : '');
+
+					if ($input['type'] == 'text')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="text" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+					} elseif ($input['type'] == 'password')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="password" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+					} elseif ($input['type'] == 'select')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">';
+						if (!empty($input['label'])) $more .= $input['label'].'</div><div class="tagtd left">';
+						$more .= $this->selectarray($input['name'], $input['values'], $input['default'], 1, 0, 0, $moreattr, 0, 0, 0, '', $morecss);
+						$more .= '</div></div>'."\n";
+					} elseif ($input['type'] == 'checkbox')
+					{
+						$more .= '<div class="tagtr">';
+						$more .= '<div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].' </div><div class="tagtd">';
+						$more .= '<input type="checkbox" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$moreattr;
+						if (!is_bool($input['value']) && $input['value'] != 'false' && $input['value'] != '0') $more .= ' checked';
+						if (is_bool($input['value']) && $input['value']) $more .= ' checked';
+						if (isset($input['disabled'])) $more .= ' disabled';
+						$more .= ' /></div>';
+						$more .= '</div>'."\n";
+					} elseif ($input['type'] == 'radio')
+					{
+						$i = 0;
+						foreach ($input['values'] as $selkey => $selval)
+						{
+							$more .= '<div class="tagtr">';
+							if ($i == 0) $more .= '<div class="tagtd'.(empty($input['tdclass']) ? ' tdtop' : (' tdtop '.$input['tdclass'])).'">'.$input['label'].'</div>';
+							else $more .= '<div clas="tagtd'.(empty($input['tdclass']) ? '' : (' "'.$input['tdclass'])).'">&nbsp;</div>';
+							$more .= '<div class="tagtd'.($i == 0 ? ' tdtop' : '').'"><input type="radio" class="flat'.$morecss.'" id="'.$input['name'].$selkey.'" name="'.$input['name'].'" value="'.$selkey.'"'.$moreattr;
+							if ($input['disabled']) $more .= ' disabled';
+							if (isset($input['default']) && $input['default'] === $selkey) $more .= ' checked="checked"';
+							$more .= ' /> ';
+							$more .= '<label for="'.$input['name'].$selkey.'">'.$selval.'</label>';
+							$more .= '</div></div>'."\n";
+							$i++;
+						}
+					} elseif ($input['type'] == 'date')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div>';
+						$more .= '<div class="tagtd">';
+						$more .= $this->selectDate($input['value'], $input['name'], 0, 0, 0, '', 1, 0);
+						$more .= '</div></div>'."\n";
+						$formquestion[] = array('name'=>$input['name'].'day');
+						$formquestion[] = array('name'=>$input['name'].'month');
+						$formquestion[] = array('name'=>$input['name'].'year');
+						$formquestion[] = array('name'=>$input['name'].'hour');
+						$formquestion[] = array('name'=>$input['name'].'min');
+					} elseif ($input['type'] == 'other')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">';
+						if (!empty($input['label'])) $more .= $input['label'].'</div><div class="tagtd">';
+						$more .= $input['value'];
+						$more .= '</div></div>'."\n";
+					} elseif ($input['type'] == 'onecolumn')
+					{
+						$moreonecolumn .= '<div class="margintoponly">';
+						$moreonecolumn .= $input['value'];
+						$moreonecolumn .= '</div>'."\n";
+					}
+				}
+			}
+			$more .= '</div>'."\n";
+			$more .= $moreonecolumn;
+		}
+
+		// JQUI method dialog is broken with jmobile, we use standard HTML.
+		// Note: When using dol_use_jmobile or no js, you must also check code for button use a GET url with action=xxx and check that you also output the confirm code when action=xxx
+		// See page product/card.php for example
+		if (!empty($conf->dol_use_jmobile)) $useajax = 0;
+		if (empty($conf->use_javascript_ajax)) $useajax = 0;
+
+		if ($useajax)
+		{
+			$autoOpen = true;
+			$dialogconfirm = 'dialog-confirm';
+			$button = '';
+			if (!is_numeric($useajax))
+			{
+				$button = $useajax;
+				$useajax = 1;
+				$autoOpen = false;
+				$dialogconfirm .= '-'.$button;
+			}
+			$pageyes = $page.(preg_match('/\?/', $page) ? '&' : '?').'action='.$action.'&confirm=yes';
+			$pageno = ($useajax == 2 ? $page.(preg_match('/\?/', $page) ? '&' : '?').'confirm=no' : '');
+			// Add input fields into list of fields to read during submit (inputok and inputko)
+			if (is_array($formquestion))
+			{
+				foreach ($formquestion as $key => $input)
+				{
+					//print "xx ".$key." rr ".is_array($input)."<br>\n";
+					if (is_array($input) && isset($input['name'])) array_push($inputok, $input['name']);
+					if (isset($input['inputko']) && $input['inputko'] == 1) array_push($inputko, $input['name']);
+				}
+			}
+			// Show JQuery confirm box.
+			$formconfirm .= '<div id="'.$dialogconfirm.'" title="'.dol_escape_htmltag($title).'" style="display: none;">';
+			if (is_array($formquestion) && !empty($formquestion['text'])) {
+				$formconfirm .= '<div class="confirmtext">'.$formquestion['text'].'</div>'."\n";
+			}
+			if (!empty($more)) {
+				$formconfirm .= '<div class="confirmquestions">'.$more.'</div>'."\n";
+			}
+			$formconfirm .= ($question ? '<div class="confirmmessage">'.img_help('', '').' '.$question.'</div>' : '');
+			$formconfirm .= '</div>'."\n";
+
+			$formconfirm .= "\n<!-- begin ajax formconfirm page=".$page." -->\n";
+			$formconfirm .= '<script type="text/javascript">'."\n";
+			$formconfirm .= 'jQuery(document).ready(function() {
+            $(function() {
+            	$( "#'.$dialogconfirm.'" ).dialog(
+            	{
+                    autoOpen: '.($autoOpen ? "true" : "false").',';
+			if ($newselectedchoice == 'no')
+			{
+				$formconfirm .= '
+						open: function() {
+            				$(this).parent().find("button.ui-button:eq(2)").focus();
+						},';
+			}
+			$formconfirm .= '
+                    resizable: false,
+                    height: "'.$height.'",
+                    width: "'.$width.'",
+                    modal: true,
+                    closeOnEscape: false,
+                    buttons: {
+                        "'.dol_escape_js($langs->transnoentities("Yes")).'": function() {
+                        	var options = "&token='.urlencode(newToken()).'";
+                        	var inputok = '.json_encode($inputok).';	/* List of fields into form */
+                         	var pageyes = "'.dol_escape_js(!empty($pageyes) ? $pageyes : '').'";
+                         	if (inputok.length>0) {
+                         		$.each(inputok, function(i, inputname) {
+                         			var more = "";
+									var inputvalue;
+                         			if ($("input[name=\'" + inputname + "\']").attr("type") == "radio") {
+										inputvalue = $("input[name=\'" + inputname + "\']").val();
+									} else {
+                         		    	if ($("#" + inputname).attr("type") == "checkbox") { more = ":checked"; }
+                         				inputvalue = $("#" + inputname + more).val();
+									}
+                         			if (typeof inputvalue == "undefined") { inputvalue=""; }
+									console.log("check inputname="+inputname+" inputvalue="+inputvalue);
+                         			options += "&" + inputname + "=" + encodeURIComponent(inputvalue);
+                         		});
+                         	}
+                         	var urljump = pageyes + (pageyes.indexOf("?") < 0 ? "?" : "") + options;
+            				if (pageyes.length > 0) { location.href = urljump; }
+                            $(this).dialog("close");
+                        },
+                        "'.dol_escape_js($langs->transnoentities("No")).'": function() {
+                        	var options = "&token='.urlencode(newToken()).'";
+                         	var inputko = '.json_encode($inputko).';	/* List of fields into form */
+                         	var pageno="'.dol_escape_js(!empty($pageno) ? $pageno : '').'";
+                         	if (inputko.length>0) {
+                         		$.each(inputko, function(i, inputname) {
+                         			var more = "";
+                         			if ($("#" + inputname).attr("type") == "checkbox") { more = ":checked"; }
+                         			var inputvalue = $("#" + inputname + more).val();
+                         			if (typeof inputvalue == "undefined") { inputvalue=""; }
+                         			options += "&" + inputname + "=" + encodeURIComponent(inputvalue);
+                         		});
+                         	}
+                         	var urljump=pageno + (pageno.indexOf("?") < 0 ? "?" : "") + options;
+                         	//alert(urljump);
+            				if (pageno.length > 0) { location.href = urljump; }
+                            $(this).dialog("close");
+                        }
+                    }
+                }
+                );
+
+            	var button = "'.$button.'";
+            	if (button.length > 0) {
+                	$( "#" + button ).click(function() {
+                		$("#'.$dialogconfirm.'").dialog("open");
+        			});
+                }
+            });
+            });
+            </script>';
+			$formconfirm .= "<!-- end ajax formconfirm -->\n";
+		} else {
+			$formconfirm .= "\n<!-- begin formconfirm page=".dol_escape_htmltag($page)." -->\n";
+
+			if (empty($disableformtag)) $formconfirm .= '<form method="POST" action="'.$page.'" class="notoptoleftroright">'."\n";
+
+			$formconfirm .= '<input type="hidden" name="action" value="'.$action.'">'."\n";
+			$formconfirm .= '<input type="hidden" name="token" value="'.newToken().'">'."\n";
+
+			$formconfirm .= '<div class="alert alert-danger alert-delete">'."\n";
+			$formconfirm .= '<div class="table-responsive">'."\n";
+			$formconfirm .= '<table class="table table-no-bordered">'."\n";
+
+			// Line title
+			$formconfirm .= '<tr class=""><td class="" colspan="3">'.img_picto('', 'recent').' '.$title.'</td></tr>'."\n";
+
+			// Line text
+			if (is_array($formquestion) && !empty($formquestion['text'])) {
+				$formconfirm .= '<tr class="valid"><td class="valid" colspan="3">'.$formquestion['text'].'</td></tr>'."\n";
+			}
+
+			// Line form fields
+			if ($more)
+			{
+				$formconfirm .= '<tr class="valid"><td class="valid" colspan="3">'."\n";
+				$formconfirm .= $more;
+				$formconfirm .= '</td></tr>'."\n";
+			}
+
+			// Line with question
+			$formconfirm .= '<tr class="valid">';
+			$formconfirm .= '<td class="valid">'.$question.'</td>';
+			$formconfirm .= '<td class="valid">';
+			$formconfirm .= $this->selectyesno("confirm", $newselectedchoice);
+			$formconfirm .= '</td>';
+			$formconfirm .= '<td class="valid center"><input class="btn btn-warning confirmvalidatebutton" type="submit" value="'.$langs->trans("Validate").'"></td>';
+			$formconfirm .= '</tr>'."\n";
+
+			$formconfirm .= '</table>'."\n";
+			$formconfirm .= '</div>'."\n";
+			$formconfirm .= '</div>'."\n";
+
+			if (empty($disableformtag)) $formconfirm .= "</form>\n";
+			$formconfirm .= '<br>';
+
+			if (empty($conf->use_javascript_ajax)) {
+				$formconfirm .= '<!-- code to disable button to avoid double clic -->';
+				$formconfirm .= '<script type="text/javascript">'."\n";
+				$formconfirm .= '
+				$(document).ready(function () {
+					$(".confirmvalidatebutton").on("click", function() {
+						console.log("We click on button");
+						$(this).attr("disabled", "disabled");
+						setTimeout(\'$(".confirmvalidatebutton").removeAttr("disabled")\', 3000);
+						//console.log($(this).closest("form"));
+						$(this).closest("form").submit();
+					});
+				});
+				';
+				$formconfirm .= '</script>'."\n";
+			}
+
+			$formconfirm .= "<!-- end formconfirm -->\n";
+		}
+
+		return $formconfirm;
+	}
+
 	public function formconfirm($page, $title, $question, $action, $formquestion = '', $selectedchoice = '', $useajax = 0, $height = 0, $width = 500, $disableformtag = 0)
 	{
 		global $langs, $conf;

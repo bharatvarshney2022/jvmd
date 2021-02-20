@@ -8407,6 +8407,10 @@ input#sew_keyword {
     border-top: none;
 }
 
+.alert-delete .table {
+    color: inherit;;
+}
+
 <?php
 include dol_buildpath($path.'/theme/'.$theme.'/dropdown.inc.php', 0);
 include dol_buildpath($path.'/theme/'.$theme.'/info-box.inc.php', 0);
