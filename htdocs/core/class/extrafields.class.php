@@ -997,7 +997,6 @@ class ExtraFields
 			$sql .= " AND usergroup_id = '0'";
 		}
 		$sql .= " ORDER BY pos";
-		echo $sql; exit;
 
 		$resql = $this->db->query($sql);
 		if ($resql)
