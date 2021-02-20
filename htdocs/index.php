@@ -808,7 +808,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 							
 								$openedDashBoard .= '			<span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
 							}
-							if ($textLate && $typeName == "Overdue Ticket") {
+							if ($typeName == "Overdue Ticket") {
 								$infoName = 'Overdue';
 								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
 
