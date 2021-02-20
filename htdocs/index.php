@@ -816,7 +816,8 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 									$openedDashBoard .= '</a>';
 									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
 								} else {
-									$openedDashBoard .= ' ';
+									$openedDashBoard .= '</a>';
+									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
 								}
 								$openedDashBoard .= $textLate;
 							}
