@@ -810,13 +810,11 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 							}
 							if ($typeName == "Overdue Ticket") {
 								$infoName = 'Overdue';
-								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+								$openedDashBoard .= '			'.$infoName.' : ';
 
 								if ($board->url_late) {
-									$openedDashBoard .= '</a>';
 									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
 								} else {
-									$openedDashBoard .= '</a>';
 									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
 								}
 								$openedDashBoard .= $textLate;
