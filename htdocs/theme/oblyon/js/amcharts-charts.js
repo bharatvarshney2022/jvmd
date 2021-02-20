@@ -1894,7 +1894,7 @@ var KTamChartsChartsDemo = function() {
             }),
             AmCharts.makeChart("kt_amcharts_10", {
                 type: "pie",
-                theme: "dark",
+                theme: "light",
                 dataProvider: [{
                     country: "Pending",
                     litres: 501.9
@@ -1922,7 +1922,7 @@ var KTamChartsChartsDemo = function() {
                 theme: "light",
                 dataProvider: [{
                     country: "Pending",
-                    litres: 501.9
+                    litres: 561.9
                 }, {
                     country: "Closed",
                     litres: 301.9
@@ -1947,7 +1947,7 @@ var KTamChartsChartsDemo = function() {
                 theme: "light",
                 dataProvider: [{
                     country: "Pending",
-                    litres: 501.9
+                    litres: 601.9
                 }, {
                     country: "Closed",
                     litres: 301.9
