@@ -8411,7 +8411,7 @@ input#sew_keyword {
     color: inherit;;
 }
 
-.logo-gif img {
+img.logo-gif {
     max-width: 11%;
 }
 
