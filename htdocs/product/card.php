@@ -2999,7 +2999,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<div style="clear:both"></div>';
 
 			print '<div class="fichecenter" >';
-			print '<div class="fichehalfleft">';
+			//print '<div class="fichehalfleft">';
+			print '<div class="fiche">';
 
 			print '<div class="underbanner clearboth"></div>';
 			print '<table class="border tableforfield" width="100%" >';
@@ -3035,7 +3036,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print "</table>\n";
 			print '</div>';
 
-			print '<div class="fichehalfright">';
+			print '<div class="fichehalfright" style="display:none;">';
 
 			print '<div class="underbanner clearboth"></div>';
 			print '<table class="border tableforfield" width="100%" >';
