@@ -86,7 +86,7 @@ llxHeaderLayout('', $title, $title);
 $resultboxes = FormOther::getBoxesArea($user, "0"); // Load $resultboxes (selectboxlist + boxactivated + boxlista + boxlistb)
 
 
-//print load_fiche_titre('&nbsp;', $resultboxes['selectboxlist'], '', 0, '', 'titleforhome');
+print load_fiche_titre_layout('&nbsp;', $resultboxes['selectboxlist'], '', 0, '', 'titleforhome');
 
 
 if (!empty($conf->global->MAIN_MOTD))
