@@ -1195,6 +1195,39 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 		$boxstat .= '</td></tr>';
 		$boxstat .= '</table>';
 		$boxstat .= '</div></div>';
+
+
+		// Graph here
+		$boxstat .= '<div class="box boxdraggable card card-custom card-stretch gutter-b">';
+		$boxstat .= '
+						<div class="card-header">
+							<div class="card-title">
+								<h3 class="card-label">Analytics</h3>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-12">
+									<h5>RT Graph</h5>
+									<div id="kt_amcharts_11" style="height: 500px;"></div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-12">
+									<h4>RS Graph</h4>
+									<div id="kt_amcharts_12" style="height: 500px;"></div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-12">
+									<h4>TAT Graph</h4>
+									<div id="kt_amcharts_10" style="height: 500px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>';
 	}
 }
 
@@ -1258,10 +1291,25 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 // End of page
 llxFooterLayout();
 
-print '<!--begin::Page Vendors(used by this page)-->
+print '
+<!--begin::Page Vendors Styles(used by this page)-->
+<link href="//www.amcharts.com/lib/3/plugins/export/export.css" rel="stylesheet" type="text/css" />
+<!--begin::Page Vendors(used by this page)-->
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/boxes-search.js?v=7.2.0"></script>
+
+<!--begin::Page Vendors(used by this page)-->
+<script src="//www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="//www.amcharts.com/lib/3/serial.js"></script>
+<script src="//www.amcharts.com/lib/3/radar.js"></script>
+<script src="//www.amcharts.com/lib/3/pie.js"></script>
+<script src="//www.amcharts.com/lib/3/plugins/tools/polarScatter/polarScatter.min.js"></script>
+<script src="//www.amcharts.com/lib/3/plugins/animate/animate.min.js"></script>
+<script src="//www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<script src="//www.amcharts.com/lib/3/themes/light.js"></script>
+
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/amcharts-charts.js?v=7.2.0"></script>
 <!--end::Page Vendors-->';
 
 $db->close();
