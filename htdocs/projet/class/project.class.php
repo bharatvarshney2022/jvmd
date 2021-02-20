@@ -1974,6 +1974,65 @@ class Project extends CommonObject
 	 * @param	User	$user   Objet user
 	 * @return WorkboardResponse|int <0 if KO, WorkboardResponse if OK
 	 */
+	
+	public function load_pending_board($user)
+	{
+		// phpcs:enable
+		global $conf, $langs;
+
+		// For external user, no check is done on company because readability is managed by public status of project and assignement.
+		//$socid=$user->socid;
+
+		$projectsListId = null;
+		if (!$user->rights->projet->all->lire) $projectsListId = $this->getProjectsAuthorizedForUser($user, 0, 1);
+
+		$sql = "SELECT p.rowid, p.fk_statut as status, p.fk_opp_status, p.datee as datee";
+		$sql .= " FROM (".MAIN_DB_PREFIX."projet as p";
+		$sql .= ")";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
+		// For external user, no check is done on company permission because readability is managed by public status of project and assignement.
+		//if (! $user->rights->societe->client->voir && ! $socid) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON sc.fk_soc = s.rowid";
+		$sql .= " WHERE p.fk_statut = 0";
+		$sql .= " AND p.entity IN (".getEntity('project').')';
+		if (!empty($projectsListId)) $sql .= " AND p.rowid IN (".$projectsListId.")";
+		// No need to check company, as filtering of projects must be done by getProjectsAuthorizedForUser
+		//if ($socid || ! $user->rights->societe->client->voir)	$sql.= "  AND (p.fk_soc IS NULL OR p.fk_soc = 0 OR p.fk_soc = ".$socid.")";
+		// For external user, no check is done on company permission because readability is managed by public status of project and assignement.
+		//if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND ((s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id.") OR (s.rowid IS NULL))";
+
+		//print $sql;
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$project_static = new Project($this->db);
+
+			$response = new WorkboardResponse();
+			$response->warning_delay = $conf->projet->warning_delay / 60 / 60 / 24;
+			$response->label = $langs->trans("OpenedProjects");
+			$response->labelShort = $langs->trans("Opened");
+			if ($user->rights->projet->all->lire) $response->url = DOL_URL_ROOT.'/projet/list.php?search_status=0&mainmenu=project';
+			else $response->url = DOL_URL_ROOT.'/projet/list.php?search_project_user=-1&search_status=1&mainmenu=project';
+			$response->img = img_object('', "projectpub");
+
+			// This assignment in condition is not a bug. It allows walking the results.
+			while ($obj = $this->db->fetch_object($resql))
+			{
+				$response->nbtodo++;
+
+				$project_static->statut = $obj->status;
+				$project_static->opp_status = $obj->opp_status;
+				$project_static->datee = $this->db->jdate($obj->datee);
+
+				$response->nbtodolate++;
+			}
+
+			return $response;
+		} else {
+			$this->error = $this->db->error();
+			return -1;
+		}
+	}
+
 	public function load_board($user)
 	{
 		// phpcs:enable

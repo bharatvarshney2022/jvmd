@@ -122,6 +122,10 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 	color: black;
 }
 
+.bg-project3 .info-box-line a {
+	color: black;
+}
+
 .bg-ticket .info-box-line a {
 	color: black;
 }

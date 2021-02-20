@@ -355,6 +355,9 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 		$board = new Project($db);
 		$dashboardlines[$board->element] = $board->load_board($user);
+
+		$board = new Project($db);
+		$dashboardlines['project1'] = $board->load_pending_board($user);
 	}
 
 	// Number of tasks to do (late)
@@ -504,7 +507,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				'groupName' => 'Leads1',
 				'typeName' => 'Pending Ticket',
 				'globalStatsKey' => 'projects',
-				'stats' => array('project', 'project_task'),
+				'stats' => array('project1', 'project_task'),
 			),
 		'project2' =>
 			array(
@@ -756,7 +759,16 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 					{
 						if($typeName == "Pending Ticket")
 						{
+							$infoName = 'Pending';
+							$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
 
+							$textPending = '';
+							$textPendingTitle = 'Draft Tickets';
+							$textPending .= '<span title="'.dol_escape_htmltag($textPendingTitle).'" class="classfortooltip badge badge-primary">';
+							$textPending .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodolate;
+							$textPending .= '</span>';
+							
+							$openedDashBoard .= $textPending;
 						}
 						else
 						{
@@ -787,8 +799,17 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 								$nbtodClass = 'badge badge-info';
 							}
 
-							$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : <span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
-							if ($textLate) {
+							if($typeName == "Open Ticket")
+							{
+								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+
+							
+								$openedDashBoard .= '			<span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
+							}
+							if ($textLate && $typeName == "Overdue Ticket") {
+								$infoName = 'Overdue';
+								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+
 								if ($board->url_late) {
 									$openedDashBoard .= '</a>';
 									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
@@ -798,6 +819,20 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 								$openedDashBoard .= $textLate;
 							}
 							$openedDashBoard .= '</a>'."\n";
+
+							if($typeName == "Total Ticket")
+							{
+								$textTotal = '';
+								if ($board->nbtodolate > 0) {
+									$infoName = 'Total';
+									$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+
+									$textTotal .= '<span title="'.dol_escape_htmltag($texTotalTitle).'" class="classfortooltip badge badge-success">';
+									$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate);
+									$textTotal .= '</span>';
+								}
+								$openedDashBoard .= $textTotal;
+							}
 
 							if ($board->total > 0 && !empty($conf->global->MAIN_WORKBOARD_SHOW_TOTAL_WO_TAX)) {
 								$openedDashBoard .= '<a href="'.$board->url.'" class="info-box-text">'.$langs->trans('Total').' : '.price($board->total).'</a>';
