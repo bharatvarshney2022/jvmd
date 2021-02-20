@@ -4650,6 +4650,12 @@ div .tdtop {
     /*-webkit-fill-available;
     float: left;*/
 }
+
+.boxstats.boxstats-heading {
+    width: 19%;
+    margin-right: 0px;
+}
+
 .tabBar .fichehalfright .boxstats {
     padding-top: 8px;
     padding-bottom: 4px;
@@ -7554,9 +7560,9 @@ div.pagination li {
     padding-bottom: 5px;
 }
 .pagination {
-    display: inline-block;
+    /*display: inline-block;
     padding-left: 0;
-    border-radius: 4px;
+    border-radius: 4px;*/
 }
 
 div.pagination li.pagination a,

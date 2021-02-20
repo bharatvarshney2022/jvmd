@@ -82,7 +82,7 @@ class box_actions extends ModeleBoxes
 		$societestatic = new Societe($this->db);
 		$actionstatic = new ActionComm($this->db);
 
-		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastActionsToDo", $max));
+		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastActionsToDo", 'label' => 'project', $max));
 
 		if ($user->rights->agenda->myactions->read) {
 			$sql = "SELECT a.id, a.label, a.datep as dp, a.percent as percentage";

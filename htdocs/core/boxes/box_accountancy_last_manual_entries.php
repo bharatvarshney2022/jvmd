@@ -77,7 +77,7 @@ class box_accountancy_last_manual_entries extends ModeleBoxes
 
 		$bookkeepingstatic = new BookKeeping($this->db);
 
-		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastManualEntries", $max));
+		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastManualEntries", 'label' => 'project', $max));
 
 		if ($user->rights->accounting->mouvements->lire)
 		{

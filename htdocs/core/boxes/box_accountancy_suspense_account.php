@@ -76,7 +76,7 @@ class box_accountancy_suspense_account extends ModeleBoxes
 
 		//$bookkeepingstatic = new BookKeeping($this->db);
 
-		$this->info_box_head = array('text' => $langs->trans("BoxTitleSuspenseAccount"));
+		$this->info_box_head = array('text' => $langs->trans("BoxTitleSuspenseAccount"), 'label' => 'project');
 
 		if ($user->rights->accounting->mouvements->lire)
 		{

@@ -1104,6 +1104,35 @@ class Project extends CommonObject
 		return $this->LibStatut(isset($this->statut) ? $this->statut : $this->status, $mode);
 	}
 
+	public function getLibStatutLayout($mode = 0)
+	{
+		return $this->LibStatutLayout(isset($this->statut) ? $this->statut : $this->status, $mode);
+	}
+
+	public function LibStatutLayout($status, $mode = 0)
+	{
+		// phpcs:enable
+		global $langs;
+
+		$statustrans = array(
+			0 => 'status0',
+			1 => 'btn-success',
+			2 => 'status6',
+		);
+
+		$statusClass = 'status0';
+		if (!empty($statustrans[$status])) {
+			$statusClass = $statustrans[$status];
+		}
+
+		if($status == 1)
+		{
+			$status = "Active";
+		}
+
+		return '<span class="btn '.$statusClass.'">'.$status."</span>";
+	}
+
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Renvoi status label for a status

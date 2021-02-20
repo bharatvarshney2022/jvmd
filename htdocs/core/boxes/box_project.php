@@ -60,7 +60,7 @@ class box_project extends ModeleBoxes
 		$langs->loadLangs(array('boxes', 'projects'));
 
 		$this->db = $db;
-		$this->boxlabel = "OpenedProjects";
+		$this->boxlabel = "Top 5 Support Ticket";
 
 		$this->hidden = !($user->rights->projet->lire);
 	}
@@ -81,8 +81,8 @@ class box_project extends ModeleBoxes
 		$totalnb = 0;
 		$totalnbTask = 0;
 
-		$textHead = $langs->trans("OpenedProjects");
-		$this->info_box_head = array('text' => $textHead, 'limit'=> dol_strlen($textHead));
+		$textHead = $langs->trans("Top 5 Support Tickets");
+		$this->info_box_head = array('text' => $textHead, 'label' => 'project', 'limit'=> dol_strlen($textHead));
 
 		// list the summary of the orders
 		if ($user->rights->projet->lire) {
@@ -103,7 +103,8 @@ class box_project extends ModeleBoxes
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
 
 			$sql .= " ORDER BY p.datec DESC";
-			//$sql.= $this->db->plimit($max, 0);
+			$sql.= $this->db->plimit($max, 0);
+			
 
 			$result = $this->db->query($sql);
 
@@ -120,13 +121,13 @@ class box_project extends ModeleBoxes
 					$projectstatic->statut = $objp->status;
 
 					$this->info_box_contents[$i][] = array(
-						'td' => 'class="nowraponall"',
+						'td' => 'class=""',
 						'text' => $projectstatic->getNomUrl(1),
 						'asis' => 1
 					);
 
 					$this->info_box_contents[$i][] = array(
-						'td' => 'class="tdoverflowmax150 maxwidth200onsmartphone"',
+						'td' => 'class=""',
 						'text' => $objp->title,
 					);
 
@@ -135,24 +136,26 @@ class box_project extends ModeleBoxes
 					   $sql .= " WHERE p.entity IN (".getEntity('project').')';
 					$sql .= " AND p.rowid = ".$objp->rowid;
 					$resultTask = $this->db->query($sql);
-					if ($resultTask) {
+					/*if ($resultTask) {
 						$objTask = $this->db->fetch_object($resultTask);
 						$this->info_box_contents[$i][] = array(
-							'td' => 'class="right"',
+							'td' => '',
 							'text' => $objTask->nb."&nbsp;".$langs->trans("Tasks"),
 						);
 						if ($objTask->nb > 0)
 							$this->info_box_contents[$i][] = array(
-								'td' => 'class="right"',
+								'td' => '',
 								'text' => round($objTask->totprogress / $objTask->nb, 0)."%",
 							);
-						else $this->info_box_contents[$i][] = array('td' => 'class="right"', 'text' => "N/A&nbsp;");
+						else $this->info_box_contents[$i][] = array('td' => '', 'text' => "N/A&nbsp;");
 						$totalnbTask += $objTask->nb;
 					} else {
-						$this->info_box_contents[$i][] = array('td' => 'class="right"', 'text' => round(0));
-						$this->info_box_contents[$i][] = array('td' => 'class="right"', 'text' => "N/A&nbsp;");
-					}
-					$this->info_box_contents[$i][] = array('td' => 'class="right"', 'text' => $projectstatic->getLibStatut(3));
+						$this->info_box_contents[$i][] = array('td' => '', 'text' => round(0));
+						$this->info_box_contents[$i][] = array('td' => '', 'text' => "N/A&nbsp;");
+					}*/
+
+					// Box
+					$this->info_box_contents[$i][] = array('td' => '', 'text' => $projectstatic->getLibStatutLayout(3));
 
 					$i++;
 				}
@@ -166,7 +169,7 @@ class box_project extends ModeleBoxes
 
 
 		// Add the sum à the bottom of the boxes
-		$this->info_box_contents[$i][] = array(
+		/*$this->info_box_contents[$i][] = array(
 			'td' => 'class="liste_total"',
 			'text' => $langs->trans("Total")."&nbsp;".$textHead,
 			 'text' => "&nbsp;",
@@ -186,7 +189,7 @@ class box_project extends ModeleBoxes
 		$this->info_box_contents[$i][] = array(
 			'td' => 'class="liste_total"',
 			'text' => "&nbsp;",
-		);
+		);*/
 	}
 
 	/**

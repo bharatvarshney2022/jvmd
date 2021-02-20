@@ -91,7 +91,8 @@ class box_activity extends ModeleBoxes
 		if (!empty($conf->global->MAIN_BOX_ACTIVITY_DURATION)) $nbofperiod = $conf->global->MAIN_BOX_ACTIVITY_DURATION;
 		$textHead = $langs->trans("Activity").' - '.$langs->trans("LastXMonthRolling", $nbofperiod);
 		$this->info_box_head = array(
-			'text' => $textHead,
+			'text' => $textHead, 'label' => 'project',
+			
 			'limit'=> dol_strlen($textHead),
 		);
 

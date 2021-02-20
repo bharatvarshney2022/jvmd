@@ -220,7 +220,14 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 
 				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
 				{
-					$out .= '<div class="table-responsive"><table summary="boxtable'.$this->box_id.'" width="100%" class="table">'."\n";
+					$out .= '<table class="table table-bordered table-checkable" id="kt_datatable'.$this->box_id.'"><thead>';
+
+					if(isset($head['label']) && ($head['label'] == 'project'))
+					{
+						$out .= '<tr><th>Code</th><th>Label</th><th>Status</th></tr>';
+					}
+
+					$out .= '</thead><tbody>'."\n";
 				}
 
 				// Show box title
@@ -280,8 +287,9 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 						if (isset($contents[$i]))
 						{
 							// TR
+							$out .= "\n";
 							if (isset($contents[$i][0]['tr'])) $out .= '<tr '.$contents[$i][0]['tr'].'>';
-							else $out .= '<tr class="oddeven">';
+							else $out .= '<tr>';
 
 							// Loop on each TD
 							$nbcolthisline = count($contents[$i]);
@@ -347,7 +355,7 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 
 				if (!empty($head['text']) || !empty($head['sublink']) || !empty($head['subpicto']) || $nblines)
 				{
-					$out .= "</table></div>\n";
+					$out .= "</tbody></table>\n";
 				}
 
 				// If invisible box with no contents
