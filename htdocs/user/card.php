@@ -117,6 +117,8 @@ if ($groupslist != '-1')
 	}
 }
 
+echo $user_group_id;
+
 // fetch optionals attributes and labels
 $extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
 
