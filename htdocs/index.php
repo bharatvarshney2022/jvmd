@@ -132,17 +132,20 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 	{
 		// Cle array returned by the method load_state_board for each line
 		$keys = array(
+			'projects',
+			'projects1',
+			'projects2',
 			'users',
 			'members',
 			'expensereports',
 			'holidays',
 			'customers',
-			'prospects',
+			//'prospects',
 			'suppliers',
 			'contacts',
 			'products',
 			'services',
-			'projects',
+			
 			'proposals',
 			'orders',
 			'invoices',
@@ -152,7 +155,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 			'supplier_invoices',
 			'contracts',
 			'interventions',
-			'ticket'
+			//'ticket'
 		);
 
 		// Condition to be checked for each display line dashboard
@@ -292,6 +295,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 
 		// Loop and displays each line of table
 		$boardloaded = array();
+		//echo '<pre>';print_r($keys); exit;
 		foreach ($keys as $val)
 		{
 			if ($conditions[$val])
@@ -316,10 +320,35 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 				$langs->load(empty($langfile[$val]) ? $val : $langfile[$val]);
 
 				$text = $langs->trans($titres[$val]);
+				$value = $board->nb[$val] ? $board->nb[$val] : "0";
+
+				if($text == "Leads")
+				{
+					$text = "Open PO";
+				}
+				else if($text == "Users")
+				{
+					$text = "Invoice";
+					$board->picto = 'project';
+				}
+				else if($text == "Customers")
+				{
+					$text = "Reject Invoice";
+				}
+				else if($text == "Contacts/Addresses")
+				{
+					$text = "Payable Invoice";
+				}
+				else if($text == "Products")
+				{
+					$text = "Pending Invoice";
+				}
+
+
 				$boxstatItem .= '<a href="'.$links[$val].'" class="boxstatsindicator thumbstat nobold nounderline">';
-				$boxstatItem .= '<div class="boxstats">';
+				$boxstatItem .= '<div class="boxstats boxstats-heading">';
 				$boxstatItem .= '<span class="boxstatstext" title="'.dol_escape_htmltag($text).'">'.$text.'</span><br>';
-				$boxstatItem .= '<span class="boxstatsindicator">'.img_object("", $board->picto, 'class="inline-block"').' '.($board->nb[$val] ? $board->nb[$val] : 0).'</span>';
+				$boxstatItem .= '<span class="boxstatsindicator">'.img_object("", $board->picto, 'class="inline-block"').' '.$value.'</span>';
 				$boxstatItem .= '</div>';
 				$boxstatItem .= '</a>';
 
@@ -1141,14 +1170,11 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 
 	if (!empty($boxstatFromHook) || !empty($boxstatItems)) {
 		$boxstat .= '<!-- Database statistics -->'."\n";
-		$boxstat .= '<div class="box">';
-		$boxstat .= '<table summary="'.dol_escape_htmltag($langs->trans("DolibarrStateBoard")).'" class="noborder boxtable boxtablenobottom nohover widgetstats" width="100%">';
-		$boxstat .= '<tr class="liste_titre box_titre">';
-		$boxstat .= '<td>';
-		$boxstat .= '<div class="inline-block valignmiddle">'.$langs->trans("DolibarrStateBoard").'</div>';
-		$boxstat .= '</td>';
-		$boxstat .= '</tr>';
-		$boxstat .= '<tr class="nobottom nohover"><td class="tdboxstats nohover flexcontainer">';
+		$boxstat .= '<div class="box boxdraggable card card-custom card-stretch gutter-b">';
+		$boxstat .= '<div class="card-header border-0 pt-5"><h3 class="card-title font-weight-bolder">'.$langs->trans("DolibarrStateBoard").'</h3>';
+		$boxstat .= '</div><div class="card-body d-flex flex-column">';
+		$boxstat .= '<table summary="'.dol_escape_htmltag($langs->trans("DolibarrStateBoard")).'" class="table table-bordered table-checkable">';
+		$boxstat .= '<tr class=""><td class="">';
 
 		$boxstat .= $boxstatFromHook;
 
@@ -1168,7 +1194,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 
 		$boxstat .= '</td></tr>';
 		$boxstat .= '</table>';
-		$boxstat .= '</div>';
+		$boxstat .= '</div></div>';
 	}
 }
 
@@ -1231,6 +1257,13 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
 // End of page
 llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/boxes-search.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
 $db->close();
 
 
