@@ -693,6 +693,8 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 	$boxwork .= '</th>';
 	$boxwork .= '</tr>'."\n";
 
+
+
 	// Show dashboard
 	$nbworkboardempty = 0;
 	$isIntopOpenedDashBoard = $globalStatInTopOpenedDashBoard = array();
@@ -765,7 +767,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 							$textPending = '';
 							$textPendingTitle = 'Draft Tickets';
 							$textPending .= '<span title="'.dol_escape_htmltag($textPendingTitle).'" class="classfortooltip badge badge-primary">';
-							$textPending .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodolate;
+							$textPending .= '<i class="fa fa-exclamation-triangle"></i> '.$board->pending;
 							$textPending .= '</span>';
 							
 							$openedDashBoard .= $textPending;
@@ -827,7 +829,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
 
 								$textTotal .= '<span title="'.dol_escape_htmltag($texTotalTitle).'" class="classfortooltip badge badge-success">';
-								$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate);
+								$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate + $board->pending);
 								$textTotal .= '</span>';
 								$openedDashBoard .= $textTotal;
 							}
