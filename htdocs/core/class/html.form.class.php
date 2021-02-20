@@ -642,6 +642,101 @@ class Form
 	 * @param   string  $cssclass 		CSS class used to check for select
 	 * @return	string|void				Select list
 	 */
+	
+	public function selectMassActionLayout($selected, $arrayofaction, $alwaysvisible = 0, $name = 'massaction', $cssclass = 'checkforselect')
+	{
+		global $conf, $langs, $hookmanager;
+
+
+		$disabled = 0;
+		$ret .= '<select class="flat'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'select valignmiddle alignstart" id="'.$name.'" name="'.$name.'"'.($disabled ? ' disabled="disabled"' : '').'>';
+
+		// Complete list with data from external modules. THe module can use $_SERVER['PHP_SELF'] to know on which page we are, or use the $parameters['currentcontext'] completed by executeHooks.
+		$parameters = array();
+		$reshook = $hookmanager->executeHooks('addMoreMassActions', $parameters); // Note that $action and $object may have been modified by hook
+		// check if there is a mass action
+		if (count($arrayofaction) == 0 && empty($hookmanager->resPrint)) return;
+		if (empty($reshook))
+		{
+			$ret .= '<option value="0"'.($disabled ? ' disabled="disabled"' : '').'>-- '.$langs->trans("SelectAction").' --</option>';
+			foreach ($arrayofaction as $code => $label)
+			{
+				$ret .= '<option value="'.$code.'"'.($disabled ? ' disabled="disabled"' : '').' data-html="'.dol_escape_htmltag($label).'">'.$label.'</option>';
+			}
+		}
+		$ret .= $hookmanager->resPrint;
+
+		$ret .= '</select>';
+
+				if (empty($conf->dol_optimize_smallscreen)) $ret .= ajax_combobox('.'.$name.'select');
+
+		// Warning: if you set submit button to disabled, post using 'Enter' will no more work if there is no another input submit. So we add a hidden button
+		$ret .= '<input type="submit" name="confirmmassactioninvisible" style="display: none" tabindex="-1">'; // Hidden button BEFORE so it is the one used when we submit with ENTER.
+				$ret .= '<input type="submit" disabled name="confirmmassaction" class="button'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'confirmed" value="'.dol_escape_htmltag($langs->trans("Confirm")).'">';
+		
+
+		if (!empty($conf->use_javascript_ajax))
+		{
+			$ret .= '<!-- JS CODE TO ENABLE mass action select -->
+    		<script>
+                        function initCheckForSelect(mode, name, cssclass)	/* mode is 0 during init of page or click all, 1 when we click on 1 checkboxi, "name" refers to the class of the massaction button, "cssclass" to the class of the checkfor select boxes */
+        		{
+        			atleastoneselected=0;
+                                jQuery("."+cssclass).each(function( index ) {
+    	  				/* console.log( index + ": " + $( this ).text() ); */
+    	  				if ($(this).is(\':checked\')) atleastoneselected++;
+    	  			});
+
+					console.log("initCheckForSelect mode="+mode+" name="+name+" cssclass="+cssclass+" atleastoneselected="+atleastoneselected);
+
+    	  			if (atleastoneselected || '.$alwaysvisible.')
+    	  			{
+                                    jQuery("."+name).show();
+        			    '.($selected ? 'if (atleastoneselected) { jQuery("."+name+"select").val("'.$selected.'").trigger(\'change\'); jQuery("."+name+"confirmed").prop(\'disabled\', false); }' : '').'
+        			    '.($selected ? 'if (! atleastoneselected) { jQuery("."+name+"select").val("0").trigger(\'change\'); jQuery("."+name+"confirmed").prop(\'disabled\', true); } ' : '').'
+    	  			}
+    	  			else
+    	  			{
+                                    jQuery("."+name).hide();
+                                    jQuery("."+name+"other").hide();
+    	            }
+        		}
+
+        	jQuery(document).ready(function () {
+                    initCheckForSelect(0, "' . $name.'", "'.$cssclass.'");
+                    jQuery(".' . $cssclass.'").click(function() {
+                        initCheckForSelect(1, "'.$name.'", "'.$cssclass.'");
+                    });
+                        jQuery(".' . $name.'select").change(function() {
+        			var massaction = $( this ).val();
+        			var urlform = $( this ).closest("form").attr("action").replace("#show_files","");
+        			if (massaction == "builddoc")
+                    {
+                        urlform = urlform + "#show_files";
+    	            }
+        			$( this ).closest("form").attr("action", urlform);
+                    console.log("we select a mass action name='.$name.' massaction="+massaction+" - "+urlform);
+        	        /* Warning: if you set submit button to disabled, post using Enter will no more work if there is no other button */
+        			if ($(this).val() != \'0\')
+    	  			{
+                                        jQuery(".' . $name.'confirmed").prop(\'disabled\', false);
+										jQuery(".' . $name.'other").hide();	/* To disable if another div was open */
+                                        jQuery(".' . $name.'"+massaction).show();
+    	  			}
+    	  			else
+    	  			{
+                                        jQuery(".' . $name.'confirmed").prop(\'disabled\', true);
+										jQuery(".' . $name.'other").hide();	/* To disable any div open */
+    	  			}
+    	        });
+        	});
+    		</script>
+        	';
+		}
+
+		return $ret;
+	}
+
 	public function selectMassAction($selected, $arrayofaction, $alwaysvisible = 0, $name = 'massaction', $cssclass = 'checkforselect')
 	{
 		global $conf, $langs, $hookmanager;

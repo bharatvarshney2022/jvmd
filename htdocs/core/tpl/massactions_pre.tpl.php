@@ -26,7 +26,6 @@
 // $modelmail="supplier_proposal_send";
 // $trackid='ord'.$object->id;
 
-
 if ($massaction == 'predeletedraft')
 {
 	print $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans("ConfirmMassDraftDeletion"), $langs->trans("ConfirmMassDeletionQuestion", count($toselect)), "delete", null, '', 0, 200, 500, 1);

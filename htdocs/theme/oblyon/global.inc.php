@@ -8403,6 +8403,10 @@ input#sew_keyword {
     display: none !important;
 }
 
+.table.table-no-bordered td {
+    border-top: none;
+}
+
 <?php
 include dol_buildpath($path.'/theme/'.$theme.'/dropdown.inc.php', 0);
 include dol_buildpath($path.'/theme/'.$theme.'/info-box.inc.php', 0);

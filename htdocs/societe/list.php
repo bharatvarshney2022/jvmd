@@ -45,6 +45,7 @@ $langs->loadLangs(array("companies", "commercial", "customers", "suppliers", "bi
 
 $action = GETPOST('action', 'aZ09');
 $massaction = GETPOST('massaction', 'alpha');
+
 $show_files = GETPOST('show_files', 'int');
 $confirm = GETPOST('confirm', 'alpha');
 $toselect = GETPOST('toselect', 'array');
@@ -616,7 +617,8 @@ $arrayofmassactions = array(
 //if($user->rights->societe->creer) $arrayofmassactions['createbills']=$langs->trans("CreateInvoiceForThisCustomer");
 if ($user->rights->societe->supprimer) $arrayofmassactions['predelete'] = '<span class="fa fa-trash paddingrightonly"></span>'.$langs->trans("Delete");
 if (GETPOST('nomassaction', 'int') || in_array($massaction, array('presend', 'predelete'))) $arrayofmassactions = array();
-$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
+$massactionbutton = $form->selectMassActionLayout('', $arrayofmassactions);
+
 
 $typefilter = '';
 $label = 'MenuNewThirdParty';
@@ -673,7 +675,10 @@ print '<!--begin::Entry-->
 											//print '<input type="hidden" name="page" value="'.$page.'">';
 											print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'building', 0, $newcardbutton, '', $limit, 0, 0, 1);
+
+
+
+				
 
 										print '
 										<!--begin: Search Form-->
@@ -690,6 +695,11 @@ print '<!--begin::Entry-->
 											</div>
 
 											<div class="card-body">
+												<div class="row mb-6">
+													<div class="col-lg-12 text-right mb-lg-0 mb-6">
+														'.$newcardbutton.'
+													</div>
+												</div>
 												<div class="row mb-6">
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>Customer Name:</label>
@@ -753,9 +763,20 @@ print '<!--begin::Entry-->
 														</button></div>
 													</div>
 												</div>
-										</div>
+										</div>';
 
-										<!--begin: Datatable-->
+										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, $newcardbutton, '', $limit, 0, 0, 1);
+
+										$topicmail = "Information";
+										$modelmail = "thirdparty";
+										$objecttmp = new Societe($db);
+										$trackid = 'thi'.$object->id;
+										include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+
+
+										print '<div class="clearfix"></div>';
+
+										print '<!--begin: Datatable-->
 										<table class="table table-separate table-head-custom table-checkable" id="kt_datatable1">
 											<thead>
 												<tr>'."\n";
@@ -1135,6 +1156,7 @@ print '<!--begin::Entry-->
 										</table>
 										<!--end: Datatable-->';
 
+										
 
 									print '</form>
 									</div>
@@ -1157,11 +1179,7 @@ foreach (array(1, 2, 3, 4, 5, 6) as $key)
 	}
 }
 
-$topicmail = "Information";
-$modelmail = "thirdparty";
-$objecttmp = new Societe($db);
-$trackid = 'thi'.$object->id;
-//include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+
 
 if ($search_all)
 {

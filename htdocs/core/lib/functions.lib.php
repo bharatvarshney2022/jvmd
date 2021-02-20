@@ -4625,7 +4625,6 @@ function load_fiche_titre($titre, $morehtmlright = '', $picto = 'generic', $pict
  *  @param	string		$morehtmlrightbeforearrow	More html to show (before arrows)
  *	@return	void
  */
-
 function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfield = '', $sortorder = '', $morehtmlcenter = '', $num = -1, $totalnboflines = '', $picto = 'generic', $pictoisfullpath = 0, $morehtmlright = '', $morecss = '', $limit = -1, $hideselectlimit = 0, $hidenavigation = 0, $pagenavastextinput = 0, $morehtmlrightbeforearrow = '')
 {
 	global $conf, $langs;
@@ -4647,13 +4646,12 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 
 	print "\n";
 	print "<!-- Begin title '".$titre."' -->\n";
-	print "<div class='table-responsive'>";
-	print '<table class="table '.($morecss ? ' '.$morecss : '').'"><tr>'; // maring bottom must be same than into load_fiche_tire
+	print '<table class="table table-no-bordered'.($morecss ? ' '.$morecss : '').'"><tr>'; // maring bottom must be same than into load_fiche_tire
 
 	// Left
 
-	///if ($picto && $titre) print '<td class="nobordernopadding widthpictotitle valignmiddle col-picto">'.img_picto('', $picto, 'class="valignmiddle pictotitle widthpictotitle"', $pictoisfullpath).'</td>';
-	/*print '<td class="nobordernopadding valignmiddle col-title">';
+	if ($picto && $titre) print '<td class="">'.img_picto('', $picto, 'class="valignmiddle pictotitle widthpictotitle"', $pictoisfullpath).'</td>';
+	/*print '<td class="">';
 	print '<div class="titre inline-block">'.$titre;
 	if (!empty($titre) && $savtotalnboflines >= 0 && (string) $savtotalnboflines != '') print '<span class="opacitymedium colorblack paddingleft">('.$totalnboflines.')</span>';
 	print '</div></td>';*/
@@ -4661,7 +4659,7 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 	// Center
 	if ($morehtmlcenter)
 	{
-		//print '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
+		print '<td class="">'.$morehtmlcenter.'</td>';
 	}
 
 	// Right
@@ -4686,9 +4684,9 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 			if ($cpt >= 1)
 			{
 				if (empty($pagenavastextinput)) {
-					//$pagelist .= '<li class="pagination"><a href="'.$file.'?page=0'.$options.'">1</a></li>';
-					//if ($cpt > 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
-					//elseif ($cpt == 2) $pagelist .= '<li class="pagination"><a href="'.$file.'?page=1'.$options.'">2</a></li>';
+					$pagelist .= '<li class="pagination"><a href="'.$file.'?page=0'.$options.'">1</a></li>';
+					if ($cpt > 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
+					elseif ($cpt == 2) $pagelist .= '<li class="pagination"><a href="'.$file.'?page=1'.$options.'">2</a></li>';
 				}
 			}
 
@@ -4696,16 +4694,16 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 				if ($pagenavastextinput) {
 					if ($cpt == $page)
 					{
-						//$pagelist .= '<li class="pagination"><input type="text" class="width25 center pageplusone" name="pageplusone" value="'.($page + 1).'"></li>';
+						$pagelist .= '<li class="pagination"><input type="text" class="width25 center pageplusone" name="pageplusone" value="'.($page + 1).'"></li>';
 						$pagelist .= '/';
 						//if (($cpt + 1) < $nbpages) $pagelist .= '/';
 					}
 				} else {
 					if ($cpt == $page)
 					{
-						//$pagelist .= '<li class="pagination"><span class="active">'.($page + 1).'</span></li>';
+						$pagelist .= '<li class="pagination"><span class="active">'.($page + 1).'</span></li>';
 					} else {
-						//$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.$cpt.$options.'">'.($cpt + 1).'</a></li>';
+						$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.$cpt.$options.'">'.($cpt + 1).'</a></li>';
 					}
 				}
 				$cpt++;
@@ -4714,18 +4712,18 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 			if (empty($pagenavastextinput)) {
 				if ($cpt < $nbpages)
 				{
-					/*if ($cpt < $nbpages - 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
+					if ($cpt < $nbpages - 2) $pagelist .= '<li class="pagination"><span class="inactive">...</span></li>';
 					elseif ($cpt == $nbpages - 2) $pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 2).$options.'">'.($nbpages - 1).'</a></li>';
-					$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';*/
+					$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';
 				}
 			} else {
 				//var_dump($page.' '.$cpt.' '.$nbpages);
 				//if (($page + 1) < $nbpages) {
-					//$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';
+					$pagelist .= '<li class="pagination"><a href="'.$file.'?page='.($nbpages - 1).$options.'">'.$nbpages.'</a></li>';
 				//}
 			}
 		} else {
-			//$pagelist .= '<li class="pagination"><span class="active">'.($page + 1)."</li>";
+			$pagelist .= '<li class="pagination"><span class="active">'.($page + 1)."</li>";
 		}
 	}
 
@@ -4740,9 +4738,10 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 
 	print '</td>';
 
-	print '</tr></table></div>'."\n";
+	print '</tr></table>'."\n";
 	print "<!-- End title -->\n\n";
 }
+
 
 function print_barre_liste($titre, $page, $file, $options = '', $sortfield = '', $sortorder = '', $morehtmlcenter = '', $num = -1, $totalnboflines = '', $picto = 'generic', $pictoisfullpath = 0, $morehtmlright = '', $morecss = '', $limit = -1, $hideselectlimit = 0, $hidenavigation = 0, $pagenavastextinput = 0, $morehtmlrightbeforearrow = '')
 {
@@ -4876,12 +4875,11 @@ function print_barre_liste($titre, $page, $file, $options = '', $sortfield = '',
  *  @param	string			$beforearrows		HTML content to show before arrows. Must NOT contains '<li> </li>' tags.
  *	@return	void
  */
-
 function print_fleche_navigation_layout($page, $file, $options = '', $nextpage = 0, $betweenarrows = '', $afterarrows = '', $limit = -1, $totalnboflines = 0, $hideselectlimit = 0, $beforearrows = '')
 {
 	global $conf, $langs;
 
-	print '<div class="pagination pull-right"><ul>';
+	print '<div class="pagination"><ul>';
 	if ($beforearrows)
 	{
 		print '<li class="paginationbeforearrows">';
@@ -4895,7 +4893,44 @@ function print_fleche_navigation_layout($page, $file, $options = '', $nextpage =
 		//$pagesizechoices.=',2:2';
 		if (!empty($conf->global->MAIN_PAGESIZE_CHOICES)) $pagesizechoices = $conf->global->MAIN_PAGESIZE_CHOICES;
 
-		
+		print '<li class="pagination">';
+		print '<select class="form-control selectlimit d-none" name="limit" title="'.dol_escape_htmltag($langs->trans("MaxNbOfRecordPerPage")).'">';
+		$tmpchoice = explode(',', $pagesizechoices);
+		$tmpkey = $limit.':'.$limit;
+		if (!in_array($tmpkey, $tmpchoice)) $tmpchoice[] = $tmpkey;
+		$tmpkey = $conf->liste_limit.':'.$conf->liste_limit;
+		if (!in_array($tmpkey, $tmpchoice)) $tmpchoice[] = $tmpkey;
+		asort($tmpchoice, SORT_NUMERIC);
+		foreach ($tmpchoice as $val)
+		{
+			$selected = '';
+			$tmp = explode(':', $val);
+			$key = $tmp[0];
+			$val = $tmp[1];
+			if ($key != '' && $val != '')
+			{
+				if ((int) $key == (int) $limit)
+				{
+					$selected = ' selected="selected"';
+				}
+				print '<option name="'.$key.'"'.$selected.'>'.dol_escape_htmltag($val).'</option>'."\n";
+			}
+		}
+		print '</select>';
+		if ($conf->use_javascript_ajax)
+		{
+			print '<!-- JS CODE TO ENABLE select limit to launch submit of page -->
+            		<script>
+                	jQuery(document).ready(function () {
+            	  		jQuery(".selectlimit").change(function() {
+                            console.log("Change limit. Send submit");
+                            $(this).parents(\'form:first\').submit();
+            	  		});
+                	});
+            		</script>
+                ';
+		}
+		print '</li>';
 	}
 	if ($page > 0)
 	{
@@ -4913,7 +4948,7 @@ function print_fleche_navigation_layout($page, $file, $options = '', $nextpage =
 	}
 	if ($afterarrows)
 	{
-		print '<li class="">';
+		print '<li class="paginationafterarrows">';
 		print $afterarrows;
 		print '</li>';
 	}
@@ -9177,7 +9212,7 @@ function dolGetButtonTitleLayout($label, $helpText = '', $iconClass = 'fa fa-fil
 		return '';
 	}
 
-	$class = 'btn button btn-primary';
+	$class = 'btn btn-primary btn-primary--icon';
 	if (in_array($iconClass, array('fa fa-plus-circle', 'fa fa-comment-dots'))) $class .= ' ';
 	$useclassfortooltip = 1;
 
@@ -9247,7 +9282,8 @@ function dolGetButtonTitleLayout($label, $helpText = '', $iconClass = 'fa fa-fil
 	$tag = (empty($attr['href']) ? 'span' : 'a');
 
 	$button = '<'.$tag.' '.$compiledAttributes.'>';
-	$button .= '<span class="'.$iconClass.' valignmiddle btnTitle-icon"></span>';
+	$button .= '<i class="'.$iconClass.'"></i>'; //
+	$button .= $attr['title']; //
 	if (!empty($params['forcenohideoftext'])) {
 		$button .= '<span class="valignmiddle text-plus-circle btnTitle-label'.(empty($params['forcenohideoftext']) ? ' hideonsmartphone' : '').'">'.$label.'</span>';
 	}
