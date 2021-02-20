@@ -823,14 +823,12 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 							if($typeName == "Total Ticket")
 							{
 								$textTotal = '';
-								if ($board->nbtodolate > 0) {
-									$infoName = 'Total';
-									$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+								$infoName = 'Total';
+								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
 
-									$textTotal .= '<span title="'.dol_escape_htmltag($texTotalTitle).'" class="classfortooltip badge badge-success">';
-									$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate);
-									$textTotal .= '</span>';
-								}
+								$textTotal .= '<span title="'.dol_escape_htmltag($texTotalTitle).'" class="classfortooltip badge badge-success">';
+								$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate);
+								$textTotal .= '</span>';
 								$openedDashBoard .= $textTotal;
 							}
 
