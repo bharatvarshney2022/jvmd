@@ -8412,7 +8412,7 @@ input#sew_keyword {
 }
 
 img.logo-gif {
-    max-width: 11%;
+    max-width: 25%;
 }
 
 <?php
