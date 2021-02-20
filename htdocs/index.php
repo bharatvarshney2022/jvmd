@@ -489,29 +489,34 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'action' =>
 			array(
 				'groupName' => 'Agenda',
+				'typeName' => 'Agenda',
 				'stats' => array('action'),
 			),
 		'project' =>
 			array(
 				'groupName' => 'Leads',
+				'typeName' => 'Open Ticket',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
 		'project1' =>
 			array(
-				'groupName' => 'Close Leads',
+				'groupName' => 'Leads1',
+				'typeName' => 'Pending Ticket',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
 		'project2' =>
 			array(
 				'groupName' => 'Leads2',
+				'typeName' => 'Overdue Ticket',
 				'globalStatsKey' => 'projects',
 				'stats' => array('project', 'project_task'),
 			),
 		'propal' =>
 			array(
 				'groupName' => 'Proposals',
+				'typeName' => 'Proposals',
 				'globalStatsKey' => 'proposals',
 				'stats' =>
 					array('propal_opened', 'propal_signed'),
@@ -519,6 +524,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'commande' =>
 			array(
 				'groupName' => 'Orders',
+				'typeName' => 'Orders',
 				'globalStatsKey' => 'orders',
 				'stats' =>
 					array('commande'),
@@ -526,6 +532,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'facture' =>
 			array(
 				'groupName' => 'Invoices',
+				'typeName' => 'Invoices',
 				'globalStatsKey' => 'invoices',
 				'stats' =>
 					array('facture'),
@@ -533,6 +540,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'supplier_proposal' =>
 			array(
 				'groupName' => 'SupplierProposals',
+				'typeName' => 'SupplierProposals',
 				'globalStatsKey' => 'askprice',
 				'stats' =>
 					array('supplier_proposal_opened', 'supplier_proposal_signed'),
@@ -540,6 +548,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'order_supplier' =>
 			array(
 				'groupName' => 'SuppliersOrders',
+				'typeName' => 'SuppliersOrders',
 				'globalStatsKey' => 'supplier_orders',
 				'stats' =>
 					array('order_supplier_opened', 'order_supplier_awaiting'),
@@ -547,6 +556,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'invoice_supplier' =>
 			array(
 				'groupName' => 'BillsSuppliers',
+				'typeName' => 'BillsSuppliers',
 				'globalStatsKey' => 'supplier_invoices',
 				'stats' =>
 					array('invoice_supplier'),
@@ -554,20 +564,22 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'contrat' =>
 			array(
 				'groupName' => 'Contracts',
+				'typeName' => 'Contracts',
 				'globalStatsKey' => 'Contracts',
 				'stats' =>
 				array('contrat_inactive', 'contrat_active'),
 			),
+		'project3' =>
+			array(
+				'groupName' => 'Leads2',
+				'typeName' => 'Total Ticket',
+				'globalStatsKey' => 'projects',
+				'stats' => array('project', 'project_task'),
+			),
 		'ticket' =>
 			array(
 				'groupName' => 'Tickets',
-				'globalStatsKey' => 'ticket',
-				'stats' =>
-					array('ticket_opened'),
-			),
-		'ticket1' =>
-			array(
-				'groupName' => 'Tickets',
+				'typeName' => 'AMC',
 				'globalStatsKey' => 'ticket',
 				'stats' =>
 					array('ticket_opened'),
@@ -575,6 +587,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'ticket2' =>
 			array(
 				'groupName' => 'Tickets',
+				'typeName' => '--',
 				'globalStatsKey' => 'ticket',
 				'stats' =>
 					array('ticket_opened'),
@@ -582,12 +595,14 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'bank_account' =>
 			array(
 				'groupName' => 'BankAccount',
+				'typeName' => 'BankAccount',
 				'stats' =>
 					array('bank_account', 'chequereceipt'),
 			),
 		'member' =>
 			array(
 				'groupName' => 'Members',
+				'typeName' => 'Members',
 				'globalStatsKey' => 'members',
 				'stats' =>
 					array('member_shift', 'member_expired'),
@@ -595,6 +610,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'expensereport' =>
 			array(
 				'groupName' => 'ExpenseReport',
+				'typeName' => 'ExpenseReport',
 				'globalStatsKey' => 'expensereports',
 				'stats' =>
 					array('expensereport_toapprove', 'expensereport_topay'),
@@ -602,6 +618,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		'holiday' =>
 			array(
 				'groupName' => 'Holidays',
+				'typeName' => 'Holidays',
 				'globalStatsKey' => 'holidays',
 				'stats' =>
 					array('holiday'),
@@ -694,6 +711,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 
 			if (!empty($boards)) {
 				$groupName = $langs->trans($groupElement['groupName']);
+				$typeName = $langs->trans($groupElement['typeName']);
 				$groupKeyLowerCase = strtolower($groupKey);
 				$nbTotalForGroup = 0;
 
@@ -726,53 +744,67 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				
 				$openedDashBoard .= '<div class="info-box-content">'."\n";
 
-				$openedDashBoard .= '<div class="info-box-title" title="'.strip_tags($groupName).'">'.$groupName.'</div>'."\n";
+				$openedDashBoard .= '<div class="info-box-title" title="'.strip_tags($typeName).'">'.$typeName.'</div>'."\n";
 				$openedDashBoard .= '<div class="info-box-lines">'."\n";
 
 				foreach ($boards as $board) {
-					$openedDashBoard .= '<div class="info-box-line">';
+					if($board->label == "Open tasks")
+					{
 
-					if (!empty($board->labelShort)) {
-						$infoName = '<span title="'.$board->label.'">'.$board->labelShort.'</span>';
-					} else {
-						$infoName = $board->label;
 					}
+					else
+					{
+						if($typeName == "Pending Ticket")
+						{
 
-					$textLateTitle = $langs->trans("NActionsLate", $board->nbtodolate);
-					$textLateTitle .= ' ('.$langs->trans("Late").' = '.$langs->trans("DateReference").' > '.$langs->trans("DateToday").' '.(ceil($board->warning_delay) >= 0 ? '+' : '').ceil($board->warning_delay).' '.$langs->trans("days").')';
-
-					if ($board->id == 'bank_account') {
-						$textLateTitle .= '<br><span class="opacitymedium">'.$langs->trans("IfYouDontReconcileDisableProperty", $langs->transnoentitiesnoconv("Conciliable")).'</span>';
-					}
-
-					$textLate = '';
-					if ($board->nbtodolate > 0) {
-						$textLate .= '<span title="'.dol_escape_htmltag($textLateTitle).'" class="classfortooltip badge badge-warning">';
-						$textLate .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodolate;
-						$textLate .= '</span>';
-					}
-
-					$nbtodClass = '';
-					if ($board->nbtodo > 0) {
-						$nbtodClass = 'badge badge-info';
-					}
-
-					$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : <span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
-					if ($textLate) {
-						if ($board->url_late) {
-							$openedDashBoard .= '</a>';
-							$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
-						} else {
-							$openedDashBoard .= ' ';
 						}
-						$openedDashBoard .= $textLate;
-					}
-					$openedDashBoard .= '</a>'."\n";
+						else
+						{
+							$openedDashBoard .= '<div class="info-box-line">';
 
-					if ($board->total > 0 && !empty($conf->global->MAIN_WORKBOARD_SHOW_TOTAL_WO_TAX)) {
-						$openedDashBoard .= '<a href="'.$board->url.'" class="info-box-text">'.$langs->trans('Total').' : '.price($board->total).'</a>';
+							if (!empty($board->labelShort)) {
+								$infoName = '<span title="'.$board->label.'">'.$board->labelShort.'</span>';
+							} else {
+								$infoName = $board->label;
+							}
+
+							$textLateTitle = $langs->trans("NActionsLate", $board->nbtodolate);
+							$textLateTitle .= ' ('.$langs->trans("Late").' = '.$langs->trans("DateReference").' > '.$langs->trans("DateToday").' '.(ceil($board->warning_delay) >= 0 ? '+' : '').ceil($board->warning_delay).' '.$langs->trans("days").')';
+
+							if ($board->id == 'bank_account') {
+								$textLateTitle .= '<br><span class="opacitymedium">'.$langs->trans("IfYouDontReconcileDisableProperty", $langs->transnoentitiesnoconv("Conciliable")).'</span>';
+							}
+
+							$textLate = '';
+							if ($board->nbtodolate > 0) {
+								$textLate .= '<span title="'.dol_escape_htmltag($textLateTitle).'" class="classfortooltip badge badge-warning">';
+								$textLate .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodolate;
+								$textLate .= '</span>';
+							}
+
+							$nbtodClass = '';
+							if ($board->nbtodo > 0) {
+								$nbtodClass = 'badge badge-info';
+							}
+
+							$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : <span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
+							if ($textLate) {
+								if ($board->url_late) {
+									$openedDashBoard .= '</a>';
+									$openedDashBoard .= ' <a href="'.$board->url_late.'" class="info-box-text info-box-text-a paddingleft">';
+								} else {
+									$openedDashBoard .= ' ';
+								}
+								$openedDashBoard .= $textLate;
+							}
+							$openedDashBoard .= '</a>'."\n";
+
+							if ($board->total > 0 && !empty($conf->global->MAIN_WORKBOARD_SHOW_TOTAL_WO_TAX)) {
+								$openedDashBoard .= '<a href="'.$board->url.'" class="info-box-text">'.$langs->trans('Total').' : '.price($board->total).'</a>';
+							}
+							$openedDashBoard .= '</div>'."\n";
+						}
 					}
-					$openedDashBoard .= '</div>'."\n";
 				}
 
 				// TODO Add hook here to add more "info-box-line"

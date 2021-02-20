@@ -38,13 +38,18 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 	color: black;
 }
 
-.bg-ticket .info-box {
+.bg-project3 .info-box {
 	background: palegoldenrod !important;
 	color: black;
 }
 
-.bg-ticket1 .info-box {
+.bg-ticket .info-box {
 	background: ivory !important;
+	color: black;
+}
+
+.bg-ticket1 .info-box {
+	background: lightblue !important;
 	color: black;
 }
 
@@ -214,7 +219,7 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 }
 
 .info-box-sm .info-box-content{
-    margin-right: 40px;
+    margin-right: 20px;
 }
 .info-box-number {
 	display: block;
