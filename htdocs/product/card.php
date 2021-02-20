@@ -1560,7 +1560,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td></tr>';
 
 		// Component No.
-		print '<tr><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
 
 		// Invoice Date
 		print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'</td><td>';
@@ -1584,7 +1584,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// On sell
-		print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+		print '<tr ><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		$statutarray = array('1' => $langs->trans("OnSell"), '0' => $langs->trans("NotOnSell"));
 		print $form->selectarray('statut', $statutarray, GETPOST('statut'));
 		print '</td></tr>';
@@ -1628,7 +1628,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 
 		// Description (used in invoice, propal...)
-		print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
+		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
 
 		$doleditor = new DolEditor('desc', GETPOST('desc', 'restricthtml'), '', 160, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_4, '90%');
 		$doleditor->Create();
@@ -2247,7 +2247,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td></tr>';
 
 			// Component No.
-			print '<tr><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
 
 			// Invoice Date
 			print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'-'.date("m/d/Y",$object->invoicedate).'</td><td>';
@@ -2279,7 +2279,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			
 
 			// Status To sell
-			print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
+			print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 			print '<select class="flat" name="statut">';
 			if ($object->status)
 			{
@@ -2342,7 +2342,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			// Description (used in invoice, propal...)
-			print '<tr style="display:none;"><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
+			print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td colspan="3">';
 
 			// We use dolibarr_details as type of DolEditor here, because we must not accept images as description is included into PDF and not accepted by TCPDF.
 			$doleditor = new DolEditor('desc', $object->description, '', 160, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, ROWS_4, '90%');
