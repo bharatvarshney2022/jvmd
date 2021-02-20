@@ -329,6 +329,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 				else if($text == "Users")
 				{
 					$text = "Invoice";
+					$board->picto = 'project';
 				}
 				else if($text == "Customers")
 				{
