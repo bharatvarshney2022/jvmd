@@ -466,6 +466,15 @@ if (empty($reshook))
 		}
 	}
 
+	if ($action == 'confirm_invalidate' && $confirm == 'yes')
+	{
+		$result = $object->setInValid($user);
+		if ($result <= 0)
+		{
+			setEventMessages($object->error, $object->errors, 'errors');
+		}
+	}
+
 	if ($action == 'confirm_close' && $confirm == 'yes')
 	{
 		$result = $object->setClose($user);
@@ -964,6 +973,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 	if ($action == 'validate')
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ValidateProject'), $langs->trans('ConfirmValidateProject'), 'confirm_validate', '', 0, 1);
+	}
+	if ($action == 'invalidate')
+	{
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('InValidateProject'), $langs->trans('ConfirmInValidateProject'), 'confirm_invalidate', '', 0, 1);
 	}
 	// Confirmation close
 	if ($action == 'close')

@@ -60,7 +60,7 @@ class box_project extends ModeleBoxes
 		$langs->loadLangs(array('boxes', 'projects'));
 
 		$this->db = $db;
-		$this->boxlabel = "Top 5 Support Ticket";
+		$this->boxlabel = "Top 5 Pending Support Ticket";
 
 		$this->hidden = !($user->rights->projet->lire);
 	}
@@ -81,7 +81,7 @@ class box_project extends ModeleBoxes
 		$totalnb = 0;
 		$totalnbTask = 0;
 
-		$textHead = $langs->trans("Top 5 Support Tickets");
+		$textHead = $langs->trans("Top 5 Pending Support Tickets");
 		$this->info_box_head = array('text' => $textHead, 'label' => 'project', 'limit'=> dol_strlen($textHead));
 
 		// list the summary of the orders
@@ -99,7 +99,7 @@ class box_project extends ModeleBoxes
 			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public";
 			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p";
 			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
-			$sql .= " AND p.fk_statut = 1"; // Only open projects
+			$sql .= " AND p.fk_statut = 0"; // Only pending projects
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
 
 			$sql .= " ORDER BY p.datec DESC";

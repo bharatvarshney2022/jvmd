@@ -234,8 +234,8 @@ class Project extends CommonObject
 	{
 		$this->db = $db;
 
-		$this->statuts_short = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed');
-		$this->statuts_long = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed');
+		$this->statuts_short = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Reject');
+		$this->statuts_long = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Reject');
 
 		global $conf;
 
@@ -982,6 +982,60 @@ class Project extends CommonObject
 	 *      @param      int     $notrigger     1=Disable triggers
 	 * 		@return		int					   <0 if KO, >0 if OK
 	 */
+	public function setInValid($user, $notrigger = 0)
+	{
+		global $langs, $conf;
+
+		$error = 0;
+
+		if ($this->statut != 1)
+		{
+			// Check parameters
+			if (preg_match('/^'.preg_quote($langs->trans("CopyOf").' ').'/', $this->title))
+			{
+				$this->error = $langs->trans("ErrorFieldFormat", $langs->transnoentities("Label")).'. '.$langs->trans('RemoveString', $langs->transnoentitiesnoconv("CopyOf"));
+				return -1;
+			}
+
+			$this->db->begin();
+
+			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
+			$sql .= " SET fk_statut = 3";
+			$sql .= " WHERE rowid = ".$this->id;
+			$sql .= " AND entity = ".$conf->entity;
+
+
+			dol_syslog(get_class($this)."::setValid", LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			if ($resql)
+			{
+				// Call trigger
+				if (empty($notrigger))
+				{
+					$result = $this->call_trigger('PROJECT_VALIDATE', $user);
+					if ($result < 0) { $error++; }
+					// End call triggers
+				}
+
+				if (!$error)
+				{
+					$this->statut = 1;
+					$this->db->commit();
+					return 1;
+				} else {
+					$this->db->rollback();
+					$this->error = join(',', $this->errors);
+					dol_syslog(get_class($this)."::setValid ".$this->error, LOG_ERR);
+					return -1;
+				}
+			} else {
+				$this->db->rollback();
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+		}
+	}
+
 	public function setValid($user, $notrigger = 0)
 	{
 		global $langs, $conf;
@@ -1115,9 +1169,10 @@ class Project extends CommonObject
 		global $langs;
 
 		$statustrans = array(
-			0 => 'status0',
-			1 => 'btn-success',
-			2 => 'status6',
+			0 => 'btn-info', //Draft
+			1 => 'btn-success', // Active
+			2 => 'btn-danger', // Close
+			3 => 'btn-warning', // Reject
 		);
 
 		$statusClass = 'status0';
@@ -1125,12 +1180,18 @@ class Project extends CommonObject
 			$statusClass = $statustrans[$status];
 		}
 
+		$extraBtn = '';
 		if($status == 1)
 		{
 			$status = "Active";
 		}
+		else if($status == 0)
+		{
+			$status = "Draft";
+			$extraBtn = '&nbsp;&nbsp;&nbsp; <a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp;&nbsp;&nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
+		}
 
-		return '<span class="btn '.$statusClass.'">'.$status."</span>";
+		return '<span class="btn '.$statusClass.'">'.$status."</span>".$extraBtn;
 	}
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
@@ -1150,6 +1211,7 @@ class Project extends CommonObject
 			0 => 'status0',
 			1 => 'status4',
 			2 => 'status6',
+			3 => 'status6',
 		);
 
 		$statusClass = 'status0';
