@@ -8413,7 +8413,8 @@ input#sew_keyword {
 
 img.logo-gif {
     height: 40px;
-    margin-top: 20px;
+    margin-top: 15px;
+    margin-left: 20px;
 }
 
 .button-bordered {
