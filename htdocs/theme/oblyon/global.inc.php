@@ -8420,7 +8420,7 @@ img.logo-gif {
     border-radius: 3px;
 }
 
-.buttons-print {
+.buttons-print, .buttons-copy, .buttons-excel, .buttons-csv {
     border-right: 1px #ddd solid;
 }
 
