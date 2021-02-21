@@ -8418,7 +8418,7 @@ img.logo-gif {
 }
 
 .logo-padding {
-    padding: 20px 0 10px 40px;
+    padding: 20px 0 10px 20px;
 }
 
 .button-bordered {
