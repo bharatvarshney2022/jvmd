@@ -675,14 +675,9 @@ print '<!--begin::Entry-->
 											//print '<input type="hidden" name="page" value="'.$page.'">';
 											print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-
-
-
-				
-
 										print '
 										<!--begin: Search Form-->
-										<div class="gutter-b card card-custom card-collapsed" data-card="true" id="kt_card_4">
+										<div class="card card-custom card-collapsed" data-card="true" id="kt_card_4">
 											<div class="card-header">
 												<div class="card-title">
 													<h3 class="card-label">Filters</h3>
@@ -765,7 +760,7 @@ print '<!--begin::Entry-->
 												</div>
 										</div>';
 
-										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, $newcardbutton, '', $limit, 0, 0, 1);
+										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 
 										$topicmail = "Information";
 										$modelmail = "thirdparty";
@@ -777,7 +772,7 @@ print '<!--begin::Entry-->
 										print '<div class="clearfix"></div>';
 
 										print '<!--begin: Datatable-->
-										<table class="table table-separate table-head-custom table-checkable" id="kt_datatable1">
+										<table class="table table-bordered table-checkable" id="kt_datatable1">
 											<thead>
 												<tr>'."\n";
 										if (!empty($arrayfields['s.rowid']['checked']))                   print_liste_field_titre_layout($arrayfields['s.rowid']['label'], $_SERVER["PHP_SELF"], "s.rowid", "", $param, "", $sortfield, $sortorder)."\n\n";

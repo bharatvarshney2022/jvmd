@@ -17,7 +17,7 @@ small, strike, sub, sup, tt, var,
 b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
+caption,
 article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
@@ -7721,7 +7721,7 @@ td.evenodd {
 }
 
 table.dataTable td {
-    padding: 5px 8px 5px 8px !important;
+    /*padding: 5px 8px 5px 8px !important;*/
 }
 tr.pair td, tr.impair td, form.impair div.tagtd, form.pair div.tagtd, div.impair div.tagtd, div.pair div.tagtd, div.liste_titre div.tagtd {
     padding: 7px 8px 7px 8px;
