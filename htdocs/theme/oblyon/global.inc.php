@@ -8415,6 +8415,35 @@ img.logo-gif {
     max-width: 50%;
 }
 
+.button-bordered {
+    border: 1px #ddd solid;
+    border-radius: 3px;
+}
+
+.buttons-print {
+    border-right: 1px #ddd solid;
+}
+
+.btn.buttons-print i {
+    color: #f39c12;
+}
+
+.btn.buttons-copy i {
+    color: #0073b7;
+}
+
+.btn.buttons-excel i, .btn.buttons-csv i, .btn.buttons-pdf i {
+    opacity: 0;
+}
+
+.buttons-excel span, .buttons-csv span {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAwFBMVEX///+pqqnZ2tn+//1xt2z4//P6//gxbgv////T5NNtpVtprWeCuX+IpobM4szOz87r7urBw8DU1NSZype83Ln8//vG0cQ0cQ8fbR7g8N6dvZHJysm3uLf4/vaTyJCysrLo9Oe7vbvW3tXn5+dUiDTy+O7d49nA378rdyuy2LHL2sO4zLZJmEOl0aI9ex0rhi/h69zr9+skjS3K3sqKt4hvtmqizptssHKfn5+jyqaf0pwjYx52q3PW69e80rsiXx3ygnDPAAAAAXRSTlMAQObYZgAAAMRJREFUGNM1zFV2w0AMQFENj5kZw8wp0/53VdlN35/ukQQAxsv++h9gb9f26/JogNtp1W/ex6IRrKhvH/3ByY1s4+a68eYQGdYAy7utMYYliU9x4/Ou53NznCUNYf394eiFUmXBedtXHsLPTrNtlplPh6YJRvAZK/bqGEvZ1B7k6ZqxFedHZVrPogsh3zk6tjm3MmUWC4JQpvhfNqJU6nIeNnInnSYS74UQ244CzKqOvBIyCbzleVojwIzS0KuCSUdIXfm/53AYuGWJoBEAAAAASUVORK5CYII=);
+}
+
+.buttons-pdf span {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gJCwwuBgPWhO8AAAIoSURBVDjLnZM9S1xREIafe+7u3dyNH6ipNgpaGNIEC5cQgl2C/8DFH2C7rYGgVmsXtLWwFGz8ASk0WAdBBHWXFQWDkAgmBtldvedrUrjerJKkyMDAHJh5531nzsA/7AzyO/Ca/7UqfPgB1/0w/LecAKA6Pf3u+fn5C4yBJAGtEWP81enpRL7ZHP7c3f3xpVLfs0kSoDXiPW/h/Sf4AsD++PjWzc6O6MNDMdWq2FpNXK0mfmNDdKEgzYMDkXpd5OhI5PhYfKkkb+AVQAYA58SOjBDm8yilUEpBEMDgIJlGAy0Co6Mpbd/Tg23HCgCt8c7hnMN7j/ceEUH299GFAmphIS0AkLb/BjAG2wZIHWBzk0alQnxxQbKykhYJ4Ntx5g7AGAPOdbQRZHubYGYGNzZGPDmJjWOyzuEvL1NGmTsJxlpEa6Ioul3PyQnXSvF4bQ2zt4crlcjPzWG6urjK5dI+qQStNdZatPdIrUZ2dhY7NERjYgK3ukq0uIjf3cWur5MvFnEPGWitodmku1LhWmtsLodfXiavFMq5W929vUT9/SQdM0gZ3DjHk3KZy4EBorMzfs7PExpzb7AighdB4MEavSdptfg2NYWLY74uLZHr68MYg7X2HoiHFCSVIEDTGFyxyKM4JhdF3AQBEoZIGJLNZpEwhPYHkyC4v0attTwrlyEMhY5ElMIGAbZdJEGAV4pWvR7YzmOK4amCPgD34Nr+9Fa3MzgBWr8Ay1BAR0BT+awAAAAASUVORK5CYII=);
+}
+
 <?php
 include dol_buildpath($path.'/theme/'.$theme.'/dropdown.inc.php', 0);
 include dol_buildpath($path.'/theme/'.$theme.'/info-box.inc.php', 0);
