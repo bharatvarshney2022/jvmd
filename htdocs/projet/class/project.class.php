@@ -1019,7 +1019,7 @@ class Project extends CommonObject
 
 				if (!$error)
 				{
-					$this->statut = 1;
+					$this->statut = 3;
 					$this->db->commit();
 					return 1;
 				} else {
