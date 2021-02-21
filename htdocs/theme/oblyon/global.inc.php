@@ -8412,7 +8412,8 @@ input#sew_keyword {
 }
 
 img.logo-gif {
-    max-width: 50%;
+    height: 40px;
+    margin-top: 20px;
 }
 
 .button-bordered {

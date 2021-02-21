@@ -1187,11 +1187,11 @@ class Project extends CommonObject
 		}
 		else if($status == 0)
 		{
-			$status = "Draft";
+			$status = "";//Draft";
 			$extraBtn = '&nbsp;&nbsp;&nbsp; <a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp;&nbsp;&nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
 		}
 
-		return '<span class="btn '.$statusClass.'">'.$status."</span>".$extraBtn;
+		return '<span class="'.$statusClass.'">'.$status.'</span>'.$extraBtn;
 	}
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps

@@ -2440,7 +2440,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 												<!--begin::Logo-->';
 
 								print "\n".'						<a href="'.$dolibarr_main_url_root.'" class="brand-logo white-background">
-													<img class="img-fluid" alt="Logo" src="'.$urllogo1.'" />	
+													<img class="logo-gif" alt="Logo" src="'.$urllogo1.'" />	
 												<!--end::Logo-->
 
 												<!--begin::Logo-->';
