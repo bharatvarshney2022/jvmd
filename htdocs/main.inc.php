@@ -2446,7 +2446,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 												<!--begin::Logo-->';
 
 								print "\n".'						
-													<img class="img-fluid" alt="Logo" src="'.$urllogo.'" />													
+													<img class="img-fluid" style="padding: 20px 0 10px 40px;" alt="Logo" src="'.$urllogo.'" />													
 												</a>
 												<!--end::Logo-->
 												
