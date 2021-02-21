@@ -234,8 +234,8 @@ class Project extends CommonObject
 	{
 		$this->db = $db;
 
-		$this->statuts_short = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Reject');
-		$this->statuts_long = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Reject');
+		$this->statuts_short = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Rejected');
+		$this->statuts_long = array(0 => 'Draft', 1 => 'Opened', 2 => 'Closed', 3 => 'Rejected');
 
 		global $conf;
 
