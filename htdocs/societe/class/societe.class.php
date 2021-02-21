@@ -2453,7 +2453,7 @@ class Societe extends CommonObject
 				$linkclose .= ' alt="'.dol_escape_htmltag($label, 1).'"';
 			}
 			$linkclose .= ' title="'.dol_escape_htmltag($label, 1).'"';
-			$linkclose .= ' class="classfortooltip refurl"';
+			$linkclose .= ' data-toggle="tooltip" data-trigger="focus" data-html="true" class="classfortooltip refurl"';
 
 			/*
 			$hookmanager->initHooks(array('thirdpartydao'));
