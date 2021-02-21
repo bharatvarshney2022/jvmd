@@ -772,7 +772,7 @@ print '<!--begin::Entry-->
 										print '<div class="clearfix"></div>';
 
 										print '<!--begin: Datatable-->
-										<table class="table table-bordered table-checkable" id="kt_datatable1">
+										<table class="table table-bordered table-checkable gutter-t" id="kt_datatable1">
 											<thead>
 												<tr>'."\n";
 										if (!empty($arrayfields['s.rowid']['checked']))                   print_liste_field_titre_layout($arrayfields['s.rowid']['label'], $_SERVER["PHP_SELF"], "s.rowid", "", $param, "", $sortfield, $sortorder)."\n\n";
