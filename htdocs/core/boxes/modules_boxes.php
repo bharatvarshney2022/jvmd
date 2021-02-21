@@ -224,7 +224,7 @@ class ModeleBoxes // Can't be abtract as it is instantiated to build "empty" box
 
 					if(isset($head['label']) && ($head['label'] == 'project'))
 					{
-						$out .= '<tr><th>Code</th><th>Label</th><th>Status</th></tr>';
+						$out .= '<tr><th>Code</th><th>Label</th><th>Customer Name</th><th>Customer Address</th><th>Customer City</th><th>Customer PinCode</th><th>Status</th></tr>';
 					}
 
 					$out .= '</thead><tbody>'."\n";

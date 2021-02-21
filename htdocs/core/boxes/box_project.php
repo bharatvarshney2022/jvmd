@@ -96,10 +96,10 @@ class box_project extends ModeleBoxes
 			$projectsListId = '';
 			if (!$user->rights->projet->all->lire) $projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1, $socid);
 
-			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public";
-			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p";
+			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, s.address, s.town, s.zip";
+			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s";
 			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
-			$sql .= " AND p.fk_statut = 0"; // Only pending projects
+			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut = 0"; // Only pending projects
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
 
 			$sql .= " ORDER BY p.datec DESC";
@@ -129,6 +129,28 @@ class box_project extends ModeleBoxes
 					$this->info_box_contents[$i][] = array(
 						'td' => 'class=""',
 						'text' => $objp->title,
+					);
+
+					// Customer Info
+					//s_nom, s., s.town, s.zip
+					$this->info_box_contents[$i][] = array(
+						'td' => 'class=""',
+						'text' => $objp->s_nom,
+					);
+
+					$this->info_box_contents[$i][] = array(
+						'td' => 'class=""',
+						'text' => $objp->address,
+					);
+
+					$this->info_box_contents[$i][] = array(
+						'td' => 'class=""',
+						'text' => $objp->town,
+					);
+
+					$this->info_box_contents[$i][] = array(
+						'td' => 'class=""',
+						'text' => $objp->zip,
 					);
 
 					$sql = "SELECT count(*) as nb, sum(progress) as totprogress";
