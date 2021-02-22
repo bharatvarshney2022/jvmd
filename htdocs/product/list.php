@@ -536,7 +536,7 @@ if ($resql)
 	$params = array();
 	if ($type === "") $params['forcenohideoftext'] = 1;
 	if ($type === "") {
-		$newcardbutton .= dolGetButtonTitleLayout($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm);
+		$newcardbutton .= dolGetButtonTitleLayout($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm, $params);
 		$type = Product::TYPE_SERVICE;
 	}
 	$label = 'NewProduct';
