@@ -265,6 +265,20 @@ if (empty($reshook))
  * View
  */
 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
+
 $socstatic = new Societe($db);
 $form = new Form($db);
 $formother = new FormOther($db);
@@ -320,16 +334,23 @@ $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = 
 // No check is done on company permission because readability is managed by public status of project and assignement.
 //if ($search_sale > 0 || (! $user->rights->societe->client->voir && ! $socid)) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON sc.fk_soc = s.rowid";
 if ($search_sale > 0) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON sc.fk_soc = s.rowid";
-if ($search_project_user > 0)
+if ($search_project_user > 0) 
 {
 	$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
 }
+if ($user_group_id == 17) 
+{
+	$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
+}
+
 $sql .= " WHERE p.entity IN (".getEntity('project').')';
 if (!empty($conf->categorie->enabled))
 {
 	$sql .= Categorie::getFilterSelectQuery(Categorie::TYPE_PROJECT, "p.rowid", $search_category_array);
 }
-if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
+if($user_group_id != 17){
+	if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
+}
 // No need to check if company is external user, as filtering of projects must be done by getProjectsAuthorizedForUser
 if ($socid > 0) $sql .= " AND (p.fk_soc = ".$socid.")"; // This filter if when we use a hard coded filter on company on url (not related to filter for external users)
 if ($search_ref) $sql .= natural_search('p.ref', $search_ref);
@@ -360,6 +381,26 @@ if ($search_sale > 0) $sql .= " AND sc.fk_user = ".$search_sale;
 // No check is done on company permission because readability is managed by public status of project and assignement.
 //if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND ((s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id.") OR (s.rowid IS NULL))";
 if ($search_project_user > 0) $sql .= " AND ecp.fk_c_type_contact IN (".join(',', array_keys($listofprojectcontacttype)).") AND ecp.element_id = p.rowid AND ecp.fk_socpeople = ".$search_project_user;
+
+if($user_group_id == 17){
+
+	$vendor_list = '';
+	$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+	$resqlVendor = $db->query($sqlVendor);
+	if ($resqlVendor)
+	{
+		$rowVendor = $db->fetch_object($resqlVendor);
+		$vendorData = $rowVendor->fk_vendor;
+		
+		//$vendorData[] = $user->id;
+
+		if($vendorData)
+		{
+			//$vendor_list = implode(",", $vendorData);
+			$sql .= " AND ecp.element_id = p.rowid AND ecp.fk_socpeople IN (".$vendorData.")";
+		}
+	}
+}
 if ($search_opp_amount != '') $sql .= natural_search('p.opp_amount', $search_opp_amount, 1);
 if ($search_budget_amount != '') $sql .= natural_search('p.budget_amount', $search_budget_amount, 1);
 if ($search_usage_opportunity != '' && $search_usage_opportunity >= 0) $sql .= natural_search('p.usage_opportunity', $search_usage_opportunity, 2);
@@ -383,6 +424,7 @@ if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST)) {
 		$offset = 0;
 	}
 }
+//echo $sql;
 // if total of record found is smaller than limit, no need to do paging and to restart another select with limits set.
 if (is_numeric($nbtotalofrecords) && ($limit > $nbtotalofrecords || empty($limit))) {
 	$num = $nbtotalofrecords;
@@ -680,6 +722,7 @@ print '<!--begin::Entry-->
 											'nbfield' => 0,
 											'val' => array(),
 										);
+
 										while ($i < min($num, $limit))
 										{
 											$obj = $db->fetch_object($resql);
@@ -695,7 +738,11 @@ print '<!--begin::Entry-->
 											$object->opp_status = $obj->fk_opp_status;
 											$object->title = $obj->title;
 
-											$userAccess = $object->restrictedProjectArea($user); // why this ?
+											if($user_group_id != 17){
+												$userAccess = $object->restrictedProjectArea($user); // why this ?
+											}else{
+												$userAccess = 1;
+											}
 											if ($userAccess >= 0)
 											{
 												$socstatic->id = $obj->socid;

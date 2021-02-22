@@ -319,6 +319,9 @@ if ($contextpage == 'employeelist' && $search_employee == 1) {
 	$text = $langs->trans("ListOfEmployees");
 }elseif($user_group_id == '4'){	
 	$text = $langs->trans("List Of Technician");
+}elseif($user_group_id == '17'){
+
+	$text = $langs->trans("List Of Vendors");
 } else {
 	$text = $langs->trans("ListOfUsers");
 }
@@ -395,8 +398,26 @@ if ($search_supervisor > 0){   $sql .= " AND u.fk_user IN (".$db->sanitize($db->
 					$sql .= " AND u.rowid IN (".$vendor_list.")";
 				}
 			}
-		}
-		else
+		}elseif($user_group_id == '17')
+		{
+			$vendor_list = '';
+			$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+			$resqlVendor = $db->query($sqlVendor);
+			if ($resqlVendor)
+			{
+				$rowVendor = $db->fetch_object($resqlVendor);
+				$vendorData = $rowVendor->fk_vendor;
+				
+				//$vendorData[] = $user->id;
+
+				if($vendorData)
+				{
+					//$vendor_list = implode(",", $vendorData);
+					$sql .= " AND u.rowid IN (".$vendorData.")";
+				}
+			}
+
+		}else
 		{
 			$sql .= " AND u.fk_user = '".$user->id."'";
 		}
