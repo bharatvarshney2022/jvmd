@@ -702,12 +702,12 @@ print '<!--begin::Entry-->
 												$socstatic->name = $obj->name;
 												$socstatic->email = $obj->email;
 
-												print '<tr class="oddeven">';
+												print '<tr class="">';
 
 												// Project url
 												if (!empty($arrayfields['p.ref']['checked']))
 												{
-													print '<td class="nowraponall">';
+													print '<td class="">';
 													print $object->getNomUrl(1);
 													if ($object->hasDelay()) print img_warning($langs->trans('Late'));
 													print '</td>';
