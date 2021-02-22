@@ -829,7 +829,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		}
 		if($user_group_id == '4'){
 
-			$newcardbutton .= dolGetButtonTitle($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
+			$newcardbutton .= dolGetButtonTitle($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
 			print '<br>';
 		}
@@ -839,7 +839,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		print '<div class="div-table-responsive">';
 		print "\n".'<table class="noborder" width=100%>';
 
-		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
@@ -855,8 +855,9 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 			print '<tr class="liste_titre">';
 			print '<td>'.$langs->trans("S.No.").'</td>';
-			print '<td>'.$langs->trans("Model No.").'</td>';
-			print '<td>'.$langs->trans("Name").'</td>';
+			print '<td>'.$langs->trans("Component No.").'</td>';
+			print '<td>'.$langs->trans("Model No.").' / '.$langs->trans("Name").'</td>';
+			//print '<td>'.$langs->trans("Name").'</td>';
 			print '<td class="center">'.$langs->trans("Brand").'</td>';
 			print '<td class="center">'.$langs->trans("Category").'</td>';
 			print '<td class="right">'.$langs->trans("Sub Category").'</td>';
@@ -887,10 +888,12 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						//print $producttmp->getNomUrl(1);
 						print ($i+1);
 						print '</td>';
+						//component_no
+						print '<td>'.$obj->component_no.'</td>';
 						//model
-						print '<td>'.$obj->c_product_model.'</td>';
+						print '<td>'.$obj->c_product_model.'<br .>'.$obj->pname.'</td>';
 						// Product name
-						print '<td>'.$obj->pname.'</td>';
+						//print '<td>'.$obj->pname.'</td>';
 						// Product Brand
 						print '<td>'.$obj->brandname.'</td>';
 
@@ -923,7 +926,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 					$i++;
 				}
 			} else {
-				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+				print '<tr class="oddeven"><td colspan="9" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
 			}
 			$db->free($result);
 		} else {

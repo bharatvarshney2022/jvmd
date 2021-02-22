@@ -226,6 +226,8 @@ if (empty($reshook))
 
 			$customerProduct['fk_model'] = GETPOST('fk_model', 'int');
 			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
+			$customerProduct['component_no']   = GETPOST('component_no');
+			
 			//print_r($customerProduct);
 			$productid = $object->add_customer_product($user,$customerProduct);
 			if (!empty($backtopage))
@@ -1373,7 +1375,24 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print '</td>';
 				// Ac Capacity
 				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
-
+				
+				// Component No
+				$component_no = '1900000';
+				$sqlcomponent_no = "SELECT MAX(component_no) as max";
+				$sqlcomponent_no .= " FROM ".MAIN_DB_PREFIX."product_customer";
+				$sqlcomponent_no .= " WHERE component_no != '' ";
+				$resqlcomponent_no = $db->query($sqlcomponent_no);
+				if ($resqlcomponent_no)
+				{
+					$objcomponent_no = $db->fetch_object($resqlcomponent_no);
+					$component_no = intval($objcomponent_no->max)+1;
+				}else{
+					$component_no = $component_no+1;
+				}
+				
+				print '<tr><td class="fieldrequired">'.$langs->trans("Component No").'</td><td colspan="3">';
+				print '<input name="component_no" readonly class="maxwidth400onsmartphone" maxlength="255" value="'.$component_no.'">';
+				print '</td></tr>';
 				
 				print '</table>';
 				print dol_get_fiche_end();
