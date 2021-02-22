@@ -22,10 +22,10 @@
 	if($userExists)
 	{
 		$slider[] = array("id"=>"1","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=1.jpg");
-		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=2.png");
-		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=3.png");
-		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=4.png");
-		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=5.png");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=2.jpg");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=3.jpg");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=4.jpg");
+		$slider[] = array("id"=>"2","image"=>$dolibarr_main_url_root."/viewimage.php?cache=1&modulepart=medias&file=5.jpg");
 
 		$status_code = '1';
 		$message = 'Customer Dashboard';
