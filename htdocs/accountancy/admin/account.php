@@ -1,7 +1,5 @@
 <?php
-/* Copyright (C) 2013-2016 Olivier Geffroy      <jeff@jeffinfo.com>
- * Copyright (C) 2013-2020 Alexandre Spangaro   <aspangaro@open-dsi.fr>
- * Copyright (C) 2016-2018 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
-<?php
-/* Copyright (C) 2017		Alexandre Spangaro		<aspangaro@open-dsi.fr>
- * Copyright (C) 2017		Saasprov				<saasprov@gmail.com>
+s<?php
+/* 
+ * 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
