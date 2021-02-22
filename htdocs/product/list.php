@@ -478,7 +478,7 @@ if ($resql)
     foreach ($searchCategoryProductList as $searchCategoryProduct) {
         $paramsCat .= "&search_category_product_list[]=".urlencode($searchCategoryProduct);
     }
-    llxHeader('', $title, $helpurl, '', 0, 0, "", "", $paramsCat);
+    llxHeaderLayout('', $title, $title, $helpurl, '', 0, 0, "", "", $paramsCat);
 
 
 	// Displays product removal confirmation
@@ -528,7 +528,7 @@ if ($resql)
 	);
 	if ($user->rights->{$rightskey}->supprimer) $arrayofmassactions['predelete'] = "<span class='fa fa-trash paddingrightonly'></span>".$langs->trans("Delete");
 	if (in_array($massaction, array('presend', 'predelete'))) $arrayofmassactions = array();
-	$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
+	$massactionbutton = $form->selectMassActionLayout('', $arrayofmassactions);
 
 	$newcardbutton = '';
 	if ($type === "") $perm = ($user->rights->produit->creer || $user->rights->service->creer);
@@ -538,12 +538,12 @@ if ($resql)
 	$params = array();
 	if ($type === "") $params['forcenohideoftext'] = 1;
 	if ($type === "") {
-		$newcardbutton .= dolGetButtonTitle($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm, $params);
+		$newcardbutton .= dolGetButtonTitleLayout($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm, $params);
 		$type = Product::TYPE_SERVICE;
 	}
 	$label = 'NewProduct';
 	if ($type == Product::TYPE_SERVICE) $label = 'NewService';
-	$newcardbutton .= dolGetButtonTitle($langs->trans($label), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type='.$type, '', $perm, $params);
+	$newcardbutton .= dolGetButtonTitleLayout($langs->trans($label), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type='.$type, '', $perm, $params);
 
 	$type = $oldtype;
 
@@ -1581,5 +1581,16 @@ if ($resql)
 }
 
 // End of page
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
 $db->close();
