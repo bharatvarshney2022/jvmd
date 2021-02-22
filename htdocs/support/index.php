@@ -1,9 +1,5 @@
 <?php
-/* Copyright (C) 2008-2015	Laurent Destailleur	<eldy@users.sourceforge.net>
- * Copyright (C) 2008-2012	Regis Houssin		<regis.houssin@inodbox.com>
- * Copyright (C) 2012		Juanjo Menent		<jmenent@2byte.es>
- * add german links 2020    Udo Tamm            <dev@dolibit.de>
- *
+/* 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or

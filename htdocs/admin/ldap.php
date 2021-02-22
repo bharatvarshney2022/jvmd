@@ -1,10 +1,5 @@
 <?php
-/* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004		Sebastien Di Cintio	<sdicintio@ressource-toi.org>
- * Copyright (C) 2004		Benoit Mortier		<benoit.mortier@opensides.be>
- * Copyright (C) 2005-2017	Regis Houssin		<regis.houssin@inodbox.com>
- * Copyright (C) 2006-2020	Laurent Destailleur	<eldy@users.sourceforge.net>
- * Copyright (C) 2011-2013	Juanjo Menent		<jmenent@2byte.es>
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

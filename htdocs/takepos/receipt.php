@@ -1,10 +1,5 @@
 <?php
-/* Copyright (C) 2007-2008 Jeremie Ollivier    <jeremie.o@laposte.net>
- * Copyright (C) 2011      Laurent Destailleur <eldy@users.sourceforge.net>
- * Copyright (C) 2012      Marcos García       <marcosgdf@gmail.com>
- * Copyright (C) 2018      Andreu Bisquerra    <jove@bisquerra.com>
- * Copyright (C) 2019      Josep Lluís Amador  <joseplluis@lliuretic.cat>
- *
+/* 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
