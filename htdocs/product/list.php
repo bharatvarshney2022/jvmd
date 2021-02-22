@@ -818,10 +818,10 @@ if ($resql)
 											print_liste_field_titre_layout($arrayfields['p.tms']['label'], $_SERVER["PHP_SELF"], "p.tms", "", $param, '', $sortfield, $sortorder, ' ');
 										}
 										if (!empty($arrayfields['p.tosell']['checked'])) {
-											//print_liste_field_titre_layout($arrayfields['p.tosell']['label'], $_SERVER["PHP_SELF"], "p.tosell", "", $param, '', $sortfield, $sortorder, '');
+											print_liste_field_titre_layout($arrayfields['p.tosell']['label'], $_SERVER["PHP_SELF"], "p.tosell", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['p.tobuy']['checked'])) {
-											//print_liste_field_titre_layout($arrayfields['p.tobuy']['label'], $_SERVER["PHP_SELF"], "p.tobuy", "", $param, '', $sortfield, $sortorder, '');
+											print_liste_field_titre_layout($arrayfields['p.tobuy']['label'], $_SERVER["PHP_SELF"], "p.tobuy", "", $param, '', $sortfield, $sortorder, '');
 										}
 										print_liste_field_titre_layout($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center  ');
 										print '</tr>
@@ -1366,25 +1366,25 @@ if ($resql)
 											// Status (to sell)
 											if (!empty($arrayfields['p.tosell']['checked']))
 											{
-												/*print '<td class="nowrap">';
+												print '<td class="nowrap">';
 												if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
 													print ajax_object_onoff($product_static, 'status', 'tosell', 'ProductStatusOnSell', 'ProductStatusNotOnSell');
 												} else {
 													print $product_static->LibStatut($obj->tosell, 5, 0);
 												}
-												print '</td>';*/
+												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
 											}
 											// Status (to buy)
 											if (!empty($arrayfields['p.tobuy']['checked']))
 											{
-												/*print '<td class="nowrap">';
+												print '<td class="nowrap">';
 												if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
 													print ajax_object_onoff($product_static, 'status_buy', 'tobuy', 'ProductStatusOnBuy', 'ProductStatusNotOnBuy');
 												} else {
 													print $product_static->LibStatut($obj->tobuy, 5, 1);
 												}
-												print '</td>';*/
+												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
 											}
 
