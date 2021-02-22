@@ -5770,6 +5770,7 @@ class Product extends CommonObject
 				$sql .= ", fk_product";
 				$sql .= ", fk_soc";
 				$sql .= ", ac_capacity";
+				$sql .= ", component_no";
 				$sql .= ", fk_user";
 				$sql .= ") VALUES (";
 				$sql .= "'".$this->db->idate($now)."'";
@@ -5781,6 +5782,7 @@ class Product extends CommonObject
 				$sql .= ", '".$this->db->escape($post['fk_product'])."'";
 				$sql .= ", '".$this->db->escape($post['fk_soc'])."'";
 				$sql .= ", '".$this->db->escape($post['ac_capacity'])."'";
+				$sql .= ", '".$this->db->escape($post['component_no'])."'";
 				$sql .= ", ".$user->id;
 				$sql .= ")";
 				/*echo $sql;
