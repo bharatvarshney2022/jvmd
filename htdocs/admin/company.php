@@ -408,12 +408,12 @@ print '<!--begin::Entry-->
 								print '<tr><th class="titlefield ">'.$langs->trans("CompanyInfo").'</th><th>'.$langs->trans("Value").'</th></tr></thead><tbody>'."\n";
 
 								// Name
-								print '<tr class=""><td class="fieldrequired "><label for="name">'.$langs->trans("CompanyName").'</label></td><td>';
+								print '<tr class=""><td class="required "><label for="name">'.$langs->trans("CompanyName").' *</label></td><td>';
 								print '<input name="nom" id="name" class="form-control" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_NOM ? $conf->global->MAIN_INFO_SOCIETE_NOM : GETPOST("nom", 'nohtml')).'"'.(empty($conf->global->MAIN_INFO_SOCIETE_NOM) ? ' autofocus="autofocus"' : '').'></td></tr>'."\n";
 
 								// Address
 								print '<tr class=""><td><label for="MAIN_INFO_SOCIETE_ADDRESS">'.$langs->trans("CompanyAddress").'</label></td><td>';
-								print '<textarea name="MAIN_INFO_SOCIETE_ADDRESS" id="MAIN_INFO_SOCIETE_ADDRESS" class="form-control" rows="'.ROWS_3.'">'.($conf->global->MAIN_INFO_SOCIETE_ADDRESS ? $conf->global->MAIN_INFO_SOCIETE_ADDRESS : GETPOST("MAIN_INFO_SOCIETE_ADDRESS", 'nohtml')).'</textarea></td></tr>'."\n";
+								print '<textarea name="MAIN_INFO_SOCIETE_ADDRESS" id="MAIN_INFO_SOCIETE_ADDRESS" class="summernote form-control" rows="'.ROWS_3.'">'.($conf->global->MAIN_INFO_SOCIETE_ADDRESS ? $conf->global->MAIN_INFO_SOCIETE_ADDRESS : GETPOST("MAIN_INFO_SOCIETE_ADDRESS", 'nohtml')).'</textarea></td></tr>'."\n";
 
 								// Zip
 								print '<tr class=""><td><label for="MAIN_INFO_SOCIETE_ZIP">'.$langs->trans("CompanyZip").'</label></td><td>';
@@ -423,13 +423,13 @@ print '<!--begin::Entry-->
 								print '<input name="MAIN_INFO_SOCIETE_TOWN" class="form-control" id="MAIN_INFO_SOCIETE_TOWN" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_TOWN ? $conf->global->MAIN_INFO_SOCIETE_TOWN : GETPOST("MAIN_INFO_SOCIETE_TOWN", 'nohtml')).'"></td></tr>'."\n";
 
 								// Country
-								print '<tr class=""><td class="fieldrequired"><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="maxwidthonsmartphone">';
+								print '<tr class=""><td class="required"><label for="selectcountry_id">'.$langs->trans("Country").' * </label></td><td class="">';
 								//print img_picto('', 'globe-americas', 'class="paddingrightonly"');
 								print $form->select_country($mysoc->country_id, 'country_id');
 								//if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 								print '</td></tr>'."\n";
 
-								print '<tr class=""><td><label for="state_id">'.$langs->trans("State").'</label></td><td class="maxwidthonsmartphone">';
+								print '<tr class=""><td><label for="state_id">'.$langs->trans("State").'</label></td><td class="">';
 								$state_id = 0;
 								if (!empty($conf->global->MAIN_INFO_SOCIETE_STATE))
 								{
@@ -446,26 +446,46 @@ print '<!--begin::Entry-->
 
 								// Phone
 								print '<tr class=""><td><label for="phone">'.$langs->trans("Phone").'</label></td><td>';
-								print img_picto('', 'object_phoning', '', false, 0, 0, '', 'paddingright');
-								print '<input name="tel" class="form-control" id="phone" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_TEL).'"></td></tr>';
+								//print img_picto('', 'object_phoning', '', false, 0, 0, '', 'paddingright');
+								print '<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fa fa-phone"></i></span>
+								</div>
+								<input name="tel" class="form-control phone" id="phone" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_TEL).'">
+								</div></td></tr>';
 								print '</td></tr>'."\n";
 
 								// Fax
 								print '<tr class=""><td><label for="fax">'.$langs->trans("Fax").'</label></td><td>';
-								print img_picto('', 'object_phoning_fax', '', false, 0, 0, '', 'paddingright');
-								print '<input name="fax" class="form-control" id="fax" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_FAX).'"></td></tr>';
+								//print img_picto('', 'object_phoning_fax', '', false, 0, 0, '', 'paddingright');
+								print '<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fa fa-fax"></i></span>
+								</div>
+								<input name="fax" class="form-control phone" id="fax" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_FAX).'">
+								</div></td></tr>';
 								print '</td></tr>'."\n";
 
 								// Email
 								print '<tr class=""><td><label for="email">'.$langs->trans("EMail").'</label></td><td>';
-								print img_picto('', 'object_email', '', false, 0, 0, '', 'paddingright');
-								print '<input name="mail" id="email" class="form-control" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_MAIL).'"></td></tr>';
+								//print img_picto('', 'object_email', '', false, 0, 0, '', 'paddingright');
+								print '<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fa fa-paper-plane"></i></span>
+								</div>
+								<input name="mail" id="email" class="form-control" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_MAIL).'">
+								</div></td></tr>';
 								print '</td></tr>'."\n";
 
 								// Web
 								print '<tr class=""><td><label for="web">'.$langs->trans("Web").'</label></td><td>';
-								print img_picto('', 'globe', '', false, 0, 0, '', 'paddingright');
-								print '<input name="web" id="web" class="form-control" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_WEB).'"></td></tr>';
+								//print img_picto('', 'globe', '', false, 0, 0, '', 'paddingright');
+								print '<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="flaticon2-website"></i></span>
+								</div>
+								<input name="web" id="web" class="form-control" value="'.dol_escape_htmltag($conf->global->MAIN_INFO_SOCIETE_WEB).'">
+								</div></td></tr>';
 								print '</td></tr>'."\n";
 
 								// Barcode
@@ -479,8 +499,8 @@ print '<!--begin::Entry-->
 
 								// Logo
 								print '<tr class=""><td><label for="logo">'.$form->textwithpicto($langs->trans("Logo"), 'png, jpg').'</label></td><td>';
-								print '<div class="centpertent nobordernopadding valignmiddle "><div class="inline-block marginrightonly">';
-								print '<input type="file" class="flat minwidth200" name="logo" id="logo" accept="image/*">';
+								print '<div class="centpertent "><div class="inline-block"><div class="custom-file">';
+								print '<input type="file" class="custom-file-input" name="logo" id="logo" accept="image/*"><label class="custom-file-label" for="customFile">Choose file</label></div>';
 								print '</div>';
 								if (!empty($mysoc->logo_small)) {
 									if (file_exists($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_small)) {
@@ -496,13 +516,13 @@ print '<!--begin::Entry-->
 									    print '<img style="max-height: 80px" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.basename($imgThumbSmall)).'">';
 									    print '</div>';
 									}
-									print '<div class="inline-block valignmiddle marginrightonly"><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogo">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
+									print '<div class="inline-block valignmiddle "><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogo">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
 								} elseif (!empty($mysoc->logo)) {
 									if (file_exists($conf->mycompany->dir_output.'/logos/'.$mysoc->logo)) {
 										print '<div class="inline-block valignmiddle">';
 										print '<img style="max-height: 80px" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;file='.urlencode('logos/'.$mysoc->logo).'">';
 										print '</div>';
-										print '<div class="inline-block valignmiddle marginrightonly"><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogo">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
+										print '<div class="inline-block valignmiddle "><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogo">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
 									} else {
 										print '<div class="inline-block valignmiddle">';
 										print '<img height="80" src="'.DOL_URL_ROOT.'/public/theme/common/nophoto.png">';
@@ -514,12 +534,12 @@ print '<!--begin::Entry-->
 
 								// Logo (squarred)
 								print '<tr class=""><td><label for="logo_squarred">'.$form->textwithpicto($langs->trans("LogoSquarred"), 'png, jpg').'</label></td><td>';
-								print '<div class="centpertent nobordernopadding valignmiddle"><div class="inline-block marginrightonly">';
-								print '<input type="file" class="flat minwidth200" name="logo_squarred" id="logo_squarred" accept="image/*">';
+								print '<div class=""><div class="inline-blocks"><div class="custom-file">';
+								print '<input type="file" class="custom-file-input" name="logo_squarred" id="logo_squarred" accept="image/*"><label class="custom-file-label" for="customFile">Choose file</label></div>';
 								print '</div>';
 								if (!empty($mysoc->logo_squarred_small)) {
 									if (file_exists($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_squarred_small)) {
-										print '<div class="inline-block valignmiddle marginrightonly">';
+										print '<div class="inline-block valignmiddle">';
 										print '<img style="max-height: 80px" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.$mysoc->logo_squarred_small).'">';
 										print '</div>';
 									} elseif (!empty($mysoc->logo_squarred)) {
@@ -531,13 +551,13 @@ print '<!--begin::Entry-->
 									    print '<img style="max-height: 80px" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.basename($imgThumbSmall)).'">';
 									    print '</div>';
 									}
-									print '<div class="inline-block valignmiddle marginrightonly"><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogosquarred">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
+									print '<div class="inline-block valignmiddle "><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogosquarred">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
 								} elseif (!empty($mysoc->logo_squarred)) {
 									if (file_exists($conf->mycompany->dir_output.'/logos/'.$mysoc->logo_squarred)) {
 										print '<div class="inline-block valignmiddle">';
 										print '<img style="max-height: 80px" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;file='.urlencode('logos/'.$mysoc->logo_squarred).'">';
 										print '</div>';
-										print '<div class="inline-block valignmiddle marginrightonly"><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogosquarred">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
+										print '<div class="inline-block valignmiddle "><a class="reposition" href="'.$_SERVER["PHP_SELF"].'?action=removelogosquarred">'.img_delete($langs->trans("Delete"), '', 'marginleftonly').'</a></div>';
 									}
 									else {
 										print '<div class="inline-block valignmiddle">';
@@ -550,7 +570,7 @@ print '<!--begin::Entry-->
 
 								// Note
 								print '<tr class=""><td class="tdtop"><label for="note">'.$langs->trans("Note").'</label></td><td>';
-								print '<textarea class="form-control" name="note" id="note" rows="'.ROWS_5.'">'.(GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : $conf->global->MAIN_INFO_SOCIETE_NOTE).'</textarea></td></tr>';
+								print '<textarea class="summernote form-control" name="note" id="note" rows="'.ROWS_5.'">'.(GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : $conf->global->MAIN_INFO_SOCIETE_NOTE).'</textarea></td></tr>';
 								print '</td></tr>';
 
 								print '</tbody></table></div>';
@@ -558,9 +578,9 @@ print '<!--begin::Entry-->
 
 
 								// IDs of the company (country-specific)
-								print '<div class="table-responsive-lg">
-									<table class="table editmode">';
-								print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("CompanyIds").'</td><td>'.$langs->trans("Value").'</td></tr>';
+								print '<div class="table-responsive">
+									<table class="table editmode"><thead>';
+								print '<tr class=""><th class="titlefield">'.$langs->trans("CompanyIds").'</th><th>'.$langs->trans("Value").'</th></tr></thead><tbody>';
 
 								$langs->load("companies");
 
@@ -675,50 +695,49 @@ print '<!--begin::Entry-->
 								print '<textarea class="form-control quatrevingtpercent" name="object" id="object" rows="'.ROWS_5.'">'.(!empty($conf->global->MAIN_INFO_SOCIETE_OBJECT) ? $conf->global->MAIN_INFO_SOCIETE_OBJECT : '').'</textarea></td></tr>';
 								print '</td></tr>';
 
-								print '</table></div>';
+								print '</tbody></table></div>';
 
 
 								// Fiscal year start
-								print '<div class="table-responsive-lg">
-									<table class="table editmode">';
-								print '<tr class="liste_titre">';
-								print '<td class="titlefield">'.$langs->trans("FiscalYearInformation").'</td><td>'.$langs->trans("Value").'</td>';
-								print "</tr>\n";
+								print '<div class="table-responsive">
+									<table class="table editmode"><thead>';
+								print '<tr class="">';
+								print '<th class="titlefield">'.$langs->trans("FiscalYearInformation").'</th><th>'.$langs->trans("Value").'</th>';
+								print "</tr></thead><tbody>\n";
 
 								print '<tr class=""><td><label for="SOCIETE_FISCAL_MONTH_START">'.$langs->trans("FiscalMonthStart").'</label></td><td>';
-								print $formother->select_month($conf->global->SOCIETE_FISCAL_MONTH_START, 'SOCIETE_FISCAL_MONTH_START', 0, 1, 'maxwidth100').'</td></tr>';
+								print $formother->select_month($conf->global->SOCIETE_FISCAL_MONTH_START, 'SOCIETE_FISCAL_MONTH_START', 0, 1, 'form-control').'</td></tr>';
 
-								print "</table></div>";
+								print "</tbody></table></div>";
 								print '<br>';
 
 
 								// Sales taxes (VAT, IRPF, ...)
 								print load_fiche_titre($langs->trans("TypeOfSaleTaxes"), '', 'object_payment');
 
-								print '<div class="table-responsive-lg">
-									<table class="table editmode">';
-								print '<tr class="liste_titre">';
-								print '<td width="25%">'.$langs->trans("VATManagement").'</td><td>'.$langs->trans("Description").'</td>';
-								print '<td class="right">&nbsp;</td>';
-								print "</tr>\n";
+								print '<div class="table-responsive">
+									<table class="table editmode"><thead>';
+								print '<tr class="">';
+								print '<th width="25%">'.$langs->trans("VATManagement").'</th><th>'.$langs->trans("Description").'</th>';
+								print '<th class="right">&nbsp;</th>';
+								print "</tr></thead><tbody>\n";
 
 								// Main tax
-								print '<tr class=""><td width="140"><label><input type="radio" name="optiontva" id="use_vat" value="1"'.(empty($conf->global->FACTURE_TVAOPTION) ? "" : " checked")."> ".$langs->trans("VATIsUsed")."</label></td>";
+								print '<tr class=""><td width="140"><label class="option"><span class="option-control"><span class="radio radio-outline"><input type="radio" name="optiontva" id="use_vat" value="1"'.(empty($conf->global->FACTURE_TVAOPTION) ? "" : " checked")."><span></span></span></span><span class='option-label'> ".$langs->trans("VATIsUsed")."</span></label></td>";
 								print '<td colspan="2">';
 								$tooltiphelp = '';
 								if ($mysoc->country_code == 'FR') $tooltiphelp = '<i>'.$langs->trans("Example").': '.$langs->trans("VATIsUsedExampleFR")."</i>";
-								print "<label for=\"use_vat\">".$form->textwithpicto($langs->trans("VATIsUsedDesc"), $tooltiphelp)."</label>";
+								print "<label class='option' for='use_vat'><span class='option-label'>".$form->textwithpicto($langs->trans("VATIsUsedDesc"), $tooltiphelp)."</span></label>";
 								print "</td></tr>\n";
 
-
-								print '<tr class=""><td width="140"><label><input type="radio" name="optiontva" id="no_vat" value="0"'.(empty($conf->global->FACTURE_TVAOPTION) ? " checked" : "")."> ".$langs->trans("VATIsNotUsed")."</label></td>";
+								print '<tr class=""><td width="140"><label class="option"><span class="option-control"><span class="radio radio-outline"><input type="radio" name="optiontva" id="no_vat" value="0"'.(empty($conf->global->FACTURE_TVAOPTION) ? "" : " checked")."><span></span></span></span><span class='option-label'> ".$langs->trans("VATIsNotUsed")."</span></label></td>";
 								print '<td colspan="2">';
 								$tooltiphelp = '';
 								if ($mysoc->country_code == 'FR') $tooltiphelp = "<i>".$langs->trans("Example").': '.$langs->trans("VATIsNotUsedExampleFR")."</i>\n";
-								print "<label for=\"no_vat\">".$form->textwithpicto($langs->trans("VATIsNotUsedDesc"), $tooltiphelp)."</label>";
+								print "<label class='option' for='no_vat'><span class='option-label'>".$form->textwithpicto($langs->trans("VATIsNotUsedDesc"), $tooltiphelp)."</span></label>";
 								print "</td></tr>\n";
 
-								print "</table></div>";
+								print "</tbody></table></div>";
 
 								// Second tax
 								print '<div class="table-responsive-lg">
@@ -855,6 +874,10 @@ print '<!--begin::Entry-->
 
 // End of page
 llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/summernote.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/jquery-mask.js?v=7.2.0"></script>';
 
 print "	</body>\n";
 print "</html>\n";

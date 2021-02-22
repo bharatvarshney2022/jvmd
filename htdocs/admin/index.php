@@ -40,10 +40,10 @@ $hookmanager->initHooks(array('homesetup'));
 $form = new Form($db);
 
 $wikihelp = 'EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
-llxHeader('', $langs->trans("Setup"), $wikihelp);
+llxHeaderLayout('', $langs->trans("Setup"), $langs->trans("SetupArea"), $wikihelp);
 
 
-print load_fiche_titre($langs->trans("SetupArea"), '', 'tools');
+//print load_fiche_titre($langs->trans("SetupArea"), '', 'tools');
 
 if (!empty($conf->global->MAIN_MOTD_SETUPPAGE))
 {
@@ -67,55 +67,82 @@ if (!empty($conf->global->MAIN_MOTD_SETUPPAGE))
 	}
 }
 
-print '<span class="opacitymedium hideonsmartphone">';
-print $langs->trans("SetupDescription1").' ';
-print $langs->trans("AreaForAdminOnly").' ';
-print $langs->trans("SetupDescription2", $langs->transnoentities("MenuCompanySetup"), $langs->transnoentities("Modules"));
-print "<br><br>";
-print '</span>';
+print '<!--begin::Entry-->
+		<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<!--begin::Card-->
+						<div class="card card-custom gutter-b example example-compact">
+							<div class="card-header">
+								<h3 class="card-title">'.$langs->trans("SetupArea").'</h3>
+								<div class="card-toolbar">
+								</div>
+							</div>
+							<div class="card-body">';
 
-print '<br>';
+								print '<p class="">';
+								print $langs->trans("SetupDescription1").' ';
+								print $langs->trans("AreaForAdminOnly").' ';
+								print $langs->trans("SetupDescription2", $langs->transnoentities("MenuCompanySetup"), $langs->transnoentities("Modules"));
+								print '</p>';
 
-// Show info setup company
-if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY)) $setupcompanynotcomplete = 1;
-print img_picto('', 'puce').' '.$langs->trans("SetupDescription3", DOL_URL_ROOT.'/admin/company.php?mainmenu=home'.(empty($setupcompanynotcomplete) ? '' : '&action=edit'), $langs->transnoentities("Setup"), $langs->transnoentities("MenuCompanySetup"));
-if (!empty($setupcompanynotcomplete))
-{
-	$langs->load("errors");
-	$warnpicto = img_warning($langs->trans("WarningMandatorySetupNotComplete"), 'style="padding-right: 6px;"');
-	print '<br><div class="warning"><a href="'.DOL_URL_ROOT.'/admin/company.php?mainmenu=home'.(empty($setupcompanynotcomplete) ? '' : '&action=edit').'">'.$warnpicto.$langs->trans("WarningMandatorySetupNotComplete").'</a></div>';
-}
-print '<br>';
-print '<br>';
-print '<br>';
+								print '<br><br>';
 
-// Show info setup module
-print img_picto('', 'puce').' '.$langs->trans("SetupDescription4", DOL_URL_ROOT.'/admin/modules.php?mainmenu=home', $langs->transnoentities("Setup"), $langs->transnoentities("Modules"));
-if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING) ? 1 : $conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
-{
-	$langs->load("errors");
-	$warnpicto = img_warning($langs->trans("WarningEnableYourModulesApplications"), 'style="padding-right: 6px;"');
-	print '<br><div class="warning"><a href="'.DOL_URL_ROOT.'/admin/modules.php?mainmenu=home">'.$warnpicto.$langs->trans("WarningEnableYourModulesApplications").'</a></div>';
-}
-print '<br>';
-print '<br>';
-print '<br>';
-print '<br>';
+								// Show info setup company
+								if (empty($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_INFO_SOCIETE_COUNTRY)) $setupcompanynotcomplete = 1;
+								print $langs->trans("SetupDescription3", DOL_URL_ROOT.'/admin/company.php?mainmenu=home'.(empty($setupcompanynotcomplete) ? '' : '&action=edit'), $langs->transnoentities("Setup"), $langs->transnoentities("MenuCompanySetup"));
+								if (!empty($setupcompanynotcomplete))
+								{
+									$langs->load("errors");
+									$warnpicto = img_warning($langs->trans("WarningMandatorySetupNotComplete"), 'style="padding-right: 6px;"');
+									print '<br><div class="warning"><a href="'.DOL_URL_ROOT.'/admin/company.php?mainmenu=home'.(empty($setupcompanynotcomplete) ? '' : '&action=edit').'">'.$warnpicto.$langs->trans("WarningMandatorySetupNotComplete").'</a></div>';
+								}
+								print '<br>';
+								print '<br>';
+								print '<br>';
 
-// Add hook to add information
-$parameters = array();
-$reshook = $hookmanager->executeHooks('addHomeSetup', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
-print $hookmanager->resPrint;
-if (empty($reshook))
-{
-	// Show into other
-	print '<span class="opacitymedium">'.$langs->trans("SetupDescription5")."</span><br>";
-	print "<br>";
+								// Show info setup module
+								print ' '.$langs->trans("SetupDescription4", DOL_URL_ROOT.'/admin/modules.php?mainmenu=home', $langs->transnoentities("Setup"), $langs->transnoentities("Modules"));
+								if (count($conf->modules) <= (empty($conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING) ? 1 : $conf->global->MAIN_MIN_NB_ENABLED_MODULE_FOR_WARNING))	// If only user module enabled
+								{
+									$langs->load("errors");
+									$warnpicto = img_warning($langs->trans("WarningEnableYourModulesApplications"), 'style="padding-right: 6px;"');
+									print '<br><div class="warning"><a href="'.DOL_URL_ROOT.'/admin/modules.php?mainmenu=home">'.$warnpicto.$langs->trans("WarningEnableYourModulesApplications").'</a></div>';
+								}
+								print '<br>';
+								print '<br>';
 
-	// Show logo
-	print '<div class="center"><div class="logo_setup"></div></div>';
-}
+								// Add hook to add information
+								$parameters = array();
+								$reshook = $hookmanager->executeHooks('addHomeSetup', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
+								//print $hookmanager->resPrint;
+								if (empty($reshook))
+								{
+									// Show into other
+									print '<span class="">'.$langs->trans("SetupDescription5")."</span><br>";
+									print "<br>";
+
+									// Show logo
+									print '<div class="center"><div class="logo_setup"></div></div>';
+								}
+
+							print '</div>
+								<div class="card-footer">
+									<div class="row">
+										<div class="col-lg-2"></div>
+										<div class="col-lg-10">
+											
+										</div>
+									</div>
+								</div>';
 
 // End of page
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

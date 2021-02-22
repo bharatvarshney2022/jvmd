@@ -1171,14 +1171,14 @@ Delays_MAIN_DELAY_MEMBERS=Delayed membership fee
 Delays_MAIN_DELAY_CHEQUES_TO_DEPOSIT=Check deposit not done
 Delays_MAIN_DELAY_EXPENSEREPORTS=Expense report to approve
 Delays_MAIN_DELAY_HOLIDAYS=Leave requests to approve
-SetupDescription1=Before starting to use Dolibarr some initial parameters must be defined and modules enabled/configured.
+SetupDescription1=Before starting to use JMVD Group ERP some initial parameters must be defined and modules enabled/configured.
 SetupDescription2=The following two sections are mandatory (the two first entries in the Setup menu):
-SetupDescription3=<a href="%s">%s -> %s</a><br><br>Basic parameters used to customize the default behavior of your application (e.g for country-related features).
-SetupDescription4=<a href="%s">%s -> %s</a><br><br>This software is a suite of many modules/applications. The modules related to your needs must be enabled and configured. Menu entries will appears with the activation of these modules.
+SetupDescription3=<a class="btn btn-primary" href="%s">%s -> %s</a><br><br>Basic parameters used to customize the default behavior of your application (e.g for country-related features).
+SetupDescription4=<a class="btn btn-primary" href="%s">%s -> %s</a>
 SetupDescription5=Other Setup menu entries manage optional parameters.
 LogEvents=Security audit events
 Audit=Audit
-InfoDolibarr=About Dolibarr
+InfoDolibarr=About JMVD Group
 InfoBrowser=About Browser
 InfoOS=About OS
 InfoWebServer=About Web Server
@@ -1188,7 +1188,7 @@ InfoPerf=About Performances
 InfoSecurity=About Security
 BrowserName=Browser name
 BrowserOS=Browser OS
-ListOfSecurityEvents=List of Dolibarr security events
+ListOfSecurityEvents=List of JMVD Group security events
 SecurityEventsPurged=Security events purged
 LogEventDesc=Enable logging for specific security events. Administrators the log via menu <b>%s - %s</b>. Warning, this feature can generate a large amount of data in the database.
 AreaForAdminOnly=Setup parameters can be set by <b>administrator users</b> only.
