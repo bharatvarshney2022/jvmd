@@ -536,12 +536,12 @@ if ($resql)
 	$params = array();
 	if ($type === "") $params['forcenohideoftext'] = 1;
 	if ($type === "") {
-		$newcardbutton .= dolGetButtonTitleLayout($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm, $params);
+		$newcardbutton .= dolGetButtonTitleLayout($langs->trans('NewProduct'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type=0', '', $perm);
 		$type = Product::TYPE_SERVICE;
 	}
 	$label = 'NewProduct';
 	if ($type == Product::TYPE_SERVICE) $label = 'NewService';
-	$newcardbutton .= dolGetButtonTitleLayout($langs->trans($label), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type='.$type, '', $perm, $params);
+	//$newcardbutton .= dolGetButtonTitleLayout($langs->trans($label), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create&type='.$type, '', $perm, $params);
 
 	$type = $oldtype;
 
@@ -589,7 +589,7 @@ if ($resql)
 
 											<div class="card-body">
 												<div class="row mb-6">
-													<div class="col-lg-12 text-mb-lg-0 mb-6">
+													<div class="col-lg-12 text-right mb-lg-0 mb-6">
 														'.$newcardbutton.'
 													</div>
 												</div>
