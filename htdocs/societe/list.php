@@ -18,7 +18,7 @@
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This program is distributed in the hope thaft it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -702,7 +702,7 @@ print '<!--begin::Entry-->
 														</div>
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>Alias Name:</label>
-															<input type="text" name="search_alias" class="form-control datatable-input" placeholder="ACustomer lias" data-col-index="1" />
+															<input type="text" name="search_alias" class="form-control datatable-input" placeholder="Customer Alias" data-col-index="1" />
 														</div>
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>Customer Code:</label>
@@ -750,7 +750,7 @@ print '<!--begin::Entry-->
 																<span>Search</span>
 															</span>
 														</button>&#160;&#160; 
-														<button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+														<button class="btn btn-secondary btn-secondary--icon button_removefilter" name="button_removefilter_x" value="x" id="kt_reset">
 															<span>
 																<i class="la la-close"></i>
 																<span>Reset</span>
@@ -759,6 +759,8 @@ print '<!--begin::Entry-->
 													</div>
 												</div>
 										</div>';
+
+										$picto = '';
 
 										print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 

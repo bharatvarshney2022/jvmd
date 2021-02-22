@@ -1208,10 +1208,10 @@ class Project extends CommonObject
 		global $langs;
 
 		$statustrans = array(
-			0 => 'status0',
-			1 => 'status4',
-			2 => 'status6',
-			3 => 'status6',
+			0 => 'btn-info', //Draft
+			1 => 'btn-success', // Active
+			2 => 'btn-danger', // Close
+			3 => 'btn-warning', // Reject
 		);
 
 		$statusClass = 'status0';
@@ -1219,7 +1219,24 @@ class Project extends CommonObject
 			$statusClass = $statustrans[$status];
 		}
 
-		return dolGetStatus($langs->trans($this->statuts_long[$status]), $langs->trans($this->statuts_short[$status]), '', $statusClass, $mode);
+		if($status == 1)
+		{
+			$status = "Active";
+		}
+		else if($status == 2)
+		{
+			$status = "Close";
+		}
+		else if($status == 3)
+		{
+			$status = "Rejected";
+		}
+		else if($status == 0)
+		{
+			$status = "Open";//Draft";
+		}
+
+		return '<span class="btn '.$statusClass.'">'.$status.'</span>';//dolGetStatus($langs->trans($this->statuts_long[$status]), $langs->trans($this->statuts_short[$status]), '', $statusClass, $mode);
 	}
 
 	/**

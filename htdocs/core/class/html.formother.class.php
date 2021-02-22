@@ -1012,7 +1012,7 @@ class FormOther
 		$min_year = $currentyear - $min_year;
 		if (empty($selected) && empty($useempty)) $selected = $currentyear;
 
-		$out .= '<select class="flat'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'"'.$option.' >';
+		$out .= '<select class="form-control'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'"'.$option.' >';
 		if ($useempty)
 		{
 			$selected_html = '';
