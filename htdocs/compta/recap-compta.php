@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2017 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * 
  * Copyright (C) 2017      Pierre-Henry Favre   <support@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2017  Laurent Destailleur <eldy@users.sourceforge.net>
+/* 
  * Copyright (C) 2020  Lenin Rivas		   <lenin@leninrivas.com>
  * 
  *

@@ -1,7 +1,7 @@
 <?php
 /* 
  * Copyright (C) 2018-2019  Nicolas ZABOURI         <info@inovea-conseil.com>
- * Copyright (C) 2019-2020  Frédéric France         <frederic.france@netlogic.fr>
+ * 
  * 
  *
  * This program is free software; you can redistribute it and/or modify

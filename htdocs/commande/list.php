@@ -8,7 +8,7 @@
  * Copyright (C) 2013       Cédric Salvador         <csalvador@gpcsolutions.fr>
  * Copyright (C) 2015-2018  Frédéric France         <frederic.france@netlogic.fr>
  * Copyright (C) 2015       Marcos García           <marcosgdf@gmail.com>
- * Copyright (C) 2015       Jean-François Ferry     <jfefe@aternatik.fr>
+ * 
  * Copyright (C) 2016       Ferran Marcet           <fmarcet@2byte.es>
  * Copyright (C) 2018       Charlene Benke	        <charlie@patas-monkey.com>
  *

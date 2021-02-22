@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2015  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2014  Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2014-2016  Charlie BENKE           <charlie@patas-monkey.com>
- * Copyright (C) 2015       Jean-François Ferry     <jfefe@aternatik.fr>
+ * 
  * Copyright (C) 2019       Pierre Ardoin           <mapiolca@me.com>
  * 
  * Copyright (C) 2019       Nicolas ZABOURI         <info@inovea-conseil.com>
