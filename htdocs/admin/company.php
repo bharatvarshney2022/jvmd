@@ -499,7 +499,7 @@ print '<!--begin::Entry-->
 
 								// Logo
 								print '<tr class=""><td><label for="logo">'.$form->textwithpicto($langs->trans("Logo"), 'png, jpg').'</label></td><td>';
-								print '<div class="centpertent "><div class="inline-block"><div class="custom-file">';
+								print '<div class=" "><div class="inline-block"><div class="custom-file">';
 								print '<input type="file" class="custom-file-input" name="logo" id="logo" accept="image/*"><label class="custom-file-label" for="customFile">Choose file</label></div>';
 								print '</div>';
 								if (!empty($mysoc->logo_small)) {
@@ -534,7 +534,7 @@ print '<!--begin::Entry-->
 
 								// Logo (squarred)
 								print '<tr class=""><td><label for="logo_squarred">'.$form->textwithpicto($langs->trans("LogoSquarred"), 'png, jpg').'</label></td><td>';
-								print '<div class=""><div class="inline-blocks"><div class="custom-file">';
+								print '<div class=" "><div class="inline-block"><div class="custom-file">';
 								print '<input type="file" class="custom-file-input" name="logo_squarred" id="logo_squarred" accept="image/*"><label class="custom-file-label" for="customFile">Choose file</label></div>';
 								print '</div>';
 								if (!empty($mysoc->logo_squarred_small)) {
