@@ -28,7 +28,16 @@ if (!empty($extrafieldsobjectkey))	// $extrafieldsobject is the $object->table_e
 
 				print '<div class="col-lg-3 mb-lg-0 mb-6 '.($align ? ' '.$align : '').'">';
 
-				print '<label>Status:</label>';
+				$labelRow = '';
+				if($key == "fk_call_source")
+				{
+					$labelRow = 'Source of Call';
+				}
+				else if($key == "fk_service_type")
+				{
+					$labelRow = 'Service Type';
+				}
+				print '<label>'.$labelRow.'</label>';
 				$tmpkey = preg_replace('/'.$search_options_pattern.'/', '', $key);
 				if (in_array($typeofextrafield, array('varchar', 'int', 'double')) && empty($extrafields->attributes[$extrafieldsobjectkey]['computed'][$key]))
 				{

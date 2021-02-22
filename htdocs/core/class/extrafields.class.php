@@ -1189,20 +1189,20 @@ class ExtraFields
 			} elseif ($type == 'datetime' || $type == 'link') {
 				$morecss = 'minwidth200imp';
 			} elseif (in_array($type, array('int', 'integer', 'double', 'price'))) {
-				$morecss = 'maxwidth75';
+				$morecss = '';
 			} elseif ($type == 'password') {
-				$morecss = 'maxwidth100';
+				$morecss = '';
 			} elseif ($type == 'url') {
-				$morecss = 'minwidth400';
+				$morecss = '';
 			} elseif ($type == 'boolean') {
 				$morecss = '';
 			} else {
 				if (empty($size) || round($size) < 12) {
-					$morecss = 'minwidth100';
+					$morecss = '';
 				} elseif (round($size) <= 48) {
-					$morecss = 'minwidth200';
+					$morecss = '';
 				} else {
-					$morecss = 'minwidth400';
+					$morecss = '';
 				}
 			}
 		}
