@@ -604,9 +604,7 @@ if ($resql)
 														</div>
 													</div>
 													<div class="row mb-8">
-														<div class="col-lg-3 mb-lg-0 mb-6">
-															<label>Status:</label>
-														</div>';
+														';
 
 														// Extra fields
 														include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input_layout.tpl.php';
