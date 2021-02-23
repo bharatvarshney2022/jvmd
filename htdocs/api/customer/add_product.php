@@ -57,8 +57,7 @@
 		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
-		echo $newCustomerProduct;
-
+		
 		// Image Upload
 		if (!empty($_FILES))
 		{
@@ -79,21 +78,17 @@
 				}
 			}
 
-			echo $error; exit;
-
 			if (!$error)
 			{
 				// Define if we have to generate thumbs or not
 				$generatethumbs = 1;
-				if (GETPOST('section_dir', 'alpha')) $generatethumbs = 0;
-				$allowoverwrite = (GETPOST('overwritefile', 'int') ? 1 : 0);
+				$allowoverwrite = 0;
 
-				if (!empty($upload_dirold) && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+				$upload_dir = $conf->product_customer->multidir_output[$objectPro->entity]."/".$newCustomerProduct;
+				
+				if (!empty($upload_dir))
 				{
-					$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
-				} elseif (!empty($upload_dir))
-				{
-					$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
+					$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'product_images', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $objectPro);
 				}
 			}
 		}
