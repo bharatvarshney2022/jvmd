@@ -22,6 +22,7 @@
 	{
 		$sql1 .= " AND fk_family = '".(int)$sub_category_id."'";
 	}
+	echo $sql1;
 	$resql1 = $db->query($sql1);
 	
 	if($resql1)

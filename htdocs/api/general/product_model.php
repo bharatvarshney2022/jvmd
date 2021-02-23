@@ -25,7 +25,7 @@
 	}
 	if($sub_category_id > 0)
 	{
-		$sql1 .= " AND fk_family = '".(int)$sub_category_id."'";
+		$sql1 .= " AND fk_subfamily = '".(int)$sub_category_id."'";
 	}
 	$resql1 = $db->query($sql1);
 	
