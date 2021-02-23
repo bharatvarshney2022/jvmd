@@ -859,7 +859,7 @@ class ExtraFields
 		// phpcs:enable
 		global $conf;
 
-		if (empty($elementtype)) return array();
+		if (empty($elementtype) || $elementtype == "user") return array();
 
 		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
 		if ($elementtype == 'contact')        $elementtype = 'socpeople';
@@ -874,6 +874,7 @@ class ExtraFields
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
 		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
 		$sql .= " ORDER BY pos";
+
 
 		$resql = $this->db->query($sql);
 		if ($resql)
