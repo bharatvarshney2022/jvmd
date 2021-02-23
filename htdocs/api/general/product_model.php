@@ -11,12 +11,17 @@
 	$json = $brandData = array();
 
 	$brand_id = GETPOST('brand_id', 'int');
+	$category_id = GETPOST('category_id', 'int');
 	$sub_category_id = GETPOST('sub_category_id', 'int');
 
-	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_sub_family WHERE active = '1'";
+	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_model WHERE active = '1'";
 	if($brand_id > 0)
 	{
 		$sql1 .= " AND fk_brand = '".(int)$brand_id."'";
+	}
+	if($category_id > 0)
+	{
+		$sql1 .= " AND fk_family = '".(int)$category_id."'";
 	}
 	if($sub_category_id > 0)
 	{
