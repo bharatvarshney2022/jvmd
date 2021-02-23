@@ -7,11 +7,16 @@
 	if (! defined("NOLOGIN"))        define("NOLOGIN", '1');				// If this page is public (can be called outside logged session)
 
 	require '../../main.inc.php';
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	
 	$json = $brandData = array();
 
-	$brand_id = GETPOST('brand_id', 'int');
-	$sub_category_id = GETPOST('sub_category_id', 'int');
+	$brand_name = GETPOST('brand_id', 'alpha');
+	$sub_category_name = GETPOST('sub_category_id', 'alpha');
+
+	$objectPro1 = new Product($db);
+	$brand_id = $objectPro1->getBrandByName($brand_name);
+	$sub_category_id = $objectPro1->getCategoryByName($sub_category_name);
 
 	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_subfamily WHERE active = '1'";
 	if($brand_id > 0)
