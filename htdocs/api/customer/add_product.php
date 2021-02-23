@@ -9,17 +9,17 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	$brand_id = GETPOST('brand_id', 'int');
 	$category_id = GETPOST('category_id', 'int');
 	$sub_category_id = GETPOST('sub_category_id', 'int');
 	$model_id = GETPOST('model_id', 'int');
+	$product_id = GETPOST('product_id', 'int');
 	$capacity = GETPOST('capacity', 'alpha');
 	$product_image = $_FILES['image'];
 
-	echo '<pre>'; print_r($product_image); exit;
-	
 	$json = array();
 	
 	$object = new Contact($db);
@@ -29,10 +29,31 @@
 
 	if($userExists)
 	{
+		$objectPro = new Product($db);
+		$userRow->id = 1;
+
+		// Component No
+		$component_no = '1900000';
+		$sqlcomponent_no = "SELECT MAX(component_no) as max";
+		$sqlcomponent_no .= " FROM ".MAIN_DB_PREFIX."product_customer";
+		$sqlcomponent_no .= " WHERE component_no != '' ";
+		$resqlcomponent_no = $db->query($sqlcomponent_no);
+		if ($resqlcomponent_no)
+		{
+			$objcomponent_no = $db->fetch_object($resqlcomponent_no);
+			$component_no = intval($objcomponent_no->max)+1;
+		}else{
+			$component_no = $component_no+1;
+		}
+
+		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
+
+		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
+
 		$status_code = '1';
-		$message = 'Customer Dashboard';
-		
-		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $userExists, 'slider' => $slider);
+		$message = 'Product added successfully.';
+
+		$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => $newCustomerProduct);
 	}
 	else
 	{
