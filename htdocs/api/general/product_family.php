@@ -7,30 +7,34 @@
 	if (! defined("NOLOGIN"))        define("NOLOGIN", '1');				// If this page is public (can be called outside logged session)
 
 	require '../../main.inc.php';
-
-	$temp_user_id = GETPOST('temp_user_id', 'int');
 	
 	$json = $brandData = array();
 
-	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_brands WHERE active = '1'";
+	$brand_id = GETPOST('brand_id', 'int');
+
+	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_family WHERE active = '1'";
+	if($brand_id > 0)
+	{
+		$sql1 .= " AND fk_brand = '".(int)$brand_id."'";
+	}
 	$resql1 = $db->query($sql1);
 	
 	if($resql1)
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData[] = array('brand_id' => $row['rowid'], 'brand_name' => $row['nom']);
+			$brandData[] = array('category_id' => $row['rowid'], 'category_name' => $row['nom']);
 		}
 
 		$status_code = '1';
-		$message = 'Brand Listing';
+		$message = 'Product Family Listing';
 			
-		$json = array('status_code' => $status_code, 'message' => $message, 'brand_data' => $brandData);
+		$json = array('status_code' => $status_code, 'message' => $message, 'category_data' => $brandData);
 	}
 	else
 	{
 		$status_code = '0';
-		$message = 'No Brand data exists';
+		$message = 'No Product Family data exists';
 			
 		$json = array('status_code' => $status_code, 'message' => $message, 'zip_data' => $brandData);
 	}
