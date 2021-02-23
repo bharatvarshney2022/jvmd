@@ -89,7 +89,7 @@ print '<tr><td>';
 print $langs->trans("User").':</td><td><input class="flat inputsearch" type="text" name="search_user" size="18"></td></tr>';
 
 // Search Group
-if ($canreadperms)
+if ($canreadperms && $user_group_id != '17')
 {
 	print '<tr><td>';
 	print $langs->trans("Group").':</td><td><input class="flat inputsearch" type="text" name="search_group" size="18"></td></tr>';
