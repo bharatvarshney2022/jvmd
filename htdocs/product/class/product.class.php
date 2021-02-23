@@ -5823,6 +5823,7 @@ class Product extends CommonObject
 					$sql .= ", 1";
 				}
 				$sql .= ")";
+				echo $sql; exit;
 				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 				$result = $this->db->query($sql);
 				if ($result) {
