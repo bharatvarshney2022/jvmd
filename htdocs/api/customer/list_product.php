@@ -36,9 +36,9 @@
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 
-		$result = $this->db->query($sql);
+		$result = $db->query($sql);
 		if ($result) {
-			$num = $this->db->num_rows($result);
+			$num = $db->num_rows($result);
 
 			$status_code = '1';
 			$message = 'Product listing.';
@@ -47,7 +47,7 @@
 			$producttmp = new Product($db);
 
 			while ($i < $num) {
-				$obj = $this->db->fetch_object($result);
+				$obj = $db->fetch_object($result);
 				
 				$producttmp->fetch($obj->fk_product);
 
