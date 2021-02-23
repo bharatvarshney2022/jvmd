@@ -16,7 +16,7 @@
 	$sub_category_id = GETPOST('sub_category_id', 'int');
 	$model_id = GETPOST('model_id', 'int');
 	$capacity = GETPOST('capacity', 'alpha');
-	$product_image = GETPOST('image[]', 'alpha');
+	$product_image = GETPOST('image', 'alpha');
 
 	echo '<pre>'; print_r($product_image); exit;
 	
