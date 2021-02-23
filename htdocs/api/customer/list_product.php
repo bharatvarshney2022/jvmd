@@ -7,40 +7,37 @@
 	if (! defined("NOLOGIN"))        define("NOLOGIN", '1');				// If this page is public (can be called outside logged session)
 
 	require '../../main.inc.php';
+	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 	
-	$json = $brandData = array();
+	$user_id = GETPOST('user_id', 'int');
 
-	$brand_name = GETPOST('brand_id', 'alpha');
+	global $db, $user, $conf, $langs;
+
+	$json = array();
 	
-	$objectPro1 = new Product($db);
-	$brand_id = $objectPro1->getBrandByName($brand_name);
+	$object = new Contact($db);
+	
+	$userExists = $object->fetch($user_id);
+	$societeProductData = array();
 
-	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_family WHERE active = '1'";
-	if($brand_id > 0)
+	if($userExists)
 	{
-		$sql1 .= " AND fk_brand = '".(int)$brand_id."'";
-	}
-	$resql1 = $db->query($sql1);
-	
-	if($resql1)
-	{
-		while($row = $db->fetch_array($resql1))
-		{
-			$brandData[] = array('category_id' => $row['rowid'], 'category_name' => $row['nom']);
-		}
-
 		$status_code = '1';
-		$message = 'Product Family Listing';
-			
-		$json = array('status_code' => $status_code, 'message' => $message, 'category_data' => $brandData);
+		$message = 'Product added successfully.';
+
+		$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
 	}
 	else
 	{
 		$status_code = '0';
-		$message = 'No Product Family data exists';
-			
-		$json = array('status_code' => $status_code, 'message' => $message, 'category_data' => $brandData);
+		$message = 'Sorry! customer not exists!!';
+		
+		$json = array('status_code' => $status_code, 'message' => $message);
 	}
 	
 	$headers = 'Content-type: application/json';
