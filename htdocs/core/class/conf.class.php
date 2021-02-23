@@ -346,8 +346,8 @@ class Conf
 		$this->mycompany->dir_output = $rootfordata."/mycompany";
 		$this->mycompany->dir_temp = $rootfortemp."/mycompany/temp";
 
-		$this->product_customer->multidir_output = $rootfordata."/product_customer";
-		$this->product_customer->dir_temp = $rootfortemp."/product_customer/temp";
+		$this->global->PRODUCT_CUSTOMER_MULTIDIR = $rootfordata."/product_customer";
+		$this->global->PRODUCT_CUSTOMER_DIR_TEMP = $rootfortemp."/product_customer/temp";
 
 		// For admin storage
 		$this->admin->dir_output = $rootfordata.'/admin';

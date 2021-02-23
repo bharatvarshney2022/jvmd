@@ -84,7 +84,7 @@
 				$generatethumbs = 1;
 				$allowoverwrite = 0;
 
-				$upload_dir = $conf->product_customer->multidir_output[$objectPro->entity]."/".$newCustomerProduct;
+				$upload_dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR."/".$newCustomerProduct;
 				
 				if (!empty($upload_dir))
 				{
