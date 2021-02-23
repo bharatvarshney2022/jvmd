@@ -12,20 +12,20 @@
 	$json = $brandData = array();
 
 	$brand_name = GETPOST('brand_id', 'alpha');
-	$sub_category_name = GETPOST('sub_category_id', 'alpha');
+	$category_name = GETPOST('category_id', 'alpha');
 
 	$objectPro1 = new Product($db);
 	$brand_id = $objectPro1->getBrandByName($brand_name);
-	$sub_category_id = $objectPro1->getCategoryByName($sub_category_name);
+	$category_id = $objectPro1->getCategoryByName($category_name);
 
 	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_subfamily WHERE active = '1'";
 	if($brand_id > 0)
 	{
 		$sql1 .= " AND fk_brand = '".(int)$brand_id."'";
 	}
-	if($sub_category_id > 0)
+	if($category_id > 0)
 	{
-		$sql1 .= " AND fk_family = '".(int)$sub_category_id."'";
+		$sql1 .= " AND fk_family = '".(int)$category_id."'";
 	}
 	$resql1 = $db->query($sql1);
 	
