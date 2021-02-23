@@ -57,9 +57,10 @@
 		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
+		echo $newCustomerProduct; exit;
 
 		// Image Upload
-		if (!empty($_FILES))
+		/*if (!empty($_FILES))
 		{
 			if (is_array($_FILES['image']['tmp_name'])) $images = $_FILES['image']['tmp_name'];
 			else $images = array($_FILES['image']['tmp_name']);
@@ -92,7 +93,7 @@
 					$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
 				}
 			}
-		}
+		}*/
 
 		$status_code = '1';
 		$message = 'Product added successfully.';
