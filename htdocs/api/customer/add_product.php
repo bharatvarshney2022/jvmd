@@ -109,7 +109,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Something went wrong. Please try again.';
+			$message = 'Please choose all required field and try again.';
 
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}

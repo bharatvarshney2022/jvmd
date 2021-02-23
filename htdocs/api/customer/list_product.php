@@ -33,20 +33,21 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sf on p.fk_subcategory = sf.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid";
 		
-		$sql .= " WHERE p.fk_soc = ".$user_id;
+		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 
-		$result = $db->query($sql);
+		$result = $this->db->query($sql);
 		if ($result) {
-			$num = $db->num_rows($result);
+			$num = $this->db->num_rows($result);
 
 			$status_code = '1';
 			$message = 'Product listing.';
 
 			$i = 0;
+			$producttmp = new Product($db);
 
 			while ($i < $num) {
-				$obj = $db->fetch_object($result);
+				$obj = $this->db->fetch_object($result);
 				
 				$producttmp->fetch($obj->fk_product);
 
