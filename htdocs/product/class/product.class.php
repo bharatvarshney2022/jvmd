@@ -5750,15 +5750,15 @@ class Product extends CommonObject
 	{
 		$now = dol_now();
 		$entity = 1;
-		$sql = "SELECT count(*) as nb";
+		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
 		$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
 		$sql .= " AND fk_model = '".$this->db->escape($post['fk_model'])."'";
 
 		$result = $this->db->query($sql);
 		if ($result) {
-			$obj = $this->db->fetch_object($result);
-			if ($obj->nb == 0) {
+			$obj = $this->db->num_rows($result);
+			if ($obj == 0) {
 				// Produit non deja existant
 				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer (";
 				$sql .= "datec";
@@ -5793,6 +5793,11 @@ class Product extends CommonObject
 					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
 					return $id;
 				}
+			}
+			else
+			{
+				$data = $this->db->fetch_object($result);
+				return $data->rowid;
 			}
 		}
 	}	
