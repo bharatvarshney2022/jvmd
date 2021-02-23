@@ -33,7 +33,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sf on p.fk_subcategory = sf.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid";
 		
-		$sql .= " WHERE p.fk_soc = ".$object->id;
+		$sql .= " WHERE p.fk_soc = ".$user_id;
 		$sql .= " ORDER BY p.datec DESC";
 
 		$result = $db->query($sql);
