@@ -57,12 +57,24 @@ $hookmanager->initHooks(array('userhome'));
 /*
  * View
  */
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
 
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
 llxHeader();
 
-
-print load_fiche_titre($langs->trans("MenuUsersAndGroups"), '', 'user');
-
+if($user_group_id == '17'){
+	print load_fiche_titre($langs->trans("Assign Vendors"), '', 'user');
+}else{
+	print load_fiche_titre($langs->trans("MenuUsersAndGroups"), '', 'user');
+}
 
 print '<div class="fichecenter"><div class="fichethirdleft">';
 
@@ -116,6 +128,28 @@ if ($reshook > 0) {
 	$sql .= " WHERE u.entity IN (".getEntity('user').")";
 }
 if (!empty($socid)) $sql .= " AND u.fk_soc = ".$socid;
+
+if($user_group_id == '17')
+{
+	$vendor_list = '';
+	$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+	$resqlVendor = $db->query($sqlVendor);
+	if ($resqlVendor)
+	{
+		$rowVendor = $db->fetch_object($resqlVendor);
+		$vendorData = $rowVendor->fk_vendor;
+		
+		//$vendorData[] = $user->id;
+
+		if($vendorData)
+		{
+			//$vendor_list = implode(",", $vendorData);
+			$sql .= " AND u.rowid IN (".$vendorData.")";
+		}
+	}
+
+}
+
 $sql .= $db->order("u.datec", "DESC");
 $sql .= $db->plimit($max);
 
@@ -210,7 +244,7 @@ if ($resql)
 /*
  * Last groups created
  */
-if ($canreadperms)
+if ($canreadperms && $user_group_id != '17')
 {
 	$max = 5;
 
