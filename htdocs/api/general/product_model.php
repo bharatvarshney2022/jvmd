@@ -33,20 +33,20 @@
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData[] = array('sub_category_id' => $row['rowid'], 'sub_category_name' => $row['nom']);
+			$brandData[] = array('model_id' => $row['rowid'], 'model_name' => $row['nom']);
 		}
 
 		$status_code = '1';
-		$message = 'Product Sub Family Listing';
+		$message = 'Product Model Listing';
 			
-		$json = array('status_code' => $status_code, 'message' => $message, 'sub_category_data' => $brandData);
+		$json = array('status_code' => $status_code, 'message' => $message, 'model_data' => $brandData);
 	}
 	else
 	{
 		$status_code = '0';
-		$message = 'No Product Sub Family data exists';
+		$message = 'No Product Model data exists';
 			
-		$json = array('status_code' => $status_code, 'message' => $message, 'zip_data' => $brandData);
+		$json = array('status_code' => $status_code, 'message' => $message, 'model_data' => $brandData);
 	}
 	
 	$headers = 'Content-type: application/json';

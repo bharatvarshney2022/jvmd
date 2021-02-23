@@ -41,7 +41,7 @@
 		$status_code = '0';
 		$message = 'No Product Sub Family data exists';
 			
-		$json = array('status_code' => $status_code, 'message' => $message, 'zip_data' => $brandData);
+		$json = array('status_code' => $status_code, 'message' => $message, 'sub_category_data' => $brandData);
 	}
 	
 	$headers = 'Content-type: application/json';
