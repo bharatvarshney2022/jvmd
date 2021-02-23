@@ -35,7 +35,7 @@
 		$model_id = $objectPro1->getModelByName($product_model);
 
 
-		$product_id = $objectPro->getProductListByName($product_model);
+		$product_id = $objectPro1->getProductListByName($product_model);
 
 		$objectPro = new Product($db);
 		$userRow->id = 1;
