@@ -8,7 +8,7 @@
 
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
@@ -26,7 +26,7 @@
 
 	$json = array();
 	
-	$object = new Contact($db);
+	$object = new Societe($db);
 	
 	$userExists = $object->fetch($user_id);
 	$slider = array();
