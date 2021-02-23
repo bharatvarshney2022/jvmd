@@ -5815,8 +5815,8 @@ class Product extends CommonObject
 				$sql .= ", '".$this->db->escape($post['component_no'])."'";
 				$sql .= ", ".$user->id;
 				$sql .= ")";
-				/*echo $sql;
-				exit;*/
+				echo $sql;
+				exit;
 				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 				$result = $this->db->query($sql);
 				if ($result) {
