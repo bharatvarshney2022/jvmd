@@ -101,7 +101,7 @@
 		$status_code = '1';
 		$message = 'Product added successfully.';
 
-		$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => $newCustomerProduct);
+		$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => "".$newCustomerProduct);
 	}
 	else
 	{
