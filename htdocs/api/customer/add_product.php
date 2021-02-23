@@ -10,6 +10,9 @@
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	$brand_name = GETPOST('brand_name', 'alpha');
