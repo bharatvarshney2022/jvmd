@@ -29,10 +29,10 @@
 	if($userExists)
 	{
 		$objectPro1 = new Product($db);
-		$brand_id = $objectPro->getBrandByName($brand_name);
-		$category_id = $objectPro->getCategoryByName($product_category);
-		$sub_category_id = $objectPro->getSubCategoryByName($sub_product_category);
-		$model_id = $objectPro->getModelByName($product_model);
+		$brand_id = $objectPro1->getBrandByName($brand_name);
+		$category_id = $objectPro1->getCategoryByName($product_category);
+		$sub_category_id = $objectPro1->getSubCategoryByName($sub_product_category);
+		$model_id = $objectPro1->getModelByName($product_model);
 
 
 		$product_id = $objectPro->getProductListByName($product_model);
