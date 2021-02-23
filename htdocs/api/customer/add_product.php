@@ -60,23 +60,26 @@
 		echo $newCustomerProduct; exit;
 
 		// Image Upload
-		/*if (!empty($_FILES))
+		if (!empty($_FILES))
 		{
-			if (is_array($_FILES['image']['tmp_name'])) $images = $_FILES['image']['tmp_name'];
-			else $images = array($_FILES['image']['tmp_name']);
+			$error = 0;
+			if (is_array($_FILES['product_images']['tmp_name'])) $images = $_FILES['product_images']['tmp_name'];
+			else $images = array($_FILES['product_images']['tmp_name']);
 
 			foreach ($images as $key => $image)
 			{
-				if (empty($_FILES['image']['tmp_name'][$key]))
+				if (empty($_FILES['product_images']['tmp_name'][$key]))
 				{
 					$error++;
-					if ($_FILES['image']['error'][$key] == 1 || $_FILES['image']['error'][$key] == 2) {
+					if ($_FILES['product_images']['error'][$key] == 1 || $_FILES['product_images']['error'][$key] == 2) {
 						setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
 					} else {
 						setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
 					}
 				}
 			}
+
+			echo $error; exit;
 
 			if (!$error)
 			{
@@ -93,7 +96,7 @@
 					$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
 				}
 			}
-		}*/
+		}
 
 		$status_code = '1';
 		$message = 'Product added successfully.';
