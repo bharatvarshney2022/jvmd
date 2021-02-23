@@ -19,6 +19,8 @@
 	$capacity = GETPOST('capacity', 'alpha');
 	$product_image = $_FILES['image'];
 
+	global $db, $user, $conf, $langs;
+
 	$json = array();
 	
 	$object = new Contact($db);
@@ -38,9 +40,7 @@
 		$product_id = $objectPro1->getProductListByName($product_model);
 
 		$objectPro = new Product($db);
-		$userRow = object();
-		$userRow->id = 1;
-		print_R($userRow); exit;
+
 
 		// Component No
 		$component_no = '1900000';
