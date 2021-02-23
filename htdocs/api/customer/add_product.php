@@ -57,7 +57,7 @@
 		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
-		echo $newCustomerProduct; exit;
+		echo $newCustomerProduct;
 
 		// Image Upload
 		if (!empty($_FILES))
