@@ -17,8 +17,8 @@
 
 	$objectPro1 = new Product($db);
 	$brand_id = $objectPro1->getBrandByName($brand_name);
-	$category_id = $objectPro1->getCategoryByName($category_name);
-	$sub_category_id = $objectPro1->getSubCategoryByName($sub_category_name);
+	$category_id = $objectPro1->getCategoryByName($brand_id, $category_name);
+	$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $sub_category_name);
 
 	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_model WHERE active = '1'";
 	if($brand_id > 0)

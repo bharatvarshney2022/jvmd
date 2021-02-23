@@ -6275,14 +6275,14 @@ class Product extends CommonObject
 	
 	}
 
-	public function getCategoryByName($label = '')
+	public function getCategoryByName($brand_id, $label = '')
 	{
 		global $langs, $conf;
 
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family";
 		
-		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -6300,14 +6300,14 @@ class Product extends CommonObject
 	
 	}
 
-	public function getSubCategoryByName($label = '')
+	public function getSubCategoryByName($brand_id, $category_id, $label = '')
 	{
 		global $langs, $conf;
 
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily";
 		
-		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND fk_family = '".$this->db->escape($category_id)." AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -6325,14 +6325,14 @@ class Product extends CommonObject
 	
 	}
 
-	public function getModelByName($label = '')
+	public function getModelByName($brand_id, $category_id, $sub_category_id, $label = '')
 	{
 		global $langs, $conf;
 
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model";
 		
-		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND fk_family = '".$this->db->escape($category_id)." AND fk_subfamily = '".$this->db->escape($sub_category_id)." AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {

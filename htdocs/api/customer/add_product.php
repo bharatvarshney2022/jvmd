@@ -35,9 +35,9 @@
 	{
 		$objectPro1 = new Product($db);
 		$brand_id = $objectPro1->getBrandByName($brand_name);
-		$category_id = $objectPro1->getCategoryByName($product_category);
-		$sub_category_id = $objectPro1->getSubCategoryByName($sub_product_category);
-		$model_id = $objectPro1->getModelByName($product_model);
+		$category_id = $objectPro1->getCategoryByName($brand_id, $product_category);
+		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $sub_product_category);
+		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $product_model);
 
 
 		$product_id = $objectPro1->getProductListByName($product_model);

@@ -16,7 +16,7 @@
 
 	$objectPro1 = new Product($db);
 	$brand_id = $objectPro1->getBrandByName($brand_name);
-	$category_id = $objectPro1->getCategoryByName($category_name);
+	$category_id = $objectPro1->getCategoryByName($brand_id, $category_name);
 
 	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_product_subfamily WHERE active = '1'";
 	if($brand_id > 0)
