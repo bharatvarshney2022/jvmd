@@ -51,7 +51,7 @@
 				
 				$producttmp->fetch($obj->fk_product);
 
-				$societeProductData[] = array('id' => $obj->id, 'brandname' => $obj->brandname, 'familyname' => $obj->familyname, 'subfamily' => $obj->subfamily, 'c_product_model' => $obj->c_product_model, 'pname' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
+				$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
 				$i++;
 			}
 
