@@ -2104,6 +2104,47 @@ class Product extends CommonObject
 	 * @param  int    $ignore_lang_load  Load product without loading language arrays (when we are sure we don't need them)
 	 * @return int                       <0 if KO, 0 if not found, >0 if OK
 	 */
+	public function getProductListByName($label = '')
+	{
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+
+		global $langs, $conf;
+
+		dol_syslog(get_class($this)."::fetch id=".$id." ref=".$ref." ref_ext=".$ref_ext);
+
+		// Check parameters
+		if (!$id && !$ref && !$ref_ext && !$barcode) {
+			$this->error = 'ErrorWrongParameters';
+			dol_syslog(get_class($this)."::fetch ".$this->error);
+			return -1;
+		}
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product";
+		
+		$sql .= " WHERE entity IN (".getEntity($this->element).")";
+		if ($label) {
+			$sql .= " AND label = '".$this->db->escape($label)."'";
+		}
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			unset($this->oldcopy);
+
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	
+	}
+
 	public function fetch($id = '', $ref = '', $ref_ext = '', $barcode = '', $ignore_expression = 0, $ignore_price_load = 0, $ignore_lang_load = 0)
 	{
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';

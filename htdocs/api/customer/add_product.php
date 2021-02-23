@@ -12,13 +12,14 @@
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
-	$brand_id = GETPOST('brand_id', 'int');
-	$category_id = GETPOST('category_id', 'int');
-	$sub_category_id = GETPOST('sub_category_id', 'int');
-	$model_id = GETPOST('model_id', 'int');
-	$product_id = GETPOST('product_id', 'int');
+	$brand_name = GETPOST('brand_name', 'alpha');
+	$product_category = GETPOST('product_category', 'alpha');
+	$sub_product_category = GETPOST('sub_product_category', 'alpha');
+	$product_model = GETPOST('product_model', 'alpha');
 	$capacity = GETPOST('capacity', 'alpha');
 	$product_image = $_FILES['image'];
+
+	echo $brand_name; exit;
 
 	$json = array();
 	
@@ -29,6 +30,9 @@
 
 	if($userExists)
 	{
+		$objectPro1 = new Product($db);
+		$product_id = $objectPro->getProductListByName($product_model);
+
 		$objectPro = new Product($db);
 		$userRow->id = 1;
 
@@ -46,9 +50,45 @@
 			$component_no = $component_no+1;
 		}
 
-		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
+		$insertData = array('fk_soc' => $user_id, 'fk_model' => $product_model, 'fk_brand' => $brand_name, 'fk_category' => $product_category, 'fk_subcategory' => $sub_product_category, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
+
+		// Image Upload
+		if (!empty($_FILES))
+		{
+			if (is_array($_FILES['image']['tmp_name'])) $images = $_FILES['image']['tmp_name'];
+			else $images = array($_FILES['image']['tmp_name']);
+
+			foreach ($images as $key => $image)
+			{
+				if (empty($_FILES['image']['tmp_name'][$key]))
+				{
+					$error++;
+					if ($_FILES['image']['error'][$key] == 1 || $_FILES['image']['error'][$key] == 2) {
+						setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+					} else {
+						setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+					}
+				}
+			}
+
+			if (!$error)
+			{
+				// Define if we have to generate thumbs or not
+				$generatethumbs = 1;
+				if (GETPOST('section_dir', 'alpha')) $generatethumbs = 0;
+				$allowoverwrite = (GETPOST('overwritefile', 'int') ? 1 : 0);
+
+				if (!empty($upload_dirold) && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+				{
+					$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
+				} elseif (!empty($upload_dir))
+				{
+					$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'image', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object);
+				}
+			}
+		}
 
 		$status_code = '1';
 		$message = 'Product added successfully.';
