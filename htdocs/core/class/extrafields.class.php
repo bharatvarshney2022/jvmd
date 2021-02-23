@@ -998,6 +998,7 @@ class ExtraFields
 			$sql .= " AND usergroup_id = '0'";
 		}
 		$sql .= " ORDER BY pos";
+		
 
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -1106,7 +1107,7 @@ class ExtraFields
 			$this->attribute_list = array();
 
 			$this->error = $this->db->lasterror();
-			dol_syslog(get_class($this)."::fetch_name_optionals_label ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::fetch_name_optionals_label_user ".$this->error, LOG_ERR);
 		}
 
 		return $array_name_label;

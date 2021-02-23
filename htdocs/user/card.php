@@ -118,6 +118,7 @@ if ($groupslist != '-1')
 }
 
 // fetch optionals attributes and labels
+//echo $user_group_id; exit;
 $extrafields->fetch_name_optionals_label_user($object->table_element, $user_group_id);
 
 $socialnetworks = getArrayOfSocialNetworks();
