@@ -5776,7 +5776,7 @@ class Product extends CommonObject
 		}
 	}
 
-	public function add_customer_product($user,$post)
+	public function add_customer_product($user,$post, $api = 0)
 	{
 		$now = dol_now();
 		$entity = 1;
@@ -5813,10 +5813,16 @@ class Product extends CommonObject
 				$sql .= ", '".$this->db->escape($post['fk_soc'])."'";
 				$sql .= ", '".$this->db->escape($post['ac_capacity'])."'";
 				$sql .= ", '".$this->db->escape($post['component_no'])."'";
-				$sql .= ", ".$user->id;
+
+				if($api == 0)
+				{
+					$sql .= ", ".$user->id;
+				}
+				else
+				{
+					$sql .= ", 1";
+				}
 				$sql .= ")";
-				echo $sql;
-				exit;
 				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 				$result = $this->db->query($sql);
 				if ($result) {

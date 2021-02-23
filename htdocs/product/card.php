@@ -228,8 +228,7 @@ if (empty($reshook))
 			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
 			$customerProduct['component_no']   = GETPOST('component_no');
 			
-			//print_r($customerProduct);
-			$productid = $object->add_customer_product($user,$customerProduct);
+			$productid = $object->add_customer_product($user,$customerProduct, 0);
 			if (!empty($backtopage))
 			{
 				$backtopage = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $backtopage); // New method to autoselect project after a New on another form object creation
