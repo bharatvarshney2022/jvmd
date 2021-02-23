@@ -6283,7 +6283,7 @@ class Product extends CommonObject
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family";
 		
-		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)."' AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -6308,7 +6308,7 @@ class Product extends CommonObject
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily";
 		
-		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND fk_family = '".$this->db->escape($category_id)." AND nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)."' AND fk_family = '".$this->db->escape($category_id)."' AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -6333,7 +6333,7 @@ class Product extends CommonObject
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model";
 		
-		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)." AND fk_family = '".$this->db->escape($category_id)." AND fk_subfamily = '".$this->db->escape($sub_category_id)." AND nom = '".$this->db->escape($label)."'";
+		$sql .= " WHERE fk_brand = '".$this->db->escape($brand_id)."' AND fk_family = '".$this->db->escape($category_id)."' AND fk_subfamily = '".$this->db->escape($sub_category_id)."' AND nom = '".$this->db->escape($label)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {

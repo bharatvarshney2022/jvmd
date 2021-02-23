@@ -39,8 +39,7 @@
 		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $sub_product_category);
 		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $product_model);
 
-		echo $objectPro1->error;
-		echo $brand_id.",".$category_id; exit;
+		//echo $brand_id.",".$category_id; exit;
 
 		$product_id = $objectPro1->getProductListByName($product_model);
 
