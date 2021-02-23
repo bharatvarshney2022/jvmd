@@ -19,8 +19,6 @@
 	$capacity = GETPOST('capacity', 'alpha');
 	$product_image = $_FILES['image'];
 
-	echo $brand_name; exit;
-
 	$json = array();
 	
 	$object = new Contact($db);
@@ -31,6 +29,12 @@
 	if($userExists)
 	{
 		$objectPro1 = new Product($db);
+		$brand_id = $objectPro->getBrandByName($brand_name);
+		$category_id = $objectPro->getCategoryByName($product_category);
+		$sub_category_id = $objectPro->getSubCategoryByName($sub_product_category);
+		$model_id = $objectPro->getModelByName($product_model);
+
+
 		$product_id = $objectPro->getProductListByName($product_model);
 
 		$objectPro = new Product($db);
@@ -50,7 +54,7 @@
 			$component_no = $component_no+1;
 		}
 
-		$insertData = array('fk_soc' => $user_id, 'fk_model' => $product_model, 'fk_brand' => $brand_name, 'fk_category' => $product_category, 'fk_subcategory' => $sub_product_category, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
+		$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 		$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData);
 

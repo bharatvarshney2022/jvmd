@@ -2110,15 +2110,6 @@ class Product extends CommonObject
 
 		global $langs, $conf;
 
-		dol_syslog(get_class($this)."::fetch id=".$id." ref=".$ref." ref_ext=".$ref_ext);
-
-		// Check parameters
-		if (!$id && !$ref && !$ref_ext && !$barcode) {
-			$this->error = 'ErrorWrongParameters';
-			dol_syslog(get_class($this)."::fetch ".$this->error);
-			return -1;
-		}
-
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product";
 		
@@ -2129,8 +2120,6 @@ class Product extends CommonObject
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
-			unset($this->oldcopy);
-
 			if ($this->db->num_rows($resql) > 0) {
 				$obj = $this->db->fetch_object($resql);
 
@@ -5842,7 +5831,8 @@ class Product extends CommonObject
 			}
 		}
 	}	
-/* Update customer product*/
+
+	/* Update customer product*/
 	public function update_customer_product($user,$post)
 	{
 		$now = dol_now();
@@ -6051,12 +6041,10 @@ class Product extends CommonObject
 			}
 		}else{
 			return '';
-		}	
-		
+		}
 	}
 
-
-public function getCategoryByBrand($brand_id)
+	public function getCategoryByBrand($brand_id)
 	{
 		if($brand_id != ''){
 			$outjson = array();
@@ -6097,145 +6085,145 @@ public function getCategoryByBrand($brand_id)
 
 
 	public function getSubCategoryByBrand($brand_id,$category)
-		{
-			if($brand_id != '' && $category != ''){
-				$outjson = array();
-				$sql = "SELECT rowid, nom";
-				$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily ";
-				$sql .= " WHERE active = 1";
-				if($brand_id != 0){
-					$sql .= " AND fk_brand = '".$brand_id."' ";	
-				}
-				
-				if($category != 0){
-					$sql .= " AND fk_family = '".$category."' ";	
-				}
-				
-				$sql .= " ORDER BY nom ASC";
-				//echo $sql;
-				$result = $this->db->query($sql);
-				$str = '<option value="0">Select Sub Category</option>';
-				if ($result) {
-					$num = $this->db->num_rows($result);
-					
-					if ($this->db->num_rows($result)) {
-						$i = 0;
-						
-						while ($i < $num) {
-							
-							$obj = $this->db->fetch_object($result);
-
-							$id = $obj->rowid;
-							$str .= '<option value="'.$obj->rowid.'">'.$obj->nom.'</option>';
-							
-							$i++;
-						}
-					}
-				}
-			}else{
-				$str = '<option value="0">Select Sub Category</option>';
-			}		
-			return $str;
-		}
-
-
-		public function getmodelbysubcat($brand_id,$category,$subcategory)
-		{
+	{
+		if($brand_id != '' && $category != ''){
+			$outjson = array();
+			$sql = "SELECT rowid, nom";
+			$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily ";
+			$sql .= " WHERE active = 1";
+			if($brand_id != 0){
+				$sql .= " AND fk_brand = '".$brand_id."' ";	
+			}
 			
-			if($brand_id != '' && $category != '' && $subcategory != ''){
-				$outjson = array();
-				$sql = "SELECT rowid, code";
-				$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model ";
-				$sql .= " WHERE active = 1";
-				if($brand_id != 0){
-					$sql .= " AND fk_brand = '".$brand_id."' ";	
-				}
-				
-				if($category != 0){
-					$sql .= " AND fk_family = '".$category."' ";	
-				}
-
-				if($subcategory != 0){
-					$sql .= " AND fk_subfamily = '".$subcategory."' ";	
-				}
-				
-				$sql .= " ORDER BY nom ASC";
-				//echo $sql;
-				$result = $this->db->query($sql);
-				$str = '<option value="0">Select Model</option>';
-				if ($result) {
-					$num = $this->db->num_rows($result);
-					
-					if ($this->db->num_rows($result)) {
-						$i = 0;
-						
-						while ($i < $num) {
-							
-							$obj = $this->db->fetch_object($result);
-
-							$id = $obj->rowid;
-							$str .= '<option value="'.$obj->rowid.'">'.$obj->code.'</option>';
-							
-							$i++;
-						}
-					}
-				}
-			}else{
-				$str = '<option value="0">Select Model</option>';
-			}		
-			return $str;
-		}
-
-		public function getProductListByModel($brand_id,$category,$subcategory,$model)
-		{
+			if($category != 0){
+				$sql .= " AND fk_family = '".$category."' ";	
+			}
 			
-			if($brand_id != '' && $category != '' && $subcategory != '' && $model != ''){
-				$outjson = array();
-				$sql = "SELECT rowid, label";
-				$sql .= " FROM ".MAIN_DB_PREFIX."product ";
-				$sql .= " WHERE hidden = 0";
-				if($brand_id != 0){
-					$sql .= " AND fk_brand = '".$brand_id."' ";	
-				}
+			$sql .= " ORDER BY nom ASC";
+			//echo $sql;
+			$result = $this->db->query($sql);
+			$str = '<option value="0">Select Sub Category</option>';
+			if ($result) {
+				$num = $this->db->num_rows($result);
 				
-				if($category != 0){
-					$sql .= " AND fk_category = '".$category."' ";	
-				}
-
-				if($subcategory != 0){
-					$sql .= " AND fk_sub_category = '".$subcategory."' ";	
-				}
-
-				if($model != 0){
-					$sql .= " AND fk_model = '".$model."' ";	
-				}
-				
-				$sql .= " ORDER BY rowid ASC";
-				//echo $sql;
-				$result = $this->db->query($sql);
-				$str = '<option value="0">Select Product</option>';
-				if ($result) {
-					$num = $this->db->num_rows($result);
+				if ($this->db->num_rows($result)) {
+					$i = 0;
 					
-					if ($this->db->num_rows($result)) {
-						$i = 0;
+					while ($i < $num) {
 						
-						while ($i < $num) {
-							
-							$obj = $this->db->fetch_object($result);
+						$obj = $this->db->fetch_object($result);
 
-							$id = $obj->rowid;
-							$str .= '<option value="'.$obj->rowid.'">'.$obj->label.'</option>';
-							
-							$i++;
-						}
+						$id = $obj->rowid;
+						$str .= '<option value="'.$obj->rowid.'">'.$obj->nom.'</option>';
+						
+						$i++;
 					}
 				}
-			}else{
-				$str = '<option value="0">Select Product</option>';
-			}		
-			return $str;
-		}	
+			}
+		}else{
+			$str = '<option value="0">Select Sub Category</option>';
+		}		
+		return $str;
+	}
+
+
+	public function getmodelbysubcat($brand_id,$category,$subcategory)
+	{
+		
+		if($brand_id != '' && $category != '' && $subcategory != ''){
+			$outjson = array();
+			$sql = "SELECT rowid, code";
+			$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model ";
+			$sql .= " WHERE active = 1";
+			if($brand_id != 0){
+				$sql .= " AND fk_brand = '".$brand_id."' ";	
+			}
+			
+			if($category != 0){
+				$sql .= " AND fk_family = '".$category."' ";	
+			}
+
+			if($subcategory != 0){
+				$sql .= " AND fk_subfamily = '".$subcategory."' ";	
+			}
+			
+			$sql .= " ORDER BY nom ASC";
+			//echo $sql;
+			$result = $this->db->query($sql);
+			$str = '<option value="0">Select Model</option>';
+			if ($result) {
+				$num = $this->db->num_rows($result);
+				
+				if ($this->db->num_rows($result)) {
+					$i = 0;
+					
+					while ($i < $num) {
+						
+						$obj = $this->db->fetch_object($result);
+
+						$id = $obj->rowid;
+						$str .= '<option value="'.$obj->rowid.'">'.$obj->code.'</option>';
+						
+						$i++;
+					}
+				}
+			}
+		}else{
+			$str = '<option value="0">Select Model</option>';
+		}		
+		return $str;
+	}
+
+	public function getProductListByModel($brand_id,$category,$subcategory,$model)
+	{
+		
+		if($brand_id != '' && $category != '' && $subcategory != '' && $model != ''){
+			$outjson = array();
+			$sql = "SELECT rowid, label";
+			$sql .= " FROM ".MAIN_DB_PREFIX."product ";
+			$sql .= " WHERE hidden = 0";
+			if($brand_id != 0){
+				$sql .= " AND fk_brand = '".$brand_id."' ";	
+			}
+			
+			if($category != 0){
+				$sql .= " AND fk_category = '".$category."' ";	
+			}
+
+			if($subcategory != 0){
+				$sql .= " AND fk_sub_category = '".$subcategory."' ";	
+			}
+
+			if($model != 0){
+				$sql .= " AND fk_model = '".$model."' ";	
+			}
+			
+			$sql .= " ORDER BY rowid ASC";
+			//echo $sql;
+			$result = $this->db->query($sql);
+			$str = '<option value="0">Select Product</option>';
+			if ($result) {
+				$num = $this->db->num_rows($result);
+				
+				if ($this->db->num_rows($result)) {
+					$i = 0;
+					
+					while ($i < $num) {
+						
+						$obj = $this->db->fetch_object($result);
+
+						$id = $obj->rowid;
+						$str .= '<option value="'.$obj->rowid.'">'.$obj->label.'</option>';
+						
+						$i++;
+					}
+				}
+			}
+		}else{
+			$str = '<option value="0">Select Product</option>';
+		}		
+		return $str;
+	}	
 
 	public function getProductByModel($model_id)
 	{
@@ -6253,6 +6241,107 @@ public function getCategoryByBrand($brand_id)
 			}
 		}	
 		return json_encode($outjson);
+	}
+
+	// Brand / Category / Sub-Category / Model
+	public function getBrandByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_brands";
+		
+		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	
+	}
+
+	public function getCategoryByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_family";
+		
+		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	
+	}
+
+	public function getSubCategoryByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_subfamily";
+		
+		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	
+	}
+
+	public function getModelByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_model";
+		
+		$sql .= " WHERE nom = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	
 	}
 
 }
