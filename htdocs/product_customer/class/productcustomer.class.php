@@ -276,8 +276,8 @@ class ProductCustomer extends CommonObject
 					$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 					$sql .= ", component_no = '".$this->db->escape($component_no)."'";
 					$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
-					$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
-					$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
+					$sql .= ", amc_start_date = '".($this->amc_start_date == NULL ? NULL : $this->db->idate($this->amc_start_date)."'";
+					$sql .= ", amc_end_date = '".($this->amc_end_date == NULL ? NULL : $this->db->idate($this->amc_end_date)."'";
 					$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
 
 
@@ -447,8 +447,8 @@ class ProductCustomer extends CommonObject
 			$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 			$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
 			$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
-			$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
-			$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
+			$sql .= ", amc_start_date = '".($this->amc_start_date == NULL ? NULL : $this->db->idate($this->amc_start_date)."'";
+			$sql .= ", amc_end_date = '".($this->amc_end_date == NULL ? NULL : $this->db->idate($this->amc_end_date)."'";
 			$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
 
 
