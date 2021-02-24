@@ -81,6 +81,7 @@
 				$status_code = '0';
 				$message = 'Selected data already exists.';
 
+
 				$json = array('status_code' => $status_code, 'message' => $message);
 			}
 			else
@@ -121,6 +122,7 @@
 					}
 				}
 
+				$db->commit();
 				$status_code = '1';
 				$message = 'Product added successfully.';
 

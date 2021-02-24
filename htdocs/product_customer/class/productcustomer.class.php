@@ -4731,8 +4731,8 @@ class ProductCustomer extends CommonObject
 		$entity = 1;
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
-		$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
-		$sql .= " AND fk_model = '".$this->db->escape($post['fk_model'])."'";
+		$sql .= " WHERE fk_soc  = '".$this->db->escape($this->fk_soc)."' ";
+		$sql .= " AND fk_product = '".$this->db->escape($this->fk_product)."'";
 
 		$result = $this->db->query($sql);
 		if ($result) {
