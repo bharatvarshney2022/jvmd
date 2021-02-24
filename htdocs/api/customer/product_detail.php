@@ -10,10 +10,10 @@
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/product_customer/class/productcustomer.class.php';
+	//require_once DOL_DOCUMENT_ROOT.'/product_customer/class/productcustomer.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
-	$user_id = GETPOST('product_detail_id', 'int');
+	$product_detail_id = GETPOST('product_detail_id', 'int');
 
 	global $db, $user, $conf, $langs;
 
@@ -26,8 +26,6 @@
 
 	if($userExists)
 	{
-		$object = new Product($db);
-
 		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.amc_start_date, p.amc_end_date, p.product_odu, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
@@ -37,6 +35,7 @@
 		
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$product_detail_id."'";
+		
 
 		$result = $db->query($sql);
 		if ($result) {
