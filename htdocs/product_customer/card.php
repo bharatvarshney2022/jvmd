@@ -197,29 +197,56 @@ if (empty($reshook))
 
         if (!$error)
 		{
-			$customerProduct = array();
-			$customerProduct['fk_soc'] = GETPOST('fk_soc', 'int');
-			$customerProduct['fk_brand'] = GETPOST('fk_brand', 'int');
-			$customerProduct['fk_category'] = GETPOST('fk_category', 'int');
-			$customerProduct['fk_subcategory'] = GETPOST('fk_subcategory', 'int');
-			$customerProduct['fk_product'] = GETPOST('fk_product', 'int');
+			// TO DO
+			// Data Update
+			$object->fk_soc = GETPOST('fk_soc', 'int');
+			$object->custprodid = GETPOST('custprodid', 'int');
+			$object->fk_brand = GETPOST('fk_brand', 'int');
+			$object->fk_category = GETPOST('fk_category', 'int');
+			$object->fk_subcategory = GETPOST('fk_sub_category', 'int');
+			$object->fk_product = GETPOST('fk_product', 'int');
 
-			$customerProduct['fk_model'] = GETPOST('modelname', 'int');
-			$customerProduct['ac_capacity']   = GETPOST('ac_capacity');
-			//print_r($customerProduct);
-			$productid = $object->add_customer_product($user,$customerProduct);
-			if (!empty($backtopage))
-			{
-				$backtopage = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $backtopage); // New method to autoselect project after a New on another form object creation
-				if (preg_match('/\?/', $backtopage)) $backtopage .= '&socid='.$object->id; // Old method
-				header("Location: ".$backtopage);
-				exit;
-			} else {
-				//header("Location: ".$_SERVER['PHP_SELF']."?id=".$productid);
-				header("Location: ".DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int'));
-				exit;
-			}
+			$object->fk_model = GETPOST('fk_model', 'int');
+			$object->ac_capacity   = GETPOST('ac_capacity');
+
+			$object->amc_start_date   = GETPOST('amc_start_date');
+			$object->amc_end_date   = GETPOST('amc_end_date');
+			$object->product_odu   = GETPOST('product_odu');
+
 			
+			if (!$error && $object->check())
+			{
+				if ($object->create($user) > 0)
+				{
+					// Category association
+					$categories = GETPOST('categories', 'array');
+
+					$backtopage = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $backtopage);
+
+					if (!empty($backtopage))
+					{
+						 // New method to autoselect project after a New on another form object creation
+						if (preg_match('/\?/', $backtopage)) $backtopage .= '&socid='.$object->id; // Old method
+						header("Location: ".$backtopage);
+						exit;
+					} else {
+
+						$backurl = DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int');
+
+						header('location: '.$backurl);
+						exit;
+					}
+				} else {
+					if (count($object->errors)) setEventMessages($object->error, $object->errors, 'errors');
+					else setEventMessages($langs->trans($object->error), null, 'errors');
+					$action = 'create';
+				}
+			} else {
+				echo "c"; exit;
+				if (count($object->errors)) setEventMessages($object->error, $object->errors, 'errors');
+				else setEventMessages($langs->trans("ErrorProductBadRefOrLabel"), null, 'errors');
+				$action = 'create';
+			}
 		}	
 
 	}

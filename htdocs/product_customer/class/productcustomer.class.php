@@ -223,274 +223,87 @@ class ProductCustomer extends CommonObject
 	{
 		global $conf, $langs;
 
-			$error = 0;
-		
-		// Clean parameters
-		$this->ref = dol_sanitizeFileName(dol_string_nospecial(trim($this->ref)));
-		$this->label = trim($this->label);
-		$this->fk_model = trim($this->fk_model);
-		$this->erpinvoice_no = trim($this->erpinvoice_no);
-		$this->component_no = trim($this->component_no);
-		$this->invoicedate = trim($this->invoicedate);
-		$this->ship_date = trim($this->ship_date);
-		$this->custsale = trim($this->custsale);
+		$error = 0;
 
-		$this->price_ttc = price2num($this->price_ttc);
-		$this->price = price2num($this->price);
-		$this->price_min_ttc = price2num($this->price_min_ttc);
-		$this->price_min = price2num($this->price_min);
-		if (empty($this->tva_tx)) {
-			$this->tva_tx = 0;
-		}
-		if (empty($this->tva_npr)) {
-			$this->tva_npr = 0;
-		}
-		//Local taxes
-		if (empty($this->localtax1_tx)) {
-			$this->localtax1_tx = 0;
-		}
-		if (empty($this->localtax2_tx)) {
-			$this->localtax2_tx = 0;
-		}
-		if (empty($this->localtax1_type)) {
-			$this->localtax1_type = '0';
-		}
-		if (empty($this->localtax2_type)) {
-			$this->localtax2_type = '0';
-		}
-		if (empty($this->price)) {
-			$this->price = 0;
-		}
-		if (empty($this->price_min)) {
-			$this->price_min = 0;
-		}
-		// Price by quantity
-		if (empty($this->price_by_qty)) {
-			$this->price_by_qty = 0;
-		}
-
-		if (empty($this->status)) {
-			$this->status = 0;
-		}
-		if (empty($this->status_buy)) {
-			$this->status_buy = 0;
-		}
-
-		$price_ht = 0;
-		$price_ttc = 0;
-		$price_min_ht = 0;
-		$price_min_ttc = 0;
-
-		//
-		if ($this->price_base_type == 'TTC' && $this->price_ttc > 0) {
-			$price_ttc = price2num($this->price_ttc, 'MU');
-			$price_ht = price2num($this->price_ttc / (1 + ($this->tva_tx / 100)), 'MU');
-		}
-
-		//
-		if ($this->price_base_type != 'TTC' && $this->price > 0) {
-			$price_ht = price2num($this->price, 'MU');
-			$price_ttc = price2num($this->price * (1 + ($this->tva_tx / 100)), 'MU');
-		}
-
-		//
-		if (($this->price_min_ttc > 0) && ($this->price_base_type == 'TTC')) {
-			$price_min_ttc = price2num($this->price_min_ttc, 'MU');
-			$price_min_ht = price2num($this->price_min_ttc / (1 + ($this->tva_tx / 100)), 'MU');
-		}
-
-		//
-		if (($this->price_min > 0) && ($this->price_base_type != 'TTC')) {
-			$price_min_ht = price2num($this->price_min, 'MU');
-			$price_min_ttc = price2num($this->price_min * (1 + ($this->tva_tx / 100)), 'MU');
-		}
-
-		$this->accountancy_code_buy = trim($this->accountancy_code_buy);
-		$this->accountancy_code_buy_intra = trim($this->accountancy_code_buy_intra);
-		$this->accountancy_code_buy_export = trim($this->accountancy_code_buy_export);
-		$this->accountancy_code_sell = trim($this->accountancy_code_sell);
-		$this->accountancy_code_sell_intra = trim($this->accountancy_code_sell_intra);
-		$this->accountancy_code_sell_export = trim($this->accountancy_code_sell_export);
-
-		// Barcode value
-		$this->barcode = trim($this->barcode);
-
+		// TO DO
 		// Check parameters
-		if (empty($this->label)) {
-			$this->error = 'ErrorMandatoryParametersNotProvided';
-			return -1;
-		}
+		$this->fk_brand                		 = $this->fk_brand;
+		$this->fk_category               	 = $this->fk_category;
+		$this->fk_subcategory                = $this->fk_subcategory;
+		$this->fk_model                		 = $this->fk_model;
+		$this->fk_product                	 = $this->fk_product;
+		$this->fk_soc                		 = $this->fk_soc;
+		$this->ac_capacity                	 = $this->ac_capacity;
+		$this->component_no                	 = $this->component_no;
+		$this->fk_user                		 = $this->fk_user;
 
-		if (empty($this->ref) || $this->ref == 'auto') {
-			// Load object modCodeProduct
-			$module = (!empty($conf->global->PRODUCT_CODEPRODUCT_ADDON) ? $conf->global->PRODUCT_CODEPRODUCT_ADDON : 'mod_codeproduct_leopard');
-			if ($module != 'mod_codeproduct_leopard')    // Do not load module file for leopard
-			{
-				if (substr($module, 0, 16) == 'mod_codeproduct_' && substr($module, -3) == 'php') {
-					$module = substr($module, 0, dol_strlen($module) - 4);
-				}
-				dol_include_once('/core/modules/product/'.$module.'.php');
-				$modCodeProduct = new $module;
-				if (!empty($modCodeProduct->code_auto)) {
-					$this->ref = $modCodeProduct->getNextValue($this, $this->type);
-				}
-				unset($modCodeProduct);
-			}
-
-			if (empty($this->ref)) {
-				$this->error = 'ProductModuleNotSetupForAutoRef';
-				return -2;
-			}
-		}
-
-		dol_syslog(get_class($this)."::create ref=".$this->ref." price=".$this->price." price_ttc=".$this->price_ttc." tva_tx=".$this->tva_tx." price_base_type=".$this->price_base_type, LOG_DEBUG);
+		$this->amc_start_date                = date('Y-m-d H:i:s', strtotime($this->amc_start_date));
+		$this->amc_end_date               	 = date('Y-m-d H:i:s', strtotime($this->amc_end_date));
+		$this->product_odu                	 = $this->product_odu;
 
 		$now = dol_now();
-
+		$this->date_modification             = $now;
+		
 		$this->db->begin();
 
-		// For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
-		if ($this->barcode == -1) {
-			$this->barcode = $this->get_barcode($this, $this->barcode_type_code);
-		}
-
+		$result = 0;
 		// Check more parameters
 		// If error, this->errors[] is filled
 		$result = $this->verify();
 
 		if ($result >= 0) {
-			$sql = "SELECT count(*) as nb";
-			$sql .= " FROM ".MAIN_DB_PREFIX."product";
-			$sql .= " WHERE entity IN (".getEntity('product').")";
-			$sql .= " AND ref = '".$this->db->escape($this->ref)."'";
 
-			$result = $this->db->query($sql);
-			if ($result) {
-				$obj = $this->db->fetch_object($result);
-				if ($obj->nb == 0) {
-					// Produit non deja existant
-					$sql = "INSERT INTO ".MAIN_DB_PREFIX."product (";
-					$sql .= "datec";
-					$sql .= ", entity";
-					$sql .= ", ref";
-					$sql .= ", ref_ext";
-					$sql .= ", price_min";
-					$sql .= ", price_min_ttc";
-					$sql .= ", label";
-					$sql .= ", fk_model";
-					$sql .= ", erpinvoice_no";
-					$sql .= ", component_no";
-					$sql .= ", invoicedate";
-					$sql .= ", ship_date";
-					$sql .= ", custsale";
-					$sql .= ", fk_user_author";
-					$sql .= ", fk_product_type";
-					$sql .= ", price";
-					$sql .= ", price_ttc";
-					$sql .= ", price_base_type";
-					$sql .= ", tobuy";
-					$sql .= ", tosell";
-					$sql .= ", accountancy_code_buy";
-					$sql .= ", accountancy_code_buy_intra";
-					$sql .= ", accountancy_code_buy_export";
-					$sql .= ", accountancy_code_sell";
-					$sql .= ", accountancy_code_sell_intra";
-					$sql .= ", accountancy_code_sell_export";
-					$sql .= ", canvas";
-					$sql .= ", finished";
-					$sql .= ", tobatch";
-					$sql .= ", fk_unit";
-					$sql .= ") VALUES (";
-					$sql .= "'".$this->db->idate($now)."'";
-					$sql .= ", ".$conf->entity;
-					$sql .= ", '".$this->db->escape($this->ref)."'";
-					$sql .= ", ".(!empty($this->ref_ext) ? "'".$this->db->escape($this->ref_ext)."'" : "null");
-					$sql .= ", ".price2num($price_min_ht);
-					$sql .= ", ".price2num($price_min_ttc);
-					$sql .= ", ".(!empty($this->label) ? "'".$this->db->escape($this->label)."'" : "null");
-					$sql .= ", ".(!empty($this->fk_model) ? "'".$this->db->escape($this->fk_model)."'" : "0");
-					$sql .= ", ".(!empty($this->erpinvoice_no) ? "'".$this->db->escape($this->erpinvoice_no)."'" : "null");
-					$sql .= ", ".(!empty($this->component_no) ? "'".$this->db->escape($this->component_no)."'" : "null");
-					$sql .= ", ".(!empty($this->invoicedate) ? "'".$this->db->escape($this->invoicedate)."'" : "0");
-					$sql .= ", ".(!empty($this->ship_date) ? "'".$this->db->escape($this->ship_date)."'" : "0");
-					$sql .= ", ".(!empty($this->custsale) ? "'".$this->db->escape($this->custsale)."'" : "0");
-					$sql .= ", ".$user->id;
-					$sql .= ", ".$this->type;
-					$sql .= ", ".price2num($price_ht);
-					$sql .= ", ".price2num($price_ttc);
-					$sql .= ", '".$this->db->escape($this->price_base_type)."'";
-					$sql .= ", ".$this->status;
-					$sql .= ", ".$this->status_buy;
-					$sql .= ", '".$this->db->escape($this->accountancy_code_buy)."'";
-					$sql .= ", '".$this->db->escape($this->accountancy_code_buy_intra)."'";
-					$sql .= ", '".$this->db->escape($this->accountancy_code_buy_export)."'";
-					$sql .= ", '".$this->db->escape($this->accountancy_code_sell)."'";
-					$sql .= ", '".$this->db->escape($this->accountancy_code_sell_intra)."'";
-					$sql .= ", '".$this->db->escape($this->accountancy_code_sell_export)."'";
-					$sql .= ", '".$this->db->escape($this->canvas)."'";
-					$sql .= ", ".((!isset($this->finished) || $this->finished < 0 || $this->finished == '') ? 'null' : (int) $this->finished);
-					$sql .= ", ".((empty($this->status_batch) || $this->status_batch < 0) ? '0' : $this->status_batch);
-					$sql .= ", ".(!$this->fk_unit ? 'NULL' : $this->fk_unit);
-					$sql .= ")";
 
-					dol_syslog(get_class($this)."::Create", LOG_DEBUG);
-					$result = $this->db->query($sql);
-					if ($result) {
-						$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product");
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
+			$sql .= " SET fk_brand = '".$this->db->escape($this->fk_brand)."'";
+			$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+			$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+			$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+			$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
+			$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
+			$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
+			$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
+			$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
+			$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
+			$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
+			$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
 
-						if ($id > 0) {
-							$this->id = $id;
-							$this->price            = $price_ht;
-							$this->price_ttc        = $price_ttc;
-							$this->price_min        = $price_min_ht;
-							$this->price_min_ttc    = $price_min_ttc;
 
-							$result = $this->_log_price($user);
-							if ($result > 0) {
-								if ($this->update($id, $user, true, 'add') <= 0) {
-									$error++;
-								}
-							} else {
-								$error++;
-								$this->error = $this->db->lasterror();
-							}
-						} else {
-							$error++;
-							$this->error = 'ErrorFailedToGetInsertedId';
-						}
-					} else {
-						$error++;
-						$this->error = $this->db->lasterror();
-					}
+			// stock field is not here because it is a denormalized value from product_stock.
+			$sql .= " WHERE rowid = ".$id;
+			
+			dol_syslog(get_class($this)."::update", LOG_DEBUG);
+
+			$resql = $this->db->query($sql);
+			if ($resql) {
+				$this->id = $id;
+
+				$action = 'update';
+
+				
+				if (!$error) {
+					$this->db->commit();
+					return 1;
 				} else {
-					// Product already exists with this ref
-					$langs->load("products");
-					$error++;
-					$this->error = "ErrorProductAlreadyExists";
+					$this->db->rollback();
+					return -$error;
 				}
 			} else {
-				$error++;
-				$this->error = $this->db->lasterror();
-			}
-
-			if (!$error && !$notrigger) {
-				// Call trigger
-				$result = $this->call_trigger('PRODUCT_CREATE', $user);
-				if ($result < 0) { $error++;
+				if ($this->db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
+					$langs->load("errors");
+					$this->errors[] = $this->error;
+					$this->db->rollback();
+					return -1;
+				} else {
+					$this->error = $langs->trans("Error")." : ".$this->db->error()." - ".$sql;
+					$this->errors[] = $this->error;
+					$this->db->rollback();
+					return -2;
 				}
-				// End call triggers
-			}
-
-			if (!$error) {
-				$this->db->commit();
-				return $this->id;
-			} else {
-				$this->db->rollback();
-				return -$error;
 			}
 		} else {
 			$this->db->rollback();
-			dol_syslog(get_class($this)."::Create fails verify ".join(',', $this->errors), LOG_WARNING);
+			dol_syslog(get_class($this)."::Update fails verify ".join(',', $this->errors), LOG_WARNING);
 			return -3;
 		}
 	}
