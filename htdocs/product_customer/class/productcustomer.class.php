@@ -242,6 +242,7 @@ class ProductCustomer extends CommonObject
 		$this->product_odu                	 = $this->product_odu;
 
 		$now = dol_now();
+		$entity = 1;
 		$this->date_modification             = $now;
 		
 		$this->db->begin();
@@ -252,58 +253,80 @@ class ProductCustomer extends CommonObject
 		$result = $this->verify();
 
 		if ($result >= 0) {
+			$sql = "SELECT rowid";
+			$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
+			$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
+			$sql .= " AND fk_model = '".$this->db->escape($post['fk_model'])."'";
+
+			$result = $this->db->query($sql);
+			if ($result) {
+				$obj = $this->db->fetch_object($result);
+				if ($obj->nb == 0) {
+					$component_no = $this->getCustomerProductcomponentNo(); 
+
+					$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
+					$sql .= " SET datec = '".$this->db->idate($now)."'";
+					$sql .= ", entity = '".$entity."'";
+					$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
+					$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+					$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+					$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+					$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
+					$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
+					$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
+					$sql .= ", component_no = '".$this->db->escape($component_no)."'";
+					$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
+					$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
+					$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
+					$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
 
 
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
-			$sql .= " SET fk_brand = '".$this->db->escape($this->fk_brand)."'";
-			$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
-			$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
-			$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
-			$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
-			$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
-			$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
-			$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
-			$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
-			$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
-			$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
-			$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
+					// stock field is not here because it is a denormalized value from product_stock.
+					
+					dol_syslog(get_class($this)."::Create", LOG_DEBUG);
+					$result = $this->db->query($sql);
+					if ($result) {
+						$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
 
-
-			// stock field is not here because it is a denormalized value from product_stock.
-			$sql .= " WHERE rowid = ".$id;
-			
-			dol_syslog(get_class($this)."::update", LOG_DEBUG);
-
-			$resql = $this->db->query($sql);
-			if ($resql) {
-				$this->id = $id;
-
-				$action = 'update';
-
-				
-				if (!$error) {
-					$this->db->commit();
-					return 1;
+						if ($id > 0) {
+							$this->id = $id;
+						} else {
+							$error++;
+							$this->error = 'ErrorFailedToGetInsertedId';
+						}
+					} else {
+						$error++;
+						$this->error = $this->db->lasterror();
+					}
 				} else {
-					$this->db->rollback();
-					return -$error;
+					// Product already exists with this ref
+					$langs->load("products");
+					$error++;
+					$this->error = "ErrorProductCustomerAlreadyExists";
 				}
 			} else {
-				if ($this->db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
-					$langs->load("errors");
-					$this->errors[] = $this->error;
-					$this->db->rollback();
-					return -1;
-				} else {
-					$this->error = $langs->trans("Error")." : ".$this->db->error()." - ".$sql;
-					$this->errors[] = $this->error;
-					$this->db->rollback();
-					return -2;
+				$error++;
+				$this->error = $this->db->lasterror();
+			}
+
+			if (!$error && !$notrigger) {
+				// Call trigger
+				$result = $this->call_trigger('PRODUCTCUSTOMER_CREATE', $user);
+				if ($result < 0) { $error++;
 				}
+				// End call triggers
+			}
+
+			if (!$error) {
+				$this->db->commit();
+				return $this->id;
+			} else {
+				$this->db->rollback();
+				return -$error;
 			}
 		} else {
 			$this->db->rollback();
-			dol_syslog(get_class($this)."::Update fails verify ".join(',', $this->errors), LOG_WARNING);
+			dol_syslog(get_class($this)."::Create fails verify ".join(',', $this->errors), LOG_WARNING);
 			return -3;
 		}
 	}
@@ -4835,5 +4858,23 @@ class ProductCustomer extends CommonObject
 			}
 		}	
 		return $str;
+	}
+
+	public function getCustomerProductcomponentNo()
+	{
+		$component_no = '1900000';
+		$sqlcomponent_no = "SELECT MAX(component_no) as max";
+		$sqlcomponent_no .= " FROM ".MAIN_DB_PREFIX."product_customer";
+		$sqlcomponent_no .= " WHERE component_no != '' ";
+		$resqlcomponent_no = $this->db->query($sqlcomponent_no);
+		if ($resqlcomponent_no)
+		{
+			$objcomponent_no = $this->db->fetch_object($resqlcomponent_no);
+			$component_no = intval($objcomponent_no->max)+1;
+		}else{
+			$component_no = $component_no+1;
+		}
+
+		return $component_no;
 	}
 }

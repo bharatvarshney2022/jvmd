@@ -186,12 +186,35 @@ if (empty($reshook))
 	if ($action == 'add' && $usercancreate)
 	{
 		$error = 0;
-		$fk_model = GETPOST('modelname', 'int');
+		$fk_model = GETPOST('fk_model', 'int');
+		$fk_brand = GETPOST('fk_brand', 'int');
+		$fk_category = GETPOST('fk_category', 'int');
+		$fk_sub_category = GETPOST('fk_sub_category', 'int');
+		$fk_product = GETPOST('fk_product', 'int');
 	
 		if (empty($fk_model))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Model Required')), null, 'errors');
-            $action = "create_customerproduct";
+            $error++;
+        }
+        if (empty($fk_brand))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Brand Required')), null, 'errors');
+            $error++;
+        }
+        if (empty($fk_category))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Category Required')), null, 'errors');
+            $error++;
+        }
+        if (empty($fk_sub_category))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Sub Category Required')), null, 'errors');
+            $error++;
+        }
+         if (empty($fk_product))
+        {
+            setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Product Required')), null, 'errors');
             $error++;
         }
 
@@ -239,14 +262,27 @@ if (empty($reshook))
 				} else {
 					if (count($object->errors)) setEventMessages($object->error, $object->errors, 'errors');
 					else setEventMessages($langs->trans($object->error), null, 'errors');
-					$action = 'create';
+					//$action = 'create';
+					$backurl = DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.GETPOST('fk_soc', 'int');
+
+					header('location: '.$backurl);
+					exit;
 				}
 			} else {
 				echo "c"; exit;
 				if (count($object->errors)) setEventMessages($object->error, $object->errors, 'errors');
 				else setEventMessages($langs->trans("ErrorProductBadRefOrLabel"), null, 'errors');
-				$action = 'create';
+				//$action = 'create';
+				$backurl = DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.GETPOST('fk_soc', 'int');
+
+					header('location: '.$backurl);
+					exit;
 			}
+		}else{
+			$backurl = DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.GETPOST('fk_soc', 'int');
+
+			header('location: '.$backurl);
+			exit;
 		}	
 
 	}
@@ -856,7 +892,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		$socid = GETPOST('socid');
 		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="formprod">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
-		print '<input type="hidden" name="action" value="add_customer_product">';
+		print '<input type="hidden" name="action" value="add">';
 		print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 		print '<input type="hidden" name="fk_soc" value="'.$socid.'">';
 
@@ -910,7 +946,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// Date
-		print '<tr><td class="fieldrequired">'.$langs->trans("AMC Start Date").'</td><td>';
+		print '<tr><td >'.$langs->trans("AMC Start Date").'</td><td>';
 		print $form->selectDate($object->amc_start_date ? $object->amc_start_date : -1, 'amc_start_date', 0, 0, 0, '', 1, 0);;
 		print '</td>';
 		// Ac Capacity
@@ -919,7 +955,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '</td></tr>';
 
 		// Date
-		print '<tr><td class="fieldrequired">'.$langs->trans("Product ODU").'</td><td>';
+		print '<tr><td >'.$langs->trans("Product ODU").'</td><td>';
 		print '<input type="text" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
 		print '</td></tr>';
 
