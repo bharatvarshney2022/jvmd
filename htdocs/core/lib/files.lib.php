@@ -2689,6 +2689,12 @@ function dol_check_secure_access_document($modulepart, $original_file, $entity, 
 		if (!empty($conf->product->enabled)) $original_file = $conf->product->multidir_output[$entity].'/'.$original_file;
 		elseif (!empty($conf->service->enabled)) $original_file = $conf->service->multidir_output[$entity].'/'.$original_file;
 	} // Wrapping pour les lots produits
+	elseif ($modulepart == 'product_customer')
+	{
+		$accessallowed = 1;
+		$original_file = $conf->global->PRODUCT_CUSTOMER_MULTIDIR.'/'.$original_file;
+		
+	}
 	elseif ($modulepart == 'product_batch' || $modulepart == 'produitlot')
 	{
 		if (empty($entity) || (empty($conf->productbatch->multidir_output[$entity]))) return array('accessallowed'=>0, 'error'=>'Value entity must be provided');

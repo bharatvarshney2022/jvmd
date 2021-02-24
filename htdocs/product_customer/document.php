@@ -31,6 +31,7 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product_customer/class/productcustomer.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
@@ -46,10 +47,11 @@ $action = GETPOST('action', 'aZ09');
 $confirm = GETPOST('confirm', 'alpha');
 
 // Security check
-$fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
-$fieldtype = (!empty($ref) ? 'ref' : 'rowid');
+$fieldvalue = $id;
+$fieldtype = 'rowid';
 if ($user->socid) $socid = $user->socid;
-$result = restrictedArea($user, 'produit|service', $fieldvalue, 'product&product', '', '', $fieldtype);
+$result = restrictedArea($user, 'product_customer', $fieldvalue, 'product&product', '', '', $fieldtype);
+
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('productdocuments'));
@@ -67,23 +69,22 @@ if (!$sortorder) $sortorder = "ASC";
 if (!$sortfield) $sortfield = "position_name";
 
 
-$object = new Product($db);
-if ($id > 0 || !empty($ref))
+$object = new ProductCustomer($db);
+if ($id > 0)
 {
-	$result = $object->fetch($id, $ref);
+	$result = $object->fetch($id);
 
-	if (!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$object->entity].'/'.get_exdir(0, 0, 0, 1, $object, 'product');
-	elseif (!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$object->entity].'/'.get_exdir(0, 0, 0, 1, $object, 'product');
+	$upload_dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR.'/'.get_exdir(0, 0, 0, 1, $object, 'product');
+	
 
 	if (!empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))    // For backward compatiblity, we scan also old dirs
 	{
-		if (!empty($conf->product->enabled)) $upload_dirold = $conf->product->multidir_output[$object->entity].'/'.substr(substr("000".$object->id, -2), 1, 1).'/'.substr(substr("000".$object->id, -2), 0, 1).'/'.$object->id."/photos";
-		else $upload_dirold = $conf->service->multidir_output[$object->entity].'/'.substr(substr("000".$object->id, -2), 1, 1).'/'.substr(substr("000".$object->id, -2), 0, 1).'/'.$object->id."/photos";
+		$upload_dirold = $conf->global->PRODUCT_CUSTOMER_MULTIDIR.'/'.substr(substr("000".$object->id, -2), 1, 1).'/'.substr(substr("000".$object->id, -2), 0, 1).'/'.$object->id."/photos";
 	}
 }
-$modulepart = 'produit';
+$modulepart = 'product_customer';
 
-$permissiontoadd = (($object->type == Product::TYPE_PRODUCT && $user->rights->produit->creer) || ($object->type == Product::TYPE_SERVICE && $user->rights->service->creer));
+$permissiontoadd = $user->rights->produit->creer;
 
 
 /*
@@ -187,9 +188,9 @@ llxHeader('', $title, $helpurl);
 
 if ($object->id)
 {
-	$head = product_prepare_head($object);
+	$head = product_customer_prepare_head($object);
 	$titre = $langs->trans("CardProduct".$object->type);
-	$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
+	$picto = 'product_customer';
 
 	print dol_get_fiche_head($head, 'documents', $titre, -1, $picto);
 
@@ -199,6 +200,8 @@ if ($object->id)
 	if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 	// Build file list
+	//echo $upload_dir; exit;
+
 	$filearray = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ?SORT_DESC:SORT_ASC), 1);
 
 	if (!empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))    // For backward compatiblity, we scan also old dirs
@@ -207,6 +210,8 @@ if ($object->id)
 		$filearray = array_merge($filearray, $filearrayold);
 	}
 
+	//echo '<pre>';print_r($filearray); exit;
+
 	$totalsize = 0;
 	foreach ($filearray as $key => $file)
 	{
@@ -214,7 +219,7 @@ if ($object->id)
 	}
 
 
-	$linkback = '<a href="'.DOL_URL_ROOT.'/product/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+	$linkback = '<a href="'.DOL_URL_ROOT.'/product_customer/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	$object->next_prev_filter = " fk_product_type = ".$object->type;
 
 	$shownav = 1;
@@ -237,6 +242,7 @@ if ($object->id)
 	print dol_get_fiche_end();
 
 	$param = '&id='.$object->id;
+	$relativepathwithnofile = $object->id."/";
 	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 
 
@@ -271,7 +277,7 @@ if ($object->id)
 				print $langs->trans('PropalMergePdfProductActualFile');
 			}
 
-			print '<form name="filemerge" action="'.DOL_URL_ROOT.'/product/document.php?id='.$object->id.'" method="post">';
+			print '<form name="filemerge" action="'.DOL_URL_ROOT.'/product_customer/document.php?id='.$object->id.'" method="post">';
 			print '<input type="hidden" name="token" value="'.newToken().'">';
 			print '<input type="hidden" name="action" value="filemerge">';
 			if (count($filetomerge->lines) == 0) {

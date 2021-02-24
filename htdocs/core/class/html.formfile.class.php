@@ -1044,7 +1044,7 @@ class FormFile
 		{
 			$disablecrop = 1;
 			// Values here must be supported by the photo_resize.php page.
-			if (in_array($modulepart, array('bank', 'bom', 'expensereport', 'facture', 'facture_fournisseur', 'holiday', 'medias', 'member', 'mrp', 'project', 'product', 'produit', 'propal', 'service', 'societe', 'tax', 'tax-vat', 'ticket', 'user'))) $disablecrop = 0;
+			if (in_array($modulepart, array('bank', 'bom', 'expensereport', 'facture', 'facture_fournisseur', 'holiday', 'medias', 'member', 'mrp', 'project', 'product_customer', 'product', 'produit', 'propal', 'service', 'societe', 'tax', 'tax-vat', 'ticket', 'user'))) $disablecrop = 0;
 		}
 
 		// Define relative path used to store the file
@@ -1103,7 +1103,7 @@ class FormFile
 			if ($permtoeditline < 0)  // Old behaviour for backward compatibility. New feature should call method with value 0 or 1
 			{
 				$permtoeditline = 0;
-				if (in_array($modulepart, array('product', 'produit', 'service')))
+				if (in_array($modulepart, array('product_customer', 'product', 'produit', 'service')))
 				{
 					if ($user->rights->produit->creer && $object->type == Product::TYPE_PRODUCT) $permtoeditline = 1;
 					if ($user->rights->service->creer && $object->type == Product::TYPE_SERVICE) $permtoeditline = 1;
