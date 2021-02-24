@@ -28,7 +28,7 @@
 	{
 		$object = new Product($db);
 
-		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.amc_start_date, p.amc_end_date, p.product_odu, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
@@ -36,6 +36,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as m on p.fk_model = m.rowid";
 		
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
+		$sql .= " AND p.rowid = '".$product_detail_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 
 		$result = $db->query($sql);
@@ -43,19 +44,16 @@
 			$num = $db->num_rows($result);
 
 			$status_code = '1';
-			$message = 'Product listing.';
+			$message = 'Product detail.';
 
 			$i = 0;
 			$producttmp = new Product($db);
 
-			while ($i < $num) {
-				$obj = $db->fetch_object($result);
+			$obj = $db->fetch_object($result);
 				
-				$producttmp->fetch($obj->fk_product);
+			$producttmp->fetch($obj->fk_product);
 
-				$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
-				$i++;
-			}
+			$societeProductData = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'amc_start_date' => $obj->amc_start_date, 'amc_end_date' => $obj->amc_end_date, 'product_odu' => $obj->product_odu, 'date_added' => $obj->de);
 
 			$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
 		}

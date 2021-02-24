@@ -65,46 +65,57 @@
 			$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
 
 			$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData, 1);
-			
-			// Image Upload
-			if (!empty($_FILES))
-			{
-				$error = 0;
-				if (is_array($_FILES['product_images']['tmp_name'])) $images = $_FILES['product_images']['tmp_name'];
-				else $images = array($_FILES['product_images']['tmp_name']);
 
-				foreach ($images as $key => $image)
+			if($newCustomerProduct == 0)
+			{
+				$status_code = '0';
+				$message = 'Selected data already exists.';
+
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
+			else
+			{
+
+				// Image Upload
+				if (!empty($_FILES))
 				{
-					if (empty($_FILES['product_images']['tmp_name'][$key]))
+					$error = 0;
+					if (is_array($_FILES['product_images']['tmp_name'])) $images = $_FILES['product_images']['tmp_name'];
+					else $images = array($_FILES['product_images']['tmp_name']);
+
+					foreach ($images as $key => $image)
 					{
-						$error++;
-						if ($_FILES['product_images']['error'][$key] == 1 || $_FILES['product_images']['error'][$key] == 2) {
-							setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
-						} else {
-							setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+						if (empty($_FILES['product_images']['tmp_name'][$key]))
+						{
+							$error++;
+							if ($_FILES['product_images']['error'][$key] == 1 || $_FILES['product_images']['error'][$key] == 2) {
+								setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+							} else {
+								setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+							}
+						}
+					}
+
+					if (!$error)
+					{
+						// Define if we have to generate thumbs or not
+						$generatethumbs = 1;
+						$allowoverwrite = 0;
+
+						$upload_dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR."/".$newCustomerProduct;
+						
+						if (!empty($upload_dir))
+						{
+							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'product_images', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $objectPro);
 						}
 					}
 				}
 
-				if (!$error)
-				{
-					// Define if we have to generate thumbs or not
-					$generatethumbs = 1;
-					$allowoverwrite = 0;
+				$status_code = '1';
+				$message = 'Product added successfully.';
 
-					$upload_dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR."/".$newCustomerProduct;
-					
-					if (!empty($upload_dir))
-					{
-						$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'product_images', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $objectPro);
-					}
-				}
+				$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => "".$newCustomerProduct);
 			}
-
-			$status_code = '1';
-			$message = 'Product added successfully.';
-
-			$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => "".$newCustomerProduct);
 		}
 		else
 		{

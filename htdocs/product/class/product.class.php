@@ -5834,7 +5834,7 @@ class Product extends CommonObject
 			else
 			{
 				$data = $this->db->fetch_object($result);
-				return $data->rowid;
+				return 0;//$data->rowid;
 			}
 		}
 	}	
