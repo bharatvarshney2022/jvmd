@@ -827,9 +827,10 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 				$user_group_id = $groupforuser->id;
 			}
 		}
+
 		if($user->admin || $user_group_id == '4'){
 
-			$newcardbutton .= dolGetButtonTitle($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
+			$newcardbutton .= dolGetButtonTitle($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
 			print '<br>';
 		}
@@ -915,10 +916,10 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print '<td class="right">';
 						
 						if($user->admin || $user_group_id == '4'){
-							print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&fk_soc='.$obj->fk_soc.'&custprodid='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
+							print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product_customer/card.php?action=edit&fk_soc='.$obj->fk_soc.'&id='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
 								print img_edit();
 							print '</a>';
-						}	
+						}
 						print '</td>';
 
 						print '</tr>';

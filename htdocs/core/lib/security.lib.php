@@ -247,6 +247,8 @@ function restrictedArea($user, $features, $objectid = 0, $tableandshare = '', $f
 			if (!$user->rights->banque->cheque) { $readok = 0; $nbko++; }
 		} elseif ($feature == 'projet') {
 			if (!$user->rights->projet->lire && !$user->rights->projet->all->lire) { $readok = 0; $nbko++; }
+		} elseif ($feature == 'product_customer') {
+			if (!$user->admin) { $readok = 0; $nbko++; }
 		} elseif (!empty($feature2)) { 													// This is for permissions on 2 levels
 			$tmpreadok = 1;
 			foreach ($feature2 as $subfeature) {
@@ -267,7 +269,10 @@ function restrictedArea($user, $features, $objectid = 0, $tableandshare = '', $f
 	// If a or and at least one ok
 	if (preg_match('/\|/', $features) && $nbko < count($featuresarray)) $readok = 1;
 
-	if (!$readok) accessforbidden();
+
+	if (!$readok) {
+		accessforbidden();
+	}
 	//print "Read access is ok";
 
 	// Check write permission from module (we need to know write permission to create but also to delete drafts record or to upload files)
@@ -295,6 +300,8 @@ function restrictedArea($user, $features, $objectid = 0, $tableandshare = '', $f
 				if (!$user->rights->import->run) { $createok = 0; $nbko++; }
 			} elseif ($feature == 'ecm') {
 				if (!$user->rights->ecm->upload) { $createok = 0; $nbko++; }
+			} elseif ($feature == 'product_customer') {
+				if (!$user->admin) { $createok = 0; $nbko++; }
 			} elseif (!empty($feature2)) {														// This is for permissions on one level
 				foreach ($feature2 as $subfeature) {
 					if ($subfeature == 'user' && $user->id == $objectid && $user->rights->user->self->creer) continue; // User can edit its own card
@@ -372,7 +379,10 @@ function restrictedArea($user, $features, $objectid = 0, $tableandshare = '', $f
 			} elseif ($feature == 'salaries')
 			{
 				if (!$user->rights->salaries->delete) $deleteok = 0;
-			} elseif (!empty($feature2))							// This is for permissions on 2 levels
+			} elseif ($feature == 'product_customer') {
+				if (!$user->admin) { $deleteok = 0; }
+			} 
+			elseif (!empty($feature2))							// This is for permissions on 2 levels
 			{
 				foreach ($feature2 as $subfeature)
 				{

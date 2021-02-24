@@ -127,7 +127,7 @@ if ($socid)
 	$params = '';
 
 	
-	// Projects list
+	// Product list
 	$result = show_products($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id, 1, $newcardbutton);
 }
 

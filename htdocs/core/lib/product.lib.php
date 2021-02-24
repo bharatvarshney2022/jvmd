@@ -32,6 +32,63 @@
  * @param   Product	$object		Object related to tabs
  * @return  array				Array of tabs to show
  */
+
+function product_customer_prepare_head($object)
+{
+	global $db, $langs, $conf, $user;
+	$langs->load("products");
+
+	$label = $langs->trans('ProductCustomer');
+	if ($object->isService()) $label = $langs->trans('Service');
+
+	$h = 0;
+	$head = array();
+
+	$head[$h][0] = DOL_URL_ROOT."/product_customer/card.php?id=".$object->id;
+	$head[$h][1] = $label;
+	$head[$h][2] = 'card';
+	$h++;
+
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
+	// $this->tabs = array('entity:-tabname);   												to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'product');
+
+	// Attachments
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	if (!empty($conf->product->enabled) && ($object->type == Product::TYPE_PRODUCT)) $upload_dir = $conf->product->multidir_output[$object->entity].'/'.dol_sanitizeFileName($object->ref);
+	if (!empty($conf->service->enabled) && ($object->type == Product::TYPE_SERVICE)) $upload_dir = $conf->service->multidir_output[$object->entity].'/'.dol_sanitizeFileName($object->ref);
+	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
+	if (!empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO)) {
+		if (!empty($conf->product->enabled) && ($object->type == Product::TYPE_PRODUCT)) $upload_dir = $conf->product->multidir_output[$object->entity].'/'.get_exdir($object->id, 2, 0, 0, $object, 'product').$object->id.'/photos';
+		if (!empty($conf->service->enabled) && ($object->type == Product::TYPE_SERVICE)) $upload_dir = $conf->service->multidir_output[$object->entity].'/'.get_exdir($object->id, 2, 0, 0, $object, 'product').$object->id.'/photos';
+		$nbFiles += count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
+	}
+	$nbLinks = Link::count($db, $object->element, $object->id);
+	$head[$h][0] = DOL_URL_ROOT.'/product_customer/document.php?id='.$object->id;
+	$head[$h][1] = $langs->trans('Documents');
+	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
+	$head[$h][2] = 'documents';
+	$h++;
+
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'product', 'remove');
+
+	// Log
+	/*$head[$h][0] = DOL_URL_ROOT.'/product/agenda.php?id='.$object->id;
+	$head[$h][1] = $langs->trans("Events");
+	if (!empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read)))
+	{
+		$head[$h][1] .= '/';
+		$head[$h][1] .= $langs->trans("Agenda");
+	}
+	$head[$h][2] = 'agenda';
+	$h++;*/
+
+	return $head;
+}
+
 function product_prepare_head($object)
 {
 	global $db, $langs, $conf, $user;

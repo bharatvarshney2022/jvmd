@@ -848,6 +848,111 @@ class Form
 	 *  @param	array	$exclude_country_code	Array of country code (iso2) to exclude
 	 *  @return string           				HTML string with select
 	 */
+	
+	public function select_ac_capacity($selected = '', $htmlname = 'country_id', $htmloption = '', $maxlength = 0, $morecss = '', $usecodeaskey = '', $showempty = 1, $disablefavorites = 0, $addspecialentries = 0, $exclude_country_code = array())
+	{
+		// phpcs:enable
+		global $conf, $langs, $mysoc;
+
+		$langs->load("dict");
+
+		$out = '';
+		$countryArray = array();
+		$favorite = array();
+		$label = array();
+		$atleastonefavorite = 0;
+
+		$sql = "SELECT rowid, code as code_iso, nom as label";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_product_capacity";
+		$sql .= " WHERE active > 0";
+		//$sql.= " ORDER BY code ASC";
+
+		dol_syslog(get_class($this)."::select_capacity", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$out .= '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" '.$htmloption.' style="width:100%">';
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+
+					$countryArray[$i]['rowid'] = $obj->rowid;
+					$countryArray[$i]['code_iso'] = $obj->code_iso;
+					$countryArray[$i]['label'] = ($obj->code_iso && $langs->transnoentitiesnoconv("Country".$obj->code_iso) != "Country".$obj->code_iso ? $langs->transnoentitiesnoconv("Country".$obj->code_iso) : ($obj->label != '-' ? $obj->label : ''));
+					$favorite[$i] = $obj->favorite;
+					$label[$i] = dol_string_unaccent($countryArray[$i]['label']);
+					$i++;
+				}
+
+				if (empty($disablefavorites)) array_multisort($favorite, SORT_DESC, $label, SORT_ASC, $countryArray);
+				else $countryArray = dol_sort_array($countryArray, 'label');
+
+				if ($showempty)
+				{
+					$out .= '<option value="">&nbsp;</option>'."\n";
+				}
+
+				if ($addspecialentries)	// Add dedicated entries for groups of countries
+				{
+					//if ($showempty) $out.= '<option value="" disabled class="selectoptiondisabledwhite">--------------</option>';
+					$out .= '<option value="special_allnotme"'.($selected == 'special_allnotme' ? ' selected' : '').'>'.$langs->trans("CountriesExceptMe", $langs->transnoentitiesnoconv("Country".$mysoc->country_code)).'</option>';
+					$out .= '<option value="special_eec"'.($selected == 'special_eec' ? ' selected' : '').'>'.$langs->trans("CountriesInEEC").'</option>';
+					if ($mysoc->isInEEC()) $out .= '<option value="special_eecnotme"'.($selected == 'special_eecnotme' ? ' selected' : '').'>'.$langs->trans("CountriesInEECExceptMe", $langs->transnoentitiesnoconv("Country".$mysoc->country_code)).'</option>';
+					$out .= '<option value="special_noteec"'.($selected == 'special_noteec' ? ' selected' : '').'>'.$langs->trans("CountriesNotInEEC").'</option>';
+					$out .= '<option value="" disabled class="selectoptiondisabledwhite">------------</option>';
+				}
+
+				foreach ($countryArray as $row)
+				{
+					//if (empty($showempty) && empty($row['rowid'])) continue;
+					if (empty($row['rowid'])) continue;
+					if (is_array($exclude_country_code) && count($exclude_country_code) && in_array($row['code_iso'], $exclude_country_code)) continue; // exclude some countries
+
+					if (empty($disablefavorites) && $row['favorite'] && $row['code_iso']) $atleastonefavorite++;
+					if (empty($row['favorite']) && $atleastonefavorite)
+					{
+						$atleastonefavorite = 0;
+						$out .= '<option value="" disabled class="selectoptiondisabledwhite">------------</option>';
+					}
+
+					$labeltoshow = '';
+					if ($row['label']) $labeltoshow .= dol_trunc($row['label'], $maxlength, 'middle');
+					else $labeltoshow .= '&nbsp;';
+					if ($row['code_iso']) {
+						$labeltoshow .= ' <span class="opacitymedium">('.$row['code_iso'].')</span>';
+						$labeltoshow = $labeltoshow;
+					}
+
+					if ($selected && $selected != '-1' && ($selected == $row['rowid'] || $selected == $row['code_iso'] || $selected == $row['code_iso3'] || $selected == $row['label'])) {
+						$out .= '<option value="'.$row['label'].'" selected data-html="'.dol_escape_htmltag($labeltoshow).'">';
+					} else {
+						$out .= '<option value="'.$row['label'].'" data-html="'.dol_escape_htmltag($labeltoshow).'">';
+					}
+					$out .= $labeltoshow;
+					$out .= '</option>';
+				}
+			}
+			$out .= '</select>';
+		} else {
+			dol_print_error($this->db);
+		}
+
+		$out .= '
+		<script>
+			$("#select'.$htmlname.'").select2();
+		</script>';
+
+		// Make select dynamic
+		//include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+		//$out .= ajax_combobox('select'.$htmlname);
+
+		return $out;
+	}
+
 	public function select_country($selected = '', $htmlname = 'country_id', $htmloption = '', $maxlength = 0, $morecss = '', $usecodeaskey = '', $showempty = 1, $disablefavorites = 0, $addspecialentries = 0, $exclude_country_code = array())
 	{
 		// phpcs:enable
