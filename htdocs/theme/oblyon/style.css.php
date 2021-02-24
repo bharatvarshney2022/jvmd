@@ -1,13 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013-2016  Nicolas Rivera          <nrivera.pro@gmail.com>
- * Copyright (C) 2015-2019  Open-DSI                <support@open-dsi.fr>
- *
- * Copyright (C) 2004-2013  Laurent Destailleur     <eldy@users.sourceforge.net>
- * Copyright (C) 2006       Rodolphe Quiedeville    <rodolphe@quiedeville.org>
- * Copyright (C) 2007-2012  Regis Houssin           <regis.houssin@capnetworks.com>
- * Copyright (C) 2011       Philippe Grand          <philippe.grand@atoo-net.com>
- * Copyright (C) 2012       Juanjo Menent           <jmenent@2byte.es>
+ * 
  *
  *
  * This program is free software; you can redistribute it and/or modify

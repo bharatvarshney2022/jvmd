@@ -1,9 +1,5 @@
 <?php
-/* Copyright (C) 2002-2007      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010      Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012      Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2010           Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2013-2016      Jean-François Ferry  <hello@librethic.io>
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

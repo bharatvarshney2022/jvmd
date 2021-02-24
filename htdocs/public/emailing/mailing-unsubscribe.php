@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
+ * 
  * Copyright (C) 2005-2015 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2012	   Florian Henry  <florian.henry@open-concept.pro>
  * Copyright (C) 2014	   Juanjo Menent		<jmenent@2byte.es>

@@ -1,12 +1,5 @@
 <?php
-/* Copyright (c) 2005       Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (c) 2005-2018	Laurent Destailleur	 <eldy@users.sourceforge.net>
- * Copyright (c) 2005-2018	Regis Houssin		 <regis.houssin@inodbox.com>
- * Copyright (C) 2012		Florian Henry		 <florian.henry@open-concept.pro>
- * Copyright (C) 2014		Juanjo Menent		 <jmenent@2byte.es>
- * Copyright (C) 2014		Alexis Algoud		 <alexis@atm-consulting.fr>
- * Copyright (C) 2018       Nicolas ZABOURI		 <info@inovea-conseil.com>
- * Copyright (C) 2019       Abbes Bahfir            <dolipar@dolipar.org>
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
