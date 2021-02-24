@@ -713,13 +713,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		//WYSIWYG Editor
 		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
-		print '<script type="text/javascript">';
+		print '<script type="text/javascript">'."\n";
 				print '$(document).ready(function () {
                         $("#selectcountry_id").change(function() {
                         	document.formprod.action.value="create";
                         	document.formprod.submit();
                         });
-                     });';
+                     });'."\n";
 
         print '$(document).ready(function () {
                         $("#fk_brand").change(function() {
@@ -810,7 +810,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 						  }
 					});
                 });
-             });';     
+             });'."\n";     
 		print '</script>'."\n";
 
 		// Load object modCodeProduct
@@ -832,10 +832,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<input type="hidden" name="action" value="add_customer_product">';
 		print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 		print '<input type="hidden" name="fk_soc" value="'.$socid.'">';
-		print '<input type="hidden" id="fk_brand" name="fk_brand" value="">';
-		print '<input type="hidden" id="fk_category" name="fk_category" value="">';
-		print '<input type="hidden" id="fk_subcategory" name="fk_subcategory" value="">';
-		print '<input type="hidden" id="fk_product" name="fk_product" value="">';
 
 		
 		$picto = 'product';
