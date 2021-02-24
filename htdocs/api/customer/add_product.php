@@ -66,7 +66,7 @@
 			$objectProCust = new ProductCustomer($db);
 
 			$objectProCust->fk_model = $model_id;
-			$objectProCust->fk_soc = $fk_soc;
+			$objectProCust->fk_soc = $user_id;
 			$objectProCust->fk_brand = $brand_id;
 			$objectProCust->fk_category = $category_id;
 			$objectProCust->fk_subcategory = $sub_category_id;
