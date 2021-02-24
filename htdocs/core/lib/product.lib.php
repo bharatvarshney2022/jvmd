@@ -44,7 +44,7 @@ function product_customer_prepare_head($object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = DOL_URL_ROOT."/product_customer/card.php?id=".$object->id;
+	$head[$h][0] = DOL_URL_ROOT."/product_customer/card.php?id=".$object->id."&amp;action=edit&amp;fk_soc=".$object->fk_soc;
 	$head[$h][1] = $label;
 	$head[$h][2] = 'card';
 	$h++;

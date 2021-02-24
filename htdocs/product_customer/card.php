@@ -714,12 +714,81 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
 		print '<script type="text/javascript">';
-		print '$(document).ready(function () {
-                $("#selectcountry_id").change(function() {
-                	document.formprod.action.value="create";
-                	document.formprod.submit();
-                });
-             });';
+				print '$(document).ready(function () {
+                        $("#selectcountry_id").change(function() {
+                        	document.formprod.action.value="create";
+                        	document.formprod.submit();
+                        });
+                     });';
+
+        print '$(document).ready(function () {
+                        $("#fk_brand").change(function() {
+                        	var brand = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getcategorybybrand.php",
+								  data: { brand: brand},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_category").html(html);
+									$("#fk_sub_category").html("<option>Select Sub Category</option>");
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        });
+
+                       $("#fk_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getsubcategorybybrand.php",
+								  data: { brand: brand, category: category},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_sub_category").html(html);
+									$("#fk_model").html("<option>Select Model</option>");
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+                        $("#fk_sub_category").change(function() {
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $(this).val();
+                        	$.ajax({
+								  dataType: "html",
+								  url: "getproductmodel.php",
+								  data: { brand: brand, category: category , subcategory: subcategory},
+								  success: function(html) {
+								  	//alert(html);
+									$("#fk_model").html(html);
+									$("#label").val("");
+								  }
+							});
+                        }); 
+
+
+                        $("#fk_model").change(function() {
+                        	var model = $(this).val();
+                        	var brand = $("#fk_brand").val();
+                        	var category = $("#fk_category").val();
+                        	var subcategory = $("#fk_sub_category").val();
+                        	
+                        	$.ajax({
+								  dataType: "html",
+								  url: "productlistbymodel.php",
+								  data: {brand: brand, category: category , subcategory: subcategory, model: model},
+								  success: function(data) {
+								  	//alert(data);
+									$("#fk_product").html(data);
+								  }
+							});
+                        }); 
+
+	               });'; 
 
         print '$(document).ready(function () {
                 $("#modelname").change(function() {
@@ -756,7 +825,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$modCodeProduct = new $module();
 		}
 
-		dol_set_focus('select[name="family"]');
+		//dol_set_focus('select[name="family"]');
 		$socid = GETPOST('socid');
 		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="formprod">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -779,26 +848,57 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print dol_get_fiche_head($head, 'card', '', 0, '');
 		print '<table class="border centpercent">';
 
-		// Model
-		print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-		print $formcompany->select_modelName($family_id, '0' ,'modelname');
-		print '</td>';
-		// Label
-		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
-
 		// Brand
-		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td><input name="brand" id="brand" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('brand')).'">';
+		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+		print $formcompany->select_brand('', '0' ,'fk_brand');
 		print '</td>';
 		
+		// Product Category
 
-		// Product Family
-		print '<td>'.$langs->trans("Family").'</td><td><input name="c_product_family" id="c_product_family" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('family')).'"></td></tr>';
+		print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+		print '<select class="flat" id="fk_category" name="fk_category">';
+		print '<option value="0">Select Category</option>';
+		print '</select>';
+		print '</td></tr>';
 
-		// Product Family
-		print '<tr><td>'.$langs->trans("Sub Family").'</td><td><input name="c_product_subfamily" id="c_product_subfamily" readonly class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('c_product_subfamily')).'"></td>';
+		// Product sub Category
+		print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print '<option value="0">Select Sub Category</option>';
+		print '</select>';
+		print '</td>';
+		// Model
+		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		print '<select class="flat" id="fk_model" name="fk_model">';
+		print '<option value="0">Select Model</option>';
+		print '</select>';
+		print '</td></tr>';
+
+		// Label
+		print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+		print '<select class="flat" id="fk_product" name="fk_product">';
+		print '<option value="0">Select Product</option>';
+		print '</select>';
+		print '</td>';
 
 		// Ac Capacity
-		print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
+		print '<td>'.$langs->trans("AC Capacity").'</td><td>';
+		print $form->select_ac_capacity(GETPOSTISSET("ac_capacity") ? GETPOST("ac_capacity") : $object->ac_capacity, 'ac_capacity');
+		print '</td></tr>';
+
+		// Date
+		print '<tr><td class="fieldrequired">'.$langs->trans("AMC Start Date").'</td><td>';
+		print $form->selectDate($object->amc_start_date ? $object->amc_start_date : -1, 'amc_start_date', 0, 0, 0, '', 1, 0);;
+		print '</td>';
+		// Ac Capacity
+		print '<td>'.$langs->trans("AMC End Date").'</td><td>';
+		print $form->selectDate($object->amc_end_date ? $object->amc_end_date : -1, 'amc_end_date', 0, 0, 0, '', 1, 0);
+		print '</td></tr>';
+
+		// Date
+		print '<tr><td class="fieldrequired">'.$langs->trans("Product ODU").'</td><td>';
+		print '<input type="text" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
+		print '</td></tr>';
 
 		
 		print '</table>';
