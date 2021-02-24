@@ -10,6 +10,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/product_customer/class/productcustomer.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
@@ -62,9 +63,18 @@
 
 		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
 		{
-			$insertData = array('fk_soc' => $user_id, 'fk_model' => $model_id, 'fk_brand' => $brand_id, 'fk_category' => $category_id, 'fk_subcategory' => $sub_category_id, 'fk_product' => $product_id, 'ac_capacity' => $capacity, 'component_no' => $component_no);
+			$objectProCust = new ProductCustomer($db);
 
-			$newCustomerProduct = $objectPro->add_customer_product($userRow, $insertData, 1);
+			$objectProCust->fk_model = $model_id;
+			$objectProCust->fk_soc = $fk_soc;
+			$objectProCust->fk_brand = $brand_id;
+			$objectProCust->fk_category = $category_id;
+			$objectProCust->fk_subcategory = $sub_category_id;
+			$objectProCust->fk_product = $product_id;
+			$objectProCust->ac_capacity = $capacity;
+			$objectProCust->component_no = $component_no;
+
+			$newCustomerProduct = $objectProCust->addProduct($userRow, 1);
 
 			if($newCustomerProduct == 0)
 			{

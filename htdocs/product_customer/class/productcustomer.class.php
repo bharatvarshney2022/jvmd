@@ -4725,51 +4725,43 @@ class ProductCustomer extends CommonObject
 		}
 	}
 
-	public function add_customer_product($user,$post)
+	public function addProduct($user, $api = 0)
 	{
 		$now = dol_now();
 		$entity = 1;
-		$sql = "SELECT count(*) as nb";
+		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
 		$sql .= " WHERE fk_soc  = '".$this->db->escape($post['fk_soc'])."' ";
 		$sql .= " AND fk_model = '".$this->db->escape($post['fk_model'])."'";
 
 		$result = $this->db->query($sql);
 		if ($result) {
-			$obj = $this->db->fetch_object($result);
-			if ($obj->nb == 0) {
+			$obj = $this->db->num_rows($result);
+			if ($obj == 0) {
 				// Produit non deja existant
-				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer (";
-				$sql .= "datec";
-				$sql .= ", entity";
-				$sql .= ", fk_brand";
-				$sql .= ", fk_category";
-				$sql .= ", fk_subcategory";
-				$sql .= ", fk_model";
-				$sql .= ", fk_product";
-				$sql .= ", fk_soc";
-				$sql .= ", ac_capacity";
-				$sql .= ", fk_user";
-				$sql .= ") VALUES (";
-				$sql .= "'".$this->db->idate($now)."'";
-				$sql .= ", ".$entity;
-				$sql .= ", '".$this->db->escape($post['fk_brand'])."'";
-				$sql .= ", '".$this->db->escape($post['fk_category'])."'";
-				$sql .= ", '".$this->db->escape($post['fk_subcategory'])."'";					
-				$sql .= ", '".$this->db->escape($post['fk_model'])."'";
-				$sql .= ", '".$this->db->escape($post['fk_product'])."'";
-				$sql .= ", '".$this->db->escape($post['fk_soc'])."'";
-				$sql .= ", '".$this->db->escape($post['ac_capacity'])."'";
-				$sql .= ", ".$user->id;
-				$sql .= ")";
-				/*echo $sql;
-				exit;*/
+				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
+				$sql .= " SET datec = '".$this->db->escape($now)."'";
+				$sql .= ", entity = '".$this->db->escape($entity)."'";
+				$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
+				$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+				$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+				$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+				$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
+				$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
+				$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
+				$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
+				$sql .= ", fk_user = '1'";
 				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 				$result = $this->db->query($sql);
 				if ($result) {
 					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
 					return $id;
 				}
+			}
+			else
+			{
+				$data = $this->db->fetch_object($result);
+				return 0;//$data->rowid;
 			}
 		}
 	}	
