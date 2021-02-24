@@ -827,7 +827,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 				$user_group_id = $groupforuser->id;
 			}
 		}
-		if($user_group_id == '4'){
+		if($user->admin || $user_group_id == '4'){
 
 			$newcardbutton .= dolGetButtonTitle($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product/card.php?action=create_customerproduct&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
@@ -914,7 +914,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						// Status
 						print '<td class="right">';
 						
-						if($user_group_id == '4'){
+						if($user->admin || $user_group_id == '4'){
 							print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product/card.php?action=edit_customerproduct&fk_soc='.$obj->fk_soc.'&custprodid='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
 								print img_edit();
 							print '</a>';
