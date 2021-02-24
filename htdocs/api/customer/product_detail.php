@@ -37,25 +37,34 @@
 		
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$product_detail_id."'";
-		$sql .= " ORDER BY p.datec DESC";
 
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
 
-			$status_code = '1';
-			$message = 'Product detail.';
+			if($num > 0)
+			{
 
-			$i = 0;
-			$producttmp = new Product($db);
+				$status_code = '1';
+				$message = 'Product detail.';
 
-			$obj = $db->fetch_object($result);
+				$producttmp = new Product($db);
+
+				$obj = $db->fetch_object($result);
+					
+				$producttmp->fetch($obj->fk_product);
+
+				$societeProductData = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'amc_start_date' => $obj->amc_start_date, 'amc_end_date' => $obj->amc_end_date, 'product_odu' => $obj->product_odu, 'date_added' => $obj->de);
+
+				$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
+			}
+			else
+			{
+				$status_code = '0';
+				$message = 'Sorry! No product listing exists!!';
 				
-			$producttmp->fetch($obj->fk_product);
-
-			$societeProductData = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'amc_start_date' => $obj->amc_start_date, 'amc_end_date' => $obj->amc_end_date, 'product_odu' => $obj->product_odu, 'date_added' => $obj->de);
-
-			$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
 		}
 		else
 		{
