@@ -249,7 +249,7 @@ if (empty($reshook))
 					if (!empty($backtopage))
 					{
 						 // New method to autoselect project after a New on another form object creation
-						if (preg_match('/\?/', $backtopage)) $backtopage .= '&socid='.$object->id; // Old method
+						if (preg_match('/\?/', $backtopage)) $backtopage; // Old method
 						header("Location: ".$backtopage);
 						exit;
 					} else {
