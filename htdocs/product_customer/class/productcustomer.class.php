@@ -111,27 +111,16 @@ class ProductCustomer extends CommonObject
 
 	public $fk_user;
 
+	public $amc_start_date;
+	public $amc_end_date;
+	public $product_odu;
+
 	/**
 	 * Check TYPE constants
 	 *
 	 * @var int
 	 */
 	public $type = self::TYPE_PRODUCT;
-
-	//! Arrays for multiprices
-	public $multiprices = array();
-	public $multiprices_ttc = array();
-	public $multiprices_base_type = array();
-	public $multiprices_min = array();
-	public $multiprices_min_ttc = array();
-	public $multiprices_tva_tx = array();
-	public $multiprices_recuperableonly = array();
-
-	//! Price by quantity arrays
-	public $price_by_qty;
-	public $prices_by_qty = array();
-	public $prices_by_qty_id = array();
-	public $prices_by_qty_list = array();
 
 	//! Size of image
 	public $imgWidth;
@@ -170,6 +159,9 @@ class ProductCustomer extends CommonObject
 		'component_no'=>array('type'=>'varchar', 'label'=>'UserAuthor', 'enabled'=>1, 'visible'=>-2, 'notnull'=>1, 'position'=>510),
 		'fk_user' =>array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>1, 'visible'=>-2, 'notnull'=>-1, 'position'=>511),
 		//'fk_user_valid' =>array('type'=>'integer',      'label'=>'UserValidation',        'enabled'=>1, 'visible'=>-1, 'position'=>512),
+		'amc_start_date'         =>array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>1, 'visible'=>-2, 'notnull'=>1, 'position'=>500),
+		'amc_end_date'           =>array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>1, 'visible'=>-2, 'notnull'=>1, 'position'=>501),
+		'product_odu'=>array('type'=>'varchar', 'label'=>'UserAuthor', 'enabled'=>1, 'visible'=>-2, 'notnull'=>1, 'position'=>510),
 		'import_key'    =>array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>1, 'visible'=>-2, 'notnull'=>-1, 'index'=>0, 'position'=>1000),
 		//'tosell'       =>array('type'=>'integer',      'label'=>'Status',           'enabled'=>1, 'visible'=>1,  'notnull'=>1, 'default'=>0, 'index'=>1,  'position'=>1000, 'arrayofkeyval'=>array(0=>'Draft', 1=>'Active', -1=>'Cancel')),
 		//'tobuy'        =>array('type'=>'integer',      'label'=>'Status',           'enabled'=>1, 'visible'=>1,  'notnull'=>1, 'default'=>0, 'index'=>1,  'position'=>1000, 'arrayofkeyval'=>array(0=>'Draft', 1=>'Active', -1=>'Cancel')),
@@ -583,6 +575,10 @@ class ProductCustomer extends CommonObject
 		$this->component_no                	 = $this->component_no;
 		$this->fk_user                		 = $this->fk_user;
 
+		$this->amc_start_date                = date('Y-m-d H:i:s', strtotime($this->amc_start_date));
+		$this->amc_end_date               	 = date('Y-m-d H:i:s', strtotime($this->amc_end_date));
+		$this->product_odu                	 = $this->product_odu;
+
 		$now = dol_now();
 		$this->date_modification             = $now;
 		
@@ -615,12 +611,14 @@ class ProductCustomer extends CommonObject
 			$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 			$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
 			$sql .= ", fk_user = '".$this->db->escape($this->fk_user)."'";
+			$sql .= ", amc_start_date = '".$this->db->escape($this->amc_start_date)."'";
+			$sql .= ", amc_end_date = '".$this->db->escape($this->amc_end_date)."'";
+			$sql .= ", product_odu = '".$this->db->escape($this->product_odu)."'";
 
 
 			// stock field is not here because it is a denormalized value from product_stock.
 			$sql .= " WHERE rowid = ".$id;
 			
-
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 
 			$resql = $this->db->query($sql);
@@ -1568,7 +1566,7 @@ class ProductCustomer extends CommonObject
 			return -1;
 		}
 
-		$sql = "SELECT rowid, entity, datec, tms, fk_brand, fk_category, fk_subcategory, fk_model, fk_product, fk_soc, ac_capacity, component_no, fk_user, import_key";
+		$sql = "SELECT rowid, entity, datec, tms, fk_brand, fk_category, fk_subcategory, fk_model, fk_product, fk_soc, ac_capacity, component_no, fk_user, import_key, amc_start_date, amc_end_date, product_odu";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
 		if ($id) {
 			$sql .= " WHERE rowid = ".(int) $id;
@@ -1606,6 +1604,10 @@ class ProductCustomer extends CommonObject
 				$this->date_modification             = $obj->tms;
 				$this->import_key                    = $obj->import_key;
 				$this->entity                        = $obj->entity;
+
+				$this->amc_start_date                = $obj->amc_start_date;
+				$this->amc_end_date                  = $obj->amc_end_date;
+				$this->product_odu                   = $obj->product_odu;
 
 				$this->db->free($resql);
 

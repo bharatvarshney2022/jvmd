@@ -246,6 +246,10 @@ if (empty($reshook))
 				$object->fk_model = GETPOST('fk_model', 'int');
 				$object->ac_capacity   = GETPOST('ac_capacity');
 
+				$object->amc_start_date   = GETPOST('amc_start_date');
+				$object->amc_end_date   = GETPOST('amc_end_date');
+				$object->product_odu   = GETPOST('product_odu');
+
 				
 				if (!$error && $object->check())
 				{
@@ -258,7 +262,6 @@ if (empty($reshook))
 
 						header('location: '.$backurl);
 					} else {
-						echo "b"; exit;
 						if (count($object->errors)) setEventMessages($object->error, $object->errors, 'errors');
 						else setEventMessages($langs->trans($object->error), null, 'errors');
 						$action = 'edit';
@@ -992,6 +995,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print $form->select_ac_capacity(GETPOSTISSET("ac_capacity") ? GETPOST("ac_capacity") : $object->ac_capacity, 'ac_capacity');
 			print '</td></tr>';
 
+			// Date
+			print '<tr><td class="fieldrequired">'.$langs->trans("AMC Start Date").'</td><td>';
+			print $form->selectDate($object->amc_start_date ? $object->amc_start_date : -1, 'amc_start_date', 0, 0, 0, '', 1, 0);;
+			print '</td>';
+			// Ac Capacity
+			print '<td>'.$langs->trans("AMC End Date").'</td><td>';
+			print $form->selectDate($object->amc_end_date ? $object->amc_end_date : -1, 'amc_end_date', 0, 0, 0, '', 1, 0);
+			print '</td></tr>';
+
+			// Date
+			print '<tr><td class="fieldrequired">'.$langs->trans("Product ODU").'</td><td>';
+			print '<input type="text" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
+			print '</td></tr>';
 			
 			print '</table>';
 			print dol_get_fiche_end();
