@@ -4740,7 +4740,7 @@ class ProductCustomer extends CommonObject
 			if ($obj == 0) {
 				// Produit non deja existant
 				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
-				$sql .= " SET datec = '".$this->db->escape($now)."'";
+				$sql .= " SET datec = '".$this->db->idate($now)."'";
 				$sql .= ", entity = '".$this->db->escape($entity)."'";
 				$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
 				$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
