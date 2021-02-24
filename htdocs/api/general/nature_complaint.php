@@ -10,14 +10,14 @@
 	
 	$json = $brandData = array();
 
-	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_call_source WHERE active = '1'";
+	$sql1 = 'SELECT rowid, label FROM '.MAIN_DB_PREFIX."c_call_source WHERE active = '1'";
 	$resql1 = $db->query($sql1);
 	
 	if($resql1)
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData[] = array('nature_complaint_id' => $row['rowid'], 'nature_complaint_name' => $row['nom']);
+			$brandData[] = array('nature_complaint_id' => $row['rowid'], 'nature_complaint_name' => $row['label']);
 		}
 
 		$status_code = '1';

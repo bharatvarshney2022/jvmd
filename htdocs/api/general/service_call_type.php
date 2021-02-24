@@ -10,14 +10,14 @@
 	
 	$json = $brandData = array();
 
-	$sql1 = 'SELECT rowid, nom FROM '.MAIN_DB_PREFIX."c_service_type WHERE active = '1'";
+	$sql1 = 'SELECT rowid, label FROM '.MAIN_DB_PREFIX."c_service_type WHERE active = '1'";
 	$resql1 = $db->query($sql1);
 	
 	if($resql1)
 	{
 		while($row = $db->fetch_array($resql1))
 		{
-			$brandData[] = array('service_call_id' => $row['rowid'], 'service_call_name' => $row['nom']);
+			$brandData[] = array('service_call_id' => $row['rowid'], 'service_call_name' => $row['label']);
 		}
 
 		$status_code = '1';
