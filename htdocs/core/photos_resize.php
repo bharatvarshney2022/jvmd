@@ -51,6 +51,11 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	$result = restrictedArea($user, 'produit|service', $id, 'product&product');
 	if ($modulepart == 'produit|service' && (!$user->rights->produit->lire && !$user->rights->service->lire)) accessforbidden();
 	$accessallowed = 1;
+} elseif ($modulepart == 'product_customer')
+{
+	$result = restrictedArea($user, 'product_customer', $id);
+	if (!$user->rights->produit->lire) accessforbidden();
+	$accessallowed = 1;
 } elseif ($modulepart == 'project')
 {
 	$result = restrictedArea($user, 'projet', $id);
@@ -117,6 +122,16 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 		$dir = $conf->product->multidir_output[$object->entity]; // By default
 		if ($object->type == Product::TYPE_PRODUCT) $dir = $conf->product->multidir_output[$object->entity];
 		if ($object->type == Product::TYPE_SERVICE) $dir = $conf->service->multidir_output[$object->entity];
+	}
+} elseif ($modulepart == 'product_customer')
+{
+	require_once DOL_DOCUMENT_ROOT.'/product_customer/class/productcustomer.class.php';
+	$object = new ProductCustomer($db);
+	if ($id > 0)
+	{
+		$result = $object->fetch($id);
+		if ($result <= 0) dol_print_error($db, 'Failed to load object');
+		$dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR;//$conf->project->multidir_output[$object->entity]; // By default
 	}
 } elseif ($modulepart == 'project')
 {
@@ -265,6 +280,7 @@ if (empty($backtourl))
 	$regs = array();
 
 	if (in_array($modulepart, array('product', 'produit', 'service', 'produit|service'))) $backtourl = DOL_URL_ROOT."/product/document.php?id=".$id.'&file='.urldecode($file);
+	elseif (in_array($modulepart, array('product_customer'))) $backtourl = DOL_URL_ROOT."/product_customer/document.php?id=".$id.'&file='.urldecode($file);
 	elseif (in_array($modulepart, array('expensereport'))) $backtourl = DOL_URL_ROOT."/expensereport/document.php?id=".$id.'&file='.urldecode($file);
 	elseif (in_array($modulepart, array('holiday')))       $backtourl = DOL_URL_ROOT."/holiday/document.php?id=".$id.'&file='.urldecode($file);
 	elseif (in_array($modulepart, array('member')))        $backtourl = DOL_URL_ROOT."/adherents/document.php?id=".$id.'&file='.urldecode($file);
