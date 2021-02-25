@@ -859,7 +859,7 @@ class ExtraFields
 		// phpcs:enable
 		global $conf;
 
-		if (empty($elementtype) || $elementtype == "user") return array();
+		if (empty($elementtype)) return array();
 
 		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
 		if ($elementtype == 'contact')        $elementtype = 'socpeople';
