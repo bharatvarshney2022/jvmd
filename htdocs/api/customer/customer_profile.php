@@ -26,7 +26,7 @@
 
 		print_r($object); exit;
 
-		$societeData = array('');
+		$societeData = array('full_name' => $object->name, 'email', 'primary_phone', 'secondary_phone', 'address');
 		
 		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
 	}
