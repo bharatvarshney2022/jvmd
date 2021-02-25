@@ -384,7 +384,7 @@ if (empty($reshook))
 				else setEventMessages($object->error, $object->errors, 'errors');
 			} else {
 
-				if($object->statut =='3'){
+				if($object->statut =='3' && $user_group_id == 17){
 
 					
 					$cloneURL = DOL_URL_ROOT.'/projet/card.php?id='.$object->id.'&action=confirm_clone&confirm=yes&token='.$token.'&socid='.$object->socid;
@@ -509,6 +509,15 @@ if (empty($reshook))
 	if ($action == 'confirm_reopen' && $confirm == 'yes')
 	{
 		$result = $object->setValid($user);
+		if ($result <= 0)
+		{
+			setEventMessages($object->error, $object->errors, 'errors');
+		}
+	}
+
+	if ($action == 'confirm_reject' && $confirm == 'yes')
+	{
+		$result = $object->setReject($user);
 		if ($result <= 0)
 		{
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -1010,6 +1019,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("ReOpenAProject"), $langs->trans("ConfirmReOpenAProject"), "confirm_reopen", '', '', 1);
 	}
+	if ($action == 'reject')
+	{
+		print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("Rehect A Ticket"), $langs->trans("Confirm Reject This Ticket"), "confirm_reject", '', '', 3);
+	}
 	// Confirmation delete
 	if ($action == 'delete')
 	{
@@ -1082,10 +1095,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// Label
 		print '<td width="15%" class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
 		print '<td><input class="quatrevingtpercent" '.$readonly.' class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
-
+		if($user_group_id == 4){
+			$disabled = 'disabled';
+		}else{
+			$disabled = '';
+		}
 		// Status
 		print '<tr><td class="fieldrequired">'.$langs->trans("Status").'</td><td>';
-		print '<select class="flat" name="status">';
+		print '<select class="flat" name="status" '.$disabled.'>';
 		foreach ($object->statuts_short as $key => $val)
 		{
 			print '<option value="'.$key.'"'.((GETPOSTISSET('status') ?GETPOST('status') : $object->statut) == $key ? ' selected="selected"' : '').'>'.$langs->trans($val).'</option>';
@@ -1732,11 +1749,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Modify
-			if ($object->statut != 2 && $user->rights->projet->creer)
+			if ($object->statut != 2 && $object->statut != 3 && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
+					
 					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
+					
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Modify').'</a>';
 				}
@@ -1747,9 +1766,9 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&action=validate">'.$langs->trans("Validate").'</a>';
+					print '<a class="butAction" href="card.php?id='.$object->id.'&action=validate">'.$langs->trans("Accept").'</a>';
 				} else {
-					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Validate').'</a>';
+					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Accept').'</a>';
 				}
 			}
 
@@ -1772,6 +1791,16 @@ if ($action == 'create' && $user->rights->projet->creer)
 					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=reopen">'.$langs->trans("ReOpen").'</a>';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('ReOpen').'</a>';
+				}
+			}
+
+			if ($object->statut == 0 && $user->rights->projet->creer)
+			{
+				if ($userWrite > 0)
+				{
+					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=reject">'.$langs->trans("Reject").'</a>';
+				} else {
+					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Reject').'</a>';
 				}
 			}
 
@@ -1843,6 +1872,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				}
 			}
 
+			
 			// Delete
 			if ($user->rights->projet->supprimer || ($object->statut == 0 && $user->rights->projet->creer))
 			{

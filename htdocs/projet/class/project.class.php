@@ -1147,6 +1147,59 @@ class Project extends CommonObject
 		return 0;
 	}
 
+	public function setReject($user)
+	{
+		global $langs, $conf;
+
+		$error = 0;
+
+		if ($this->statut != 1)
+		{
+			// Check parameters
+			if (preg_match('/^'.preg_quote($langs->trans("CopyOf").' ').'/', $this->title))
+			{
+				$this->error = $langs->trans("ErrorFieldFormat", $langs->transnoentities("Label")).'. '.$langs->trans('RemoveString', $langs->transnoentitiesnoconv("CopyOf"));
+				return -1;
+			}
+
+			$this->db->begin();
+
+			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
+			$sql .= " SET fk_statut = 3";
+			$sql .= " WHERE rowid = ".$this->id;
+			$sql .= " AND entity = ".$conf->entity;
+
+			dol_syslog(get_class($this)."::setReject", LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			if ($resql)
+			{
+				// Call trigger
+				if (empty($notrigger))
+				{
+					$result = $this->call_trigger('PROJECT_REJECT', $user);
+					if ($result < 0) { $error++; }
+					// End call triggers
+				}
+
+				if (!$error)
+				{
+					$this->statut = 3;
+					$this->db->commit();
+					return 1;
+				} else {
+					$this->db->rollback();
+					$this->error = join(',', $this->errors);
+					dol_syslog(get_class($this)."::setReject ".$this->error, LOG_ERR);
+					return -1;
+				}
+			} else {
+				$this->db->rollback();
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+		}
+	}
+
 	/**
 	 *  Return status label of object
 	 *

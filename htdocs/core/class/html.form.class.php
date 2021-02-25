@@ -4966,6 +4966,7 @@ class Form
                          		});
                          	}
                          	var urljump = pageyes + (pageyes.indexOf("?") < 0 ? "?" : "") + options;
+                         	//alert(urljump);
                          	if (pageyes.length > 0) { location.href = urljump; }
                             $(this).dialog("close");
                         },
@@ -4983,7 +4984,7 @@ class Form
                          		});
                          	}
                          	var urljump=pageno + (pageno.indexOf("?") < 0 ? "?" : "") + options;
-                         	//alert(urljump);
+                         	
             				if (pageno.length > 0) { location.href = urljump; }
                             $(this).dialog("close");
                         }
