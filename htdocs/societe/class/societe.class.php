@@ -982,8 +982,7 @@ class Societe extends CommonObject
 
 		$sql = 'SELECT s.rowid ';
 		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
-		$sql .= ' WHERE phone = "'.$this->db->escape($this->phone).'" AND rowid != "'.$user_id.'"';
-		echo $sql; exit;
+		$sql .= ' WHERE phone = "'.$this->db->escape($phone).'" AND rowid != "'.$user_id.'"';
 		
 		$resql = $this->db->query($sql);
 		if ($resql) {
