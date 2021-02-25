@@ -1449,7 +1449,7 @@ class Form
 			$sql .= " OR s.code_client LIKE '".$this->db->escape($prefix.$filterkey)."%' OR s.code_fournisseur LIKE '".$this->db->escape($prefix.$filterkey)."%'";
 			$sql .= ")";
 		}
-		if($vendor_pincode){
+		if($vendor_pincode && empty($selected)){
 			$sql .= " AND FIND_IN_SET(ef.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
 		}
 		$sql .= $this->db->order("nom", "ASC");
