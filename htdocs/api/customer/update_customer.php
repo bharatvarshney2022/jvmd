@@ -11,6 +11,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
+	$full_name = GETPOST('full_name', 'alpha');
 	$secondary_phone = GETPOST('secondary_phone', 'alpha');
 	$email = GETPOST('email', 'aphda');
 	
@@ -23,14 +24,34 @@
 
 	if($userExists)
 	{
-		$status_code = '1';
-		$message = 'Profile updated successfully.';
+		// If 
+		$result = $object->verifyPhoneUpdate($secondary_phone);
 
-		//print_r($object); exit;
+		if($result)
+		{
+			$status_code = '0';
+			$message = 'Phone Already exists.';
+		}
+		else
+		{
+			// Update successfully.
+			$object->full_name = $full_name;
+			$object->fax = $secondary_phone;
+			$object->email = $email;
+			$object->updateProfile();
 
-		$societeData = array('full_name' => $object->name, 'email' => $object->email, 'primary_phone' => $object->phone, 'secondary_phone' => ($object->fax == NULL ? "" : $object->fax), 'address' => $object->address);
+			$status_code = '1';
+			$message = 'Profile updated successfully.';
+
+			$objectNew = new Societe($db);
+	
+			$userExists = $objectNew->fetch($user_id);
+
+
+			$societeData = array('full_name' => $objectNew->name, 'email' => $objectNew->email, 'primary_phone' => $objectNew->phone, 'secondary_phone' => ($objectNew->fax == NULL ? "" : $objectNew->fax), 'address' => $objectNew->address);
 		
-		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
+			$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
+		}
 	}
 	else
 	{

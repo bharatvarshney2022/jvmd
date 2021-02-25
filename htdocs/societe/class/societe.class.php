@@ -939,6 +939,61 @@ class Societe extends CommonObject
 	 *
 	 *    @return     int		0 if OK, <0 if KO
 	 */
+	public function updateProfile()
+	{
+		global $conf;
+
+		$this->name = $this->full_name;
+		$this->fax = $this->secondary_phone;
+		$this->email = $this->email;
+
+		$result = 0;
+		$result = $this->verify();
+
+		if ($result >= 0) {
+			dol_syslog(get_class($this)."::update verify ok or not done");
+
+			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe SET ";
+			$sql .= ",nom = '".$this->db->escape($this->name)."'"; // Required
+			$sql .= ",name_alias = '".$this->db->escape($this->name_alias)."'";
+			$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
+			$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
+			$sql .= " WHERE rowid = ".(int) $this->rowid;
+
+			echo $sql; exit;
+		}
+
+	}
+	
+
+	public function verifyPhoneUpdate($phone)
+	{
+		global $conf;
+
+		$error = 0;
+		$this->errors = array();
+
+		$result = 0;
+
+		$this->phone = $phone;
+		$this->rowid = $this->rowid;
+
+		$sql = 'SELECT s.rowid ';
+		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
+		$sql .= ' WHERE phone = "'.$this->db->escape($this-phone).'" AND rowid != "'.$this->rowid.'"';
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$num = $this->db->num_rows($resql);
+			$error = 1;
+			$result = -2;
+			$this->errors[] = "PhoneAlreadyExists";
+		}
+
+		return $result;
+
+	}
+
 	public function verify()
 	{
 		global $conf, $langs, $mysoc;
