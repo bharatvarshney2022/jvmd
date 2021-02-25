@@ -25,7 +25,7 @@
 	if($userExists)
 	{
 		// If 
-		$result = $object->verifyPhoneUpdate($secondary_phone);
+		$result = $object->verifyPhoneUpdate($secondary_phone, $user_id);
 
 
 		if($result < 0)

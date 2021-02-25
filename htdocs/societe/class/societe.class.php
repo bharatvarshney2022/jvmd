@@ -966,7 +966,7 @@ class Societe extends CommonObject
 	}
 	
 
-	public function verifyPhoneUpdate($phone)
+	public function verifyPhoneUpdate($phone, $user_id)
 	{
 		global $conf;
 
@@ -975,12 +975,9 @@ class Societe extends CommonObject
 
 		$result = 0;
 
-		$this->phone = $phone;
-		$this->rowid = $this->rowid;
-
 		$sql = 'SELECT s.rowid ';
 		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
-		$sql .= ' WHERE phone = "'.$this->db->escape($this-phone).'" AND rowid != "'.$this->rowid.'"';
+		$sql .= ' WHERE phone = "'.$this->db->escape($this->phone).'" AND rowid != "'.$user_id.'"';
 		echo $sql; exit;
 
 		$resql = $this->db->query($sql);
