@@ -230,13 +230,14 @@ if ($id > 0 || !empty($ref))
 	}
 
 	// Date start - end
-	print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
-	$start = dol_print_date($object->date_start, 'day');
+	//print '<tr><td>'.$langs->trans("DateStart").' - '.$langs->trans("DateEnd").'</td><td colspan="4">';
+	print '<tr><td>'.$langs->trans("Start Date and Time").'</td><td colspan="4">';
+	$start = dol_print_date($object->date_c, 'dayhoursec');
 	print ($start ? $start : '?');
-	$end = dol_print_date($object->date_end, 'day');
+	/*$end = dol_print_date($object->date_end, 'day');
 	print ' - ';
 	print ($end ? $end : '?');
-	if ($object->hasDelay()) print img_warning("Late");
+	if ($object->hasDelay()) print img_warning("Late");*/
 	print '</td></tr>';
 
 	// Budget

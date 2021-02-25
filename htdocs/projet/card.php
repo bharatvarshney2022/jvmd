@@ -70,6 +70,19 @@ if ($id > 0 || !empty($ref))
 	}
 }
 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+
 // Security check
 $socid = GETPOST('socid', 'int');
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignement.
@@ -370,6 +383,11 @@ if (empty($reshook))
 				if ($result == -4) setEventMessages($langs->trans("ErrorRefAlreadyExists"), null, 'errors');
 				else setEventMessages($object->error, $object->errors, 'errors');
 			} else {
+
+				if($object->statut =='3'){
+					$object->oldcopy = clone $object;
+					$result = $object->oldcopy->create($user);
+				}
 				// Category association
 				$categories = GETPOST('categories', 'array');
 				$result = $object->setCategories($categories);
@@ -1082,9 +1100,9 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 			
 			';
-			if($user_group_id == '4'){
-				print '$("#socid").attr("disabled", true);';
-			}	
+			/*if($user_group_id == '4'){
+				print '$("#socid").attr("readonly", "readonly");';
+			}	*/
 		if($object->thirdparty->id > 0 && $object->fk_brand > 0){
 			print '   
 				
@@ -1815,7 +1833,9 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&action=clone">'.$langs->trans('ToClone').'</a>';
+					if($user_group_id != '4'){
+						print '<a class="butAction" href="card.php?id='.$object->id.'&action=clone">'.$langs->trans('ToClone').'</a>';
+					}
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('ToClone').'</a>';
 				}

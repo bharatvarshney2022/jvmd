@@ -1855,6 +1855,8 @@ class Form
 		// phpcs:enable
 		global $conf, $user, $langs, $hookmanager;
 
+		
+
 		// If no preselected user defined, we take current user
 		if ((is_numeric($selected) && ($selected < -2 || empty($selected))) && empty($conf->global->SOCIETE_DISABLE_DEFAULT_SALESREPRESENTATIVE)) $selected = $user->id;
 
@@ -1881,6 +1883,20 @@ class Form
 		$out = '';
 		$outarray = array();
 
+		
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($this->db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		
 		// Forge request to select users
 		$sql = "SELECT DISTINCT u.rowid, u.lastname as lastname, u.firstname, u.statut as status, u.login, u.admin, u.entity, u.photo";
 		if (!empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && !$user->entity)
@@ -1909,6 +1925,22 @@ class Form
 		if (!empty($conf->global->USER_HIDE_INACTIVE_IN_COMBOBOX) || $noactive) $sql .= " AND u.statut <> 0";
 		if (!empty($morefilter)) $sql .= " ".$morefilter;
 
+		if($user_group_id == '17')
+		{
+			$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+			$resqlVendor = $this->db->query($sqlVendor);
+			if ($resqlVendor)
+			{
+				$rowVendor = $this->db->fetch_object($resqlVendor);
+				$vendorData = $rowVendor->fk_vendor;
+				if($vendorData)
+				{
+					//$vendor_list = implode(",", $vendorData);
+					$sql .= " AND u.rowid IN (".$vendorData.")";
+				}
+			}
+
+		}
 		//Add hook to filter on user (for exemple on usergroup define in custom modules)
 		$reshook = $hookmanager->executeHooks('addSQLWhereFilterOnSelectUsers', array(), $this, $action);
 		if (!empty($reshook)) $sql .= $hookmanager->resPrint;
@@ -1919,7 +1951,7 @@ class Form
 		} else {
 			$sql .= " ORDER BY u.lastname ASC";
 		}
-
+		
 		dol_syslog(get_class($this)."::select_dolusers", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
