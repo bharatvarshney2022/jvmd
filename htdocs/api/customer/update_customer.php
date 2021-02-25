@@ -25,9 +25,13 @@
 	if($userExists)
 	{
 		// If 
-		$result = $object->verifyPhoneUpdate($secondary_phone, $user_id);
+		$result = 0;
+		if($secondary_phone > 0)
+		{
+			$result = $object->verifyPhoneUpdate($secondary_phone, $user_id);
+		}
 		echo $result; exit;
-
+		
 		if($result < 0)
 		{
 			$status_code = '0';
