@@ -950,6 +950,8 @@ class Societe extends CommonObject
 		$result = 0;
 		$result = $this->verify();
 
+		echo $result; exit;
+
 		if ($result >= 0) {
 			dol_syslog(get_class($this)."::update verify ok or not done");
 
