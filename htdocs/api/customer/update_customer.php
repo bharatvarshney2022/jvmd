@@ -36,6 +36,7 @@
 		else
 		{
 			// Update successfully.
+			$object->rowid = $user_id;
 			$object->full_name = $full_name;
 			$object->fax = $secondary_phone;
 			$object->email = $email;
