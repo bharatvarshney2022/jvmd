@@ -978,14 +978,17 @@ class Societe extends CommonObject
 		$sql = 'SELECT s.rowid ';
 		$sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
 		$sql .= ' WHERE phone = "'.$this->db->escape($this->phone).'" AND rowid != "'.$user_id.'"';
-		echo $sql; exit;
-
+		
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
-			$error = 1;
-			$result = -2;
-			$this->errors[] = "PhoneAlreadyExists";
+
+			if($num > 0)
+			{
+				$error = 1;
+				$result = -2;
+				$this->errors[] = "PhoneAlreadyExists";
+			}
 		}
 
 		return $result;
