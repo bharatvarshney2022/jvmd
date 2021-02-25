@@ -17,14 +17,18 @@
 	$object = new Societe($db);
 	
 	$userExists = $object->fetch($user_id);
-	$slider = array();
+	$societeData = array();
 
 	if($userExists)
 	{
 		$status_code = '1';
 		$message = 'Customer Profile';
+
+		//print_r($object); exit;
+
+		$societeData = array('full_name' => $object->name, 'email' => $object->email, 'primary_phone' => $object->phone, 'address' => $object->address);
 		
-		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $userExists);
+		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
 	}
 	else
 	{
