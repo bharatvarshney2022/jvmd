@@ -111,7 +111,7 @@ if (!empty($canvas))
 // Security check
 $fieldvalue = $id;
 $fieldtype = 'rowid';
-$result = restrictedArea($user, 'product_customer', $fieldvalue, 'product&product', '', '', $fieldtype);
+$result = restrictedArea($user, 'projet', $object->id, 'projet&project');
 
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
@@ -125,11 +125,9 @@ $hookmanager->initHooks(array('productcard', 'globalcard'));
 
 if ($cancel) $action = '';
 
-$usercanread = (($object->type == Product::TYPE_PRODUCT && $user->rights->produit->lire) || ($object->type == Product::TYPE_SERVICE && $user->rights->service->lire));
-$usercancreate = (($object->type == Product::TYPE_PRODUCT && $user->rights->produit->creer) || ($object->type == Product::TYPE_SERVICE && $user->rights->service->creer));
-$usercandelete = (($object->type == Product::TYPE_PRODUCT && $user->rights->produit->supprimer) || ($object->type == Product::TYPE_SERVICE && $user->rights->service->supprimer));
-$createbarcode = empty($conf->barcode->enabled) ? 0 : 1;
-if (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && empty($user->rights->barcode->creer_advance)) $createbarcode = 0;
+$usercanread = $user->rights->projet->creer;
+$usercancreate = $user->rights->projet->creer;
+$usercandelete = $user->rights->projet->supprimer;
 
 $parameters = array('id'=>$id, 'ref'=>$ref, 'objcanvas'=>$objcanvas);
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
@@ -771,7 +769,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		$title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
 	}
 
-	if ($action == 'create' && $usercancreate)
+	if ($action == 'create')
 	{
 		//WYSIWYG Editor
 		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
