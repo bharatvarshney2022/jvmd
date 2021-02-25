@@ -41,19 +41,31 @@
 			$object->fax = $secondary_phone;
 			$object->email = $email;
 			$resultUpdate = $object->updateProfile();
-			echo $resultUpdate; exit;
 
-			$status_code = '1';
-			$message = 'Profile updated successfully.';
+			if($resultUpdate > 0)
+			{
+				$db->commit();
+				$status_code = '1';
+				$message = 'Profile updated successfully.';
 
-			$objectNew = new Societe($db);
-	
-			$userExists = $objectNew->fetch($user_id);
-
-
-			$societeData = array('full_name' => $objectNew->name, 'email' => $objectNew->email, 'primary_phone' => $objectNew->phone, 'secondary_phone' => ($objectNew->fax == NULL ? "" : $objectNew->fax), 'address' => $objectNew->address);
+				$objectNew = new Societe($db);
 		
-			$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
+				$userExists = $objectNew->fetch($user_id);
+
+
+				$societeData = array('full_name' => $objectNew->name, 'email' => $objectNew->email, 'primary_phone' => $objectNew->phone, 'secondary_phone' => ($objectNew->fax == NULL ? "" : $objectNew->fax), 'address' => $objectNew->address);
+			
+				$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
+			}
+			else
+			{
+				$db->rollback();
+
+				$status_code = '0';
+				$message = 'Something went wrong';
+			
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
 		}
 	}
 	else
