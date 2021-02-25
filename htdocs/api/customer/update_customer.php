@@ -11,6 +11,8 @@
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
+	$secondary_phone = GETPOST('secondary_phone', 'alpha');
+	$email = GETPOST('email', 'aphda');
 	
 	$json = array();
 	
@@ -26,7 +28,7 @@
 
 		//print_r($object); exit;
 
-		$societeData = array('full_name' => $object->name, 'email' => $object->email, 'primary_phone' => $object->phone, 'secondary_phone' => $object->fax, 'address' => $object->address);
+		$societeData = array('full_name' => $object->name, 'email' => $object->email, 'primary_phone' => $object->phone, 'secondary_phone' => ($object->fax == NULL ? "" : $object->fax), 'address' => $object->address);
 		
 		$json = array('status_code' => $status_code, 'message' => $message, 'userData' => $societeData);
 	}
