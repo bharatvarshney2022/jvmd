@@ -30,12 +30,13 @@
 		{
 			$result = $object->verifyPhoneUpdate($secondary_phone, $user_id);
 		}
-		echo $result; exit;
 		
 		if($result < 0)
 		{
 			$status_code = '0';
 			$message = 'Phone Already exists.';
+
+			$json = array('status_code' => $status_code, 'message' => $message);
 		}
 		else
 		{
