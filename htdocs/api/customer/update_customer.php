@@ -40,7 +40,8 @@
 			$object->full_name = $full_name;
 			$object->fax = $secondary_phone;
 			$object->email = $email;
-			$object->updateProfile();
+			$resultUpdate = $object->updateProfile();
+			echo $resultUpdate; exit;
 
 			$status_code = '1';
 			$message = 'Profile updated successfully.';

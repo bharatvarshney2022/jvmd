@@ -951,7 +951,7 @@ class Societe extends CommonObject
 		$result = $this->verify();
 
 		if ($result >= 0) {
-			dol_syslog(get_class($this)."::update verify ok or not done");
+			dol_syslog(get_class($this)."::update profile verify ok or not done");
 
 			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe SET ";
 			$sql .= " nom = '".$this->db->escape($this->name)."'"; // Required
@@ -960,8 +960,13 @@ class Societe extends CommonObject
 			$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
 			$sql .= " WHERE rowid = ".(int) $this->rowid;
 
-			echo $sql; exit;
+			$resql = $this->db->query($sql);
+			if ($resql) {
+				$result = 1;
+			}
 		}
+
+		return $result;
 
 	}
 	
