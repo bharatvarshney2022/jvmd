@@ -4966,7 +4966,7 @@ class Form
                          		});
                          	}
                          	var urljump = pageyes + (pageyes.indexOf("?") < 0 ? "?" : "") + options;
-            				if (pageyes.length > 0) { location.href = urljump; }
+                         	if (pageyes.length > 0) { location.href = urljump; }
                             $(this).dialog("close");
                         },
                         "'.dol_escape_js($langs->transnoentities("No")).'": function() {
