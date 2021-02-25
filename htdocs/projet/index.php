@@ -31,6 +31,26 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
+
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+$user_group_id = 0;
+$usergroup = new UserGroup($db);
+$groupslist = $usergroup->listGroupsForUser($user->id);
+
+if ($groupslist != '-1')
+{
+	foreach ($groupslist as $groupforuser)
+	{
+		$user_group_id = $groupforuser->id;
+	}
+}
+if ($user_group_id == 17) 
+{
+	$backurl = DOL_URL_ROOT.'/projet/list.php?leftmenu=projets&search_status=99';
+
+	header('location: '.$backurl);
+	exit;
+}
 $hookmanager = new HookManager($db);
 
 // Initialize technical object to manage hooks. Note that conf->hooks_modules contains array
@@ -77,6 +97,7 @@ if (empty($reshook)) {
 /*
  * View
  */
+
 
 $companystatic = new Societe($db);
 $projectstatic = new Project($db);
