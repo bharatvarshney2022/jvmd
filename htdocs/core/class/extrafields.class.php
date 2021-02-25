@@ -859,7 +859,11 @@ class ExtraFields
 		// phpcs:enable
 		global $conf;
 
+		$id = GETPOST('id', 'int');
+
 		if (empty($elementtype)) return array();
+
+		if($elementtype == "user" && $id > 0) return array();
 
 		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
 		if ($elementtype == 'contact')        $elementtype = 'socpeople';
@@ -874,6 +878,7 @@ class ExtraFields
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
 		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
 		$sql .= " ORDER BY pos";
+		//echo $id.",".$elementtype.",".$sql; exit;
 
 
 		$resql = $this->db->query($sql);
@@ -998,6 +1003,7 @@ class ExtraFields
 			$sql .= " AND usergroup_id = '0'";
 		}
 		$sql .= " ORDER BY pos";
+
 		
 
 		$resql = $this->db->query($sql);
