@@ -385,8 +385,12 @@ if (empty($reshook))
 			} else {
 
 				if($object->statut =='3'){
-					$object->oldcopy = clone $object;
-					$result = $object->oldcopy->create($user);
+
+					
+					$cloneURL = DOL_URL_ROOT.'/projet/card.php?id='.$object->id.'&action=confirm_clone&confirm=yes&token='.$token.'&socid='.$object->socid;
+					header('location: '.$cloneURL);
+					exit;
+					//$result = $object->oldcopy->create($user);
 				}
 				// Category association
 				$categories = GETPOST('categories', 'array');
@@ -1104,9 +1108,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				print '$("#socid").attr("readonly", "readonly");';
 			}	*/
 		if($object->thirdparty->id > 0 && $object->fk_brand > 0){
-			print '   
-				
-			jQuery("#fk_brand").val('.$object->fk_brand.');
+			print 'jQuery("#fk_brand").val('.$object->fk_brand.');
 			';	
 		}
 		if($object->thirdparty->id > 0 && $object->fk_category > 0){

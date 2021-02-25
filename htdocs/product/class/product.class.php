@@ -5922,7 +5922,7 @@ class Product extends CommonObject
 	public function getCustomerProductBrand($socid)
 	{
 		$outjson = array();
-		$sql = "SELECT p.rowid as rowid, p.fk_brand as brandid, b.nom as brandname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_brands as b where p.fk_brand = b.rowid AND p.fk_soc = '".$socid."' group by p.fk_brand ";
+		echo $sql = "SELECT p.rowid as rowid, p.fk_brand as brandid, b.nom as brandname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_brands as b where p.fk_brand = b.rowid AND p.fk_soc = '".$socid."' group by p.fk_brand ";
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Brand</option>';
