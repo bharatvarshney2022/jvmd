@@ -944,7 +944,7 @@ class Societe extends CommonObject
 		global $conf;
 
 		$this->name = $this->full_name;
-		$this->fax = $this->secondary_phone;
+		$this->fax = $this->fax;
 		$this->email = $this->email;
 
 		$result = 0;
@@ -954,7 +954,7 @@ class Societe extends CommonObject
 			dol_syslog(get_class($this)."::update verify ok or not done");
 
 			$sql  = "UPDATE ".MAIN_DB_PREFIX."societe SET ";
-			$sql .= ",nom = '".$this->db->escape($this->name)."'"; // Required
+			$sql .= " nom = '".$this->db->escape($this->name)."'"; // Required
 			$sql .= ",name_alias = '".$this->db->escape($this->name_alias)."'";
 			$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
 			$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
