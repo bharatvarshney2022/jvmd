@@ -26,7 +26,7 @@
 	{
 		// If 
 		$result = $object->verifyPhoneUpdate($secondary_phone, $user_id);
-
+		echo $result; exit;
 
 		if($result < 0)
 		{
