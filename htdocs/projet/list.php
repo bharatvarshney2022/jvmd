@@ -151,9 +151,7 @@ foreach ($object->fields as $key => $val) {
 }
 
 // Extra fields
-if($user->admin){
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
-}
+include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
 // Add none object fields to fields for list
 $arrayfields['s.nom'] = array('label'=>$langs->trans("ThirdParty"), 'checked'=>1, 'position'=>21, 'enabled'=>(empty($conf->societe->enabled) ? 0 : 1));
 $arrayfields['commercial'] = array('label'=>$langs->trans("SaleRepresentativesOfThirdParty"), 'checked'=>0, 'position'=>23);
@@ -408,9 +406,7 @@ if ($search_usage_opportunity != '' && $search_usage_opportunity >= 0) $sql .= n
 if ($search_usage_task != '' && $search_usage_task >= 0)               $sql .= natural_search('p.usage_task', $search_usage_task, 2);
 if ($search_usage_bill_time != '' && $search_usage_bill_time >= 0)     $sql .= natural_search('p.usage_bill_time', $search_usage_bill_time, 2);
 // Add where from extra fields
-if($user->admin){
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
-}
+include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
 // Add where from hooks
 $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
@@ -486,9 +482,7 @@ if ($search_opp_amount != '')    $param .= '&search_opp_amount='.urlencode($sear
 if ($search_budget_amount != '') $param .= '&search_budget_amount='.urlencode($search_budget_amount);
 if ($optioncss != '') $param .= '&optioncss='.urlencode($optioncss);
 // Add $param from extra fields
-if($user->admin){
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
-}
+include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 // List of mass actions available
 $arrayofmassactions = array(
 	'generate_doc'=>$langs->trans("ReGeneratePDF"),
@@ -595,9 +589,7 @@ print '<!--begin::Entry-->
 														</div>';
 
 														// Extra fields
-														if($user->admin){
 															include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input_layout.tpl.php';
-														}
 													print '</div>
 													<div class="row mt-8">
 														<div class="col-lg-12">
@@ -704,16 +696,16 @@ print '<!--begin::Entry-->
 										if (!empty($arrayfields['p.opp_amount']['checked']))    print_liste_field_titre_layout($arrayfields['p.opp_amount']['label'], $_SERVER["PHP_SELF"], 'p.opp_amount', "", $param, '', $sortfield, $sortorder, 'right ');
 										if (!empty($arrayfields['p.opp_percent']['checked']))   print_liste_field_titre_layout($arrayfields['p.opp_percent']['label'], $_SERVER['PHP_SELF'], 'p.opp_percent', "", $param, '', $sortfield, $sortorder, 'right ');
 										if (!empty($arrayfields['opp_weighted_amount']['checked']))   print_liste_field_titre_layout($arrayfields['opp_weighted_amount']['label'], $_SERVER['PHP_SELF'], 'opp_weighted_amount', '', $param, '', $sortfield, $sortorder, 'right ');
-										if($user->admin){
+										
 											if (!empty($arrayfields['p.budget_amount']['checked'])) print_liste_field_titre_layout($arrayfields['p.budget_amount']['label'], $_SERVER["PHP_SELF"], 'p.budget_amount', "", $param, '', $sortfield, $sortorder, 'right ');
-										}
+
 										if (!empty($arrayfields['p.usage_opportunity']['checked'])) print_liste_field_titre_layout($arrayfields['p.usage_opportunity']['label'], $_SERVER["PHP_SELF"], 'p.usage_opportunity', "", $param, '', $sortfield, $sortorder, 'right ');
 										if (!empty($arrayfields['p.usage_task']['checked']))        print_liste_field_titre_layout($arrayfields['p.usage_task']['label'], $_SERVER["PHP_SELF"], 'p.usage_task', "", $param, '', $sortfield, $sortorder, 'right ');
 										if (!empty($arrayfields['p.usage_bill_time']['checked']))   print_liste_field_titre_layout($arrayfields['p.usage_bill_time']['label'], $_SERVER["PHP_SELF"], 'p.usage_bill_time', "", $param, '', $sortfield, $sortorder, 'right ');
-										if($user->admin){
+										
 										// Extra fields
 										include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
-									}
+
 										// Hook fields
 										$parameters = array('arrayfields'=>$arrayfields, 'param'=>$param, 'sortfield'=>$sortfield, 'sortorder'=>$sortorder);
 										$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters); // Note that $action and $object may have been modified by hook
@@ -721,7 +713,7 @@ print '<!--begin::Entry-->
 										if (!empty($arrayfields['p.datec']['checked']))  print_liste_field_titre_layout($arrayfields['p.datec']['label'], $_SERVER["PHP_SELF"], "p.datec", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
 										if (!empty($arrayfields['p.tms']['checked']))    print_liste_field_titre_layout($arrayfields['p.tms']['label'], $_SERVER["PHP_SELF"], "p.tms", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
 										if (!empty($arrayfields['p.fk_statut']['checked'])) print_liste_field_titre_layout($arrayfields['p.fk_statut']['label'], $_SERVER["PHP_SELF"], "p.fk_statut", "", $param, '', $sortfield, $sortorder, 'right ');
-										print_liste_field_titre_layout($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
+										print_liste_field_titre_layout($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, ' ');
 										
 										print '</tr>
 											</thead>
@@ -773,7 +765,7 @@ print '<!--begin::Entry-->
 												// Title
 												if (!empty($arrayfields['p.title']['checked']))
 												{
-													print '<td class="tdoverflowmax200">';
+													print '<td class="">';
 													print dol_trunc($obj->title, 80);
 													print '</td>';
 													if (!$i) $totalarray['nbfield']++;
@@ -781,7 +773,7 @@ print '<!--begin::Entry-->
 												// Company
 												if (!empty($arrayfields['s.nom']['checked']))
 												{
-													print '<td class="tdoverflowmax100">';
+													print '<td class="">';
 													if ($obj->socid)
 													{
 														print $socstatic->getNomUrl(1);
@@ -898,21 +890,20 @@ print '<!--begin::Entry-->
 													if (!$i) $totalarray['nbfield']++;
 													if (!$i) $totalarray['pos'][$totalarray['nbfield']] = 'opp_weighted_amount';
 												}
-												if($user->admin){
-												// Budget
-												if (!empty($arrayfields['p.budget_amount']['checked']))
-												{
-													print '<td class="right">';
-													if ($obj->budget_amount != '')
-													{
-														print price($obj->budget_amount, 1, $langs, 1, -1, -1);
-														$totalarray['val']['p.budget_amount'] += $obj->budget_amount;
-													}
-													print '</td>';
-													if (!$i) $totalarray['nbfield']++;
-													if (!$i) $totalarray['pos'][$totalarray['nbfield']] = 'p.budget_amount';
-												}
+												
+										// Budget
+										if (!empty($arrayfields['p.budget_amount']['checked']))
+										{
+											print '<td class="right">';
+											if ($obj->budget_amount != '')
+											{
+												print price($obj->budget_amount, 1, $langs, 1, -1, -1);
+												$totalarray['val']['p.budget_amount'] += $obj->budget_amount;
 											}
+											print '</td>';
+											if (!$i) $totalarray['nbfield']++;
+											if (!$i) $totalarray['pos'][$totalarray['nbfield']] = 'p.budget_amount';
+										}
 												// Usage opportunity
 												if (!empty($arrayfields['p.usage_opportunity']['checked']))
 												{
@@ -946,10 +937,10 @@ print '<!--begin::Entry-->
 													print '</td>';
 													if (!$i) $totalarray['nbfield']++;
 												}
-												if($user->admin){
+												
 												// Extra fields
 												include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
-											}
+
 												// Fields from hook
 												$parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
 												$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters); // Note that $action and $object may have been modified by hook

@@ -1,18 +1,5 @@
 <?php
-/* Copyright (C) 2002-2007  Rodolphe Quiedeville    <rodolphe@quiedeville.org>
- * Copyright (C) 2003       Xavier Dutoit           <doli@sydesy.com>
- * Copyright (C) 2004-2015  Laurent Destailleur     <eldy@users.sourceforge.net>
- * Copyright (C) 2004       Sebastien Di Cintio     <sdicintio@ressource-toi.org>
- * Copyright (C) 2004       Benoit Mortier          <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2015  Regis Houssin           <regis.houssin@inodbox.com>
- * Copyright (C) 2011-2014  Philippe Grand          <philippe.grand@atoo-net.com>
- * Copyright (C) 2008       Matteli
- * Copyright (C) 2011-2016  Juanjo Menent           <jmenent@2byte.es>
- * Copyright (C) 2012       Christophe Battarel     <christophe.battarel@altairis.fr>
- * Copyright (C) 2014-2015  Marcos García           <marcosgdf@gmail.com>
- * Copyright (C) 2015       Raphaël Doursenaud      <rdoursenaud@gpcsolutions.fr>
- * Copyright (C) 2020       Demarest Maxime         <maxime@indelog.fr>
- * Copyright (C) 2020       Charlene Benke         <charlie@patas-monkey.com>
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2462,7 +2449,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 		//print '<div id="tmenu_tooltip'.(empty($conf->global->MAIN_MENU_INVERT) ? '' : 'invert').'" class="tmenu">'."\n";
 		$menumanager->atarget = $target;
 		// Comment Top Menu as putting as sub-menu on left
-		$menumanager->showmenuLayout('top', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // This contains a \n
+		///$menumanager->showmenuLayout('top', array('searchform'=>$searchform, 'bookmarks'=>$bookmarks)); // This contains a \n
 		//print "</div>\n";
 
 		// Define link to login card

@@ -3,8 +3,8 @@
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf))
 {
-	print "Error, template page can't be called as URL";
-	exit;
+	//print "Error, template page can't be called as URL";
+	//exit;
 }
 
 if (empty($extrafieldsobjectkey) && is_object($object)) $extrafieldsobjectkey = $object->table_element;
