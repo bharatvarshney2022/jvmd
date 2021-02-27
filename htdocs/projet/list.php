@@ -400,6 +400,32 @@ if($user_group_id == 17){
 		}
 	}
 }
+
+if($user_group_id == 4)
+{
+	$apply_zipcode = $user->array_options['options_apply_zipcode'];
+	if($apply_zipcode != "")
+	{
+		// Get Zip Data from Master
+		$zipCode = array();
+		$sqlZip = "SELECT zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE rowid IN (".$apply_zipcode.")";
+		$resqlZip = $db->query($sqlZip);
+		if ($resqlZip)
+		{
+			while ($objZip = $db->fetch_object($resqlZip))
+			{
+				$zipCode[] = $objZip->zip;
+			}
+		}
+
+		if($zipCode)
+		{
+			$zipData = implode(",", $zipCode);
+
+			$sql .= " AND s.zip IN (".$zipData.")";
+		}
+	}
+}
 if ($search_opp_amount != '') $sql .= natural_search('p.opp_amount', $search_opp_amount, 1);
 if ($search_budget_amount != '') $sql .= natural_search('p.budget_amount', $search_budget_amount, 1);
 if ($search_usage_opportunity != '' && $search_usage_opportunity >= 0) $sql .= natural_search('p.usage_opportunity', $search_usage_opportunity, 2);
@@ -412,6 +438,7 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
 $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
+//echo $sql; exit;
 
 // Count total nb of records
 $nbtotalofrecords = '';

@@ -84,6 +84,22 @@ class box_project extends ModeleBoxes
 		$textHead = $langs->trans("Top 5 Pending Support Tickets");
 		$this->info_box_head = array('text' => $textHead, 'label' => 'project', 'limit'=> dol_strlen($textHead));
 
+		if(!$user->admin)
+		{
+			require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+			$user_group_id = 0;
+			$usergroup = new UserGroup($this->db);
+			$groupslist = $usergroup->listGroupsForUser($user->id);
+
+			if ($groupslist != '-1')
+			{
+				foreach ($groupslist as $groupforuser)
+				{
+					$user_group_id = $groupforuser->id;
+				}
+			}
+		}
+
 		// list the summary of the orders
 		if ($user->rights->projet->lire) {
 			include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
@@ -101,6 +117,35 @@ class box_project extends ModeleBoxes
 			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
 			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut = 0"; // Only pending projects
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
+
+			if(!$user->admin)
+			{
+				if($user_group_id == 4)
+				{
+					$apply_zipcode = $user->array_options['options_apply_zipcode'];
+					if($apply_zipcode != "")
+					{
+						// Get Zip Data from Master
+						$zipCode = array();
+						$sqlZip = "SELECT zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE rowid IN (".$apply_zipcode.")";
+						$resqlZip = $this->db->query($sqlZip);
+						if ($resqlZip)
+						{
+							while ($objZip = $this->db->fetch_object($resqlZip))
+							{
+								$zipCode[] = $objZip->zip;
+							}
+						}
+
+						if($zipCode)
+						{
+							$zipData = implode(",", $zipCode);
+
+							$sql .= " AND s.zip IN (".$zipData.")";
+						}
+					}
+				}
+			}
 
 			$sql .= " ORDER BY p.datec DESC";
 			$sql.= $this->db->plimit($max, 0);
@@ -139,8 +184,8 @@ class box_project extends ModeleBoxes
 					);
 
 					$this->info_box_contents[$i][] = array(
-						'td' => 'class=""',
-						'text' => $objp->address,
+						'td' => 'class="" data-toggle="tooltip" title="'.$objp->address.'"',
+						'text' => dol_substr($objp->address, 0, 30),
 					);
 
 					$this->info_box_contents[$i][] = array(
