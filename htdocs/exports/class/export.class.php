@@ -585,6 +585,7 @@ class Export
 
 		// Run the sql
 		$this->sqlusedforexport = $sql;
+		
 		dol_syslog(__METHOD__, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -676,6 +677,25 @@ class Export
 							}
 						}
 					}
+					
+					if($obj->p_fk_statut == '1')
+					{
+						$obj->p_fk_statut = "Open";
+					}
+					if($obj->p_fk_statut == '2')
+					{
+						$obj->p_fk_statut = "Close";
+					}
+					if($obj->p_fk_statut == '3')
+					{
+						$obj->p_fk_statut = "Rejected";
+					}
+					if($obj->p_fk_statut == '0')
+					{
+						$obj->p_fk_statut = "Draft";//Draft";
+					}
+						
+					
 					// end of special operation processing
 					$objmodel->write_record($array_selected, $obj, $outputlangs, isset($this->array_export_TypeFields[$indice]) ? $this->array_export_TypeFields[$indice] : null);
 				}

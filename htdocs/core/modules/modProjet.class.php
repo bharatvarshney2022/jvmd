@@ -233,7 +233,7 @@ class modProjet extends DolibarrModules
 		$this->export_fields_array[$r] = array(
 			's.rowid'=>"IdCompany", 's.nom'=>'CompanyName', 's.zip'=>'Zip', 's.town'=>'Town', 's.fk_pays'=>'Country','s.phone'=>'Phone', 's.email'=>'Email', 
 
-			'p.rowid'=>"ProjectId", 'p.ref'=>"RefProject", 'p.title'=>'ProjectLabel','p.datec'=>"DateCreation", 'p.dateo'=>"DateStart", 'p.datee'=>"DateEnd", 'p.fk_statut'=>'ProjectStatus', 'u.firstname'=>'Technician Name', 'p.tech_assigndatetime' => 'Technician Assign Time', 'b.nom'=>'Brand Name' , 'p.fk_category'=>'Category Name', 'p.fk_sub_category'=>'Sub Category Name', 'p.fk_model'=>'Model No' , 'p.fk_product'=>'Product Name' 
+			'p.rowid'=>"ProjectId", 'p.ref'=>"RefProject", 'p.title'=>'ProjectLabel','p.datec'=>"DateCreation", 'p.dateo'=>"DateStart", 'p.datee'=>"DateEnd", 'p.fk_statut'=>'ProjectStatus', 'u.firstname'=>'Technician Name', 'p.tech_assigndatetime' => 'Technician Assign Time', 'b.nom'=>'Brand Name' , 'pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.code'=>'Model No' ,'pm.nom'=>'Product Name' ,'sc.label'=>'Call For Source' ,'st.label'=>'Service Type Label' 
 		);
 		// Add multicompany field
 		if (!empty($conf->global->MULTICOMPANY_ENTITY_IN_EXPORT_IF_SHARED))
@@ -279,6 +279,16 @@ class modProjet extends DolibarrModules
 
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_brands as b ON p.fk_brand = b.rowid';
 
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_product_family as pf ON p.fk_category = pf.rowid';
+
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_product_subfamily as psf ON p.fk_sub_category = psf.rowid';
+
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_product_model as pm ON p.fk_model = pm.rowid';
+
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_call_source as sc ON extra.fk_call_source = sc.rowid';
+
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_service_type as st ON extra.fk_service_type = st.rowid';
+
 		if (empty($conf->global->PROJECT_HIDE_TASKS)) {
 			$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'facture as f ON ptt.invoice_id = f.rowid';
 		}
@@ -304,7 +314,9 @@ class modProjet extends DolibarrModules
 				{
 					$fieldname = 'extra.'.$obj->name;
 					$fieldlabel = ucfirst($obj->label);
+					
 					$this->import_fields_array[$r][$fieldname] = $fieldlabel.($obj->fieldrequired ? '*' : '');
+
 				}
 			}
 			// End add extra fields

@@ -1171,6 +1171,7 @@ if ($step == 5 && $datatoexport)
 	// List of exported fields
 	print '<tr><td>'.$langs->trans("ExportedFields").'</td>';
 	$list = '';
+	
 	foreach ($array_selected as $code=>$label)
 	{
 		$list .= (!empty($list) ? ', ' : '');
