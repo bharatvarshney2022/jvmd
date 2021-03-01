@@ -52,13 +52,13 @@
 	$ref = $defaultref;
 	$title = GETPOST('title', 'alphanohtml');
 
-	$product_brand = GETPOST('product_brand', 'alpha');
+	$product_brand = GETPOST('brand_name', 'alpha');
 	$fk_category = GETPOST('product_category', 'alpha');
-	$fk_sub_category = GETPOST('product_sub_category', 'alpha');
+	$fk_sub_category = GETPOST('sub_product_category', 'alpha');
 	$fk_model = GETPOST('product_model', 'alpha');
-	$fk_product = GETPOST('product_name', 'alpha');
+	$fk_product = '';
 
-	$ac_capacity = GETPOST('ac_capacity', 'alpha');
+	$ac_capacity = GETPOST('capacity', 'alpha');
 	$options_fk_call_source = GETPOST('call_source', 'alpha');
 	$options_fk_service_type = GETPOST('service_type', 'alpha');
 
