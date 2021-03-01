@@ -82,6 +82,7 @@
 
 		$objectPro = new Product($db);
 
+		echo $brand_id.",".$category_id.",".$sub_category_id.".".$model_id;
 		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
 		{
 			$objectProCust = new Project($db);
