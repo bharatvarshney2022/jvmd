@@ -93,7 +93,7 @@
 			$objectProCust->title = $lead_title;
 			$objectProCust->description = $description;
 			$objectProCust->socid = $user_id;
-			$objectProCust->date_start = date('m/d/y');
+			$objectProCust->date_start = date('Y-m-d');
 			$objectProCust->date_end = '';
 			$objectProCust->public = '1';
 			$objectProCust->usage_opportunity = '1';
