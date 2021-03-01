@@ -283,7 +283,7 @@ class Project extends CommonObject
 		$sql .= ", fk_customer_product = ''";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
 		$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
-		$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+		$sql .= ", fk_sub_category = '".$this->db->escape($this->fk_subcategory)."'";
 		$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
 		$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
 		$sql .= ", fk_user_creat = '1'";
