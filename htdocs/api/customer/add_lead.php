@@ -48,7 +48,7 @@
 	}
 
 	$ref = $defaultref;
-	$title = GETPOST('title', 'alphanohtml');
+	$lead_title = GETPOST('title', 'alphanohtml');
 
 	$product_brand = GETPOST('brand_name', 'alpha');
 	$fk_category = GETPOST('product_category', 'alpha');
@@ -90,7 +90,8 @@
 			$objectProCust = new Project($db);
 
 			$objectProCust->ref = $ref;
-			$objectProCust->title = $title;
+			$objectProCust->title = $lead_title;
+			$objectProCust->description = $description;
 			$objectProCust->socid = $user_id;
 			$objectProCust->date_start = date('m/d/y');
 			$objectProCust->date_end = '';
