@@ -837,10 +837,12 @@ class DolibarrModules // Can not be abstract, because we need to instantiate it 
 	public function getExportDatasetLabel($r)
 	{
 		global $langs;
-
+		
 		$langstring = "ExportDataset_".$this->export_code[$r];
+		
 		if ($langs->trans($langstring) == $langstring) {
 			// Translation not found
+			
 			return $langs->trans($this->export_label[$r]);
 		} else {
 			// Translation found

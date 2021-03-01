@@ -114,7 +114,7 @@ $entitytolang = array(
 	'trip'         => 'TripsAndExpenses',
 	'shipment'     => 'Shipments',
 	'shipment_line'=> 'ShipmentLine',
-	'project'      => 'Projects',
+	'project'      => 'Support Ticket',
 	'projecttask'  => 'Tasks',
 	'task_time'    => 'TaskTimeSpent',
 	'action'       => 'Event',
@@ -158,6 +158,7 @@ $usefilters = 1;
 /*
  * Actions
  */
+
 
 if ($action == 'selectfield')     // Selection of field at step 2
 {
@@ -447,6 +448,7 @@ if ($step == 1 || !$datatoexport)
 		asort($objexport->array_export_code_for_sort);
 		//var_dump($objexport->array_export_code_for_sort);
 		//$sortedarrayofmodules = dol_sort_array($objexport->array_export_module, 'module_position', 'asc', 0, 0, 1);
+		
 		foreach ($objexport->array_export_code_for_sort as $key => $value)
 		{
 			print '<tr class="oddeven"><td nospan="nospan">';
@@ -587,9 +589,10 @@ if ($step == 2 && $datatoexport)
 			$entityicon = $tmparray[0];
 			$entitylang = $tmparray[1];
 		}
+		//echo $entitylang;
 		print img_object('', $entityicon).' '.$langs->trans($entitylang);
 		print '</td>';
-
+		//echo $label;
 		$text = (empty($objexport->array_export_special[0][$code]) ? '' : '<i>').$langs->trans($label).(empty($objexport->array_export_special[0][$code]) ? '' : '</i>');
 
 		$tablename = getablenamefromfield($code, $sqlmaxforexport);
@@ -627,6 +630,7 @@ if ($step == 2 && $datatoexport)
 			// Fields not selected
 			print '<td>';
 			//print $text.'-'.$htmltext."<br>";
+			//print $text;
 			print $form->textwithpicto($text, $htmltext);
 			//print ' ('.$code.')';
 			print '</td>';

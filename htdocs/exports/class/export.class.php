@@ -119,8 +119,10 @@ class Export
 						if ($enabled)
 						{
 							// Loading Class
+
 							$file = $dir.$modulename.".class.php";
 							$classname = $modulename;
+							
 							require_once $file;
 							$module = new $classname($this->db);
 
@@ -178,8 +180,11 @@ class Export
 									// Define a key for sort
 									$this->array_export_code_for_sort[$i] = $module->module_position.'_'.$module->export_code[$r];	// Add a key into the module
 									// Libelle du dataset export
+
 									$this->array_export_label[$i] = $module->getExportDatasetLabel($r);
 									// Tableau des champ a exporter (cle=champ, valeur=libelle)
+									/*Print_r($module->export_fields_array[$r]);
+									echo '<br />';*/
 									$this->array_export_fields[$i] = $module->export_fields_array[$r];
 									// Tableau des champs a filtrer (cle=champ, valeur1=type de donnees) on verifie que le module a des filtres
 									$this->array_export_TypeFields[$i] = (isset($module->export_TypeFields_array[$r]) ? $module->export_TypeFields_array[$r] : '');
