@@ -79,12 +79,9 @@
 		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $sub_product_category);
 		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $product_model);
 
-		//echo $brand_id.",".$category_id; exit;
-
 		$product_id = $objectPro1->getProductListByName($product_model);
 
 		$objectPro = new Product($db);
-
 
 		// Component No
 		$component_no = '1900000';
@@ -125,45 +122,9 @@
 			}
 			else
 			{
-
-				// Image Upload
-				if (!empty($_FILES))
-				{
-					$error = 0;
-					if (is_array($_FILES['product_images']['tmp_name'])) $images = $_FILES['product_images']['tmp_name'];
-					else $images = array($_FILES['product_images']['tmp_name']);
-
-					foreach ($images as $key => $image)
-					{
-						if (empty($_FILES['product_images']['tmp_name'][$key]))
-						{
-							$error++;
-							if ($_FILES['product_images']['error'][$key] == 1 || $_FILES['product_images']['error'][$key] == 2) {
-								setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
-							} else {
-								setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
-							}
-						}
-					}
-
-					if (!$error)
-					{
-						// Define if we have to generate thumbs or not
-						$generatethumbs = 1;
-						$allowoverwrite = 0;
-
-						$upload_dir = $conf->global->PRODUCT_CUSTOMER_MULTIDIR."/".$newCustomerProduct;
-						
-						if (!empty($upload_dir))
-						{
-							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'product_images', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $objectPro);
-						}
-					}
-				}
-
 				$db->commit();
 				$status_code = '1';
-				$message = 'Product added successfully.';
+				$message = 'Lead added successfully.';
 
 				$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => "".$newCustomerProduct);
 			}
