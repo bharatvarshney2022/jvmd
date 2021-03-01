@@ -276,9 +276,9 @@ class Project extends CommonObject
 		// Produit non deja existant
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet";
 		$sql .= " SET ref = '".$this->db->escape($this->ref)."'";
-		$sql .= ", title = '".$this->db->idate($this->title)."'";
-		$sql .= ", description = '".$this->db->idate($this->description)."'";
-		$sql .= ", fk_soc = '".$this->db->idate($this->socid)."'";
+		$sql .= ", title = '".$this->db->escape($this->title)."'";
+		$sql .= ", description = '".$this->db->escape($this->description)."'";
+		$sql .= ", fk_soc = '".(int)$this->socid."'";
 		$sql .= ", fk_technician = ''";
 		$sql .= ", fk_customer_product = ''";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
