@@ -36,8 +36,6 @@
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 
-		echo $sql; exit;
-
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
@@ -53,11 +51,11 @@
 				
 				$producttmp->fetch($obj->fk_product);
 
-				$societeLEadData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
+				$societeLeadData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
 				$i++;
 			}
 
-			$json = array('status_code' => $status_code, 'message' => $message, 'lead_data' => $societeLEadData);
+			$json = array('status_code' => $status_code, 'message' => $message, 'lead_data' => $societeLeadData);
 		}
 		else
 		{
