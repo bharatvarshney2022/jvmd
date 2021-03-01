@@ -91,7 +91,7 @@
 
 			$objectProCust->ref = $ref;
 			$objectProCust->title = $title;
-			$objectProCust->fk_soc = $user_id;
+			$objectProCust->socid = $user_id;
 			$objectProCust->date_start = date('m/d/y');
 			$objectProCust->date_end = '';
 			$objectProCust->public = '1';

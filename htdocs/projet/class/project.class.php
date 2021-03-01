@@ -278,7 +278,7 @@ class Project extends CommonObject
 		$sql .= " SET ref = '".$this->db->escape($this->ref)."'";
 		$sql .= ", title = '".$this->db->idate($this->title)."'";
 		$sql .= ", description = '".$this->db->idate($this->description)."'";
-		$sql .= ", fk_soc = '".$this->db->idate($this->fk_soc)."'";
+		$sql .= ", fk_soc = '".$this->db->idate($this->socid)."'";
 		$sql .= ", fk_technician = ''";
 		$sql .= ", fk_customer_product = ''";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
