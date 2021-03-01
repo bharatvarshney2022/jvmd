@@ -114,10 +114,14 @@ class box_project extends ModeleBoxes
 
 			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, s.address, s.town, s.zip";
 			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s";
+			if ($user_group_id == 17) 
+			{
+				$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
+			}
 			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
 			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut = 0"; // Only pending projects
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
-
+			
 			if(!$user->admin)
 			{
 				if($user_group_id == 4)
@@ -145,12 +149,32 @@ class box_project extends ModeleBoxes
 						}
 					}
 				}
+
+				if($user_group_id == 17){
+
+					$vendor_list = '';
+					$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+					$resqlVendor = $this->db->query($sqlVendor);
+					if ($resqlVendor)
+					{
+						$rowVendor = $this->db->fetch_object($resqlVendor);
+						$vendorData = $rowVendor->fk_vendor;
+						
+						//$vendorData[] = $user->id;
+
+						if($vendorData)
+						{
+							//$vendor_list = implode(",", $vendorData);
+							$sql .= " AND ecp.element_id = p.rowid AND ecp.fk_socpeople IN (".$vendorData.")";
+						}
+					}
+				}
 			}
 
 			$sql .= " ORDER BY p.datec DESC";
 			$sql.= $this->db->plimit($max, 0);
 			
-
+			//echo $sql;
 			$result = $this->db->query($sql);
 
 			if ($result) {
