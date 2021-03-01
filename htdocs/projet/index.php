@@ -44,7 +44,7 @@ if ($groupslist != '-1')
 		$user_group_id = $groupforuser->id;
 	}
 }
-if ($user_group_id == 17) 
+if ($user_group_id == 17 || $user_group_id == 4) 
 {
 	$backurl = DOL_URL_ROOT.'/projet/list.php?leftmenu=projets&search_status=99';
 
