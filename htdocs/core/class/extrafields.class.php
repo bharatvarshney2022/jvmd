@@ -863,7 +863,7 @@ class ExtraFields
 
 		if (empty($elementtype)) return array();
 
-		if($elementtype == "user" && $id > 0) return array();
+		//if($elementtype == "user" && $id > 0) return array();
 
 		if ($elementtype == 'thirdparty')     $elementtype = 'societe';
 		if ($elementtype == 'contact')        $elementtype = 'socpeople';
@@ -873,10 +873,35 @@ class ExtraFields
 		$array_name_label = array();
 
 		// We should not have several time this request. If we have, there is some optimization to do by calling a simple $extrafields->fetch_optionals() in top of code and not into subcode
+		$user_group_id = 0;
+		if($elementtype == "user" && $id > 0){
+			/* Get user group id */
+			$sqlusergrp = "SELECT g.rowid, ug.fk_usergroup as usergroup";
+			$sqlusergrp .= " FROM ".MAIN_DB_PREFIX."usergroup as g,";
+			$sqlusergrp .= " ".MAIN_DB_PREFIX."usergroup_user as ug";
+			$sqlusergrp .= " WHERE ug.fk_usergroup = g.rowid";
+			$sqlusergrp .= " AND ug.fk_user = ".$id;
+			$sqlusergrp .= " ORDER BY g.nom";
+			//echo $sqlusergrp;
+			$resultusrgrp = $this->db->query($sqlusergrp);
+			if ($resultusrgrp)
+			{
+				$groupslist = array();
+				while ($objusrgrp = $this->db->fetch_object($resultusrgrp))
+				{
+					$groupslist[] = $objusrgrp->usergroup;
+				}
+			}
+			$user_group_id = implode(",",$groupslist);
+		}
+		
+		//echo $user_group_id;
 		$sql = "SELECT rowid,name,label,type,size,elementtype,fieldunique,fieldrequired,usergroup_id,fieldrow,fieldcolumn,param,pos,alwayseditable,perms,langs,list,printable,totalizable,fielddefault,fieldcomputed,entity,enabled,help";
 		$sql .= " FROM ".MAIN_DB_PREFIX."extrafields";
 		//$sql.= " WHERE entity IN (0,".$conf->entity.")";    // Filter is done later
-		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'"; // Filed with object->table_element
+		if ($elementtype) $sql .= " WHERE elementtype = '".$this->db->escape($elementtype)."'";
+		if($user_group_id) $sql .= " AND usergroup_id IN (".$this->db->escape($user_group_id).") ";
+		 // Filed with object->table_element
 		$sql .= " ORDER BY pos";
 		//echo $id.",".$elementtype.",".$sql; exit;
 
@@ -893,7 +918,7 @@ class ExtraFields
 						// This field is not in current entity. We discard but before we save it into the array of mandatory fields if it is a mandatory field without default value
 						if ($tab->fieldrequired && is_null($tab->fielddefault))
 						{
-							$this->attributes[$tab->elementtype]['mandatoryfieldsofotherentities'][$tab->name] = $tab->type;
+							echo$this->attributes[$tab->elementtype]['mandatoryfieldsofotherentities'][$tab->name] = $tab->type;
 						}
 						continue;
 					}
