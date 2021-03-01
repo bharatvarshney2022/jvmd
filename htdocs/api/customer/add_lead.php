@@ -47,8 +47,6 @@
 		$defaultref = $modProject->getNextValue($thirdparty, $object);
 	}
 
-	echo $defaultref; exit;
-
 	$ref = $defaultref;
 	$title = GETPOST('title', 'alphanohtml');
 
@@ -56,11 +54,12 @@
 	$fk_category = GETPOST('product_category', 'alpha');
 	$fk_sub_category = GETPOST('sub_product_category', 'alpha');
 	$fk_model = GETPOST('product_model', 'alpha');
-	$fk_product = '';
-
+	
 	$ac_capacity = GETPOST('capacity', 'alpha');
 	$options_fk_call_source = GETPOST('call_source', 'alpha');
 	$options_fk_service_type = GETPOST('service_type', 'alpha');
+
+	$description = 'Brand: '.$product_brand.'<br /> Category: '.$fk_category.'<br /> Sub-Category: '.$fk_sub_category.'<br /> Model: '.$fk_model.'<br />';
 
 	global $db, $user, $conf, $langs;
 
@@ -83,34 +82,35 @@
 
 		$objectPro = new Product($db);
 
-		// Component No
-		$component_no = '1900000';
-		$sqlcomponent_no = "SELECT MAX(component_no) as max";
-		$sqlcomponent_no .= " FROM ".MAIN_DB_PREFIX."product_customer";
-		$sqlcomponent_no .= " WHERE component_no != '' ";
-		$resqlcomponent_no = $db->query($sqlcomponent_no);
-		if ($resqlcomponent_no)
-		{
-			$objcomponent_no = $db->fetch_object($resqlcomponent_no);
-			$component_no = intval($objcomponent_no->max)+1;
-		}else{
-			$component_no = $component_no+1;
-		}
-
 		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
 		{
-			$objectProCust = new ProductCustomer($db);
+			$objectProCust = new Project($db);
 
-			$objectProCust->fk_model = $model_id;
+			$objectProCust->ref = $ref;
+			$objectProCust->title = $title;
 			$objectProCust->fk_soc = $user_id;
+			$objectProCust->date_start = date('m/d/y');
+			$objectProCust->date_end = '';
+			$objectProCust->public = '1';
+			$objectProCust->usage_opportunity = '1';
+			$objectProCust->usage_task = '1';
+			$objectProCust->usage_bill_time = '0';
+			$objectProCust->description = $description;
+			$objectProCust->note_private = '';
+			$objectProCust->note_public = $description;
+
 			$objectProCust->fk_brand = $brand_id;
 			$objectProCust->fk_category = $category_id;
 			$objectProCust->fk_subcategory = $sub_category_id;
+			$objectProCust->fk_model = $model_id;
 			$objectProCust->fk_product = $product_id;
+			
 			$objectProCust->ac_capacity = $capacity;
-			$objectProCust->component_no = $component_no;
-
-			$newCustomerProduct = $objectProCust->addProduct($userRow, 1);
+			
+			$objectProCust->options_fk_call_source = $options_fk_call_source;
+			$objectProCust->options_fk_service_type = $options_fk_service_type;
+			
+			$newCustomerProduct = $objectProCust->addLead($userRow, 1);
 
 			if($newCustomerProduct == 0)
 			{

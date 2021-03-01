@@ -265,6 +265,59 @@ class Project extends CommonObject
 	 *    @param	int		$notrigger		Disable triggers
 	 *    @return   int         			<0 if KO, id of created project if OK
 	 */
+	public function addLead($user, $api = 0)
+	{
+		$now = dol_now();
+		$entity = 1;
+		// Clean parameters
+		$this->note_private = dol_substr($this->note_private, 0, 65535);
+		$this->note_public = dol_substr($this->note_public, 0, 65535);
+
+		// Produit non deja existant
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet";
+		$sql .= " SET ref = '".$this->db->escape($this->ref)."'";
+		$sql .= ", title = '".$this->db->idate($this->title)."'";
+		$sql .= ", description = '".$this->db->idate($this->description)."'";
+		$sql .= ", fk_soc = '".$this->db->idate($this->fk_soc)."'";
+		$sql .= ", fk_technician = ''";
+		$sql .= ", fk_customer_product = ''";
+		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
+		$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+		$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+		$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+		$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
+		$sql .= ", fk_user_creat = '1'";
+		$sql .= ", fk_statut = '0'";
+		$sql .= ", fk_opp_status = NULL";
+		$sql .= ", opp_percent = NULL";
+		$sql .= ", public = '1'";
+		$sql .= ", datec = '".$this->db->idate($now)."'";
+		$sql .= ", dateo = '".$this->db->idate($now)."'";
+		$sql .= ", datee = '".$this->db->idate($now)."'";
+		$sql .= ", opp_amount = NULL";
+		$sql .= ", budget_amount = NULL";
+		$sql .= ", usage_opportunity = '".$this->db->escape($this->usage_opportunity)."'";
+		$sql .= ", usage_task = '".$this->db->escape($this->usage_task)."'";
+		$sql .= ", usage_bill_time = '".$this->db->escape($this->usage_bill_time)."'";
+		$sql .= ", usage_organize_event = NULL";
+		$sql .= ", email_msgid = NULL";
+		$sql .= ", note_private = '".$this->db->escape($this->note_private)."'";
+		$sql .= ", note_public = '".$this->db->escape($this->note_public)."'";
+		$sql .= ", entity = '".$this->db->escape($entity)."'";
+
+		echo $sql; exit;
+		//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
+		$result = $this->db->query($sql);
+		if ($result) {
+			$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
+			return $id;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 	public function create($user, $notrigger = 0)
 	{
 		global $conf, $langs;
@@ -274,9 +327,7 @@ class Project extends CommonObject
 
 		$now = dol_now();
 
-		// Clean parameters
-		$this->note_private = dol_substr($this->note_private, 0, 65535);
-		$this->note_public = dol_substr($this->note_public, 0, 65535);
+		
 
 		// Check parameters
 		if (!trim($this->ref))
