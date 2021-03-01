@@ -279,8 +279,8 @@ class Project extends CommonObject
 		$sql .= ", title = '".$this->db->escape($this->title)."'";
 		$sql .= ", description = '".$this->db->escape($this->description)."'";
 		$sql .= ", fk_soc = '".(int)$this->socid."'";
-		$sql .= ", fk_technician = ''";
-		$sql .= ", fk_customer_product = ''";
+		$sql .= ", fk_technician = '0'";
+		$sql .= ", fk_customer_product = '0'";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
 		$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
 		$sql .= ", fk_sub_category = '".$this->db->escape($this->fk_subcategory)."'";
@@ -292,8 +292,8 @@ class Project extends CommonObject
 		$sql .= ", opp_percent = NULL";
 		$sql .= ", public = '1'";
 		$sql .= ", datec = '".$this->db->idate($now)."'";
-		$sql .= ", dateo = '".$this->db->idate($now)."'";
-		$sql .= ", datee = '".$this->db->idate($now)."'";
+		$sql .= ", dateo = '".$this->db->idate($date_start)."'";
+		$sql .= ", datee = '".$this->db->idate($date_end)."'";
 		$sql .= ", opp_amount = NULL";
 		$sql .= ", budget_amount = NULL";
 		$sql .= ", usage_opportunity = '".$this->db->escape($this->usage_opportunity)."'";
@@ -304,8 +304,7 @@ class Project extends CommonObject
 		$sql .= ", note_private = '".$this->db->escape($this->note_private)."'";
 		$sql .= ", note_public = '".$this->db->escape($this->note_public)."'";
 		$sql .= ", entity = '".$this->db->escape($entity)."'";
-		echo $sql; exit;
-
+		
 		//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result) {
