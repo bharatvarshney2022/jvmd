@@ -115,8 +115,7 @@
 			if($newCustomerProduct == 0)
 			{
 				$status_code = '0';
-				$message = 'Selected data already exists.';
-
+				$message = 'Something went wrong.';
 
 				$json = array('status_code' => $status_code, 'message' => $message);
 			}
@@ -126,7 +125,7 @@
 				$status_code = '1';
 				$message = 'Lead added successfully.';
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => "".$newCustomerProduct);
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => "".$newCustomerProduct);
 			}
 		}
 		else
