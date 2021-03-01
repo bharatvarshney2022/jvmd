@@ -316,6 +316,7 @@ class Project extends CommonObject
 			$sqlExtra .= ", product = ''";
 			$sqlExtra .= ", fk_call_source = '".$this->db->idate($this->options_fk_call_source)."'";
 			$sqlExtra .= ", fk_service_type = '".$this->db->idate($this->options_fk_service_type)."'";
+			$result = $this->db->query($sqlExtra);
 
 			return $projet_id;
 		}
