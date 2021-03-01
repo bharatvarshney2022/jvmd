@@ -16,7 +16,7 @@
 	$status_code = '1';
 	$message = 'About Data';
 		
-	$json = array('status_code' => $status_code, 'message' => $message, 'phone' => $conf->global->MAIN_INFO_SOCIETE_TEL, 'email' => $conf->global->MAIN_INFO_SOCIETE_MAIL, 'address' => $conf->global->MAIN_INFO_SOCIETE_ADDRESS.' '.$conf->global->MAIN_INFO_SOCIETE_TOWN.', '.substr($conf->global->MAIN_INFO_SOCIETE_STATE, 5).', '.$conf->global->MAIN_INFO_SOCIETE_ZIP, 'about' => $conf->global->MAIN_INFO_SOCIETE_NOTE);
+	$json = array('status_code' => $status_code, 'message' => $message, 'phone' => $conf->global->MAIN_INFO_SOCIETE_TEL, 'email' => $conf->global->MAIN_INFO_SOCIETE_MAIL, 'address' => $conf->global->MAIN_INFO_SOCIETE_ADDRESS.' '.$conf->global->MAIN_INFO_SOCIETE_TOWN.', '.substr($conf->global->MAIN_INFO_SOCIETE_STATE, 5).', '.$conf->global->MAIN_INFO_SOCIETE_ZIP, 'about' => $conf->global->MAIN_INFO_SOCIETE_ABOUT);
 	
 	$headers = 'Content-type: application/json';
 	header($headers);

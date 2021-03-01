@@ -95,6 +95,7 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MAIL", GETPOST("mail", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_WEB", GETPOST("web", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOTE", GETPOST("note", 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_ABOUT", GETPOST("about", 'restricthtml'), 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_GENCOD", GETPOST("barcode", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
 
 	$dirforimage = $conf->mycompany->dir_output.'/logos/';
@@ -571,6 +572,11 @@ print '<!--begin::Entry-->
 								// Note
 								print '<tr class=""><td class="tdtop"><label for="note">'.$langs->trans("Note").'</label></td><td>';
 								print '<textarea class="summernote form-control" name="note" id="note" rows="'.ROWS_5.'">'.(GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : $conf->global->MAIN_INFO_SOCIETE_NOTE).'</textarea></td></tr>';
+								print '</td></tr>';
+
+								// About
+								print '<tr class=""><td class="tdtop"><label for="note">'.$langs->trans("About").'</label></td><td>';
+								print '<textarea class="summernote form-control" name="about" id="about" rows="'.ROWS_5.'">'.(GETPOSTISSET('about') ? GETPOST('about', 'restricthtml') : $conf->global->MAIN_INFO_SOCIETE_ABOUT).'</textarea></td></tr>';
 								print '</td></tr>';
 
 								print '</tbody></table></div>';
