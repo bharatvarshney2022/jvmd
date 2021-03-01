@@ -292,8 +292,8 @@ class Project extends CommonObject
 		$sql .= ", opp_percent = NULL";
 		$sql .= ", public = '1'";
 		$sql .= ", datec = '".$this->db->idate($now)."'";
-		$sql .= ", dateo = '".$this->db->idate($date_start)."'";
-		$sql .= ", datee = '".$this->db->idate($date_end)."'";
+		$sql .= ", dateo = '".$this->db->idate($this->date_start)."'";
+		$sql .= ", datee = '".$this->db->idate($this->date_end)."'";
 		$sql .= ", opp_amount = NULL";
 		$sql .= ", budget_amount = NULL";
 		$sql .= ", usage_opportunity = '".$this->db->escape($this->usage_opportunity)."'";
