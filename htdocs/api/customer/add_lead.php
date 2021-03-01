@@ -73,16 +73,15 @@
 	if($userExists)
 	{
 		$objectPro1 = new Product($db);
-		$brand_id = $objectPro1->getBrandByName($brand_name);
-		$category_id = $objectPro1->getCategoryByName($brand_id, $product_category);
-		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $sub_product_category);
-		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $product_model);
+		$brand_id = $objectPro1->getBrandByName($product_brand);
+		$category_id = $objectPro1->getCategoryByName($brand_id, $fk_category);
+		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $fk_sub_category);
+		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $fk_model);
 
-		$product_id = $objectPro1->getProductListByName($product_model);
+		$product_id = $objectPro1->getProductListByName($fk_model);
 
 		$objectPro = new Product($db);
 
-		echo $brand_id.",".$category_id.",".$sub_category_id.".".$model_id; exit;
 		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
 		{
 			$objectProCust = new Project($db);
