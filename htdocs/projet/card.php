@@ -337,7 +337,8 @@ if (empty($reshook))
 
 			$object->ref          = GETPOST('ref', 'alpha');
 			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, we want field as it is
-			$object->statut       = GETPOST('status', 'int');
+			//$object->statut       = GETPOST('status', 'int');
+			$object->statut       = $object->statut;
 			$object->socid        = GETPOST('socid', 'int');
 			$object->technician        = GETPOST('technician', 'int');
 			if($object->technician > 0){

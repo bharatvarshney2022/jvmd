@@ -465,7 +465,7 @@ class Project extends CommonObject
 			$sql .= ", usage_bill_time = ".($this->usage_bill_time ? 1 : 0);
 			$sql .= ", usage_organize_event = ".($this->usage_organize_event ? 1 : 0);
 			$sql .= " WHERE rowid = ".$this->id;
-
+			
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
