@@ -308,8 +308,16 @@ class Project extends CommonObject
 		//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result) {
-			$id = $this->db->last_insert_id(MAIN_DB_PREFIX."projet");
-			return $id;
+			$projet_id = $this->db->last_insert_id(MAIN_DB_PREFIX."projet");
+
+			$sqlExtra = "INSERT INTO ".MAIN_DB_PREFIX."projet_extrafields";
+			$sqlExtra .= " SET fk_object = '".$this->db->escape($projet_id)."'";
+			$sqlExtra .= ", import_key = NULL";
+			$sqlExtra .= ", product = ''";
+			$sqlExtra .= ", fk_call_source = '".$this->db->idate($this->options_fk_call_source)."'";
+			$sqlExtra .= ", fk_service_type = '".$this->db->idate($this->options_fk_service_type)."'";
+
+			return $projet_id;
 		}
 		else
 		{

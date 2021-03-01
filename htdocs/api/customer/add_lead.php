@@ -80,9 +80,12 @@
 
 		$product_id = $objectPro1->getProductListByName($fk_model);
 
-		$objectPro = new Product($db);
+		$call_source_id = $objectPro1->getCallSourceByName($options_fk_call_source);
+		//c_call_source:label:rowid::active=1
+		//c_service_type:label:rowid::active=1
+		$service_type_id = $objectPro1->getServiceTypeByName($options_fk_service_type);
 
-		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
+		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0 && $call_source_id > 0 && $service_type_id > 0)
 		{
 			$objectProCust = new Project($db);
 
@@ -107,8 +110,8 @@
 			
 			$objectProCust->ac_capacity = $capacity;
 			
-			$objectProCust->options_fk_call_source = $options_fk_call_source;
-			$objectProCust->options_fk_service_type = $options_fk_service_type;
+			$objectProCust->options_fk_call_source = $call_source_id;
+			$objectProCust->options_fk_service_type = $service_type_id;
 			
 			$newCustomerProduct = $objectProCust->addLead($userRow, 1);
 

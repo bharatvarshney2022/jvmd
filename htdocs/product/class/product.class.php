@@ -2131,7 +2131,56 @@ class Product extends CommonObject
 			$this->error = $this->db->lasterror;
 			return -1;
 		}
-	
+	}
+
+
+	// Get data list
+	public function getCallSourceByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_call_source";
+		
+		$sql .= " WHERE label = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	}
+
+	public function getServiceTypeByName($label = '')
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_service_type";
+		
+		$sql .= " WHERE label = '".$this->db->escape($label)."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
 	}
 
 	public function fetch($id = '', $ref = '', $ref_ext = '', $barcode = '', $ignore_expression = 0, $ignore_price_load = 0, $ignore_lang_load = 0)
