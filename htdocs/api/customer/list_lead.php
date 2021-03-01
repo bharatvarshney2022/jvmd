@@ -25,7 +25,7 @@
 	if($userExists)
 	{
 		$object1 = new Project($db);
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_opp_status, p.public, p.fk_user_creat";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_opp_status, p.public, p.fk_user_creat";
 		$sql .= ", p.datec as date_creation, p.dateo as date_start, p.datee as date_end, p.opp_amount, p.opp_percent, (p.opp_amount*p.opp_percent/100) as opp_weighted_amount, p.tms as date_update, p.budget_amount, p.usage_opportunity, p.usage_task, p.usage_bill_time";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
 		$sql .= ", cls.code as opp_status_code";
