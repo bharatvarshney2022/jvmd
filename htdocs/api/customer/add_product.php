@@ -42,7 +42,11 @@
 
 		//echo $brand_id.",".$category_id; exit;
 
-		$product_id = $objectPro1->getProductListByName($product_model);
+		$product_id = 0;
+		if($product_model != "")
+		{
+			$objectPro1->getProductListByName($product_model);
+		}
 
 		$objectPro = new Product($db);
 
