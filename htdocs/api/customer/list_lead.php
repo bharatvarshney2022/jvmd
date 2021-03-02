@@ -26,13 +26,13 @@
 	if($userExists)
 	{
 		$object1 = new Project($db);
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category, p.fk_model";
 		$sql .= ", p.datec as date_creation, p.tms as date_update";
-		$sql .= ", s.rowid as socid, s.nom as name, s.email";
+		$sql .= ", s.rowid as socid, s.nom as name, s.email, ef.fk_call_source, ef.fk_service_type, br.nom as brand_name ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = cls.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as br on p.fk_brand = br.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 		echo $sql; exit;
