@@ -43,8 +43,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_service_type as ct on ef.fk_service_type = ct.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$lead_id."'";
-		echo $sql; exit;
-
+		
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
