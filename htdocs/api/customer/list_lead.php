@@ -36,6 +36,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = cls.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
+		echo $sql; exit;
 
 		$result = $db->query($sql);
 		if ($result) {
@@ -52,7 +53,7 @@
 				
 				$producttmp->fetch($obj->fk_product);
 
-				$societeLeadData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
+				$societeLeadData[] = array('lead_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
 				$i++;
 			}
 
