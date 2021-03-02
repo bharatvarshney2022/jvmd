@@ -10,6 +10,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 
