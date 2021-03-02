@@ -52,7 +52,7 @@
 			while ($i < $num) {
 				$obj = $db->fetch_object($result);
 				
-				$societeLeadData[] = array('lead_id' => $obj->id, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => $obj->date_creation);
+				$societeLeadData[] = array('lead_id' => $obj->id, 'status' => $obj->labelStatus[$obj->status], 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => $obj->date_creation);
 				$i++;
 			}
 
