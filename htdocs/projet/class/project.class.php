@@ -310,6 +310,7 @@ class Project extends CommonObject
 		$result = $this->db->query($sql);
 		if ($result) {
 			$projet_id = $this->db->last_insert_id(MAIN_DB_PREFIX."projet");
+			$this->id = $projet_id;
 
 			$sqlExtra = "INSERT INTO ".MAIN_DB_PREFIX."projet_extrafields";
 			$sqlExtra .= " SET fk_object = '".$this->db->escape($projet_id)."'";
