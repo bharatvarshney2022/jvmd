@@ -85,7 +85,7 @@
 		//c_service_type:label:rowid::active=1
 		$service_type_id = $objectPro1->getServiceTypeByName($options_fk_service_type);
 
-		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0 && $call_source_id > 0 && $service_type_id > 0)
+		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $call_source_id > 0 && $service_type_id > 0)
 		{
 			$objectProCust = new Project($db);
 
