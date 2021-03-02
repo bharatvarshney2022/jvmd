@@ -1465,6 +1465,34 @@ class ExtraFields
 
 					$out .= $form->multiselectarraywithdisable($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container", $disabledDataArr);
 				}
+				else if($key == "fk_vendor")
+				{
+					$disbaledArray = array();
+
+					$sqlFields = "SELECT fk_vendor FROM ".MAIN_DB_PREFIX."user_extrafields WHERE fk_object != '".$objectid."' and fk_vendor != ''";
+					$resqlFields = $this->db->query($sqlFields);
+					if ($resqlFields)
+					{
+						$num_rows = $this->db->num_rows($resqlFields);
+						$i = 0;
+						while ($i < $num_rows)
+						{
+							$obj = $this->db->fetch_object($resqlFields);
+							if ($obj)
+							{
+								$fk_vendor = $obj->fk_vendor;
+
+								$disbaledArray[] = $fk_vendor;
+							}
+							$i++;
+						}
+					}
+
+					$disabledValue = implode(",", $disbaledArray);
+					$disabledDataArr = explode(",", $disabledValue);
+
+					$out .= $form->multiselectarraywithdisable($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container", $disabledDataArr);
+				}
 				else
 				{
 					$out .= $form->multiselectarray($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container");
