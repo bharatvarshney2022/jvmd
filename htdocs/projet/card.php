@@ -397,7 +397,12 @@ if (empty($reshook))
 				{
 					$error++;
 					setEventMessages($object->error, $object->errors, 'errors');
+					$action = 'edit';
 				}
+				$action = 'view';
+				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
+				header("Location: ".$backurl);
+				exit;*/
 			}
 		}
 
@@ -410,6 +415,7 @@ if (empty($reshook))
 				{
 					$error++;
 					setEventMessages($langs->trans("ErrorShiftTaskDate").':'.$object->error, $object->errors, 'errors');
+					$action = 'edit';
 				}
 			}
 		}
@@ -423,6 +429,7 @@ if (empty($reshook))
 				$error++;
 				setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
 			}
+			$action = 'edit';
 		}
 
 
@@ -1564,7 +1571,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Technician name
 		print '<tr><td class="titlefield tdtop">'.$langs->trans("Technician name").'</td><td>';
-		print dol_htmlentitiesbr($object->getValuebyid($object->fk_technician,'user','firstname').' '.$object->getValuebyid($object->fk_technician,'user','lastname'));
+		print $object->getValuebyid($object->fk_technician,'user','firstname').' '.$object->getValuebyid($object->fk_technician,'user','lastname');
 		print '</td></tr>';
 
 		// Technician Assigne Date and time
