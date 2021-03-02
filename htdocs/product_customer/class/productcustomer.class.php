@@ -4794,7 +4794,7 @@ class ProductCustomer extends CommonObject
 				$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 				$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
 				$sql .= ", fk_user = '1'";
-				//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
+				dol_syslog(get_class($this)."::Create Customer Product".$sql, LOG_DEBUG);
 				$result = $this->db->query($sql);
 				if ($result) {
 					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
