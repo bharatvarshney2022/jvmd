@@ -6395,7 +6395,7 @@ class Product extends CommonObject
 			}
 		} else {
 			$this->error = $this->db->lasterror;
-			return -1;
+			return 0;
 		}
 	
 	}

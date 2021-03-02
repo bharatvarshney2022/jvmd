@@ -61,7 +61,7 @@
 			$component_no = $component_no+1;
 		}
 
-		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $model_id > 0)
+		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0)
 		{
 			$objectProCust = new ProductCustomer($db);
 
@@ -92,7 +92,6 @@
 			}
 			else
 			{
-
 				// Image Upload
 				if (!empty($_FILES))
 				{
