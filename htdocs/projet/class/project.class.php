@@ -501,6 +501,7 @@ class Project extends CommonObject
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
 			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
 			$sql .= ", tech_assigndatetime = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
+			$sql .= ", reponse_schedule = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
 			
 			$sql .= ", fk_customer_product = ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
 			$sql .= ", fk_brand = ".($this->fk_brand > 0 ? $this->fk_brand : "null");
@@ -1103,6 +1104,8 @@ class Project extends CommonObject
 
 		$error = 0;
 
+		$now = dol_now();
+
 		if ($this->statut != 1)
 		{
 			// Check parameters
@@ -1115,7 +1118,7 @@ class Project extends CommonObject
 			$this->db->begin();
 
 			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
-			$sql .= " SET fk_statut = 1";
+			$sql .= " SET fk_statut = 1, call_dispatched = '".$this->db->idate($now)."' ";
 			$sql .= " WHERE rowid = ".$this->id;
 			$sql .= " AND entity = ".$conf->entity;
 
@@ -1169,7 +1172,7 @@ class Project extends CommonObject
 			$this->db->begin();
 
 			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
-			$sql .= " SET fk_statut = ".self::STATUS_CLOSED.", fk_user_close = ".$user->id.", date_close = '".$this->db->idate($now)."'";
+			$sql .= " SET fk_statut = ".self::STATUS_CLOSED.", fk_user_close = ".$user->id.", date_close = '".$this->db->idate($now)."', call_resolved = '".$this->db->idate($now)."' ";
 			$sql .= " WHERE rowid = ".$this->id;
 			$sql .= " AND fk_statut = ".self::STATUS_VALIDATED;
 
@@ -1211,7 +1214,7 @@ class Project extends CommonObject
 	public function setReject($user)
 	{
 		global $langs, $conf;
-
+		$now = dol_now();
 		$error = 0;
 
 		if ($this->statut != 1)
@@ -1226,7 +1229,7 @@ class Project extends CommonObject
 			$this->db->begin();
 
 			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
-			$sql .= " SET fk_statut = 3";
+			$sql .= " SET fk_statut = 3, call_rejected_date = '".$this->db->idate($now)."'";
 			$sql .= " WHERE rowid = ".$this->id;
 			$sql .= " AND entity = ".$conf->entity;
 
