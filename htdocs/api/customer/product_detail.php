@@ -51,7 +51,7 @@
 					
 				$producttmp->fetch($obj->fk_product);
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'amc_start_date' => ($obj->amc_start_date == NULL ? "-" : $obj->amc_start_date), 'amc_end_date' => ($obj->amc_end_date == NULL ? "-" : $obj->amc_end_date), 'product_odu' => ($obj->product_odu == NULL ? "-" : $obj->product_odu), 'date_added' => $obj->de);
+				$json = array('status_code' => $status_code, 'message' => $message, 'product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => ($obj->c_product_model == NULL ? "-" : $obj->c_product_model), 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'amc_start_date' => ($obj->amc_start_date == NULL ? "-" : $obj->amc_start_date), 'amc_end_date' => ($obj->amc_end_date == NULL ? "-" : $obj->amc_end_date), 'product_odu' => ($obj->product_odu == NULL ? "-" : $obj->product_odu), 'date_added' => $obj->de);
 			}
 			else
 			{
