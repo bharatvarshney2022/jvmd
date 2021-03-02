@@ -328,6 +328,10 @@ if (!empty($conf->categorie->enabled))
 }
 if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label'])) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
+if($user_group_id == 4)
+{
+$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as esf on (p.fk_soc = esf.fk_object)";
+}
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = cls.rowid";
 // We'll need this table joined to the select in order to filter by sale
 // No check is done on company permission because readability is managed by public status of project and assignement.
@@ -400,8 +404,11 @@ if($user_group_id == 17){
 		}
 	}
 }
-
 if($user_group_id == 4)
+{
+	$sql .= " AND FIND_IN_SET(esf.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+}
+/*if($user_group_id == 4)
 {
 	$apply_zipcode = $user->array_options['options_apply_zipcode'];
 	if($apply_zipcode != "")
@@ -425,7 +432,7 @@ if($user_group_id == 4)
 			$sql .= " AND s.zip IN (".$zipData.")";
 		}
 	}
-}
+}*/
 if ($search_opp_amount != '') $sql .= natural_search('p.opp_amount', $search_opp_amount, 1);
 if ($search_budget_amount != '') $sql .= natural_search('p.budget_amount', $search_budget_amount, 1);
 if ($search_usage_opportunity != '' && $search_usage_opportunity >= 0) $sql .= natural_search('p.usage_opportunity', $search_usage_opportunity, 2);
@@ -438,7 +445,7 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
 $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
-//echo $sql; exit;
+
 
 // Count total nb of records
 $nbtotalofrecords = '';
