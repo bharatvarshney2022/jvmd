@@ -544,7 +544,7 @@ if ($step == 2 && $datatoexport)
 	print '<div class="div-table-responsive-no-min">'; // You can use div-table-responsive-no-min if you dont need reserved height for your table
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre">';
-	print '<td>'.$langs->trans("Entities").'</td>';
+	//print '<td>'.$langs->trans("Entities").'</td>';
 	print '<td>'.$langs->trans("ExportableFields").'</td>';
 	print '<td width="100" class="center">';
 	print '<a class="liste_titre commonlink" title='.$langs->trans("All").' alt='.$langs->trans("All").' href="'.$_SERVER["PHP_SELF"].'?step=2&datatoexport='.$datatoexport.'&action=selectfield&field=all">'.$langs->trans("All")."</a>";
@@ -579,7 +579,7 @@ if ($step == 2 && $datatoexport)
 		$entityicon = strtolower(!empty($entitytoicon[$entity]) ? $entitytoicon[$entity] : $entity);
 		$entitylang = (!empty($entitytolang[$entity]) ? $entitytolang[$entity] : $entity);
 
-		print '<td class="nowrap">';
+		/*print '<td class="nowrap">';
 		// If value of entityicon=entitylang='icon:Label'
 		//print $code.'-'.$label.'-'.$entity;
 
@@ -591,7 +591,7 @@ if ($step == 2 && $datatoexport)
 		}
 		//echo $entitylang;
 		print img_object('', $entityicon).' '.$langs->trans($entitylang);
-		print '</td>';
+		print '</td>';*/
 		//echo $label;
 		$text = (empty($objexport->array_export_special[0][$code]) ? '' : '<i>').$langs->trans($label).(empty($objexport->array_export_special[0][$code]) ? '' : '</i>');
 
@@ -740,7 +740,7 @@ if ($step == 3 && $datatoexport)
 
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre">';
-	print '<td>'.$langs->trans("Entities").'</td>';
+	//print '<td>'.$langs->trans("Entities").'</td>';
 	//print '<td>'.$langs->trans("ExportableFields").'</td>';
 	//print '<td class="center"></td>';
 	print '<td>'.$langs->trans("ExportableFields").'</td>';
@@ -767,7 +767,7 @@ if ($step == 3 && $datatoexport)
 		$entityicon = strtolower(!empty($entitytoicon[$entity]) ? $entitytoicon[$entity] : $entity);
 		$entitylang = (!empty($entitytolang[$entity]) ? $entitytolang[$entity] : $entity);
 
-		print '<td class="nowrap">';
+		/*print '<td class="nowrap">';
 		// If value of entityicon=entitylang='icon:Label'
 		$tmparray = explode(':', $entityicon);
 		if (count($tmparray) >= 2)
@@ -776,7 +776,7 @@ if ($step == 3 && $datatoexport)
 			$entitylang = $tmparray[1];
 		}
 		print img_object('', $entityicon).' '.$langs->trans($entitylang);
-		print '</td>';
+		print '</td>';*/
 
 		// Field name
 		$labelName = (!empty($fieldsarray[$code]) ? $fieldsarray[$code] : '');
@@ -945,7 +945,7 @@ if ($step == 4 && $datatoexport)
 	print '<div class="div-table-responsive-no-min">'; // You can use div-table-responsive-no-min if you dont need reserved height for your table
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre">';
-	print '<td>'.$langs->trans("Entities").'</td>';
+	//print '<td>'.$langs->trans("Entities").'</td>';
 	print '<td>'.$langs->trans("ExportedFields").'</td>';
 	print '<td class="right" colspan="2">'.$langs->trans("Position").'</td>';
 	//print '<td>&nbsp;</td>';
@@ -960,7 +960,7 @@ if ($step == 4 && $datatoexport)
 		$entityicon = strtolower(!empty($entitytoicon[$entity]) ? $entitytoicon[$entity] : $entity);
 		$entitylang = (!empty($entitytolang[$entity]) ? $entitytolang[$entity] : $entity);
 
-		print '<td class="nowrap">';
+		/*print '<td class="nowrap">';
 		// If value of entityicon=entitylang='icon:Label'
 		$tmparray = explode(':', $entityicon);
 		if (count($tmparray) >= 2)
@@ -969,7 +969,7 @@ if ($step == 4 && $datatoexport)
 			$entitylang = $tmparray[1];
 		}
 		print img_object('', $entityicon).' '.$langs->trans($entitylang);
-		print '</td>';
+		print '</td>';*/
 
 		$labelName = $objexport->array_export_fields[0][$code];
 

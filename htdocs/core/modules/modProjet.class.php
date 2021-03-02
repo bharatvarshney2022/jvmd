@@ -231,9 +231,7 @@ class modProjet extends DolibarrModules
 			's.phone'=>'company', 's.email'=>'company', 's.siren'=>'company', 's.siret'=>'company', 's.ape'=>'company', 's.idprof4'=>'company', 's.code_compta'=>'company', 's.code_compta_fournisseur'=>'company'
 		);
 		$this->export_fields_array[$r] = array(
-			's.rowid'=>"IdCompany", 's.nom'=>'CompanyName', 's.zip'=>'Zip', 's.town'=>'Town', 's.fk_pays'=>'Country','s.phone'=>'Phone', 's.email'=>'Email', 
-
-			'p.rowid'=>"ProjectId", 'p.ref'=>"RefProject", 'p.title'=>'ProjectLabel','p.datec'=>"DateCreation", 'p.dateo'=>"DateStart", 'p.datee'=>"DateEnd", 'p.fk_statut'=>'ProjectStatus', 'u.firstname'=>'Technician Name', 'p.tech_assigndatetime' => 'Technician Assign Time', 'b.nom'=>'Brand Name' , 'pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.code'=>'Model No' ,'pm.nom'=>'Product Name' ,'sc.label'=>'Call For Source' ,'st.label'=>'Service Type Label' 
+			's.town'=>'Branch', 'p.ref'=>"ST No.", 'p.title'=>'ST Label', 'p.fk_statut'=>'ST Status','sc.label'=>'Source Of Call', 'p.st_source'=>'ST Source', 'st.label'=>'Service Type', 's.code_client'=>'Customer ID', 's.nom'=>'CompanyName', 's.town'=>'Customer City', 's.zip'=>'Zip',  's.fk_pays'=>'Country','s.phone'=>'Phone', 's.email'=>'Email', 'b.nom'=>'Brand Name' , 'pc.component_no' => 'Component No', 'pm.code'=>'Model No','pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.nom'=>'Product Name', 'u.firstname'=>'Technician Name', 'p.datec'=>"Call Logged Date", 'p.tech_assigndatetime'=>"Call Dispatched Date", 'p.datee'=>"Call Resolved Date"     
 		);
 		// Add multicompany field
 		if (!empty($conf->global->MULTICOMPANY_ENTITY_IN_EXPORT_IF_SHARED))
@@ -252,7 +250,8 @@ class modProjet extends DolibarrModules
 		$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array());
 		// Add extra fields for project
 		$keyforselect = 'projet'; $keyforelement = 'project'; $keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		
 		// Add fields for tasks
 		/*$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('pt.rowid'=>'TaskId', 'pt.ref'=>'RefTask', 'pt.label'=>'LabelTask', 'pt.dateo'=>"TaskDateStart", 'pt.datee'=>"TaskDateEnd", 'pt.duration_effective'=>"DurationEffective", 'pt.planned_workload'=>"PlannedWorkload", 'pt.progress'=>"Progress", 'pt.description'=>"TaskDescription"));*/
 		/*$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('pt.rowid'=>'projecttask', 'pt.ref'=>'projecttask', 'pt.label'=>'projecttask', 'pt.dateo'=>"projecttask", 'pt.datee'=>"projecttask", 'pt.duration_effective'=>"projecttask", 'pt.planned_workload'=>"projecttask", 'pt.progress'=>"projecttask", 'pt.description'=>"projecttask"));*/
@@ -288,6 +287,8 @@ class modProjet extends DolibarrModules
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_call_source as sc ON extra.fk_call_source = sc.rowid';
 
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_service_type as st ON extra.fk_service_type = st.rowid';
+
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_customer as pc ON pc.fk_soc = s.rowid';
 
 		if (empty($conf->global->PROJECT_HIDE_TASKS)) {
 			$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'facture as f ON ptt.invoice_id = f.rowid';

@@ -122,7 +122,8 @@ class Export
 
 							$file = $dir.$modulename.".class.php";
 							$classname = $modulename;
-							
+							/*echo $file;
+							echo '<br />';*/
 							require_once $file;
 							$module = new $classname($this->db);
 
@@ -183,6 +184,7 @@ class Export
 
 									$this->array_export_label[$i] = $module->getExportDatasetLabel($r);
 									// Tableau des champ a exporter (cle=champ, valeur=libelle)
+									
 									/*Print_r($module->export_fields_array[$r]);
 									echo '<br />';*/
 									$this->array_export_fields[$i] = $module->export_fields_array[$r];
