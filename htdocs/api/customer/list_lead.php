@@ -26,17 +26,20 @@
 	if($userExists)
 	{
 		$object1 = new Project($db);
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category, p.fk_model";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
 		$sql .= ", p.datec as date_creation, p.tms as date_update";
-		$sql .= ", s.rowid as socid, s.nom as name, s.email, ef.fk_call_source, ef.fk_service_type, br.nom as brand_name ";
+		$sql .= ", s.rowid as socid, s.nom as name, s.email, ef.fk_call_source, ef.fk_service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as br on p.fk_brand = br.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as ca on p.fk_category = ca.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sca on p.fk_sub_category = sca.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as pmo on p.fk_model = pmo.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product as pr on p.fk_product = pr.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
-		echo $sql; exit;
-
+		
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
@@ -45,13 +48,10 @@
 			$message = 'List listing.';
 
 			$i = 0;
-			$producttmp = new Product($db);
 
 			while ($i < $num) {
 				$obj = $db->fetch_object($result);
 				
-				$producttmp->fetch($obj->fk_product);
-
 				$societeLeadData[] = array('lead_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => $obj->c_product_model, 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
 				$i++;
 			}
