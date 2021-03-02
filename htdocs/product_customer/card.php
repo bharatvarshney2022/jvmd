@@ -973,7 +973,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
          * Product card
          */
 		// Fiche en mode edition
-		if ($action == 'edit' && $usercancreate)
+		if ($action == 'edit')
 		{
 			//WYSIWYG Editor
 			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';

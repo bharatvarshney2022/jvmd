@@ -231,7 +231,7 @@ class modProjet extends DolibarrModules
 			's.phone'=>'company', 's.email'=>'company', 's.siren'=>'company', 's.siret'=>'company', 's.ape'=>'company', 's.idprof4'=>'company', 's.code_compta'=>'company', 's.code_compta_fournisseur'=>'company'
 		);
 		$this->export_fields_array[$r] = array(
-			's.town'=>'Branch', 'p.ref'=>"ST No.", 'p.title'=>'ST Label', 'p.fk_statut'=>'ST Status','sc.label'=>'Source Of Call', 'p.st_source'=>'ST Source', 'st.label'=>'Service Type', 's.code_client'=>'Customer ID', 's.nom'=>'CompanyName', 's.town'=>'Customer City', 's.zip'=>'Zip',  's.fk_pays'=>'Country','s.phone'=>'Phone', 's.email'=>'Email', 'b.nom'=>'Brand Name' , 'pc.component_no' => 'Component No', 'pm.code'=>'Model No','pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.nom'=>'Product Name', 'u.firstname'=>'Technician Name', 'p.datec'=>"Call Logged Date", 'p.tech_assigndatetime'=>"Call Dispatched Date", 'p.datee'=>"Call Resolved Date"     
+			's.town'=>'Branch', 'p.ref'=>"ST No.", 'p.title'=>'ST Label', 'p.fk_statut'=>'ST Status','sc.label'=>'Source Of Call', 'p.st_source'=>'ST Source', 'st.label'=>'Service Type', 's.code_client'=>'Customer ID', 's.nom'=>'CompanyName', 's.town'=>'Customer City', 's.zip'=>'Zip', 's.phone'=>'Phone', 's.email'=>'Email', 'b.nom'=>'Brand Name' , 'pc.component_no' => 'Component No', 'pm.code'=>'Model No','pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.nom'=>'Product Name', 'u.firstname'=>'Technician Name', 'p.datec'=>"Call Logged Date", 'p.tech_assigndatetime'=>"Call Dispatched Date", 'p.datee'=>"Call Resolved Date"     
 		);
 		// Add multicompany field
 		if (!empty($conf->global->MULTICOMPANY_ENTITY_IN_EXPORT_IF_SHARED))
@@ -251,13 +251,14 @@ class modProjet extends DolibarrModules
 		// Add extra fields for project
 		$keyforselect = 'projet'; $keyforelement = 'project'; $keyforaliasextra = 'extra';
 		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
-		
+
 		// Add fields for tasks
 		/*$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('pt.rowid'=>'TaskId', 'pt.ref'=>'RefTask', 'pt.label'=>'LabelTask', 'pt.dateo'=>"TaskDateStart", 'pt.datee'=>"TaskDateEnd", 'pt.duration_effective'=>"DurationEffective", 'pt.planned_workload'=>"PlannedWorkload", 'pt.progress'=>"Progress", 'pt.description'=>"TaskDescription"));*/
 		/*$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('pt.rowid'=>'projecttask', 'pt.ref'=>'projecttask', 'pt.label'=>'projecttask', 'pt.dateo'=>"projecttask", 'pt.datee'=>"projecttask", 'pt.duration_effective'=>"projecttask", 'pt.planned_workload'=>"projecttask", 'pt.progress'=>"projecttask", 'pt.description'=>"projecttask"));*/
 		// Add extra fields for task
 		$keyforselect = 'projet_task'; $keyforelement = 'projecttask'; $keyforaliasextra = 'extra2';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+
 		// End add extra fields
 		/*$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('ptt.rowid'=>'IdTaskTime', 'ptt.task_date'=>'TaskTimeDate', 'ptt.task_duration'=>"TimesSpent", 'ptt.fk_user'=>"TaskTimeUser", 'ptt.note'=>"TaskTimeNote"));
 		$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('ptt.rowid'=>'task_time', 'ptt.task_date'=>'task_time', 'ptt.task_duration'=>"task_time", 'ptt.fk_user'=>"task_time", 'ptt.note'=>"task_time"));*/
