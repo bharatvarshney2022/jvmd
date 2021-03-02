@@ -26,8 +26,8 @@
 
 	if($userExists)
 	{
-		$object1 = new Project();
-		
+		$object1 = new Project($db);
+
 		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
 		$sql .= ", p.datec as date_creation, p.tms as date_update";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
