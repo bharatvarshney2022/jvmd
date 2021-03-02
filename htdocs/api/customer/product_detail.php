@@ -26,7 +26,7 @@
 
 	if($userExists)
 	{
-		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.amc_start_date, p.amc_end_date, p.product_odu, p.datec as de, p.tms as date_update";
+		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.nom as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.amc_start_date, p.amc_end_date, p.product_odu, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as b on p.fk_brand = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as f on p.fk_category = f.rowid";
@@ -36,14 +36,12 @@
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$product_detail_id."'";
 
-
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
 
 			if($num > 0)
 			{
-
 				$status_code = '1';
 				$message = 'Product detail.';
 
