@@ -81,6 +81,12 @@
 				$status_code = '0';
 				$message = 'Selected data already exists.';
 
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
+			else if($newCustomerProduct == -1)
+			{
+				$status_code = '0';
+				$message = 'Something went wrong.';
 
 				$json = array('status_code' => $status_code, 'message' => $message);
 			}

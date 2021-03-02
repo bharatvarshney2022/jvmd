@@ -4800,10 +4800,13 @@ class ProductCustomer extends CommonObject
 					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
 					return $id;
 				}
+				else
+				{
+					return -1;//$data->rowid;
+				}
 			}
 			else
 			{
-				$data = $this->db->fetch_object($result);
 				return 0;//$data->rowid;
 			}
 		}
