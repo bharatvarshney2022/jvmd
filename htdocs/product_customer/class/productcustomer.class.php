@@ -4771,44 +4771,29 @@ class ProductCustomer extends CommonObject
 	{
 		$now = dol_now();
 		$entity = 1;
-		$sql = "SELECT rowid";
-		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
-		$sql .= " WHERE fk_soc  = '".$this->db->escape($this->fk_soc)."' ";
-		$sql .= " AND fk_product = '".$this->db->escape($this->fk_product)."'";
-		$sql .= " AND ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 
+		// Produit non deja existant
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
+		$sql .= " SET datec = '".$this->db->idate($now)."'";
+		$sql .= ", entity = '".$this->db->escape($entity)."'";
+		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
+		$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
+		$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
+		$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
+		$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
+		$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
+		$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
+		$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
+		$sql .= ", fk_user = '1'";
+		dol_syslog(get_class($this)."::Create Customer Product".$sql, LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result) {
-			$obj = $this->db->num_rows($result);
-			if ($obj == 0) {
-				// Produit non deja existant
-				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_customer";
-				$sql .= " SET datec = '".$this->db->idate($now)."'";
-				$sql .= ", entity = '".$this->db->escape($entity)."'";
-				$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
-				$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
-				$sql .= ", fk_subcategory = '".$this->db->escape($this->fk_subcategory)."'";
-				$sql .= ", fk_model = '".$this->db->escape($this->fk_model)."'";
-				$sql .= ", fk_product = '".$this->db->escape($this->fk_product)."'";
-				$sql .= ", fk_soc = '".$this->db->escape($this->fk_soc)."'";
-				$sql .= ", ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
-				$sql .= ", component_no = '".$this->db->escape($this->component_no)."'";
-				$sql .= ", fk_user = '1'";
-				dol_syslog(get_class($this)."::Create Customer Product".$sql, LOG_DEBUG);
-				$result = $this->db->query($sql);
-				if ($result) {
-					$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
-					return $id;
-				}
-				else
-				{
-					return -1;//$data->rowid;
-				}
-			}
-			else
-			{
-				return 0;//$data->rowid;
-			}
+			$id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_customer");
+			return $id;
+		}
+		else
+		{
+			return 0;//$data->rowid;
 		}
 	}	
 
