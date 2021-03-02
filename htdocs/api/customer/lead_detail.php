@@ -29,7 +29,7 @@
 		$object1 = new Project($db);
 
 		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
-		$sql .= ", p.datec as date_creation, p.tms as date_update";
+		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
@@ -51,7 +51,7 @@
 			if($num > 0)
 			{
 				$status_code = '1';
-				$message = 'Product detail.';
+				$message = 'Lead detail.';
 
 				$obj = $db->fetch_object($result);
 
@@ -73,7 +73,9 @@
 					$leadStatus = "Reject";
 				}
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				//, p.
+
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'fk_technician' => $obj->fk_technician, 'tech_assigndatetime' => $obj->tech_assigndatetime, 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
