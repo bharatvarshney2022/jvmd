@@ -28,7 +28,7 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, CONCAT(us.firstname,' ', us.lastname) as fullname, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
 		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
@@ -41,9 +41,10 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product as pr on p.fk_product = pr.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_call_source as cs on ef.fk_call_source = cs.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_service_type as ct on ef.fk_service_type = ct.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."user as us on p.fk_technician = us.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$lead_id."'";
-		
+
 		$result = $db->query($sql);
 		if ($result) {
 			$num = $db->num_rows($result);
@@ -75,7 +76,7 @@
 
 				//, p.
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'technician' => $obj->fk_technician, 'tech_assigndatetime' => $obj->tech_assigndatetime, 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'technician' => $obj->fullname, 'tech_assigndatetime' => $obj->tech_assigndatetime, 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
