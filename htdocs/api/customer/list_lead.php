@@ -26,10 +26,9 @@
 	if($userExists)
 	{
 		$object1 = new Project($db);
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, p.fk_opp_status, p.public, p.fk_user_creat";
-		$sql .= ", p.datec as date_creation, p.dateo as date_start, p.datee as date_end, p.opp_amount, p.opp_percent, (p.opp_amount*p.opp_percent/100) as opp_weighted_amount, p.tms as date_update, p.budget_amount, p.usage_opportunity, p.usage_task, p.usage_bill_time";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product";
+		$sql .= ", p.datec as date_creation, p.tms as date_update";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
-		$sql .= ", cls.code as opp_status_code";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
