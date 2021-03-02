@@ -4775,6 +4775,7 @@ class ProductCustomer extends CommonObject
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
 		$sql .= " WHERE fk_soc  = '".$this->db->escape($this->fk_soc)."' ";
 		$sql .= " AND fk_product = '".$this->db->escape($this->fk_product)."'";
+		$sql .= " AND ac_capacity = '".$this->db->escape($this->ac_capacity)."'";
 
 		$result = $this->db->query($sql);
 		if ($result) {
