@@ -59,11 +59,15 @@
 				}
 				else if($obj->status == 1)
 				{
-					$leadStatus = "Accepted";
+					$leadStatus = "Open";
 				}
 				else if($obj->status == 2)
 				{
-					$leadStatus = "Rejected";
+					$leadStatus = "Close";
+				}
+				else else if($obj->status == 3)
+				{
+					$leadStatus = "Reject";
 				}
 
 				$societeLeadData[] = array('lead_id' => $obj->id, 'status' => $leadStatus, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => $obj->date_creation);
