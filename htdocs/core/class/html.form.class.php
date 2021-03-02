@@ -7261,6 +7261,112 @@ class Form
 	 *	@return	string					HTML multiselect string
 	 *  @see selectarray(), selectArrayAjax(), selectArrayFilter()
 	 */
+	public static function multiselectarraywithdisable($htmlname, $array, $selected = array(), $key_in_label = 0, $value_as_key = 0, $morecss = '', $disbaledarray = array(), $translate = 0, $width = 0, $moreattrib = '', $elemtype = '', $placeholder = '', $addjscombo = -1)
+	{
+		global $conf, $langs;
+
+		$out = '';
+
+		if ($addjscombo < 0) {
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) $addjscombo = 1;
+			else $addjscombo = 0;
+		}
+
+		// Add code for jquery to use multiselect
+		if (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT'))
+		{
+			$out .= "\n".'<!-- JS CODE TO ENABLE select for id '.$htmlname.', addjscombo='.$addjscombo.' -->
+						<script>'."\n";
+			if ($addjscombo == 1)
+			{
+				$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
+				$out .= 'function formatResult(record) {'."\n";
+				if ($elemtype == 'category')
+				{
+					$out .= 'return \'<span><img src="'.DOL_URL_ROOT.'/theme/eldy/img/object_category.png"> \'+record.text+\'</span>\';';
+				} else {
+					$out .= 'return record.text;';
+				}
+				$out .= '};'."\n";
+				$out .= 'function formatSelection(record) {'."\n";
+				if ($elemtype == 'category')
+				{
+					$out .= 'return \'<span><img src="'.DOL_URL_ROOT.'/theme/eldy/img/object_category.png"> \'+record.text+\'</span>\';';
+				} else {
+					$out .= 'return record.text;';
+				}
+				$out .= '};'."\n";
+				$out .= '$(document).ready(function () {
+							$(\'#'.$htmlname.'\').'.$tmpplugin.'({
+								dir: \'ltr\',
+								// Specify format function for dropdown item
+								formatResult: formatResult,
+							 	templateResult: formatResult,		/* For 4.0 */
+								// Specify format function for selected item
+								formatSelection: formatSelection,
+							 	templateSelection: formatSelection		/* For 4.0 */
+							});
+
+							/* Add also morecss to the css .select2 that is after the #htmlname, for component that are show dynamically after load, because select2 set
+								 the size only if component is not hidden by default on load */
+							$(\'#'.$htmlname.' + .select2\').addClass(\''.$morecss.'\');
+						});'."\n";
+			} elseif ($addjscombo == 2 && !defined('DISABLE_MULTISELECT'))
+			{
+				// Add other js lib
+				// TODO external lib multiselect/jquery.multi-select.js must have been loaded to use this multiselect plugin
+				// ...
+				$out .= 'console.log(\'addjscombo=2 for htmlname='.$htmlname.'\');';
+				$out .= '$(document).ready(function () {
+							$(\'#'.$htmlname.'\').multiSelect({
+								containerHTML: \'<div class="multi-select-container">\',
+								menuHTML: \'<div class="multi-select-menu">\',
+								buttonHTML: \'<span class="multi-select-button '.$morecss.'">\',
+								menuItemHTML: \'<label class="multi-select-menuitem">\',
+								activeClass: \'multi-select-container--open\',
+								noneText: \''.$placeholder.'\'
+							});
+						})';
+			}
+			$out .= '</script>';
+		}
+
+		// Try also magic suggest
+		$out .= '<select id="'.$htmlname.'" class="multiselect'.($morecss ? ' '.$morecss : '').'" multiple name="'.$htmlname.'[]"'.($moreattrib ? ' '.$moreattrib : '').($width ? ' style="width: '.(preg_match('/%/', $width) ? $width : $width.'px').'"' : '').'>'."\n";
+		if (is_array($array) && !empty($array))
+		{
+			if ($value_as_key) $array = array_combine($array, $array);
+
+			if (!empty($array))
+			{
+				foreach ($array as $key => $value)
+				{
+					$newval = ($translate ? $langs->trans($value) : $value);
+					$newval = ($key_in_label ? $key.' - '.$newval : $newval);
+
+					$out .= '<option value="'.$key.'"';
+					if (is_array($selected) && !empty($selected) && in_array((string) $key, $selected) && ((string) $key != ''))
+					{
+						$out .= ' selected';
+					}
+
+					if(in_array($key, $disbaledarray))
+					{
+						$out .= ' disabled';
+					}
+					$out .= ' data-html="'.dol_escape_htmltag($newval).'"';
+					$out .= '>';
+					$out .= dol_htmlentitiesbr($newval);
+					$out .= '</option>'."\n";
+				}
+			}
+		}
+		$out .= '</select>'."\n";
+
+		return $out;
+	}
+	
+
 	public static function multiselectarray($htmlname, $array, $selected = array(), $key_in_label = 0, $value_as_key = 0, $morecss = '', $translate = 0, $width = 0, $moreattrib = '', $elemtype = '', $placeholder = '', $addjscombo = -1)
 	{
 		global $conf, $langs;

@@ -1436,9 +1436,39 @@ class ExtraFields
 				}
 
 				$valueArr = explode(",", $value);
-				//print_r($valueArr); exit;
 
-				$out .= $form->multiselectarray($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container");
+				if($key == 'apply_zipcode')
+				{
+					$disbaledArray = array();
+
+					$sqlFields = "SELECT apply_zipcode FROM ".MAIN_DB_PREFIX."user_extrafields WHERE fk_object != '".$objectid."' and apply_zipcode != ''";
+					$resqlFields = $this->db->query($sqlFields);
+					if ($resqlFields)
+					{
+						$num_rows = $this->db->num_rows($resqlFields);
+						$i = 0;
+						while ($i < $num_rows)
+						{
+							$obj = $this->db->fetch_object($resqlFields);
+							if ($obj)
+							{
+								$apply_zipcode = $obj->apply_zipcode;
+
+								$disbaledArray[] = $apply_zipcode;
+							}
+							$i++;
+						}
+					}
+
+					$disabledValue = implode(",", $disbaledArray);
+					$disabledDataArr = explode(",", $disabledValue);
+
+					$out .= $form->multiselectarraywithdisable($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container", $disabledDataArr);
+				}
+				else
+				{
+					$out .= $form->multiselectarray($keyprefix.$key.$keysuffix, $keyvalueArray, $valueArr, 0, 0, "full-width-select2-container");
+				}
 			}
 			else
 			{
@@ -1457,7 +1487,6 @@ class ExtraFields
 					// 5 : id category type
 					// 6 : ids categories list separated by comma for category root
 					$keyList = (empty($InfoFieldList[2]) ? 'rowid' : $InfoFieldList[2].' as rowid');
-
 
 					if (count($InfoFieldList) > 4 && !empty($InfoFieldList[4]))
 					{
