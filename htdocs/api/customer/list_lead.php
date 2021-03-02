@@ -28,7 +28,7 @@
 		$object1 = new Project($db);
 		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.fk_technician, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
 		$sql .= ", p.datec as date_creation, p.tms as date_update";
-		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ef.fk_service_type ";
+		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
@@ -38,6 +38,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as pmo on p.fk_model = pmo.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product as pr on p.fk_product = pr.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_call_source as cs on ef.fk_call_source = cs.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_service_type as ct on ef.fk_service_type = ct.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " ORDER BY p.datec DESC";
 		
@@ -71,7 +72,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'fk_call_source' => $obj->call_source, 'fk_service_type' => $obj->fk_service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => $obj->date_creation);
+				$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'fk_call_source' => $obj->call_source, 'fk_service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'date_added' => $obj->date_creation);
 				$i++;
 			}
 
