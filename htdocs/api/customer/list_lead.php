@@ -65,7 +65,7 @@
 				{
 					$leadStatus = "Close";
 				}
-				else else if($obj->status == 3)
+				else if($obj->status == 3)
 				{
 					$leadStatus = "Reject";
 				}
