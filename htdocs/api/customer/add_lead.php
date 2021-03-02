@@ -136,7 +136,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Please choose all required field and try again.';//.$brand_id.",".$category_id.",".$sub_category_id.",".$model_id.",".$call_source_id.",".$service_type_id;
+			$message = 'Brand or category or sub-category or model or call source or service type is missing.';//.$brand_id.",".$category_id.",".$sub_category_id.",".$model_id.",".$call_source_id.",".$service_type_id;
 
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
