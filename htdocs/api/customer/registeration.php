@@ -144,7 +144,7 @@
 						$objectContact->fcmToken = $fcmToken;
 						$objectContact->phone_mobile = $object->phone_mobile;
 
-						$smsmessage = str_replace(" ", "%20", "Your OTP is ".$otp);
+						$smsmessage = str_replace(" ", "%20", "Dear ".$firstname." ".$lastname.", Your OTP is ".$otp.". Please DO NOT share OTP.");
 						$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 						$PHONE = $object->phone_mobile;
 						$MESSAGE = $smsmessage;

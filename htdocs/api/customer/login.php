@@ -34,7 +34,7 @@
 			$message = 'Customer verified successfully';
 			
 			$otp = rand(111111, 999999);
-            $smsmessage = str_replace(" ", "%20", "Your OTP is ".$otp);
+            $smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.");
 
           	$table = MAIN_DB_PREFIX."socpeople";
             $updateSql ="UPDATE ".$table." SET";

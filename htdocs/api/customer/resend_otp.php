@@ -31,7 +31,7 @@
 		$updateSql.= " WHERE phone_mobile = '".(int)$mobile."' ";
 		$resql = $db->query($updateSql);
 
-		$smsmessage = str_replace(" ", "%20", "Your OTP is ".$otp);
+		$smsmessage = str_replace(" ", "%20", "Dear ".$object->firstname." ".$object->lastname.", Your OTP is ".$otp.". Please DO NOT share OTP.");
 		$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 		$PHONE = $mobile;
 		$MESSAGE = $smsmessage;

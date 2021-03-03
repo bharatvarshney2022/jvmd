@@ -1939,7 +1939,7 @@ class ContactTemp extends CommonObject
 
 	public function getOTPFromMobile($mobile)
 	{
-		$sql = "SELECT rowid, phone_mobile, otp";
+		$sql = "SELECT rowid, firstname, lastname, phone_mobile, otp";
 		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
 		$sql .= " WHERE phone_mobile = '".$mobile."' ";
 		
