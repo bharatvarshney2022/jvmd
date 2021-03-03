@@ -713,7 +713,7 @@ class modSociete extends DolibarrModules
 		);
 
 		// Import Bank Accounts
-		$r++;
+		/*$r++;
 		$this->import_code[$r] = $this->rights_class.'_'.$r;
 		$this->import_label[$r] = "ImportDataset_company_3"; // Translation key
 		$this->import_icon[$r] = 'company';
@@ -765,10 +765,10 @@ class modSociete extends DolibarrModules
 			'sr.default_rib' => '1 (default account) / 0 (not default)',
 			'sr.rum' => 'RUM code',
 			'sr.type' => 'ban',
-		);
+		);*/
 
 		// Import Company Sales representatives
-		$r++;
+		/*$r++;
 		$this->import_code[$r] = $this->rights_class.'_'.$r;
 		$this->import_label[$r] = "ImportDataset_company_4"; // Translation key
 		$this->import_icon[$r] = 'company';
@@ -780,7 +780,7 @@ class modSociete extends DolibarrModules
 				'sr.fk_soc'=>array('rule'=>'fetchidfromref', 'classfile'=>'/societe/class/societe.class.php', 'class'=>'Societe', 'method'=>'fetch', 'element'=>'ThirdParty'),
 				'sr.fk_user'=>array('rule'=>'fetchidfromref', 'classfile'=>'/user/class/user.class.php', 'class'=>'User', 'method'=>'fetch', 'element'=>'User')
 		);
-		$this->import_examplevalues_array[$r] = array('sr.fk_soc'=>"MyBigCompany", 'sr.fk_user'=>"login");
+		$this->import_examplevalues_array[$r] = array('sr.fk_soc'=>"MyBigCompany", 'sr.fk_user'=>"login");*/
 	}
 
 

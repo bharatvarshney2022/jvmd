@@ -338,9 +338,13 @@ if (empty($reshook))
 			$object->statut       = $object->statut;
 			$object->socid        = GETPOST('socid', 'int');
 			$object->technician        = GETPOST('technician', 'int');
-			if($object->technician > 0){
+			/*if($object->technician > 0){
 				$object->tech_assigndatetime   = dol_now();
-			}
+			}*/
+			$object->tech_assigndatetime   =  dol_mktime(GETPOST("tech_assigndatetimehour"), GETPOST("tech_assigndatetimemin"), date('s'), GETPOST("tech_assigndatetimemonth"), GETPOST("tech_assigndatetimeday"), GETPOST("tech_assigndatetimeyear"));
+			
+			 $object->response_reschedule   = dol_mktime(GETPOST("response_reschedulehour"), GETPOST("response_reschedulemin"), date('s'), GETPOST("response_reschedulemonth"), GETPOST("response_rescheduleday"), GETPOST("response_rescheduleyear"))
+			;
 			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
 			$object->fk_brand      = GETPOST('fk_brand', 'int');
 			$object->fk_category      = GETPOST('fk_category', 'int');
@@ -361,6 +365,7 @@ if (empty($reshook))
 			$object->usage_bill_time      = (GETPOST('usage_bill_time', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_organize_event = (GETPOST('usage_organize_event', 'alpha') == 'on' ? 1 : 0);
 
+			
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
 			if ($ret < 0) $error++;
@@ -1344,8 +1349,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if($user_group_id == '4'){
 			print dol_print_date($object->date_c, 'dayhoursec');
 		}else{
-			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
+			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
+			
 		}
+
 		/*print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
 		if ($comefromclone) {print ' checked '; }
 		print '/> '.$langs->trans("ProjectReportDate");*/
@@ -1380,8 +1387,17 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print '</select>';
 			print '</td></tr>';
 		}
-		// Date end
-		/*print '<td>'.$langs->trans("DateEnd").'</td><td>';
+		// Scheduled Time
+		print '<tr><td>'.$langs->trans("Scheduled Time").'</td><td>';
+		print $form->selectDate($object->tech_assigndatetime ? $object->tech_assigndatetime : -1, 'tech_assigndatetime', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
+		print '</td>';
+
+		print '<td>'.$langs->trans("Re-Scheduled Time").'</td><td>';
+		print $form->selectDate($object->response_reschedule ? $object->response_reschedule : -1, 'response_reschedule', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
+		print '</td></tr>';
+ 
+		// End Time
+		/*print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
 		print $form->selectDate($object->date_end ? $object->date_end : -1, 'projectend', 0, 0, 0, '', 1, 0);
 		print '</td></tr>';*/
  
@@ -1578,6 +1594,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<tr><td class="titlefield tdtop">'.$langs->trans("Technician Assign Time").'</td><td>';
 		print dol_print_date($object->tech_assigndatetime, 'dayhoursec');
 		print '</td></tr>';
+		if($object->response_reschedule != ''){
+			// Technician Re-assigne Date and time
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Re-Scheduled Time").'</td><td>';
+			print dol_print_date($object->response_reschedule, 'dayhoursec');
+			print '</td></tr>';
+		}
 
 		// Budget
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';

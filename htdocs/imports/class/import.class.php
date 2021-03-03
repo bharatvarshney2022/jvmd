@@ -85,6 +85,7 @@ class Import
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 		$modulesdir = dolGetModulesDirs();
+		
 
 		// Load list of modules
 		foreach ($modulesdir as $dir)
@@ -111,6 +112,8 @@ class Import
 				// Init load class
 				$file = $dir."/".$modulename.".class.php";
 				$classname = $modulename;
+				/*echo $classname;
+				echo '<br />';*/
 				require_once $file;
 				$module = new $classname($this->db);
 
@@ -174,6 +177,7 @@ class Import
 						// Sql request to run after import
 						$this->array_import_run_sql_after[$i] = (isset($module->import_run_sql_after_array[$r]) ? $module->import_run_sql_after_array[$r] : '');
 						// Module
+						
 						$this->array_import_module[$i] = array('position_of_profile'=>($module->module_position.'-'.$module->import_code[$r]), 'module'=>$module);
 
 						dol_syslog("Import loaded for module ".$modulename." with index ".$i.", dataset=".$module->import_code[$r].", nb of fields=".count($module->import_fields_array[$r]));

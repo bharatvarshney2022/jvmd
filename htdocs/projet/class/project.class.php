@@ -500,9 +500,9 @@ class Project extends CommonObject
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
 			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
-			$sql .= ", tech_assigndatetime = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
-			$sql .= ", reponse_schedule = ".($this->technician > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
-			
+			$sql .= ", tech_assigndatetime = ".($this->tech_assigndatetime != '' ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
+			$sql .= ", reponse_schedule = ".($this->tech_assigndatetime > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
+			$sql .= ", response_reschedule=".($this->response_reschedule != '' ? "'".$this->db->idate($this->response_reschedule)."'" : 'null');
 			$sql .= ", fk_customer_product = ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
 			$sql .= ", fk_brand = ".($this->fk_brand > 0 ? $this->fk_brand : "null");
 			$sql .= ", fk_category = ".($this->fk_category > 0 ? $this->fk_category : "null");
@@ -528,6 +528,7 @@ class Project extends CommonObject
 			$sql .= ", usage_organize_event = ".($this->usage_organize_event ? 1 : 0);
 			$sql .= " WHERE rowid = ".$this->id;
 			
+
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
@@ -614,7 +615,7 @@ class Project extends CommonObject
 		if (empty($id) && empty($ref)) return -1;
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
-		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
+		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
 		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
@@ -658,6 +659,13 @@ class Project extends CommonObject
 				$this->socid = $obj->fk_soc;
 				$this->fk_technician = $obj->fk_technician;
 				$this->tech_assigndatetime = $this->db->jdate($obj->tech_assigndatetime); // TODO deprecated
+				$this->reponse_schedule = $this->db->jdate($obj->reponse_schedule); // TODO deprecated
+				$this->call_responded = $this->db->jdate($obj->call_responded); // TODO deprecated
+				$this->call_dispatched = $this->db->jdate($obj->call_dispatched); // TODO deprecated
+				$this->call_resolved = $this->db->jdate($obj->call_resolved); // TODO deprecated
+				$this->call_rejected_date = $this->db->jdate($obj->call_rejected_date); // TODO deprecated
+				$this->response_reschedule = $this->db->jdate($obj->response_reschedule); // TODO deprecated
+
 				$this->fk_customer_product = $obj->fk_customer_product;
 				$this->fk_brand = $obj->fk_brand;
 				$this->fk_category = $obj->fk_category;

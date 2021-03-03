@@ -863,9 +863,11 @@ class DolibarrModules // Can not be abstract, because we need to instantiate it 
 		global $langs;
 
 		$langstring = "ImportDataset_".$this->import_code[$r];
+		
 		//print "x".$langstring;
 		if ($langs->trans($langstring) == $langstring) {
 			// Translation not found
+			
 			return $langs->transnoentitiesnoconv($this->import_label[$r]);
 		} else {
 			// Translation found
