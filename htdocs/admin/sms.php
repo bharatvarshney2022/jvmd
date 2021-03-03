@@ -110,8 +110,6 @@ if ($action == 'send' && !$_POST['cancel']) {
 		complete_substitutions_array($substitutionarrayfortest, $langs);
 		$body = make_substitutions($body, $substitutionarrayfortest);
 
-		//echo '<pre>';print_r($_POST); exit;
-
 		$SENDERID = $smsfrom;
 		$PHONE = $sendto;
 		$MESSAGE = str_replace(" ", "%20", $body);
