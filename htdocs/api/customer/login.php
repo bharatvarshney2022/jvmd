@@ -42,7 +42,14 @@
 			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
 			$resql = $db->query($updateSql);
 
-			//$this->httpGet("http://opensms.microprixs.com/api/mt/SendSMS?user=rahul100gm&password=rahul100gm&senderid=IOOGMS&channel=trans&DCS=0&flashsms=0&number=".$mobile."&text=".$smsmessage."&route=35");
+			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+			$PHONE = $mobile;
+			$MESSAGE = $smsmessage;
+			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+		
+			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+			$smsfile = new CSMSSend($url);
+			$result = $smsfile->sendSMS();
 
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->rowid, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {

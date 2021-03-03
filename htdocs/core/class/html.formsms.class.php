@@ -209,10 +209,11 @@ function limitChars(textarea, limit, infodiv)
 				} elseif (!empty($conf->global->MAIN_SMS_SENDMODE))    // $conf->global->MAIN_SMS_SENDMODE looks like a value 'class@module'
 				{
 					$tmp = explode('@', $conf->global->MAIN_SMS_SENDMODE);
-					$classfile = $tmp[0]; $module = (empty($tmp[1]) ? $tmp[0] : $tmp[1]);
+					$classfile = $tmp[0]; $module = 'sms';//(empty($tmp[1]) ? $tmp[0] : $tmp[1]);
 					dol_include_once('/'.$module.'/class/'.$classfile.'.class.php');
 					try {
 						$classname = ucfirst($classfile);
+
 						if (class_exists($classname))
 						{
 							$sms = new $classname($this->db);
@@ -231,6 +232,8 @@ function limitChars(textarea, limit, infodiv)
 					$resultsender = array();
 					$resultsender[0]->number = $this->fromsms;
 				}
+
+				//print_r($resultsender); exit;
 
 				if (is_array($resultsender) && count($resultsender) > 0)
 				{
@@ -306,11 +309,11 @@ function limitChars(textarea, limit, infodiv)
 		}
 
 		print '
-           <tr>
+           <tr style="display:none;">
             <td>'.$langs->trans("DelayBeforeSending").':</td>
             <td> <input name="deferred" id="deferred" size="4" value="0"></td></tr>
 
-           <tr><td>'.$langs->trans("Priority").' :</td><td>
+           <tr style="display:none;"><td>'.$langs->trans("Priority").' :</td><td>
            <select name="priority" id="priority" class="flat">
            <option value="0">high</option>
            <option value="1">medium</option>
@@ -318,7 +321,7 @@ function limitChars(textarea, limit, infodiv)
            <option value="3">veryLow</option>
            </select></td></tr>
 
-           <tr><td>'.$langs->trans("Type").' :</td><td>
+           <tr style="display:none;"><td>'.$langs->trans("Type").' :</td><td>
            <select name="class" id="class" class="flat">
            <option value="0">Flash</option>
            <option value="1" selected>Standard</option>
@@ -326,7 +329,7 @@ function limitChars(textarea, limit, infodiv)
            <option value="3">ToolKit</option>
            </select></td></tr>
 
-           <tr><td>'.$langs->trans("DisableStopIfSupported").' :</td><td>
+           <tr style="display:none;"><td>'.$langs->trans("DisableStopIfSupported").' :</td><td>
            <select name="disablestop" id="disablestop" class="flat">
            <option value="0" selected>No</option>
            <option value="1" selected>Yes</option>

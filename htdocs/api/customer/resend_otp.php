@@ -31,6 +31,16 @@
 		$updateSql.= " WHERE phone_mobile = '".(int)$mobile."' ";
 		$resql = $db->query($updateSql);
 
+		$smsmessage = str_replace(" ", "%20", "Your OTP is ".$otp);
+		$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+		$PHONE = $mobile;
+		$MESSAGE = $smsmessage;
+		$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+	
+		require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+		$smsfile = new CSMSSend($url);
+		$result = $smsfile->sendSMS();
+
 		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
 	}
 	else

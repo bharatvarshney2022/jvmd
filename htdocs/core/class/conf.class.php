@@ -70,7 +70,7 @@ class Conf
 		'substitutions' => array(),
 		'menus' => array(),
 		'theme' => array(),
-		'sms' => array(),
+		'sms' => array('microprixs' => 'OALERT'),
 		'tpl' => array(),
 		'barcode' => array(),
 		'models' => array(),
@@ -246,7 +246,7 @@ class Conf
 		}
 
 		//var_dump($this->modules);
-		//var_dump($this->modules_parts['theme']);
+		//echo '<pre>';print_r($this->modules_parts); exit;
 
 		// If you can't set timezone of your PHP, set this constant. Better is to set it to UTC.
 		// In future, this constant will be forced to 'UTC' so PHP server timezone will not have effect anymore.
@@ -532,6 +532,8 @@ class Conf
 		if (!empty($this->global->MAIN_FORCETHEME)) $this->global->MAIN_THEME = $this->global->MAIN_FORCETHEME;
 		$this->theme = $this->global->MAIN_THEME;
 		$this->css = "/theme/".$this->theme."/style.css.php";
+
+		if (empty($this->global->MAIN_SMS_SENDMODE)) $this->global->MAIN_SMS_SENDMODE = "microprixs-sms";
 
 		// conf->email_from = email pour envoi par dolibarr des mails automatiques
 		$this->email_from = "robot@example.com";

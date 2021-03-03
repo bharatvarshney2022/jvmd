@@ -75,9 +75,9 @@ if ($action == 'send' && !$_POST['cancel']) {
 	$sendto     = GETPOST("sendto", 'alphanohtml');
 	$body       = GETPOST('message', 'alphanohtml');
 	$deliveryreceipt = GETPOST("deliveryreceipt", 'alphanohtml');
-	$deferred   = GETPOST('deferred', 'alphanohtml');
-	$priority   = GETPOST('priority', 'alphanohtml');
-	$class      = GETPOST('class', 'alphanohtml');
+	//$deferred   = GETPOST('deferred', 'alphanohtml');
+	//$priority   = GETPOST('priority', 'alphanohtml');
+	//$class      = GETPOST('class', 'alphanohtml');
 	$errors_to  = GETPOST("errorstosms", 'alphanohtml');
 
 	// Create form object
@@ -104,15 +104,20 @@ if ($action == 'send' && !$_POST['cancel']) {
 		$action = 'test';
 		$error++;
 	}
+
 	if (!$error) {
 		// Make substitutions into message
 		complete_substitutions_array($substitutionarrayfortest, $langs);
 		$body = make_substitutions($body, $substitutionarrayfortest);
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSFile.class.php';
-
-		$smsfile = new CSMSFile($sendto, $smsfrom, $body, $deliveryreceipt, $deferred, $priority, $class); // This define OvhSms->login, pass, session and account
-		$result = $smsfile->sendfile(); // This send SMS
+		$SENDERID = $smsfrom;
+		$PHONE = $sendto;
+		$MESSAGE = str_replace(" ", "%20", $body);
+		$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+	
+		require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+		$smsfile = new CSMSSend($url);
+		$result = $smsfile->sendSMS();
 
 		if ($result) {
 			setEventMessages($langs->trans("SmsSuccessfulySent", $smsfrom, $sendto), null, 'mesgs');
@@ -121,6 +126,14 @@ if ($action == 'send' && !$_POST['cancel']) {
 			setEventMessages($langs->trans("ResultKo"), null, 'errors');
 			setEventMessages($smsfile->error, $smsfile->errors, 'errors');
 		}
+		
+		/*require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSFile.class.php';
+
+		/ This define OvhSms->login, pass, session and account
+		echo $smsfile; exit;
+		$result = $smsfile->sendfile(); // This send SMS
+
+		*/
 
 		$action = '';
 	}
