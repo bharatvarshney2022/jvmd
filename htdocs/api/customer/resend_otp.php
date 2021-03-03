@@ -21,6 +21,8 @@
 	$isExist = $object->getOTPFromMobile($mobile);
 	if($isExist)
 	{
+		echo '<pre>';print_r($isExist); exit;
+
 		$status_code = '1';
 		$message = 'Resend OTP';
 
@@ -31,7 +33,7 @@
 		$updateSql.= " WHERE phone_mobile = '".(int)$mobile."' ";
 		$resql = $db->query($updateSql);
 
-		$smsmessage = str_replace(" ", "%20", "Dear ".$object->firstname." ".$object->lastname.", Your OTP is ".$otp.". Please DO NOT share OTP.");
+		$smsmessage = str_replace(" ", "%20", "Dear ".$v->firstname." ".$isExist->lastname.", Your OTP is ".$otp.". Please DO NOT share OTP.");
 		$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 		$PHONE = $mobile;
 		$MESSAGE = $smsmessage;
