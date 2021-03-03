@@ -42,15 +42,6 @@
 			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
 			$resql = $db->query($updateSql);
 
-			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
-			$PHONE = $mobile;
-			$MESSAGE = $smsmessage;
-			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
-		
-			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
-			$smsfile = new CSMSSend($url);
-			$result = $smsfile->sendSMS();
-
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->rowid, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
 			$status_code = '0';
@@ -65,6 +56,16 @@
 		{
 			$status_code = '1';
 			$message = 'New account has been created';
+
+			$smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.");
+			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+			$PHONE = $mobile;
+			$MESSAGE = $smsmessage;
+			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+		
+			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+			$smsfile = new CSMSSend($url);
+			$result = $smsfile->sendSMS();
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
@@ -96,6 +97,16 @@
 
 			$status_code = '1';
 			$message = 'New account has been created!';
+
+			$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
+			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+			$PHONE = $mobile;
+			$MESSAGE = $smsmessage;
+			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+		
+			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+			$smsfile = new CSMSSend($url);
+			$result = $smsfile->sendSMS();
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
