@@ -76,7 +76,7 @@
 
 				//, p.
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'technician' => ($obj->fullname == NULL ? "-" : $obj->fullname), 'technician_phone' => ($obj->tech_mobile == NULL ? "-" : $obj->tech_mobile), 'tech_assigndatetime' => ($obj->tech_assigndatetime == NULL ? "-" : $obj->tech_assigndatetime), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => $obj->model_name, 'product_name' => $obj->product_name, 'technician' => ($obj->fullname == NULL ? "-" : $obj->fullname), 'technician_phone' => ($obj->tech_mobile == NULL ? "-" : $obj->tech_mobile), 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : $obj->tech_assigndatetime), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
