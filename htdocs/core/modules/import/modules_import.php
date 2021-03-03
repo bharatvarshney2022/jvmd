@@ -184,8 +184,7 @@ class ModeleImports
 					// Loading Class
 					$file = $dir."/import_".$moduleid.".modules.php";
 					$classname = "Import".ucfirst($moduleid);
-					echo '<pre>';
-				print_r($file);
+					
 					require_once $file;
 					$module = new $classname($db, '');
 
