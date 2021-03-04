@@ -20,7 +20,7 @@
 	$object = new Societe($db);
 	
 	$userExists = $object->fetch($user_id);
-	
+
 
 	if($userExists)
 	{
@@ -38,11 +38,11 @@
 				//echo '<pre>'; print_r($object); exit;
 
 				$action = "PROJET_CREATE";
-				$notify->send($action, $object);
+				$result = $notify->send($action, $object);
+
+				echo $result; exit;
 			}
 		}
-
-		
 	}
 	else
 	{
@@ -50,8 +50,4 @@
 		$message = 'Sorry! Customer not exists!!';
 		
 		$json = array('status_code' => $status_code, 'message' => $message);
-	}
-	
-	$headers = 'Content-type: application/json';
-	header($headers);
-	echo json_encode($json);
+	}	
