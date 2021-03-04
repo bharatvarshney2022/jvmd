@@ -665,7 +665,7 @@ class Notify
 
 				$subject = '['.$mysoc->name.'] '.$langs->transnoentitiesnoconv("DolibarrNotification").($projtitle ? ' '.$projtitle : '');
 
-				
+				echo $notifcode; exit;				
 
 				switch ($notifcode) {
 					case 'PROJET_CREATE':
