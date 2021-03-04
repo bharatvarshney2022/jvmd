@@ -29,13 +29,12 @@
 		$object1 = new Project($db);
 
 		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, CONCAT(us.firstname,' ', us.lastname) as fullname, us.user_mobile as tech_mobile, p.tech_assigndatetime, p.fk_product, fk_brand, fk_category, fk_sub_category, fk_model, fk_product";
-		$sql .= ", p.datec as date_creation, p.tms as date_update, pc.ac_capacity ";
+		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_customer as pc on p.fk_product = pc.fk_product";
-		$sql .= " WHERE p.fk_soc = pc.fk_soc AND p.fk_soc = '".$user_id."'";
+		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$lead_id."'";
 
 		$result = $db->query($sql);
