@@ -111,7 +111,7 @@ if (!empty($canvas))
 // Security check
 $fieldvalue = $id;
 $fieldtype = 'rowid';
-$result = restrictedArea($user, 'projet', $object->id, 'projet&project');
+$result = restrictedArea($user, 'projet', $object->id, '');
 
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
