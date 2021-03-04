@@ -66,7 +66,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$call_source = $service_type = $brand = $category = $sub_category = $model = "";
+				$call_source = $service_type = $brand = $category = $sub_category = $model = $product = "";
 				if($obj->fk_call_source != NULL)
 				{
 					$call_source = GETDBVALUEBYID($obj->fk_call_source, "c_call_source", "label");
@@ -91,9 +91,13 @@
 				{
 					$model = GETDBVALUEBYID($obj->fk_model, "c_product_model", "nom");
 				}
+				if($obj->fk_product != NULL)
+				{
+					$model = GETDBVALUEBYID($obj->fk_product, "product", "label");
+				}
 				$ac_capacity = "";
 				$technician_name = $technician_mobile = ""; //fk_technician
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => ($obj->fk_product == NULL ? "-" : $obj->fk_product), 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => $product), 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
