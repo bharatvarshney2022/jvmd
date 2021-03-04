@@ -242,8 +242,9 @@ class modProjet extends DolibarrModules
 			's.rowid'=>"company", 's.nom'=>'company', 's.address'=>'company', 's.zip'=>'company', 's.town'=>'company', 's.fk_pays'=>'company',
 			's.phone'=>'company', 's.email'=>'company', 's.siren'=>'company', 's.siret'=>'company', 's.ape'=>'company', 's.idprof4'=>'company', 's.code_compta'=>'company', 's.code_compta_fournisseur'=>'company'
 		);
+		$this->export_fields_array[$r] = array();
 		if($user_group_id == 17){
-				$this->export_fields_array[$r] = array( 'u1.firstname'=>'Vendor Name', 'u1.user_mobile'=>'Vendor Mobile' );
+				$this->export_fields_array[$r] += array( 'u1.firstname'=>'Vendor Name', 'u1.user_mobile'=>'Vendor Mobile' );
 			}	
 		$this->export_fields_array[$r] += array(
 			
