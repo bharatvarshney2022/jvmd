@@ -190,17 +190,17 @@ if (empty($reshook))
 		$fk_sub_category = GETPOST('fk_sub_category', 'int');
 		$fk_product = GETPOST('fk_product', 'int');
 	
-		if (empty($fk_model))
+		/*if (empty($fk_model))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Model Required')), null, 'errors');
             $error++;
-        }
+        }*/
         if (empty($fk_brand))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Brand Required')), null, 'errors');
             $error++;
         }
-        if (empty($fk_category))
+        /*if (empty($fk_category))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Category Required')), null, 'errors');
             $error++;
@@ -214,7 +214,7 @@ if (empty($reshook))
         {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentities('Product Required')), null, 'errors');
             $error++;
-        }
+        }*/
 
         if (!$error)
 		{
@@ -912,27 +912,27 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		
 		// Product Category
 
-		print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+		print '<td >'.$langs->trans("Category").'</td><td>';
 		print '<select class="flat" id="fk_category" name="fk_category">';
 		print '<option value="0">Select Category</option>';
 		print '</select>';
 		print '</td></tr>';
 
 		// Product sub Category
-		print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+		print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
 		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
 		print '<option value="0">Select Sub Category</option>';
 		print '</select>';
 		print '</td>';
 		// Model
-		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		print '<td >'.$langs->trans("Model No.").'</td><td>';
 		print '<select class="flat" id="fk_model" name="fk_model">';
 		print '<option value="0">Select Model</option>';
 		print '</select>';
 		print '</td></tr>';
 
 		// Label
-		print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+		print '<tr><td >'.$langs->trans("Product Name").'</td><td>';
 		print '<select class="flat" id="fk_product" name="fk_product">';
 		print '<option value="0">Select Product</option>';
 		print '</select>';
@@ -1108,7 +1108,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			
 			// Product Category
 
-			print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+			print '<td >'.$langs->trans("Category").'</td><td>';
 			if($object->fk_brand > 0){
 				print $formcompany->select_family($object->fk_category, $object->fk_brand ,'fk_category');
 				//print $object->getCategoryByBrand($object->fk_brand);
@@ -1120,7 +1120,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 			// Product sub Category
-			print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+			print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
 			if($object->fk_brand > 0 && $object->fk_category > 0){
 				print $formcompany->select_subfamily($object->fk_subcategory  , $object->fk_brand,$object->fk_category,'fk_sub_category');
 			}else{
@@ -1131,7 +1131,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td>';
 			
 			// Model
-			print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+			print '<td >'.$langs->trans("Model No.").'</td><td>';
 			if($object->fk_brand > 0 && $object->fk_category > 0 && $object->fk_subcategory  > 0){
 				print $formcompany->select_modelName($object->fk_model , $object->fk_brand, $object->fk_category, $object->fk_subcategory , 'fk_model');
 			}else{
@@ -1142,7 +1142,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 			// Label
-			print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+			print '<tr><td >'.$langs->trans("Product Name").'</td><td>';
 			print '<select class="flat" id="fk_product" name="fk_product">';
 			print '<option value="0">Select Product</option>';
 			print '</select>';
