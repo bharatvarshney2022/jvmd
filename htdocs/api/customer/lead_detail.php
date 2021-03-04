@@ -28,19 +28,12 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, CONCAT(us.firstname,' ', us.lastname) as fullname, us.user_mobile as tech_mobile, p.tech_assigndatetime, p.fk_product, br.nom as brand_name, ca.nom as category_name, sca.nom as sub_category_name, pmo.nom as model_name, pr.label as product_name";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, CONCAT(us.firstname,' ', us.lastname) as fullname, us.user_mobile as tech_mobile, p.tech_assigndatetime, p.fk_product, fk_brand, fk_category, fk_sub_category, fk_model, fk_product";
 		$sql .= ", p.datec as date_creation, p.tms as date_update, pc.ac_capacity ";
-		$sql .= ", s.rowid as socid, s.nom as name, s.email, fk_call_source as call_source, ct.label as service_type ";
+		$sql .= ", s.rowid as socid, s.nom as name, s.email, cs.label as call_source, ct.label as service_type ";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object1->table_element."_extrafields as ef on (p.rowid = ef.fk_object)";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_brands as br on p.fk_brand = br.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_family as ca on p.fk_category = ca.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_subfamily as sca on p.fk_sub_category = sca.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_product_model as pmo on p.fk_model = pmo.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product as pr on p.fk_product = pr.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_service_type as ct on ef.fk_service_type = ct.rowid";
-		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."user as us on p.fk_technician = us.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_customer as pc on p.fk_product = pc.fk_product";
 		$sql .= " WHERE p.fk_soc = pc.fk_soc AND p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$lead_id."'";
@@ -79,7 +72,7 @@
 			else
 			{
 				$status_code = '0';
-				$message = 'Sorry1! No lead listing exists!!';
+				$message = 'Sorry! No lead listing exists!!';
 				
 				$json = array('status_code' => $status_code, 'message' => $message);
 			}
@@ -87,7 +80,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Sorry2! No lead listing exists!!';
+			$message = 'Sorry! No lead listing exists!!';
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
