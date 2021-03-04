@@ -499,7 +499,7 @@ class Project extends CommonObject
 			$sql .= ", title = '".$this->db->escape($this->title)."'";
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
-			$sql .= ", fk_technician = ".($this->technician > 0 ? $this->technician : "null");
+			$sql .= ", fk_technician = '".(int)($this->fk_technician ? $this->fk_technician : "null")."'";
 			$sql .= ", tech_assigndatetime = ".($this->tech_assigndatetime != '' ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
 			$sql .= ", reponse_schedule = ".($this->tech_assigndatetime > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
 			$sql .= ", response_reschedule=".($this->response_reschedule != '' ? "'".$this->db->idate($this->response_reschedule)."'" : 'null');
@@ -527,12 +527,12 @@ class Project extends CommonObject
 			$sql .= ", usage_bill_time = ".($this->usage_bill_time ? 1 : 0);
 			$sql .= ", usage_organize_event = ".($this->usage_organize_event ? 1 : 0);
 			$sql .= " WHERE rowid = ".$this->id;
-			
 
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
 			{
+				dol_syslog($resql."::update_projet", LOG_DEBUG);
 				// Update extrafield
 				if (!$error)
 				{

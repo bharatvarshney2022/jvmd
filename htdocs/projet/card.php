@@ -198,7 +198,7 @@ if (empty($reshook))
 			$object->title           = GETPOST('title', 'alphanohtml');
 			
 			$object->socid           = GETPOST('socid', 'int');
-			$object->technician      = '0';
+			$object->fk_technician      = '0';
 			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
 			$object->fk_brand      = GETPOST('fk_brand', 'int');
 			$object->fk_category      = GETPOST('fk_category', 'int');
@@ -337,14 +337,15 @@ if (empty($reshook))
 			//$object->statut       = GETPOST('status', 'int');
 			$object->statut       = $object->statut;
 			$object->socid        = GETPOST('socid', 'int');
-			$object->technician        = GETPOST('technician', 'int');
-			/*if($object->technician > 0){
+			$object->fk_technician        = GETPOST('fk_technician', 'int');
+			/*if($object->fk_technician > 0){
 				$object->tech_assigndatetime   = dol_now();
 			}*/
 			$object->tech_assigndatetime   =  dol_mktime(GETPOST("tech_assigndatetimehour"), GETPOST("tech_assigndatetimemin"), date('s'), GETPOST("tech_assigndatetimemonth"), GETPOST("tech_assigndatetimeday"), GETPOST("tech_assigndatetimeyear"));
 			
 			 $object->response_reschedule   = dol_mktime(GETPOST("response_reschedulehour"), GETPOST("response_reschedulemin"), date('s'), GETPOST("response_reschedulemonth"), GETPOST("response_rescheduleday"), GETPOST("response_rescheduleyear"))
 			;
+
 			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
 			$object->fk_brand      = GETPOST('fk_brand', 'int');
 			$object->fk_category      = GETPOST('fk_category', 'int');
@@ -364,7 +365,6 @@ if (empty($reshook))
 			$object->usage_task           = (GETPOST('usage_task', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_bill_time      = (GETPOST('usage_bill_time', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_organize_event = (GETPOST('usage_organize_event', 'alpha') == 'on' ? 1 : 0);
-
 			
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
@@ -380,6 +380,7 @@ if (empty($reshook))
 		if (!$error)
 		{
 			$result = $object->update($user);
+
 			if ($result < 0)
 			{
 				$error++;
@@ -388,8 +389,6 @@ if (empty($reshook))
 			} else {
 
 				if($object->statut =='3' && $user_group_id == 17){
-
-					
 					$cloneURL = DOL_URL_ROOT.'/projet/card.php?id='.$object->id.'&action=confirm_clone&confirm=yes&token='.$token.'&socid='.$object->socid;
 					header('location: '.$cloneURL);
 					exit;
@@ -397,13 +396,14 @@ if (empty($reshook))
 				}
 				// Category association
 				$categories = GETPOST('categories', 'array');
-				$result = $object->setCategories($categories);
-				if ($result < 0)
+				$result1 = $object->setCategories($categories);
+				if ($result1 < 0)
 				{
 					$error++;
 					setEventMessages($object->error, $object->errors, 'errors');
 					$action = 'edit';
 				}
+
 				$action = 'view';
 				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
 				header("Location: ".$backurl);
@@ -1373,7 +1373,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		if($user_group_id == '4'){
 			print '<td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td>';
-			print '<select class="flat" name="technician"><option value="">Select </option>';
+			print '<select class="flat" name="fk_technician"><option value="">Select </option>';
 			
 			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
 			$resqlTech = $db->query($sqlTechnician);
@@ -1381,7 +1381,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			if($numtech > 0){
 				while ($objtech = $db -> fetch_object($resqlTech))
 				{
-					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('technician') ?GETPOST('technician') : $object->fk_technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('fk_technician') ?GETPOST('fk_technician') : $object->fk_technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
 				}
 			}	
 			print '</select>';
