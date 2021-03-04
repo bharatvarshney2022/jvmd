@@ -28,8 +28,7 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category,
-		 ef.fk_call_source, ef.fk_service_type";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.response_reschedule, p.fk_product, p.fk_brand, p.fk_category, p.fk_technician, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
 		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
@@ -67,7 +66,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$call_source = $service_type = $brand = "";
+				$call_source = $service_type = $brand = $category = $sub_category = $model = $product = "";
 				if($obj->fk_call_source != NULL)
 				{
 					$call_source = GETDBVALUEBYID($obj->fk_call_source, "c_call_source", "label");
@@ -80,9 +79,30 @@
 				{
 					$brand = GETDBVALUEBYID($obj->fk_brand, "c_brands", "nom");
 				}
+				if($obj->fk_category != NULL)
+				{
+					$category = GETDBVALUEBYID($obj->fk_category, "c_product_family", "nom");
+				}
+				if($obj->fk_sub_category != NULL)
+				{
+					$sub_category = GETDBVALUEBYID($obj->fk_sub_category, "c_product_subfamily", "nom");
+				}
+				if($obj->fk_model != NULL)
+				{
+					$model = GETDBVALUEBYID($obj->fk_model, "c_product_model", "nom");
+				}
+				if($obj->fk_product != NULL)
+				{
+					$product = GETDBVALUEBYID($obj->fk_product, "product", "label");
+				}
 				$ac_capacity = "";
-				$technician_name = $technician_mobile = ""; //fk_technician
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $obj->fk_brand, 'category_name' => $obj->fk_category, 'sub_category_name' => $obj->fk_sub_category, 'model' => ($obj->fk_model == NULL ? "-" : $obj->fk_model), 'product_name' => ($obj->fk_product == NULL ? "-" : $obj->fk_product), 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$technician_name = $technician_mobile = ""; //
+				if($obj->fk_technician != NULL)
+				{
+					$technician_name = GETDBVALUEBYID($obj->fk_technician, "user", "CONCAT(firstname,' ', lastname)");
+					$technician_mobile = GETDBVALUEBYID($obj->fk_technician, "user", "user_mobile");
+				}
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => $product, 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'tech_reschedule' => ($obj->response_reschedule == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->response_reschedule))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{

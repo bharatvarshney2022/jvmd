@@ -235,17 +235,17 @@ function GETDBVALUEBYID($id, $table, $value)
 {
 	global $conf, $db;
 	$sql = "SELECT ".$value." FROM ".MAIN_DB_PREFIX.$table." WHERE rowid = '".$id."'";
-	
+
 	$result = $db->query($sql);
 	if ($result) {
 		if ($db->num_rows($result)) {
 			$obj = $db->fetch_object($result);
 			return $obj->$value;
 		}else{
-			return 'N/A';
+			return '-';
 		}
 	}else{
-		return 'N/A';
+		return '-';
 	}	
 }
 
