@@ -53,7 +53,7 @@
 					
 					$producttmp->fetch($obj->fk_product);
 
-					$is_lead = GETDBVALUEBYCONDITION("fk_soc = '".$user_id."' AND fk_customer_product = '".$obj->id."' AND statut > 0", "projet", "rowid");
+					$is_lead = GETDBVALUEBYCONDITION("fk_soc = '".$user_id."' AND fk_customer_product = '".$obj->id."'", "projet", "rowid");
 					if($is_lead == "-")
 					{
 						$is_lead = 0;
