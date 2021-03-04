@@ -43,7 +43,7 @@ class modProjet extends DolibarrModules
 	 */
 	public function __construct($db)
 	{
-		global $conf;
+		global $conf, $user;
 
 		$this->db = $db;
 		$this->numero = 400;
@@ -211,6 +211,18 @@ class modProjet extends DolibarrModules
 		//Exports
 		//--------
 		$r = 1;
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($this->db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
 
 		$this->export_code[$r] = $this->rights_class.'_'.$r;
 		$this->export_label[$r] = 'ProjectsAndTasksLines'; // Translation key (used only if key ExportDataset_xxx_z not found)
@@ -230,7 +242,11 @@ class modProjet extends DolibarrModules
 			's.rowid'=>"company", 's.nom'=>'company', 's.address'=>'company', 's.zip'=>'company', 's.town'=>'company', 's.fk_pays'=>'company',
 			's.phone'=>'company', 's.email'=>'company', 's.siren'=>'company', 's.siret'=>'company', 's.ape'=>'company', 's.idprof4'=>'company', 's.code_compta'=>'company', 's.code_compta_fournisseur'=>'company'
 		);
-		$this->export_fields_array[$r] = array(
+		if($user_group_id == 17){
+				$this->export_fields_array[$r] = array( 'u1.firstname'=>'Vendor Name', 'u1.user_mobile'=>'Vendor Mobile' );
+			}	
+		$this->export_fields_array[$r] += array(
+			
 			's.town'=>'Branch', 'p.ref'=>"ST No.", 'p.title'=>'ST Label', 'p.fk_statut'=>'ST Status','sc.label'=>'Source Of Call', 'p.st_source'=>'ST Source', 'st.label'=>'Service Type', 's.code_client'=>'Customer ID', 's.nom'=>'CompanyName', 's.town'=>'Customer City', 's.zip'=>'Zip', 's.phone'=>'Phone', 's.email'=>'Email', 'b.nom'=>'Brand Name' , 'pc.component_no' => 'Component No', 'pm.code'=>'Model No','pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.nom'=>'Product Name', 'u.firstname'=>'Technician Name', 'p.datec'=>"Call Logged Date", 'p.call_dispatched'=>"Call Dispatched Date", 'p.call_responded'=>"Call Responded Date", 'p.call_resolved'=>"Call Resolved Date",  'p.tech_assigndatetime'=>"Response Schedule(Appointment Date&Time)", 'p.reponse_schedule'=>"Response Scheduled(System Date&Time)", 'p.rs_hrs'=>"RS in Hrs Min Sec",'p.rt_hrs'=>"RT in Hrs Min Sec",'p.tat_hrs'=>"TAT in Hrs Min Sec",'p.rs_per'=>"RS %",'p.rt_per'=>"RT %",'p.tat_per'=>"TAT %"
 		);
 		// Add multicompany field
@@ -266,6 +282,19 @@ class modProjet extends DolibarrModules
 			//$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('f.ref'=>"Billed"));
 			//$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('f.ref'=>"task_time"));
 		}
+		
+		if($user_group_id == 17){
+			$vendor_list = '';
+			$sqlVendor = "SELECT fk_vendor FROM `".MAIN_DB_PREFIX."user_extrafields` WHERE fk_object = '".$user->id."' ";
+			$resqlVendor = $db->query($sqlVendor);
+			if ($resqlVendor)
+			{
+				$rowVendor = $db->fetch_object($resqlVendor);
+				$vendor_list = $rowVendor->fk_vendor;
+			}
+
+		}	
+		
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r] = ' FROM '.MAIN_DB_PREFIX.'projet as p';
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'projet_extrafields as extra ON p.rowid = extra.fk_object';
@@ -275,7 +304,14 @@ class modProjet extends DolibarrModules
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX."projet_task_time as ptt ON pt.rowid = ptt.fk_task";
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'societe as s ON p.fk_soc = s.rowid';
 
+		if($user_group_id == 4)
+		{
+			$this->export_sql_end[$r] .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as esf on (p.fk_soc = esf.fk_object)";
+		}
+
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'user as u ON p.fk_technician = u.rowid';
+
+
 
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_brands as b ON p.fk_brand = b.rowid';
 
@@ -289,12 +325,32 @@ class modProjet extends DolibarrModules
 
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_service_type as st ON extra.fk_service_type = st.rowid';
 
-		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_customer as pc ON pc.fk_soc = s.rowid';
+		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_customer as pc ON pc.fk_product = p.fk_product AND pc.fk_soc = s.rowid AND pc.fk_model = p.fk_model';
 
 		if (empty($conf->global->PROJECT_HIDE_TASKS)) {
 			$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'facture as f ON ptt.invoice_id = f.rowid';
 		}
+		if ($user_group_id == 17) 
+		{
+			
+			$this->export_sql_end[$r] .= " INNER JOIN ".MAIN_DB_PREFIX."element_contact as ecp ON ecp.element_id = p.rowid";
+			$this->export_sql_end[$r] .= ' INNER JOIN '.MAIN_DB_PREFIX.'user as u1 ON ecp.fk_socpeople = u1.rowid AND u1.rowid IN ('.$vendor_list.')';
+		}
 		$this->export_sql_end[$r] .= " WHERE p.entity IN (".getEntity('project').")";
+
+		if($user_group_id == 17){
+
+			if($vendor_list)
+			{
+				//$vendor_list = implode(",", $vendorData);
+				$sql .= "  AND ecp.fk_socpeople IN (".$vendor_list.")";
+			}
+
+		}
+		if($user_group_id == 4)
+		{
+			$this->export_sql_end[$r] .= " AND FIND_IN_SET(esf.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+		}
 
 
 		// Import list of tasks

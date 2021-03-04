@@ -587,7 +587,8 @@ class Export
 
 		// Run the sql
 		$this->sqlusedforexport = $sql;
-		
+		/*echo $sql;
+		exit;*/
 		dol_syslog(__METHOD__, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
