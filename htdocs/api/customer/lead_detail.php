@@ -79,7 +79,7 @@
 			else
 			{
 				$status_code = '0';
-				$message = 'Sorry! No lead listing exists!!';
+				$message = 'Sorry1! No lead listing exists!!';
 				
 				$json = array('status_code' => $status_code, 'message' => $message);
 			}
@@ -87,7 +87,7 @@
 		else
 		{
 			$status_code = '0';
-			$message = 'Sorry! No lead listing exists!!';
+			$message = 'Sorry2! No lead listing exists!!';
 			
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}
