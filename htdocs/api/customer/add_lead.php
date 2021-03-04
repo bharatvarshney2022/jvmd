@@ -78,7 +78,7 @@
 		$sub_category_id = $objectPro1->getSubCategoryByName($brand_id, $category_id, $fk_sub_category);
 		$model_id = $objectPro1->getModelByName($brand_id, $category_id, $sub_category_id, $fk_model);
 
-		$product_id = $objectPro1->getProductListByName($fk_model);
+		$product_id = $objectPro1->getProductListByName($brand_id, $category_id, $sub_category_id, $model_id);
 
 		$call_source_id = $objectPro1->getCallSourceByName($options_fk_call_source);
 		//c_call_source:label:rowid::active=1
