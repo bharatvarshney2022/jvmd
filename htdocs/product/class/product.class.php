@@ -2104,19 +2104,18 @@ class Product extends CommonObject
 	 * @param  int    $ignore_lang_load  Load product without loading language arrays (when we are sure we don't need them)
 	 * @return int                       <0 if KO, 0 if not found, >0 if OK
 	 */
-	public function getProductListByName($label = '')
+	public function getProductListByName($brand_id, $category_id, $sub_category_id, $model_id)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-
 		global $langs, $conf;
 
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product";
 		
 		$sql .= " WHERE entity IN (".getEntity($this->element).")";
-		if ($label) {
-			$sql .= " AND label = '".$this->db->escape($label)."'";
-		}
+		$sql .= " AND fk_brand = '".$this->db->escape($brand_id)."'";
+		$sql .= " AND fk_category = '".$this->db->escape($category_id)."'";
+		$sql .= " AND fk_sub_category = '".$this->db->escape($sub_category_id)."'";
+		$sql .= " AND fk_model = '".$this->db->escape($model_id)."'";
 
 		$resql = $this->db->query($sql);
 		if ($resql) {

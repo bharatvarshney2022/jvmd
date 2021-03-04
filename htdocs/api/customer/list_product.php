@@ -40,22 +40,42 @@
 		if ($result) {
 			$num = $db->num_rows($result);
 
-			$status_code = '1';
-			$message = 'Product listing.';
+			if($num > 0)
+			{
+				$status_code = '1';
+				$message = 'Product listing.';
 
-			$i = 0;
-			$producttmp = new Product($db);
+				$i = 0;
+				$producttmp = new Product($db);
 
-			while ($i < $num) {
-				$obj = $db->fetch_object($result);
-				
-				$producttmp->fetch($obj->fk_product);
+				while ($i < $num) {
+					$obj = $db->fetch_object($result);
+					
+					$producttmp->fetch($obj->fk_product);
 
-				$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => ($obj->c_product_model == NULL ? "-" : $obj->c_product_model), 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de);
-				$i++;
+					$is_lead = GETDBVALUEBYCONDITION("fk_soc = '".$user_id."' AND fk_customer_product = '".$obj->id."' AND statut > 0", "projet", "rowid");
+					if($is_lead == "-")
+					{
+						$is_lead = 0;
+					}
+					else if($is_lead > 0)
+					{
+						$is_lead = 1;
+					}
+					
+					$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => ($obj->c_product_model == NULL ? "-" : $obj->c_product_model), 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de, 'is_lead' => "".$is_lead);
+					$i++;
+				}
+
+				$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
 			}
-
-			$json = array('status_code' => $status_code, 'message' => $message, 'product_data' => $societeProductData);
+			else
+			{
+				$status_code = '0';
+				$message = 'Sorry! No product listing exists!!';
+				
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
 		}
 		else
 		{

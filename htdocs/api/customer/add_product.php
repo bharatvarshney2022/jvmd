@@ -45,7 +45,7 @@
 		$product_id = 0;
 		if($product_model != "")
 		{
-			$objectPro1->getProductListByName($product_model);
+			$product_id = $objectPro1->getProductListByName($brand_id, $category_id, $sub_category_id, $model_id);
 		}
 
 		$objectPro = new Product($db);

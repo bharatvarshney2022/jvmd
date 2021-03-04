@@ -315,7 +315,6 @@ class Project extends CommonObject
 			$sqlExtra = "INSERT INTO ".MAIN_DB_PREFIX."projet_extrafields";
 			$sqlExtra .= " SET fk_object = '".$this->db->escape($projet_id)."'";
 			$sqlExtra .= ", import_key = NULL";
-			$sqlExtra .= ", product = ''";
 			$sqlExtra .= ", fk_call_source = '".$this->db->escape($this->options_fk_call_source)."'";
 			$sqlExtra .= ", fk_service_type = '".$this->db->escape($this->options_fk_service_type)."'";
 			$result = $this->db->query($sqlExtra);

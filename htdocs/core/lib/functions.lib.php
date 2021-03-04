@@ -249,6 +249,24 @@ function GETDBVALUEBYID($id, $table, $value)
 	}	
 }
 
+function GETDBVALUEBYCONDITION($condition, $table, $value)
+{
+	global $conf, $db;
+	$sql = "SELECT ".$value." FROM ".MAIN_DB_PREFIX.$table." WHERE ".$condition;
+
+	$result = $db->query($sql);
+	if ($result) {
+		if ($db->num_rows($result)) {
+			$obj = $db->fetch_object($result);
+			return $obj->$value;
+		}else{
+			return '-';
+		}
+	}else{
+		return '-';
+	}	
+}
+
 function GETPOSTISSET($paramname)
 {
 	$isset = false;
