@@ -686,7 +686,7 @@ function checkVal($out = '', $check = 'alphanohtml', $filter = null, $options = 
 				$out = dol_string_nohtmltag($out, 0);
 			}
 			break;
-		case 'alphawithlgt':		// No " and no ../ but we keep < > tags. Can be used for email string like "Name <email>"
+		case 'alphawithlgt':		// No " and no ../ but we keep balanced < > tags with no special chars inside. Can be used for email string like "Name <email>"
 			if (!is_array($out)) {
 				// '"' is dangerous because param in url can close the href= or src= and add javascript functions.
 				// '../' is dangerous because it allows dir transversals
@@ -1969,7 +1969,7 @@ function dol_strftime($fmt, $ts = false, $is_gmt = false)
  *										"%d/%m/%Y %H:%M",
  *										"%d/%m/%Y %H:%M:%S",
  *                                      "%B"=Long text of month, "%A"=Long text of day, "%b"=Short text of month, "%a"=Short text of day
- *										"day", "daytext", "dayhour", "dayhourldap", "dayhourtext", "dayrfc", "dayhourrfc", "...reduceformat"
+ *										"day", "daytext", "dayhour", "dayhourldap", "dayhourtext", "dayrfc", "dayhourrfc", "...inputnoreduce", "...reduceformat"
  * 	@param	string		$tzoutput		true or 'gmt' => string is for Greenwich location
  * 										false or 'tzserver' => output string is for local PHP server TZ usage
  * 										'tzuser' => output string is for user TZ (current browser TZ with current dst) => In a future, we should have same behaviour than 'tzuserrel'
@@ -1984,7 +1984,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'auto', $outputlangs = 
 {
 	global $conf, $langs;
 
-	if ($tzoutput == 'auto') {
+	if ($tzoutput === 'auto') {
 		$tzoutput = (empty($conf) ? 'tzserver' : $conf->tzuserinputkey);
 	}
 
@@ -2013,7 +2013,11 @@ function dol_print_date($time, $format = '', $tzoutput = 'auto', $outputlangs = 
 	}
 	if (!is_object($outputlangs)) $outputlangs = $langs;
 	if (!$format) $format = 'daytextshort';
-	$reduceformat = (!empty($conf->dol_optimize_smallscreen) && in_array($format, array('day', 'dayhour'))) ? 1 : 0;
+
+	// Do we have to reduce the length of date (year on 2 chars) to save space.
+	// Note: dayinputnoreduce is same than day but no reduction of year length will be done
+	$reduceformat = (!empty($conf->dol_optimize_smallscreen) && in_array($format, array('day', 'dayhour'))) ? 1 : 0;	// Test on original $format param.
+	$format = preg_replace('/inputnoreduce/', '', $format);	// so format 'dayinputnoreduce' is processed like day
 	$formatwithoutreduce = preg_replace('/reduceformat/', '', $format);
 	if ($formatwithoutreduce != $format) { $format = $formatwithoutreduce; $reduceformat = 1; }  // so format 'dayreduceformat' is processed like day
 
@@ -2209,9 +2213,10 @@ function dol_mktime($hour, $minute, $second, $month, $day, $year, $gm = 'auto', 
 {
 	global $conf;
 	//print "- ".$hour.",".$minute.",".$second.",".$month.",".$day.",".$year.",".$_SERVER["WINDIR"]." -";
+	//print 'gm:'.$gm.' gm==auto:'.($gm == 'auto').'<br>';
 
-	if ($gm == 'auto') {
-		$gm = $conf->tzuserinputkey;
+	if ($gm === 'auto') {
+		$gm = (empty($conf) ? 'tzserver' : $conf->tzuserinputkey);
 	}
 
 	// Clean parameters
@@ -2284,8 +2289,8 @@ function dol_now($mode = 'auto')
 {
 	$ret = 0;
 
-	if ($mode == 'auto') {
-		$mode = 'tzserver';
+	if ($mode === 'auto') {
+		$mode = 'gmt';
 	}
 
 	if ($mode == 'gmt') $ret = time(); // Time for now at greenwich.
@@ -3279,7 +3284,7 @@ function img_picto($titlealt, $picto, $moreatt = '', $pictoisfullpath = false, $
 				'object_recruitmentjobposition', 'object_recruitmentcandidature',
 				'object_shipment', 'object_share-alt', 'object_supplier_invoice', 'object_supplier_invoicea', 'object_supplier_invoiced', 'object_supplier_order', 'object_supplier_proposal', 'object_service', 'object_stock',
 				'object_technic', 'object_ticket', 'object_trip', 'object_user', 'object_group', 'object_member',
-				'object_phoning', 'object_phoning_mobile', 'object_phoning_fax', 'object_email', 'object_website',
+				'object_phoning', 'object_phoning_mobile', 'object_phoning_fax', 'object_email', 'object_website', 'object_movement',
 				'off', 'on', 'order',
 				'paiment', 'play', 'pdf', 'playdisabled', 'previous', 'poll', 'printer', 'product', 'propal', 'projecttask', 'stock', 'resize', 'service', 'stats', 'trip',
 				'setup', 'share-alt', 'sign-out', 'split', 'stripe-s', 'switch_off', 'switch_on', 'tools', 'unlink', 'uparrow', 'user', 'vcard', 'wrench',
@@ -3316,7 +3321,7 @@ function img_picto($titlealt, $picto, $moreatt = '', $pictoisfullpath = false, $
 				'edit'=>'pencil-alt', 'grip_title'=>'arrows-alt', 'grip'=>'arrows-alt', 'help'=>'question-circle',
 				'generic'=>'file', 'holiday'=>'umbrella-beach', 'label'=>'layer-group',
 				'member'=>'users', 'mrp'=>'cubes', 'next'=>'arrow-alt-circle-right',
-				'trip'=>'wallet', 'group'=>'users',
+				'trip'=>'wallet', 'group'=>'users', 'movement'=>'people-carry',
 				'sign-out'=>'sign-out-alt',
 				'switch_off'=>'toggle-off', 'switch_on'=>'toggle-on', 'check'=>'check', 'bookmark'=>'star', 'bookmark'=>'star',
 				'bank'=>'university', 'close_title'=>'times', 'delete'=>'trash', 'edit'=>'pencil-alt', 'filter'=>'filter',
@@ -3405,7 +3410,7 @@ function img_picto($titlealt, $picto, $moreatt = '', $pictoisfullpath = false, $
 				'companies'=>'#6c6aa8', 'company'=>'#6c6aa8', 'contact'=>'#6c6aa8', 'dynamicprice'=>'#a69944',
 				'edit'=>'#444', 'note'=>'#999', 'error'=>'', 'help'=>'#bbb', 'listlight'=>'#999',
 				'dolly'=>'#a69944', 'dollyrevert'=>'#a69944', 'lot'=>'#a69944',
-				'map-marker-alt'=>'#aaa', 'mrp'=>'#a69944', 'product'=>'#a69944', 'service'=>'#a69944', 'stock'=>'#a69944',
+				'map-marker-alt'=>'#aaa', 'mrp'=>'#a69944', 'product'=>'#a69944', 'service'=>'#a69944', 'stock'=>'#a69944', 'movement'=>'#a69944',
 				'other'=>'#ddd',
 				'playdisabled'=>'#ccc', 'printer'=>'#444', 'projectpub'=>'#986c6a', 'resize'=>'#444', 'rss'=>'#cba',
 				'shipment'=>'#a69944', 'stats'=>'#444', 'switch_off'=>'#999', 'uparrow'=>'#555', 'globe-americas'=>'#aaa',
@@ -5996,7 +6001,7 @@ function get_exdir($num, $level, $alpha, $withoutslash, $object, $modulepart = '
 	$arrayforoldpath = array('cheque', 'category', 'holiday', 'supplier_invoice', 'invoice_supplier', 'mailing', 'supplier_payment');
 	if (!empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO)) $arrayforoldpath[] = 'product';
 	if (!empty($level) && in_array($modulepart, $arrayforoldpath)) {
-		// This part should be removed once all code is using "get_exdir" to forge path, with all parameters provided.
+		// This part should be removed once all code is using "get_exdir" to forge path, with parameter $object and $modulepart provided.
 		if (empty($alpha)) $num = preg_replace('/([^0-9])/i', '', $num);
 		else $num = preg_replace('/^.*\-/i', '', $num);
 		$num = substr("000".$num, -$level);
@@ -6127,10 +6132,10 @@ function dol_string_nohtmltag($stringtoclean, $removelinefeed = 1, $pagecodeto =
 	} else {
 		$pattern = "/<[^<>]+>/";
 		// Example of $temp: <a href="/myurl" title="<u>A title</u>">0000-021</a>
-		$temp = preg_replace($pattern, "", $temp); // pass 1
-		// $temp after pass 1: <a href="/myurl" title="A title">0000-021
-		$temp = preg_replace($pattern, "", $temp); // pass 2
-		// $temp after pass 2: 0000-021
+		$temp = preg_replace($pattern, "", $temp); // pass 1 - $temp after pass 1: <a href="/myurl" title="A title">0000-021
+		$temp = preg_replace($pattern, "", $temp); // pass 2 - $temp after pass 2: 0000-021
+		// Remove '<' into remainging, so non closing html tags like '<abc'. Note: '<123abc' is not a html tag (can be kept), but '<abc123' is (must be removed).
+		$temp = preg_replace('/<([a-z]+)/i', '\1', $temp);
 	}
 
 	$temp = dol_html_entity_decode($temp, ENT_COMPAT, $pagecodeto);
@@ -7735,6 +7740,7 @@ function picto_from_langcode($codelang, $moreatt = '')
 		'da_DA' => 'dk',
 		'fr_CA' => 'mq',
 		'sv_SV' => 'se',
+		'sw_SW' => 'unknown',
 		'AQ' => 'unknown',
 		'CW' => 'unknown',
 		'IM' => 'unknown',

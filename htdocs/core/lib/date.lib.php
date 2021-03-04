@@ -478,7 +478,9 @@ function dol_get_first_day($year, $month = 1, $gm = false)
 }
 
 
-/**	Return GMT time for last day of a month or year
+/**
+ * Return GMT time for last day of a month or year.
+ * Note: The timestamp contains last day and last hours (23:59:59)
  *
  *	@param		int			$year		Year
  * 	@param		int			$month		Month
@@ -504,7 +506,8 @@ function dol_get_last_day($year, $month = 12, $gm = false)
 	return $datelim;
 }
 
-/**	Return GMT time for last hour of a given GMT date (it removes hours, min and second part)
+/**
+ *  Return GMT time for last hour of a given GMT date (it removes hours, min and second part)
  *
  *	@param		int			$date		Date
  *  @return		int						Date for last hour of a given date
@@ -515,7 +518,8 @@ function dol_get_last_hour($date)
 	return dol_mktime(23, 59, 59, $tmparray['mon'], $tmparray['mday'], $tmparray['year'], false);
 }
 
-/**	Return GMT time for first hour of a given GMT date (it removes hours, min and second part)
+/**
+ *  Return GMT time for first hour of a given GMT date (it removes hours, min and second part)
  *
  *	@param		int			$date		Date
  *  @return		int						Date for last hour of a given date
