@@ -28,7 +28,7 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.response_reschedule, p.fk_product, p.fk_brand, p.fk_category, p.fk_technician, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
 		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
@@ -102,7 +102,7 @@
 					$technician_name = GETDBVALUEBYID($obj->fk_technician, "user", "CONCAT(firstname,' ', lastname)");
 					$technician_mobile = GETDBVALUEBYID($obj->fk_technician, "user", "user_mobile");
 				}
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => $product, 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => $product, 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'tech_reschedule' => ($obj->response_reschedule == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->response_reschedule))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
