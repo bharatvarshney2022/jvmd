@@ -66,7 +66,9 @@
 					$leadStatus = "Reject";
 				}
 
-				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => ($obj->model_name == NULL ? "-" : $obj->model_name), 'product_name' => ($obj->product_name == NULL ? "-" : $obj->product_name), 'ac_capacity' => $obj->ac_capacity, 'technician' => ($obj->fullname == NULL ? "-" : $obj->fullname), 'technician_phone' => ($obj->tech_mobile == NULL ? "-" : $obj->tech_mobile), 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$ac_capacity = "";
+				$technician_name = $technician_mobile = ""; //fk_technician
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->fk_call_source, 'service_type' => $obj->fk_service_type, 'brand' => $obj->fk_brand, 'category_name' => $obj->fk_category, 'sub_category_name' => $obj->fk_sub_category, 'model' => ($obj->fk_model == NULL ? "-" : $obj->fk_model), 'product_name' => ($obj->fk_product == NULL ? "-" : $obj->fk_product), 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
 			{
