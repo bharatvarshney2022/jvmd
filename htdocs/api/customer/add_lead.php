@@ -85,6 +85,8 @@
 		//c_service_type:label:rowid::active=1
 		$service_type_id = $objectPro1->getServiceTypeByName($options_fk_service_type);
 
+		$customer_product_id = $objectPro1->getProductCustomerData($user_id, $brand_id, $category_id, $sub_category_id, $model_id, $product_id);
+
 		if($brand_id > 0 && $category_id > 0 && $sub_category_id > 0 && $call_source_id > 0 && $service_type_id > 0)
 		{
 			$objectProCust = new Project($db);
@@ -110,6 +112,7 @@
 			$objectProCust->fk_product = $product_id;
 			
 			$objectProCust->ac_capacity = $capacity;
+			$objectProCust->fk_customer_product = $customer_product_id;
 			
 			$objectProCust->options_fk_call_source = $call_source_id;
 			$objectProCust->options_fk_service_type = $service_type_id;
