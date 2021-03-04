@@ -244,12 +244,21 @@ class modProjet extends DolibarrModules
 		);
 		$this->export_fields_array[$r] = array();
 		if($user_group_id == 17){
-				$this->export_fields_array[$r] += array( 'u1.firstname'=>'Vendor Name', 'u1.user_mobile'=>'Vendor Mobile' );
-			}	
+			$this->export_fields_array[$r] += array( 'u1.firstname'=>'Vendor Name', 'u1.user_mobile'=>'Vendor Mobile' );
+		}	
 		$this->export_fields_array[$r] += array(
 			
 			's.town'=>'Branch', 'p.ref'=>"ST No.", 'p.title'=>'ST Label', 'p.fk_statut'=>'ST Status','sc.label'=>'Source Of Call', 'p.st_source'=>'ST Source', 'st.label'=>'Service Type', 's.code_client'=>'Customer ID', 's.nom'=>'CompanyName', 's.town'=>'Customer City', 's.zip'=>'Zip', 's.phone'=>'Phone', 's.email'=>'Email', 'b.nom'=>'Brand Name' , 'pc.component_no' => 'Component No', 'pm.code'=>'Model No','pf.code'=>'Family Code', 'pf.nom'=>'Family Name', 'psf.code'=>'Sub Family Code', 'psf.nom'=>'Sub Family Name', 'pm.nom'=>'Product Name', 'u.firstname'=>'Technician Name', 'p.datec'=>"Call Logged Date", 'p.call_dispatched'=>"Call Dispatched Date", 'p.call_responded'=>"Call Responded Date", 'p.call_resolved'=>"Call Resolved Date",  'p.tech_assigndatetime'=>"Response Schedule(Appointment Date&Time)", 'p.reponse_schedule'=>"Response Scheduled(System Date&Time)", 'p.rs_hrs'=>"RS in Hrs Min Sec",'p.rt_hrs'=>"RT in Hrs Min Sec",'p.tat_hrs'=>"TAT in Hrs Min Sec",'p.rs_per'=>"RS %",'p.rt_per'=>"RT %",'p.tat_per'=>"TAT %"
 		);
+		if($user_group_id == 4){
+			unset($this->export_fields_array[$r]['p.call_dispatched']);	
+			unset($this->export_fields_array[$r]['p.rs_hrs']);
+			unset($this->export_fields_array[$r]['p.rt_hrs']);
+			unset($this->export_fields_array[$r]['p.tat_hrs']);	
+			unset($this->export_fields_array[$r]['p.rs_per']);
+			unset($this->export_fields_array[$r]['p.rt_per']);
+			unset($this->export_fields_array[$r]['p.tat_per']);
+		}	
 		// Add multicompany field
 		if (!empty($conf->global->MULTICOMPANY_ENTITY_IN_EXPORT_IF_SHARED))
 		{

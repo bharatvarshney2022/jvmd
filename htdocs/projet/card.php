@@ -152,7 +152,7 @@ if (empty($reshook))
 			$error++;
 		}
 
-		if (!GETPOST('fk_category'))
+		/*if (!GETPOST('fk_category'))
 		{
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Category")), null, 'errors');
 			$error++;
@@ -174,13 +174,13 @@ if (empty($reshook))
 		{
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Product")), null, 'errors');
 			$error++;
-		}
+		}*/
 
-		if (GETPOST('opp_amount') != '' && !(GETPOST('opp_status') > 0))
+		/*if (GETPOST('opp_amount') != '' && !(GETPOST('opp_status') > 0))
 		{
 			$error++;
 			setEventMessages($langs->trans("ErrorOppStatusRequiredIfAmount"), null, 'errors');
-		}
+		}*/
 
 		// Create with status validated immediatly
 		if (!empty($conf->global->PROJECT_CREATE_NO_DRAFT))
@@ -902,27 +902,27 @@ if ($action == 'create' && $user->rights->projet->creer)
 	
 	// Product Category
 
-	print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+	print '<td >'.$langs->trans("Category").'</td><td>';
 	print '<select class="flat" id="fk_category" name="fk_category">';
 	print '<option value="0">Select Category</option>';
 	print '</select>';
 	print '</td></tr>';
 
 	// Product sub Category
-	print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+	print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
 	print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
 	print '<option value="0">Select Sub Category</option>';
 	print '</select>';
 	print '</td>';
 	// Model
-	print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+	print '<td>'.$langs->trans("Model No.").'</td><td>';
 	print '<select class="flat" id="fk_model" name="fk_model">';
 	print '<option value="0">Select Model</option>';
 	print '</select>';
 	print '</td></tr>';
 
 	// Label
-	print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+	print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
 	print '<select class="flat" id="fk_product" name="fk_product">';
 	print '<option value="0">Select Product</option>';
 	print '</select>';
@@ -1423,20 +1423,20 @@ if ($action == 'create' && $user->rights->projet->creer)
 		
 		// Product Category
 
-		print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
+		print '<td >'.$langs->trans("Category").'</td><td>';
 		print '<select class="flat" id="fk_category" name="fk_category">';
 		print $prdobject->getCustomerProductCategory($object->thirdparty->id,$object->fk_brand);
 		print '</select>';
 		print '</td></tr>';
 
 		// Product sub Category
-		print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
+		print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
 		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
 		print $prdobject->getCustomerProductSubCategory($object->thirdparty->id,$object->fk_brand,$object->fk_category);
 		print '</select>';
 		print '</td>';
 		// Model
-		print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
+		print '<td>'.$langs->trans("Model No.").'</td><td>';
 		print '<select class="flat" id="fk_model" name="fk_model">';
 		print $prdobject->getCustomerProductModel($object->thirdparty->id,$object->fk_brand,$object->fk_category,$object->fk_sub_category,$object->fk_model);
 		print '</select>';
@@ -1445,7 +1445,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		$prdarr = json_decode($productjson);
 		
 		// Label
-		print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
+		print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
 		print '<select class="flat" id="fk_product" name="fk_product">';
 		print $prdarr->prdstr;
 		print '</select>';
