@@ -72,7 +72,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $obj->call_source, 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => ($obj->model_name == NULL ? "-" : $obj->model_name), 'product_name' => ($obj->product_name == NULL ? "-" : $obj->product_name), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+				$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => ($obj->call_source == NULL ? "-" : $obj->call_source), 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => ($obj->model_name == NULL ? "-" : $obj->model_name), 'product_name' => ($obj->product_name == NULL ? "-" : $obj->product_name), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 				$i++;
 			}
 
