@@ -858,6 +858,8 @@ class Notify
 			}
 		}
 
+		echo $error; exit;
+
 		if (!$error) {
 			return $num;
 		} else {
