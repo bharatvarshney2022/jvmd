@@ -303,7 +303,7 @@ function check_user_mobile($usermobile, $device_id, $entitytotest = 1)
 		// If test username/password asked, we define $test=false if ko and $login var to login if ok, set also $_SESSION["dol_loginmesg"] if ko
 		$table = MAIN_DB_PREFIX."socpeople";
 		
-		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, otp, device_id, statut';
+		$sql ='SELECT rowid, fk_soc, firstname, lastname, email, phone_mobile, photo, otp, device_id, statut';
 		$sql.=' FROM '.$table;
 		$sql.= " WHERE phone_mobile = '".$db->escape($usermobile)."' AND device_id = '".$db->escape($device_id)."' ";
 		// Required to first found the user into entity, then the superadmin.
