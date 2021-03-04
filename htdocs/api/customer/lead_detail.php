@@ -36,6 +36,7 @@
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
 		$sql .= " WHERE p.fk_soc = '".$user_id."'";
 		$sql .= " AND p.rowid = '".$lead_id."'";
+		echo $sql; exit;
 
 		$result = $db->query($sql);
 		if ($result) {
