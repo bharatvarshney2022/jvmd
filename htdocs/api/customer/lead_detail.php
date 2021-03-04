@@ -28,7 +28,7 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.response_reschedule, p.fk_product, p.fk_brand, p.fk_category, p.fk_technician, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.response_reschedule, p.fk_product, p.fk_customer_product, p.fk_brand, p.fk_category, p.fk_technician, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
 		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
@@ -66,7 +66,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$call_source = $service_type = $brand = $category = $sub_category = $model = $product = "";
+				$call_source = $service_type = $brand = $category = $sub_category = $model = $product = $ac_capacity = "";
 				if($obj->fk_call_source != NULL)
 				{
 					$call_source = GETDBVALUEBYID($obj->fk_call_source, "c_call_source", "label");
@@ -95,7 +95,11 @@
 				{
 					$product = GETDBVALUEBYID($obj->fk_product, "product", "label");
 				}
-				$ac_capacity = "";
+				if($obj->fk_product != NULL)
+				{
+					$ac_capacity = GETDBVALUEBYID($obj->fk_customer_product, "product_customer", "ac_capacity");
+				}
+				
 				$technician_name = $technician_mobile = ""; //
 				if($obj->fk_technician != NULL)
 				{
