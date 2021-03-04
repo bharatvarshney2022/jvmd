@@ -1090,7 +1090,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		$readonly = '';
 		if($user_group_id == '4'){
-			$readonly = 'readonly';
+			//$readonly = 'readonly';
 		}	
 
 		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
