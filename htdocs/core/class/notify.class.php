@@ -403,6 +403,8 @@ class Notify
 			$sql .= " AND a.code = '".$this->db->escape($notifcode)."'"; // New usage
 		}
 
+		echo $sql; exit;
+
 		$result = $this->db->query($sql);
 		if ($result) {
 			$num = $this->db->num_rows($result);
