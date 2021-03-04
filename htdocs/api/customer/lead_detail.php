@@ -96,7 +96,12 @@
 					$product = GETDBVALUEBYID($obj->fk_product, "product", "label");
 				}
 				$ac_capacity = "";
-				$technician_name = $technician_mobile = ""; //fk_technician
+				$technician_name = $technician_mobile = ""; //
+				if($obj->fk_technician != NULL)
+				{
+					$technician_name = GETDBVALUEBYID($obj->fk_technician, "user", "CONCAT(firstname,' ', lastname)");
+					$technician_mobile = GETDBVALUEBYID($obj->fk_technician, "user", "user_mobile");
+				}
 				$json = array('status_code' => $status_code, 'message' => $message, 'lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => $call_source, 'service_type' => $service_type, 'brand' => $brand, 'category_name' => $category, 'sub_category_name' => $sub_category, 'model' => $model, 'product_name' => $product, 'ac_capacity' => $ac_capacity, 'technician' => $technician_name, 'technician_phone' => $technician_mobile, 'tech_assigntime' => ($obj->tech_assigndatetime == NULL ? "-" : date('D d M Y h:i A', strtotime($obj->tech_assigndatetime))), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
 			}
 			else
