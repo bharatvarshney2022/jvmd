@@ -46,37 +46,47 @@
 		if ($result) {
 			$num = $db->num_rows($result);
 
-			$status_code = '1';
-			$message = 'List listing.';
+			if($num > 0)
+			{
+				$status_code = '1';
+				$message = 'List listing.';
 
-			$i = 0;
+				$i = 0;
 
-			while ($i < $num) {
-				$obj = $db->fetch_object($result);
-				
-				$leadStatus = "";
-				if($obj->status == 0)
-				{
-					$leadStatus = "Draft";
-				}
-				else if($obj->status == 1)
-				{
-					$leadStatus = "Open";
-				}
-				else if($obj->status == 2)
-				{
-					$leadStatus = "Close";
-				}
-				else if($obj->status == 3)
-				{
-					$leadStatus = "Reject";
+				while ($i < $num) {
+					$obj = $db->fetch_object($result);
+					
+					$leadStatus = "";
+					if($obj->status == 0)
+					{
+						$leadStatus = "Draft";
+					}
+					else if($obj->status == 1)
+					{
+						$leadStatus = "Open";
+					}
+					else if($obj->status == 2)
+					{
+						$leadStatus = "Close";
+					}
+					else if($obj->status == 3)
+					{
+						$leadStatus = "Reject";
+					}
+
+					$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => ($obj->call_source == NULL ? "-" : $obj->call_source), 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => ($obj->model_name == NULL ? "-" : $obj->model_name), 'product_name' => ($obj->product_name == NULL ? "-" : $obj->product_name), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
+					$i++;
 				}
 
-				$societeLeadData[] = array('lead_id' => $obj->id, 'lead_code' => $obj->ref, 'status' => $leadStatus, 'call_source' => ($obj->call_source == NULL ? "-" : $obj->call_source), 'service_type' => $obj->service_type, 'brand' => $obj->brand_name, 'category_name' => $obj->category_name, 'sub_category_name' => $obj->sub_category_name, 'model' => ($obj->model_name == NULL ? "-" : $obj->model_name), 'product_name' => ($obj->product_name == NULL ? "-" : $obj->product_name), 'date_added' => date('D d M Y h:i A', strtotime($obj->date_creation)));
-				$i++;
+				$json = array('status_code' => $status_code, 'message' => $message, 'lead_data' => $societeLeadData);
 			}
-
-			$json = array('status_code' => $status_code, 'message' => $message, 'lead_data' => $societeLeadData);
+			else
+			{
+				$status_code = '0';
+				$message = 'Sorry! No product listing exists!!';
+				
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}
 		}
 		else
 		{

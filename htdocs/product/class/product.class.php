@@ -2183,6 +2183,35 @@ class Product extends CommonObject
 		}
 	}
 
+	public function getProductCustomerData($user_id, $brand_id, $category_id, $sub_category_id, $model_id, $product_id)
+	{
+		global $langs, $conf;
+
+		$sql = "SELECT rowid";
+		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer";
+		
+		$sql .= " WHERE fk_soc = '".(int)$user_id."'";
+		$sql .= " AND fk_brand = '".(int)$brand_id."'";
+		$sql .= " AND fk_category = '".(int)$category_id."'";
+		$sql .= " AND fk_subcategory = '".(int)$sub_category_id."'";
+		$sql .= " AND fk_model = '".(int)$model_id."'";
+		$sql .= " AND fk_product = '".(int)$product_id."'";
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql) > 0) {
+				$obj = $this->db->fetch_object($resql);
+
+				return $obj->rowid;
+			} else {
+				return 0;
+			}
+		} else {
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	}
+
 	public function fetch($id = '', $ref = '', $ref_ext = '', $barcode = '', $ignore_expression = 0, $ignore_price_load = 0, $ignore_lang_load = 0)
 	{
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';

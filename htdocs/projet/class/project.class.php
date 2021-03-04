@@ -280,7 +280,7 @@ class Project extends CommonObject
 		$sql .= ", description = '".$this->db->escape($this->description)."'";
 		$sql .= ", fk_soc = '".(int)$this->socid."'";
 		$sql .= ", fk_technician = '0'";
-		$sql .= ", fk_customer_product = '0'";
+		$sql .= ", fk_customer_product = '".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null")."'";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
 		$sql .= ", fk_category = '".$this->db->escape($this->fk_category)."'";
 		$sql .= ", fk_sub_category = '".$this->db->escape($this->fk_subcategory)."'";
