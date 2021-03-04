@@ -28,8 +28,7 @@
 	{
 		$object1 = new Project($db);
 
-		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category,
-		 ef.fk_call_source, ef.fk_service_type";
+		$sql = "SELECT DISTINCT p.rowid as id, p.ref, p.title, p.fk_statut as status, p.tech_assigndatetime, p.fk_product, p.fk_brand, p.fk_category, p.fk_sub_category, p.fk_model, ef.fk_call_source, ef.fk_service_type";
 		$sql .= ", p.datec as date_creation, p.tms as date_update ";
 		$sql .= ", s.rowid as socid, s.nom as name, s.email";
 		$sql .= " FROM ".MAIN_DB_PREFIX.$object1->table_element." as p";
