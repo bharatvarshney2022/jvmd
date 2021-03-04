@@ -67,7 +67,7 @@
 					$leadStatus = "Reject";
 				}
 
-				$call_source = $service_type = "";
+				$call_source = $service_type = $brand = "";
 				if($obj->fk_call_source != NULL)
 				{
 					$call_source = GETDBVALUEBYID($obj->fk_call_source, "c_call_source", "label");
@@ -75,6 +75,10 @@
 				if($obj->fk_service_type != NULL)
 				{
 					$service_type = GETDBVALUEBYID($obj->fk_service_type, "c_service_type", "label");
+				}
+				if($obj->fk_brand != NULL)
+				{
+					$brand = GETDBVALUEBYID($obj->fk_brand, "c_brands", "nom");
 				}
 				$ac_capacity = "";
 				$technician_name = $technician_mobile = ""; //fk_technician
