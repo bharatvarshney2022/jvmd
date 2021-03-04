@@ -619,7 +619,7 @@ class modSociete extends DolibarrModules
 			'extra' => MAIN_DB_PREFIX.'socpeople_extrafields'
 		); // List of tables to insert into (insert done in same order)
 		$this->import_fields_array[$r] = array(//field order as per structure of table llx_socpeople
-			's.rowid' => 'Id',
+			//'s.rowid' => 'Id',
 			's.datec' => "DateCreation",
 			's.fk_soc' => 'ThirdPartyName',
 			's.civility' => 'UserTitle',
@@ -628,18 +628,18 @@ class modSociete extends DolibarrModules
 			's.address' => "Address",
 			's.zip' => "Zip",
 			's.town' => "Town",
-			's.fk_departement' => "StateCode",
+			//'s.fk_departement' => "StateCode",
 			's.fk_pays' => "CountryCode",
 			's.birthday' => "DateOfBirth",
-			's.poste' => "Role",
-			's.phone' => "Phone",
-			's.phone_perso' => "PhonePerso",
+			//'s.poste' => "Role",
+			//'s.phone' => "Phone",
+			//'s.phone_perso' => "PhonePerso",
 			's.phone_mobile' => "PhoneMobile",
-			's.fax' => "Fax",
+			//'s.fax' => "Fax",
 			's.email' => "Email",
-			's.skype' => "Skype",
-			's.note_private' => "NotePrivate",
-			's.note_public' => "NotePublic"
+			//'s.skype' => "Skype",
+			//'s.note_private' => "NotePrivate",
+			//'s.note_public' => "NotePublic"
 		);
 		// Add extra fields
 		$sql = "SELECT name, label, fieldrequired FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'socpeople' AND entity IN (0, ".$conf->entity.")";
@@ -686,27 +686,27 @@ class modSociete extends DolibarrModules
 			's.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( [0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$'
 		);
 		$this->import_examplevalues_array[$r] = array(//field order as per structure of table llx_socpeople
-			's.rowid' => '1',
+			//'s.rowid' => '1',
 			's.datec' => 'formatted as '.dol_print_date(dol_now(), '%Y-%m-%d'),
 			's.fk_soc' => 'Third Party name eg. TPBigCompany',
-			's.civility' => 'Title of civility eg: MR...matches field "code" in table "'.MAIN_DB_PREFIX.'c_civility"',
+			's.civility' => 'Title of civility eg: MR,Mrs,MS...matches field "code" in table "'.MAIN_DB_PREFIX.'c_civility"',
 			's.lastname' => "lastname or label",
-			's.firstname' => 'John',
-			's.address' => '61 Jump street',
-			's.zip' => '75000',
-			's.town' => 'Bigtown',
-			's.fk_departement' => 'matches field "code_departement" in table "'.MAIN_DB_PREFIX.'c_departements"',
-			's.fk_pays' => 'US/FR/DE etc. matches field "code" in table "'.MAIN_DB_PREFIX.'c_country"',
+			's.firstname' => 'Ashok',
+			's.address' => '61 Ram Nagar',
+			's.zip' => '302012',
+			's.town' => 'Jaipur',
+			's.fk_departement' => '(RJ for Rajasthan) matches field "code_departement" in table "'.MAIN_DB_PREFIX.'c_departements"',
+			's.fk_pays' => 'IN/US/FR/DE etc. matches field "code" in table "'.MAIN_DB_PREFIX.'c_country"',
 			's.birthday' => 'formatted as '.dol_print_date(dol_now(), '%Y-%m-%d'),
-			's.poste' => "Director",
-			's.phone' => "5551122",
-			's.phone_perso' => "5551133",
-			's.phone_mobile' => "5551144",
-			's.fax' => "5551155",
-			's.email' => "johnsmith@email.com",
-			's.skype' => "skype username",
-			's.note_private' => "My private note",
-			's.note_public' => "My public note"
+			//'s.poste' => "Director",
+			//'s.phone' => "5551122",
+			//'s.phone_perso' => "5551133",
+			's.phone_mobile' => "9090909090",
+			//'s.fax' => "5551155",
+			's.email' => "test@email.com",
+			//'s.skype' => "skype username",
+			//'s.note_private' => "My private note",
+			//'s.note_public' => "My public note"
 		);
 		$this->import_updatekeys_array[$r] = array(
 			's.rowid' => 'Id'
