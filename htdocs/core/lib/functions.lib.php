@@ -231,6 +231,24 @@ function dol_shutdown()
  * @param 	string	$paramname		Name or parameter to test
  * @return 	boolean					True if we have just submit a POST or GET request with the parameter provided (even if param is empty)
  */
+function GETDBVALUEBYID($id, $table, $value)
+{
+	global $conf, $db;
+	$sql = "SELECT ".$value." FROM ".MAIN_DB_PREFIX.$table." WHERE rowid = '".$id."'";
+	
+	$result = $db->query($sql);
+	if ($result) {
+		if ($db->num_rows($result)) {
+			$obj = $db->fetch_object($result);
+			return $obj->$value;
+		}else{
+			return 'N/A';
+		}
+	}else{
+		return 'N/A';
+	}	
+}
+
 function GETPOSTISSET($paramname)
 {
 	$isset = false;
