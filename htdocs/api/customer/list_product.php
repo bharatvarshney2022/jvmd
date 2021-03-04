@@ -58,12 +58,12 @@
 					{
 						$is_lead = 0;
 					}
-					else
+					else if($is_lead > 0)
 					{
 						$is_lead = 1;
 					}
 					
-					$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => ($obj->c_product_model == NULL ? "-" : $obj->c_product_model), 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de, 'is_lead' => $is_lead);
+					$societeProductData[] = array('product_id' => $obj->id, 'brand' => $obj->brandname, 'category_name' => $obj->familyname, 'sub_category_name' => $obj->subfamily, 'model' => ($obj->c_product_model == NULL ? "-" : $obj->c_product_model), 'product_name' => $obj->pname, 'capacity' => $obj->capacity, 'date_added' => $obj->de, 'is_lead' => "".$is_lead);
 					$i++;
 				}
 
