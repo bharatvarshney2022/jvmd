@@ -67,6 +67,7 @@ class Notify
 	// codes actions supported are
 	// @todo defined also into interface_50_modNotificiation_Notificiation.class.php
 	public $arrayofnotifsupported = array(
+		'PROJET_CREATE',
 		'BILL_VALIDATE',
 		'BILL_PAYED',
 		'ORDER_VALIDATE',
@@ -439,7 +440,14 @@ class Notify
 
 						$subject = '['.$mysoc->name.'] '.$outputlangs->transnoentitiesnoconv("DolibarrNotification").($projtitle ? ' '.$projtitle : '');
 
+
 						switch ($notifcode) {
+							case 'PROJET_CREATE':
+								$link = '<a href="'.$urlwithroot.'/projet/card.php?id='.$object->projet_id.'">'.$newref.'</a>';
+								$dir_output = $conf->facture->dir_output;
+								$object_type = 'facture';
+								$mesg = $outputlangs->transnoentitiesnoconv("EMailTextInvoiceValidated", $link);
+								break;
 							case 'BILL_VALIDATE':
 								$link = '<a href="'.$urlwithroot.'/compta/facture/card.php?facid='.$object->id.'">'.$newref.'</a>';
 								$dir_output = $conf->facture->dir_output;
@@ -615,22 +623,35 @@ class Notify
 			return -1;
 		}
 
+		//echo '<pre>';print_r($conf->global); exit;
+		//echo $notifcode; exit;
+
 		// Check notification using fixed email
 		if (!$error) {
 			foreach ($conf->global as $key => $val) {
 				$reg = array();
-				if ($val == '' || !preg_match('/^NOTIFICATION_FIXEDEMAIL_'.$notifcode.'_THRESHOLD_HIGHER_(.*)$/', $key, $reg)) {
-					continue;
+				if ($notifcode != "PROJET_CREATE")
+				{
+					if($val == '' || !preg_match('/^NOTIFICATION_FIXEDEMAIL_'.$notifcode.'_THRESHOLD_HIGHER_(.*)$/', $key, $reg)) {
+						continue;
+					}
 				}
 
 				$threshold = (float) $reg[1];
-				if (!empty($object->total_ht) && $object->total_ht <= $threshold) {
-					dol_syslog("A notification is requested for notifcode = ".$notifcode." but amount = ".$object->total_ht." so lower than threshold = ".$threshold.". We discard this notification");
-					continue;
+				if($notifcode != "PROJET_CREATE")
+				{
+					if (!empty($object->total_ht) && $object->total_ht <= $threshold) {
+						dol_syslog("A notification is requested for notifcode = ".$notifcode." but amount = ".$object->total_ht." so lower than threshold = ".$threshold.". We discard this notification");
+						continue;
+					}
 				}
 
 				$param = 'NOTIFICATION_FIXEDEMAIL_'.$notifcode.'_THRESHOLD_HIGHER_'.$reg[1];
-
+				if ($notifcode = "PROJET_CREATE")
+				{
+					$param = 'NOTIFICATION_FIXEDEMAIL_'.$notifcode.'_THRESHOLD_HIGHER';
+				}
+				
 				$sendto = $conf->global->$param;
 				$notifcodedefid = dol_getIdFromCode($this->db, $notifcode, 'c_action_trigger', 'code', 'rowid');
 				if ($notifcodedefid <= 0) {
@@ -644,7 +665,16 @@ class Notify
 
 				$subject = '['.$mysoc->name.'] '.$langs->transnoentitiesnoconv("DolibarrNotification").($projtitle ? ' '.$projtitle : '');
 
+				
+
 				switch ($notifcode) {
+					case 'PROJET_CREATE':
+						$link = '<a href="'.$urlwithroot.'/projet/card.php?id='.$object->projet_id.'">'.$newref.'</a>';
+						$dir_output = $conf->projet->dir_output;
+						$object_type = 'projet';
+						$mesg = $langs->transnoentitiesnoconv("EMailTextProjectValidated", $link);
+						break;
+
 					case 'BILL_VALIDATE':
 						$link = '<a href="'.$urlwithroot.'/compta/facture/card.php?facid='.$object->id.'">'.$newref.'</a>';
 						$dir_output = $conf->facture->dir_output;
@@ -781,6 +811,8 @@ class Notify
 					$sendto = preg_replace('/^[\s,]+/', '', $sendto); // Clean start of string
 					$sendto = preg_replace('/[\s,]+$/', '', $sendto); // Clean end of string
 				}
+
+
 
 				if ($sendto) {
 					$parameters = array('notifcode'=>$notifcode, 'sendto'=>$sendto, 'replyto'=>$replyto, 'file'=>$filename_list, 'mimefile'=>$mimetype_list, 'filename'=>$mimefilename_list);
