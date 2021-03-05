@@ -2644,6 +2644,32 @@ class Societe extends CommonObject
 	 * 	@param	int		$hidedisabled		1=Hide contact if disabled
 	 *  @return array       				Array of contacts emails or mobile. Example: array(id=>'Name <email>')
 	 */
+	public function societe_contact($id)
+	{
+		// phpcs:enable
+		global $langs;
+
+		$contact_property = array();
+
+		$sql = "SELECT rowid, email, statut as status, phone_mobile, lastname, poste, firstname";
+		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople";
+		$sql .= " WHERE fk_soc = ".$id;
+		$sql .= " ORDER BY lastname, firstname";
+
+		$resql = $this->db->query($sql);
+
+		if ($resql) {
+			$nump = $this->db->num_rows($resql);
+			if ($nump) {
+				$obj = $this->db->fetch_object($resql);
+
+				$contact_property[] = array('contact_id' => dolGetFirstLastname($obj->firstname, $obj->lastname));
+			}
+		}
+
+		return $contact_property;
+	}
+
 	public function contact_property_array($mode = 'email', $hidedisabled = 0)
 	{
 		// phpcs:enable

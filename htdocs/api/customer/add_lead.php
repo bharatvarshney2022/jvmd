@@ -70,10 +70,12 @@
 	$userExists = $object->fetch($user_id);
 	$slider = array();
 
-	echo '<pre>';print_r($object); exit;
-
 	if($userExists)
 	{
+		$contactData = $object->societe_contact($user_id);
+
+		echo '<pre>'; print_r($contactData); exit;
+		
 		$objectPro1 = new Product($db);
 		$brand_id = $objectPro1->getBrandByName($product_brand);
 		$category_id = $objectPro1->getCategoryByName($brand_id, $fk_category);
