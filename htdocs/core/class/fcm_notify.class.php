@@ -323,33 +323,28 @@ class FCMNotify
 					$object_type = 'projet';
 					$type_target = 'tosocid';
 
-					$sql = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify (daten, fk_action, fk_soc, fk_contact, type, objet_type, type_target, objet_id, email, fcm_token)";
-					$sql .= " VALUES ('".$this->db->idate(dol_now())."', ".$notifcodedefid.", ".($object->socid ? $object->socid : 'null').", ".$obj->socp_id.", '".$obj->type."', '".$object_type."', '".$type_target."', ".$obj->fk_projet.", '".$this->db->escape($obj->email)."', '".$this->db->escape($obj->fcmToken)."')";
+					if($obj->code == 'PROJET_CREATE')
+					{
+						$notify_text =  "Lead #".$projref." has been created";
+					}
+					elseif($obj->code == 'PROJET_ACCEPT')
+					{
+						$notify_text =  "Lead #".$projref." has been accepted";
+					}
+
+
+					$sql = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify (daten, fk_action, fk_soc, fk_contact, type, objet_type, type_target, objet_id, email, fcm_token, notification_text)";
+					$sql .= " VALUES ('".$this->db->idate(dol_now())."', ".$notifcodedefid.", ".($object->socid ? $object->socid : 'null').", ".$obj->socp_id.", '".$obj->type."', '".$object_type."', '".$type_target."', ".$obj->fk_projet.", '".$this->db->escape($obj->email)."', '".$this->db->escape($obj->fcmToken)."', '".$this->db->escape($notify_text)."')";
 					if($this->db->query($sql))
 					{
-						if($obj->code == 'PROJET_CREATE')
+						$fcmResult = sendFCM($obj->label, $notify_text, $obj->fcmToken);
+						$fcmResultRow = json_decode($fcmResult);
+						
+						if($fcmResultRow->success == 1)
 						{
-							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been created", $obj->fcmToken);
-							$fcmResultRow = json_decode($fcmResult);
-							
-							if($fcmResultRow->success == 1)
-							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def SET is_sent = 1 WHERE rowid = '".$obj->notify_id."'";
-								$this->db->query($sql1);
-								$count++;
-							}
-						}
-						elseif($obj->code == 'PROJET_ACCEPT')
-						{
-							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been accepted", $obj->fcmToken);
-							$fcmResultRow = json_decode($fcmResult);
-							
-							if($fcmResultRow->success == 1)
-							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def SET is_sent = 1 WHERE rowid = '".$obj->notify_id."'";
-								$this->db->query($sql1);
-								$count++;
-							}
+							$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def SET is_sent = 1 WHERE rowid = '".$obj->notify_id."'";
+							$this->db->query($sql1);
+							$count++;
 						}
 					}
 					$i++;
