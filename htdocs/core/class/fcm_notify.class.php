@@ -281,7 +281,7 @@ class FCMNotify
 		// Check notification per third party
 		if (!empty($object->socid) && $object->socid > 0) {
 			$sql .= "SELECT c.fcmToken, c.email, c.rowid as socp_id, c.lastname, c.firstname, ";
-			$sql .= " a.rowid as actionid, a.label, a.code, n.rowid, n.type, fk_projet";
+			$sql .= " a.rowid as actionid, a.label, a.code, n.rowid as notify_id, n.type, fk_projet";
 			$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as c,";
 			$sql .= " ".MAIN_DB_PREFIX."c_action_trigger as a,";
 			$sql .= " ".MAIN_DB_PREFIX."fcm_notify_def as n,";
@@ -334,7 +334,7 @@ class FCMNotify
 							
 							if($fcmResultRow['success'] == 1)
 							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->rowid."'";
+								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
 								$count++;
 							}
@@ -346,7 +346,7 @@ class FCMNotify
 							
 							if($fcmResultRow['success'] == 1)
 							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->rowid."'";
+								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
 								$count++;
 							}
