@@ -249,13 +249,13 @@ function GETDBVALUEBYID($id, $table, $value)
 	}	
 }
 
-function sendFCM($mess,$id) {
+function sendFCM($mess, $title, $id) {
 	$url = 'https://fcm.googleapis.com/fcm/send';
 	$fields = array (
 	        'to' => $id,
 	        'notification' => array (
 	            "body" => $mess,
-	            "title" => "Title",
+	            "title" => $title,
 	            "icon" => "myicon"
 			)
 	);

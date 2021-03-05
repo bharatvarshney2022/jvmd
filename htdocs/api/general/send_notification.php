@@ -24,10 +24,10 @@
 
 	if($userExists)
 	{
-		$result = sendFCM("Hello testing", "f0mQm6a5RXS600NETs7WHz:APA91bE6vi0rcfTgzvYxwyByOsgBDWnoAw0vXzVgBZ0KXkpe63A3jLb71dfDTxfKO4KojI9FkpNME-eZZxUwQ1Whw9B8eFI75LuW8Y_QHbYMLhZvSOJkDSLSIQWtL4htI4ihtZmy9ZLf");
+		$result = sendFCM("Raj Kapoor has been assigned on Test", "Support Ticket Assigned", "f0mQm6a5RXS600NETs7WHz:APA91bE6vi0rcfTgzvYxwyByOsgBDWnoAw0vXzVgBZ0KXkpe63A3jLb71dfDTxfKO4KojI9FkpNME-eZZxUwQ1Whw9B8eFI75LuW8Y_QHbYMLhZvSOJkDSLSIQWtL4htI4ihtZmy9ZLf");
 		print_r($result);
 		exit;
-		
+
 		print '<table class="noborder centpercent">';
 
 		// List of current notifications for objet_type='withdraw'
