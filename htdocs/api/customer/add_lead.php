@@ -17,6 +17,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+	require_once DOL_DOCUMENT_ROOT . '/core/class/fcm_notify.class.php';
 	
 	$user_id = $socid = GETPOST('user_id', 'int');
 
@@ -163,8 +164,19 @@
 				// Create Notification
 				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
 				$sqlNotify .= " VALUES ('".$this->db->idate(dol_now())."', 108, ".$user_id.", ".$contact_id.", '0', '".$objectProCust->id."')";
-
 				$resqlVendor = $db->query($sqlNotify);
+
+				$objectNot = new FCMNotify($db);
+
+				$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+				
+				if($notifyData)
+				{
+					foreach($notifyData as $rowid => $notifyRow)
+					{
+						$objectNot->send($notifyRow['code'], $object);	
+					}
+				}
 
 				$db->commit();
 				$status_code = '1';
