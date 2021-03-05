@@ -280,7 +280,7 @@ class FCMNotify
 
 		// Check notification per third party
 		if (!empty($object->socid) && $object->socid > 0) {
-			$sql .= "SELECT c.fcmToken, c.email, c.lastname, c.firstname, ";
+			$sql .= "SELECT c.fcmToken, c.email, c.rowid as socp_id, c.lastname, c.firstname, ";
 			$sql .= " a.rowid as actionid, a.label, a.code, n.rowid, n.type, fk_projet";
 			$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as c,";
 			$sql .= " ".MAIN_DB_PREFIX."c_action_trigger as a,";
@@ -288,7 +288,7 @@ class FCMNotify
 			$sql .= " ".MAIN_DB_PREFIX."societe as s";
 			$sql .= " WHERE n.fk_contact = c.rowid AND a.rowid = n.fk_action";
 			$sql .= " AND n.fk_soc = s.rowid";
-			$sql .= " AND c.statut = 1";
+			$sql .= " AND c.statut = 1 AND is_sent = 0";
 			if (is_numeric($notifcode)) {
 				$sql .= " AND n.fk_action = ".$notifcode; // Old usage
 			} else {
@@ -305,6 +305,8 @@ class FCMNotify
 				while ($i < $num && !$error) {	// For each notification couple defined (third party/actioncode)
 					$obj = $this->db->fetch_object($result);
 
+					echo '<pre>'; print_r($obj);
+
 					$projtitle = $projref = $projtechnician = '';
 					if (!empty($obj->fk_projet)) {
 						
@@ -317,22 +319,27 @@ class FCMNotify
 
 					$sendto = dolGetFirstLastname($obj->firstname, $obj->lastname)." <".$obj->email.">";
 					$notifcodedefid = $obj->actionid;
-					
+					$object_type = 'projet';
+					$type_target = 'tosocid';
 
-					if($notifcodedefid == 108)
+					$sql = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify (daten, fk_action, fk_soc, fk_contact, type, objet_type, type_target, objet_id, email, fcm_token)";
+					$sql .= " VALUES ('".$this->db->idate(dol_now())."', ".$notifcodedefid.", ".($object->socid ? $object->socid : 'null').", ".$obj->socp_id.", '".$obj->type."', '".$object_type."', '".$type_target."', ".$obj->fk_projet.", '".$this->db->escape($obj->email)."', '".$this->db->escape($obj->fcmToken)."')";
+					if($this->db->query($sql))
 					{
-						$fcmResult = sendFCM($obj->label, $projref." lead has been generated", $obj->fcmToken);
-						print_r($fcmResult); exit;
+						if($obj->code == 'PROJET_CREATE')
+						{
+							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been created", $obj->fcmToken);
+							$fcmResultRow = json_decode($fcmResult);
+							print_r($fcmResultRow); exit;
+							
+							if($fcmResultRow['success'] == 1)
+							{
+								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->rowid."'";
+								$this->db->query($sql1);
+							}
+						}
 					}
 					exit;
-
-					
-					$sql = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify (daten, fk_action, fk_soc, fk_contact, type, objet_type, type_target, objet_id, email)";
-					$sql .= " VALUES ('".$this->db->idate(dol_now())."', ".$notifcodedefid.", ".($object->socid ? $object->socid : 'null').", ".$obj->cid.", '".$obj->type."', '".$object_type."', '".$obj->type_target."', ".$object->id.", '".$this->db->escape($obj->email)."')";
-					
-					if (!$this->db->query($sql)) {
-						dol_print_error($this->db);
-					}
 					$i++;
 				}
 			} else {
