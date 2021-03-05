@@ -435,6 +435,7 @@ LastModifiedThirdParties=Latest %s modified Customers
 UniqueThirdParties=Total of Customers
 InActivity=Open
 ActivityCeased=Closed
+InPending=Pending
 ThirdPartyIsClosed=Customer is closed
 ProductsIntoElements=List of products/services into %s
 CurrentOutstandingBill=Current outstanding bill

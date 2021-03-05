@@ -2574,12 +2574,17 @@ class Societe extends CommonObject
 		if ($status == 0) {
 			$statusType = 'status6';
 		}
+		if ($status == 2) {
+			$statusType = 'status5';
+		}
 
 		if (empty($this->labelStatus) || empty($this->labelStatusShort)) {
 			$this->labelStatus[0] = $langs->trans("ActivityCeased");
 			$this->labelStatus[1] = $langs->trans("InActivity");
+			$this->labelStatus[2] = $langs->trans("InPending");
 			$this->labelStatusShort[0] = $langs->trans("ActivityCeased");
 			$this->labelStatusShort[1] = $langs->trans("InActivity");
+			$this->labelStatusShort[2] = $langs->trans("InPending");
 		}
 
 		return dolGetStatus($this->labelStatus[$status], $this->labelStatusShort[$status], '', $statusType, $mode);
