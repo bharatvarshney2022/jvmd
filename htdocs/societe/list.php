@@ -739,6 +739,7 @@ print '<!--begin::Entry-->
 																<option value="">Select</option>
 																<option value="0">'.$langs->trans('ActivityCeased').'</option>
 																<option value="1">'.$langs->trans('InActivity').'</option>
+																<option value="2">'.$langs->trans('Pending').'</option>
 															</select>
 														</div>
 													</div>
