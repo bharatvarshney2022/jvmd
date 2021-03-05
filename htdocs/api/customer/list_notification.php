@@ -24,7 +24,7 @@
 
 	if($userExists)
 	{
-		$sql  = "SELECT fn.rowid, fn.tms as date_creation, fn.daten, fn.notification_text, ca.code";
+		$sql  = "SELECT fn.rowid, fn.objet_type, fn.tms as date_creation, fn.daten, fn.notification_text, ca.code";
 		$sql .= " FROM ".MAIN_DB_PREFIX."fcm_notify as fn,";
 		$sql .= " ".MAIN_DB_PREFIX."c_action_trigger as ca,";
 		$sql .= " ".MAIN_DB_PREFIX."societe as s";
@@ -44,7 +44,7 @@
 				while ($i < $num) {
 					$obj = $db->fetch_object($result);
 					
-					$societeNotificationData[] = array('notification_id' => $obj->rowid, 'notification_text' => $obj->notification_text, 'code' => $obj->code, 'date_added' =>  date('D d M Y h:i A', strtotime($obj->date_creation)));
+					$societeNotificationData[] = array('notification_id' => $obj->rowid, 'notification_type' => $obj->objet_type, 'notification_text' => $obj->notification_text, 'code' => $obj->code, 'date_added' =>  date('D d M Y h:i A', strtotime($obj->date_creation)));
 					$i++;
 				}
 
