@@ -17,6 +17,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+	require_once DOL_DOCUMENT_ROOT . '/core/class/fcm_notify.class.php';
 	
 	$user_id = $socid = GETPOST('user_id', 'int');
 
@@ -72,6 +73,16 @@
 
 	if($userExists)
 	{
+		$contactData = $object->societe_contact($user_id);
+
+		$contactRow = array_keys($contactData);
+
+		$contact_id = 0;
+		if($contactRow)
+		{
+			$contact_id = $contactRow[0];
+		}
+
 		$objectPro1 = new Product($db);
 		$brand_id = $objectPro1->getBrandByName($product_brand);
 		$category_id = $objectPro1->getCategoryByName($brand_id, $fk_category);
@@ -147,6 +158,23 @@
 							$typeid = '160';
 							$addvendor = $objectProCust->add_contact($vendorid, $typeid, 'internal');
 						}
+					}
+				}
+
+				// Create Notification
+				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+				$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 108, ".$user_id.", ".$contact_id.", '0', '".$objectProCust->id."')";
+				$resqlVendor = $db->query($sqlNotify);
+
+				$objectNot = new FCMNotify($db);
+
+				$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+				
+				if($notifyData)
+				{
+					foreach($notifyData as $rowid => $notifyRow)
+					{
+						$objectNot->send($notifyRow['code'], $object);	
 					}
 				}
 
