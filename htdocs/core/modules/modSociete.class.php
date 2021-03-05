@@ -534,7 +534,7 @@ class modSociete extends DolibarrModules
 		);
 		//$this->import_convertvalue_array[$r]=array('s.fk_soc'=>array('rule'=>'lastrowid',table='t');
 		$this->import_regex_array[$r] = array(//field order as per structure of table llx_societe
-			's.status' => '^[0|1]',
+			's.status' => '^[0|1|2]',
 			's.fk_typent' => 'id@'.MAIN_DB_PREFIX.'c_typent',
 			's.client' => '^[0|1|2|3]',
 			's.fournisseur' => '^[0|1]',
@@ -553,7 +553,7 @@ class modSociete extends DolibarrModules
 			's.nom' => "TPBigCompany",
 			's.name_alias' => "Alias for TPBigCompany",
 			//'s.parent' => "TPMotherCompany",
-			's.status' => "0 (closed) / 1 (active)",
+			's.status' => "0 (closed) / 1 (active) / 1 (pending)",
 			's.code_client' => 'eg. CU01-0001 / empty / "auto"',
 			//'s.code_fournisseur' => 'eg. SU01-0001 / empty / "auto"',
 			//'s.code_compta' => "Code or empty to be auto-created",
