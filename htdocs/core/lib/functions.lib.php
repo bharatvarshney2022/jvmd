@@ -249,6 +249,35 @@ function GETDBVALUEBYID($id, $table, $value)
 	}	
 }
 
+function sendFCM($mess,$id) {
+	$url = 'https://fcm.googleapis.com/fcm/send';
+	$fields = array (
+	        'to' => $id,
+	        'notification' => array (
+	            "body" => $mess,
+	            "title" => "Title",
+	            "icon" => "myicon"
+			)
+	);
+	$fields = json_encode ( $fields );
+	$headers = array (
+	        'Authorization: key=' . "AAAAcD-xwTU:APA91bEHE5DpeuyZ3aY4vBkko18bJ8p1e0DlXiUlvHg9zuqq_otwyDqH168mDvuUUiBd5vPq5zwK7ze-NQlvD0jifGGELIPIqVZK4txTSvNMpbb4g559DLpKL7YwSErZo8xLcJLo6NJv",
+	        'Content-Type: application/json'
+	);
+
+	$ch = curl_init ();
+	curl_setopt ( $ch, CURLOPT_URL, $url );
+	curl_setopt ( $ch, CURLOPT_POST, true );
+	curl_setopt ( $ch, CURLOPT_HTTPHEADER, $headers );
+	curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt ( $ch, CURLOPT_POSTFIELDS, $fields );
+
+	$result = curl_exec ( $ch );
+	curl_close ( $ch );
+	return $result;
+}
+
+
 function GETDBVALUEBYCONDITION($condition, $table, $value)
 {
 	global $conf, $db;

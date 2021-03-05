@@ -24,25 +24,44 @@
 
 	if($userExists)
 	{
-		$notify = new Notify($db);
-		$societeContact = $object->contact_property_array();
-		
-		if($societeContact)
+		$result = sendFCM("Hello testing", "eGiUdfYAR-u9MqsGoajtj9:APA91bGH9XFRFQ2aN5wBhK9_6fmaxkYbm-MxpTvNn5IzqSXKQ88LP3qpKxQQSu16gHbz8jNdze-CgESZbEaSCXYQHo1DOZnh-Ji_HKAoitofQ1gv6MtcwqM3Oq5eOJsh1xcTnahP5sWb");
+		print_r($result);
+		exit;
+		print '<table class="noborder centpercent">';
+
+		// List of current notifications for objet_type='withdraw'
+		$sql = "SELECT u.nom,";
+		$sql.= " nd.rowid, ad.code, ad.label";
+		$sql.= " FROM ".MAIN_DB_PREFIX."societe as u,";
+		$sql.= " ".MAIN_DB_PREFIX."notify_def as nd,";
+		$sql.= " ".MAIN_DB_PREFIX."c_action_trigger as ad";
+		$sql.= " WHERE u.rowid = nd.fk_soc";
+		$sql.= " AND nd.fk_action = ad.rowid";
+		$sql.= " AND u.entity IN (0,".$conf->entity.")";
+		$sql.= " AND u.rowid = ".$user_id."";
+
+		$resql = $db->query($sql);
+		if ($resql)
 		{
-			foreach ($societeContact as $socid => $name) {
-				# code...
-				$object->socid = $socid;
-				$object->projet_id = '53';
-				$object->email = '53';
+		    $num = $db->num_rows($resql);
+		    $i = 0;
+		    while ($i < $num)
+		    {
+		        $obj = $db->fetch_object($resql);
 
-				//echo '<pre>'; print_r($object); exit;
 
-				$action = "PROJET_CREATE";
-				$result = $notify->send($action, $object);
-
-				echo $result; exit;
-			}
+		        print '<tr class="oddeven">';
+		        print '<td>'.$obj->nom.'</td>';
+		        $label=($langs->trans("Notify_".$obj->code)!="Notify_".$obj->code?$langs->trans("Notify_".$obj->code):$obj->label);
+		        print '<td>'.$label.'</td>';
+		        print '<td class="right"><a href="'.$_SERVER["PHP_SELF"].'?action=deletenotif&token='.newToken().'&notif='.$obj->rowid.'">'.img_delete().'</a></td>';
+		        print '</tr>';
+		        $i++;
+		    }
+		    $db->free($resql);
 		}
+
+		print '</table>';
 	}
 	else
 	{
