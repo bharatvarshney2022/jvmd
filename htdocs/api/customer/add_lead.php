@@ -70,6 +70,8 @@
 	$userExists = $object->fetch($user_id);
 	$slider = array();
 
+	echo '<pre>';print_r($object); exit;
+
 	if($userExists)
 	{
 		$objectPro1 = new Product($db);
@@ -149,6 +151,12 @@
 						}
 					}
 				}
+
+				// Create Notification
+				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+				$sqlNotify .= " VALUES ('".$this->db->idate(dol_now())."', 108, ".$user_id.", ".$obj->socp_id.", '0', '".$objectProCust->id."')";
+
+				$resqlVendor = $db->query($sqlNotify);
 
 				$db->commit();
 				$status_code = '1';
