@@ -24,8 +24,6 @@
 
 	if($userExists)
 	{
-		$object = new Product($db);
-
 		$sql  = "SELECT fn.rowid, fn.tms as date_creation, fn.notification_text, ca.code";
 		$sql .= " FROM ".MAIN_DB_PREFIX."fcm_notify as fn,";
 		$sql .= " ".MAIN_DB_PREFIX."c_action_trigger as ca,";
