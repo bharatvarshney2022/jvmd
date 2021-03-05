@@ -28,8 +28,7 @@
 		$objectNot = new FCMNotify($db);
 
 		$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
-		//echo '<pre>';print_r($notifyData); exit;
-
+		
 		if($notifyData)
 		{
 			foreach($notifyData as $rowid => $notifyRow)
@@ -37,12 +36,6 @@
 				$objectNot->send($notifyRow['code'], $object);	
 			}
 		}
-		exit;
-
-
-		$result = sendFCM("Support Ticket Assigned", "Raj Kapoor has been assigned on Support Ticket JMD2021-02-00021
-", "f0mQm6a5RXS600NETs7WHz:APA91bE6vi0rcfTgzvYxwyByOsgBDWnoAw0vXzVgBZ0KXkpe63A3jLb71dfDTxfKO4KojI9FkpNME-eZZxUwQ1Whw9B8eFI75LuW8Y_QHbYMLhZvSOJkDSLSIQWtL4htI4ihtZmy9ZLf");
-		
 	}
 	else
 	{
