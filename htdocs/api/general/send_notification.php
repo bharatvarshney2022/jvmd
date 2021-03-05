@@ -24,9 +24,10 @@
 
 	if($userExists)
 	{
-		$result = sendFCM("Hello testing", "eGiUdfYAR-u9MqsGoajtj9:APA91bGH9XFRFQ2aN5wBhK9_6fmaxkYbm-MxpTvNn5IzqSXKQ88LP3qpKxQQSu16gHbz8jNdze-CgESZbEaSCXYQHo1DOZnh-Ji_HKAoitofQ1gv6MtcwqM3Oq5eOJsh1xcTnahP5sWb");
+		$result = sendFCM("Hello testing", "f0mQm6a5RXS600NETs7WHz:APA91bE6vi0rcfTgzvYxwyByOsgBDWnoAw0vXzVgBZ0KXkpe63A3jLb71dfDTxfKO4KojI9FkpNME-eZZxUwQ1Whw9B8eFI75LuW8Y_QHbYMLhZvSOJkDSLSIQWtL4htI4ihtZmy9ZLf");
 		print_r($result);
 		exit;
+		
 		print '<table class="noborder centpercent">';
 
 		// List of current notifications for objet_type='withdraw'
