@@ -24,10 +24,20 @@
 
 	if($userExists)
 	{
+		$object->socid = $user_id;
 		$objectNot = new FCMNotify($db);
 
-		$notifyData = $objectNot->confirmMessage(108, $user_id, $objectNot);
-		print_r($notifyData); exit;
+		$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+		//echo '<pre>';print_r($notifyData); exit;
+
+		if($notifyData)
+		{
+			foreach($notifyData as $rowid => $notifyRow)
+			{
+				$objectNot->send($notifyRow['code'], $object);	
+			}
+		}
+		exit;
 
 
 		$result = sendFCM("Support Ticket Assigned", "Raj Kapoor has been assigned on Support Ticket JMD2021-02-00021

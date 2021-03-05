@@ -3131,6 +3131,15 @@ function dol_print_address($address, $htmlid, $element, $id, $noprint = 0, $char
  *	@return     boolean     						true if email syntax is OK, false if KO or empty string
  *  @see isValidMXRecord()
  */
+function isValidFCM($address, $acceptsupervisorkey = 0)
+{
+	if ($acceptsupervisorkey && $address == '__SUPERVISOREMAIL__') return true;
+	if ($address != "") return true;
+
+	return false;
+}
+
+
 function isValidEmail($address, $acceptsupervisorkey = 0)
 {
 	if ($acceptsupervisorkey && $address == '__SUPERVISOREMAIL__') return true;
