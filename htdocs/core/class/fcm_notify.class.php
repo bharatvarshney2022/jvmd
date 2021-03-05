@@ -334,7 +334,7 @@ class FCMNotify
 							
 							if($fcmResultRow->success == 1)
 							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
+								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def SET is_sent = 1 WHERE rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
 								$count++;
 							}
@@ -346,7 +346,7 @@ class FCMNotify
 							
 							if($fcmResultRow->success == 1)
 							{
-								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
+								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def SET is_sent = 1 WHERE rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
 								$count++;
 							}
