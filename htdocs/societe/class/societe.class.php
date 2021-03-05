@@ -2663,7 +2663,7 @@ class Societe extends CommonObject
 			if ($nump) {
 				$obj = $this->db->fetch_object($resql);
 
-				$contact_property[] = array('contact_id' => dolGetFirstLastname($obj->firstname, $obj->lastname));
+				$contact_property[$obj->rowid] = dolGetFirstLastname($obj->firstname, $obj->lastname);
 			}
 		}
 

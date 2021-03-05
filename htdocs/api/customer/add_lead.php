@@ -74,8 +74,10 @@
 	{
 		$contactData = $object->societe_contact($user_id);
 
-		echo '<pre>'; print_r($contactData); exit;
-		
+		$contactId = array_keys($contactData);
+
+		echo '<pre>'; print_r($contactData); print_r($contactId); exit;
+
 		$objectPro1 = new Product($db);
 		$brand_id = $objectPro1->getBrandByName($product_brand);
 		$category_id = $objectPro1->getCategoryByName($brand_id, $fk_category);
