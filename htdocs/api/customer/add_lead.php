@@ -74,9 +74,13 @@
 	{
 		$contactData = $object->societe_contact($user_id);
 
-		$contactId = array_keys($contactData);
+		$contactRow = array_keys($contactData);
 
-		echo '<pre>'; print_r($contactData); print_r($contactId); exit;
+		$contact_id = 0;
+		if($contactRow)
+		{
+			$contact_id = $contactRow[0];
+		}
 
 		$objectPro1 = new Product($db);
 		$brand_id = $objectPro1->getBrandByName($product_brand);
@@ -158,7 +162,7 @@
 
 				// Create Notification
 				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
-				$sqlNotify .= " VALUES ('".$this->db->idate(dol_now())."', 108, ".$user_id.", ".$obj->socp_id.", '0', '".$objectProCust->id."')";
+				$sqlNotify .= " VALUES ('".$this->db->idate(dol_now())."', 108, ".$user_id.", ".$contact_id.", '0', '".$objectProCust->id."')";
 
 				$resqlVendor = $db->query($sqlNotify);
 
