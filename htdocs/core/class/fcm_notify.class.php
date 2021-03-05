@@ -332,7 +332,7 @@ class FCMNotify
 							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been created", $obj->fcmToken);
 							$fcmResultRow = json_decode($fcmResult);
 							
-							if($fcmResultRow['success'] == 1)
+							if($fcmResultRow->success == 1)
 							{
 								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
@@ -344,7 +344,7 @@ class FCMNotify
 							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been accepted", $obj->fcmToken);
 							$fcmResultRow = json_decode($fcmResult);
 							
-							if($fcmResultRow['success'] == 1)
+							if($fcmResultRow->success == 1)
 							{
 								$sql1 = "UPDATE ".MAIN_DB_PREFIX."fcm_notify_def is_sent = 1 SET rowid = '".$obj->notify_id."'";
 								$this->db->query($sql1);
