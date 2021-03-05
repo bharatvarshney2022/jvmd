@@ -1567,6 +1567,14 @@ function print_text_menu_entry_layout($text, $showmode, $url, $id, $idsel, $atar
 								{
 
 								print '				<li class="menu-item" aria-haspopup="true">
+														<a href="'.DOL_URL_ROOT.'/societe/pending-list.php?type=c&amp;leftmenu=customers" class="menu-link">
+															<i class="menu-bullet menu-bullet-dot">
+																<span></span>
+															</i>
+															<span class="menu-text">'.$langs->trans("ListPendingCustomersShort").'</span>
+														</a>
+													</li>';
+								print '				<li class="menu-item" aria-haspopup="true">
 														<a href="'.DOL_URL_ROOT.'/societe/list.php?type=c&amp;leftmenu=customers" class="menu-link">
 															<i class="menu-bullet menu-bullet-dot">
 																<span></span>
@@ -1967,6 +1975,9 @@ function print_left_oblyon_menu_layout($db,$menu_array_before,$menu_array_after,
 			if (! empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))
 			{
 				$langs->load("commercial");
+				
+				$newmenu->add("/societe/pending-list.php?type=c&amp;leftmenu=customers", $langs->trans("ListPendingCustomersShort"), 1, $user->rights->societe->lire, '', $mainmenu, 'customers');
+
 				$newmenu->add("/societe/list.php?type=c&amp;leftmenu=customers", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire, '', $mainmenu, 'customers');
 
 				
@@ -3510,6 +3521,9 @@ function print_left_oblyon_menu($db,$menu_array_before,$menu_array_after,&$tabMe
 			if (! empty($conf->societe->enabled) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))
 			{
 				$langs->load("commercial");
+				
+				$newmenu->add("/societe/pending-list.php?type=c&amp;leftmenu=customers", $langs->trans("ListPendingCustomersShort"), 1, $user->rights->societe->lire, '', $mainmenu, 'customers');
+				
 				$newmenu->add("/societe/list.php?type=c&amp;leftmenu=customers", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire, '', $mainmenu, 'customers');
 
 				
