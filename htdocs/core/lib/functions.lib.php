@@ -249,7 +249,7 @@ function GETDBVALUEBYID($id, $table, $value)
 	}	
 }
 
-function sendFCM($mess, $title, $id) {
+function sendFCM($title, $mess, $id) {
 	$url = 'https://fcm.googleapis.com/fcm/send';
 	$fields = array (
 	        'to' => $id,
