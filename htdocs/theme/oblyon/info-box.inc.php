@@ -58,6 +58,16 @@ if (! defined('ISLOADEDBYSTEELSHEET')) die('Must be call by steelsheet'); ?>
 	color: black;
 }
 
+.bg-societe .info-box {
+	background: #7fbd7e !important;
+	color: white;
+}
+
+.bg-societe1 .info-box {
+	background: #7ebdae !important;
+	color: white;
+}
+
 .info-box-sm .info-box-icon i {
 	color: rgba(0, 0, 0, 0.15);
 }

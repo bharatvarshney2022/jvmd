@@ -4611,4 +4611,95 @@ class Societe extends CommonObject
 		
 		return $num;
 	}
+
+	public function load_board($user)
+	{
+		// phpcs:enable
+		global $conf, $langs;
+
+		// For external user, no check is done on company because readability is managed by public status of project and assignement.
+		//$socid=$user->socid;
+
+		$customerListId = null;
+		
+		$sql = "SELECT s.rowid, s.status , s.statut, s.datec as datec";
+		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
+		$sql .= " WHERE s.entity IN (".getEntity('project').')';
+		if (!empty($projectsListId)) $sql .= " AND p.rowid IN (".$projectsListId.")";
+		// No need to check company, as filtering of projects must be done by getProjectsAuthorizedForUser
+		//if ($socid || ! $user->rights->societe->client->voir)	$sql.= "  AND (p.fk_soc IS NULL OR p.fk_soc = 0 OR p.fk_soc = ".$socid.")";
+		// For external user, no check is done on company permission because readability is managed by public status of project and assignement.
+		//if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND ((s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id.") OR (s.rowid IS NULL))";
+
+		//print $sql;
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			
+
+			$response = new WorkboardResponse();
+			$response->label = $langs->trans("Total Customer");
+			$response->labelShort = $langs->trans("Total Customer");
+			$response->url = DOL_URL_ROOT.'/societe/list.php?search_status=1&mainmenu=customers';
+			$response->img = img_object('', "projectpub");
+
+			// This assignment in condition is not a bug. It allows walking the results.
+			while ($obj = $this->db->fetch_object($resql))
+			{
+				$response->nbtodo++;
+
+			}
+
+			
+
+			return $response;
+		} else {
+			$this->error = $this->db->error();
+			return -1;
+		}
+	}
+
+	public function load_pending_board($user)
+	{
+		// phpcs:enable
+		global $conf, $langs;
+
+		// For external user, no check is done on company because readability is managed by public status of project and assignement.
+		//$socid=$user->socid;
+
+		$customerListId = null;
+		
+		$sql = "SELECT s.rowid, s.status , s.statut, s.datec as datec";
+		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
+		$sql .= " WHERE s.status = 2 AND s.entity IN (".getEntity('project').')';
+		if (!empty($projectsListId)) $sql .= " AND p.rowid IN (".$projectsListId.")";
+		
+
+		//print $sql;
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			
+
+			$response = new WorkboardResponse();
+			$response->label = $langs->trans("Pending Customer");
+			$response->labelShort = $langs->trans("Total Customer");
+			$response->url = DOL_URL_ROOT.'/societe/pending-list.php?type=c&leftmenu=customers';
+			$response->img = img_object('', "projectpub");
+
+			// This assignment in condition is not a bug. It allows walking the results.
+			while ($obj = $this->db->fetch_object($resql))
+			{
+				$response->nbtodo++;
+
+			}
+
+			
+
+			return $response;
+		} else {
+			$this->error = $this->db->error();
+			return -1;
+		}
+	}
 }

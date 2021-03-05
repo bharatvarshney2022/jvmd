@@ -507,6 +507,24 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 		$dashboardlines[$board->element] = $board->load_board($user);
 	}
 
+	// Number of Customer
+	if (!empty($user->rights->societe->creer) && $user->rights->societe->lire) {
+		include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+		$board = new Societe($db);
+		$dashboardlines['societe'] = $board->load_board($user);
+
+		
+	}
+
+	// Number of Pending Customer
+	if (!empty($user->rights->societe->creer) && $user->rights->societe->lire) {
+		include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+		$board = new Societe($db);
+		$dashboardlines['societe1'] = $board->load_pending_board($user);
+
+		
+	}
+
 	$object = new stdClass();
 	$parameters = array();
 	$action = '';
@@ -655,8 +673,24 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				'stats' =>
 					array('holiday'),
 			),
+		'societe' =>
+			array(
+				'groupName' => 'totalcustomer',
+				'typeName' => 'Total Customers',
+				'globalStatsKey' => 'societe',
+				'stats' => array('societe'),
+			),
+		'societe1' =>
+			array(
+				'groupName' => 'pendingcustomers',
+				'typeName' => 'Pending Customer',
+				'globalStatsKey' => 'pendingcustomers',
+				'stats' =>
+					 array('societe1'),
+			),	
 	);
 
+	//exit;
 	$object = new stdClass();
 	$parameters = array(
 		'dashboardgroup' => $dashboardgroup
@@ -665,8 +699,8 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 	if ($reshook == 0) {
 		$dashboardgroup = array_merge($dashboardgroup, $hookmanager->resArray);
 	}
-
-
+	/*echo '<pre>';
+	print_r($dashboardlines);*/
 	// Calculate total nb of late
 	$totallate = $totaltodo = 0;
 
@@ -743,6 +777,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 				}
 			}
 
+
 			if (!empty($boards)) {
 				$groupName = $langs->trans($groupElement['groupName']);
 				$typeName = $langs->trans($groupElement['typeName']);
@@ -788,6 +823,35 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 					}
 					else
 					{
+						if($typeName == "Total Customers")
+						{
+							$infoName = 'Total';
+							$openedDashBoard .= '<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+
+							$textPending = '';
+							$textPendingTitle = 'Total Customer';
+							$textPending .= '<span title="'.dol_escape_htmltag($textPendingTitle).'" class="classfortooltip badge badge-primary">';
+							$textPending .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodo;
+							$textPending .= '</span>';
+							
+							$openedDashBoard .= $textPending;
+							$openedDashBoard .= '</a>'."\n";
+						}
+
+						if($typeName == "Pending Customer")
+						{
+							$infoName = 'Pending';
+							$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+
+							$textPending = '';
+							$textPendingTitle = 'Total Customer';
+							$textPending .= '<span title="'.dol_escape_htmltag($textPendingTitle).'" class="classfortooltip badge badge-primary">';
+							$textPending .= '<i class="fa fa-exclamation-triangle"></i> '.$board->nbtodo;
+							$textPending .= '</span>';
+							
+							$openedDashBoard .= $textPending;
+							$openedDashBoard .= '</a>'."\n";
+						}
 						if($typeName == "Pending Ticket")
 						{
 							$infoName = 'Pending';
@@ -800,6 +864,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 							$textPending .= '</span>';
 							
 							$openedDashBoard .= $textPending;
+							$openedDashBoard .= '</a>'."\n";
 						}
 						else
 						{
@@ -836,6 +901,7 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 
 							
 								$openedDashBoard .= '			<span class="'.$nbtodClass.' classfortooltip" title="'.$board->label.'" >'.$board->nbtodo.'</span>';
+								$openedDashBoard .= '</a>'."\n";
 							}
 							if ($typeName == "Overdue Ticket") {
 								$infoName = 'Overdue';
@@ -847,19 +913,21 @@ if (empty($conf->global->MAIN_DISABLE_GLOBAL_WORKBOARD)) {
 									$openedDashBoard .= ' 0 ';
 								}
 								$openedDashBoard .= $textLate;
+								$openedDashBoard .= '</a>'."\n";
 							}
-							$openedDashBoard .= '</a>'."\n";
+							
 
 							if($typeName == "Total Ticket")
 							{
 								$textTotal = '';
 								$infoName = 'Total';
-								$openedDashBoard .= '			<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
+								$openedDashBoard .= '<a href="'.$board->url.'" class="info-box-text info-box-text-a">'.$infoName.' : ';
 
 								$textTotal .= '<span title="'.dol_escape_htmltag($texTotalTitle).'" class="classfortooltip badge badge-success">';
 								$textTotal .= '<i class="fa fa-exclamation-triangle"></i> '.($board->nbtodo + $board->nbtodolate + $board->pending);
 								$textTotal .= '</span>';
 								$openedDashBoard .= $textTotal;
+								$openedDashBoard .= '</a>'."\n";
 							}
 
 							if ($board->total > 0 && !empty($conf->global->MAIN_WORKBOARD_SHOW_TOTAL_WO_TAX)) {
