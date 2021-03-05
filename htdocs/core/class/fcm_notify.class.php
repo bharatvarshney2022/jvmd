@@ -339,7 +339,7 @@ class FCMNotify
 								$count++;
 							}
 						}
-						else if($obj->code == 'PROJET_ACCEPT')
+						elseif($obj->code == 'PROJET_ACCEPT')
 						{
 							$fcmResult = sendFCM($obj->label, "Lead #".$projref." has been accepted", $obj->fcmToken);
 							$fcmResultRow = json_decode($fcmResult);
