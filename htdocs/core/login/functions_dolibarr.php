@@ -388,7 +388,7 @@ function check_user_device($device_id, $entitytotest = 1)
 	
 	$login=array();
 
-	if (! empty($usermobile))
+	if (! empty($device_id))
 	{
 		dol_syslog("functions_subpe::check_user_device device_id=".$device_id." entitytotest=".$entitytotest);
 
