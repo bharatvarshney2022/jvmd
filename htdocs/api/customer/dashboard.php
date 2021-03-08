@@ -9,12 +9,13 @@
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 	
 	$user_id = GETPOST('user_id', 'int');
 	
 	$json = array();
 	
-	$object = new Contact($db);
+	$object = new Societe($db);
 	
 	$userExists = $object->fetch($user_id);
 	$slider = array();
