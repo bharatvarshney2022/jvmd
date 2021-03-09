@@ -487,7 +487,7 @@ if ($num == 1 && !empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && $
 // Output page
 // --------------------------------------------------------------------
 
-llxHeader('', $langs->trans("ListOfUsers"), $help_url);
+llxHeaderLayout('', $langs->trans("ListOfUsers"), $langs->trans("ListOfUsers"), $help_url);
 
 $param = '';
 if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param .= '&amp;contextpage='.urlencode($contextpage);
@@ -519,26 +519,43 @@ if ($permissiontoadd) $arrayofmassactions['reactivate'] = $langs->trans("Reactiv
 if (GETPOST('nomassaction', 'int') || in_array($massaction, array('presend', 'predelete'))) $arrayofmassactions = array();
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
-print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
-if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
-print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
-print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
-print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-print '<input type="hidden" name="mode" value="'.$mode.'">';
-print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+print '<!--begin::Entry-->
+						<div class="d-flex flex-column-fluid">
+							<!--begin::Container-->
+							<div class="container">
+								<!--begin::Card-->
+								<div class="card card-custom">
+									<div class="card-header py-3">
+										<div class="card-title">
+											<span class="card-icon">
+												<i class="flaticon2-user text-primary"></i>
+											</span>
+											<h3 class="card-label">'.$text .'('.$nbtotalofrecords.')</h3>
+										</div>
+									</div>
 
-$url = DOL_URL_ROOT.'/user/card.php?action=create'.($mode == 'employee' ? '&employee=1' : '').'&leftmenu=';
-if (!empty($socid)) $url .= '&socid='.$socid;
+									<div class="card-body">'."\n";
 
-$newcardbutton = dolGetButtonTitle($langs->trans('NewUser'), '', 'fa fa-plus-circle', $url, '', $permissiontoadd);
+										print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+										if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+											print '<input type="hidden" name="token" value="'.newToken().'">';
+											print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
+											print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+											print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+											print '<input type="hidden" name="mode" value="'.$mode.'">';
+											print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-$moreparam = array('morecss'=>'btnTitleSelected');
-$morehtmlright .= dolGetButtonTitle($langs->trans("List"), '', 'fa fa-list paddingleft imgforviewmode', DOL_URL_ROOT.'/user/list.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''), '', 1, $moreparam);
-$moreparam = array('morecss'=>'marginleftonly');
-$morehtmlright .= dolGetButtonTitle($langs->trans("HierarchicView"), '', 'fa fa-stream paddingleft imgforviewmode', DOL_URL_ROOT.'/user/hierarchy.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''), '', 1, $moreparam);
+											$url = DOL_URL_ROOT.'/user/card.php?action=create'.($mode == 'employee' ? '&employee=1' : '').'&leftmenu=';
+											if (!empty($socid)) $url .= '&socid='.$socid;
 
-print_barre_liste($text, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'user', 0, $morehtmlright.' '.$newcardbutton, '', $limit, 0, 0, 1);
+											$newcardbutton = dolGetButtonTitle($langs->trans('NewUser'), '', 'fa fa-plus-circle', $url, '', $permissiontoadd);
+
+											$moreparam = array('morecss'=>'btnTitleSelected');
+											$morehtmlright .= dolGetButtonTitle($langs->trans("List"), '', 'fa fa-list paddingleft imgforviewmode', DOL_URL_ROOT.'/user/list.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''), '', 1, $moreparam);
+											$moreparam = array('morecss'=>'marginleftonly');
+											$morehtmlright .= dolGetButtonTitle($langs->trans("HierarchicView"), '', 'fa fa-stream paddingleft imgforviewmode', DOL_URL_ROOT.'/user/hierarchy.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''), '', 1, $moreparam);
+
+										print_barre_liste($text, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'user', 0, $morehtmlright.' '.$newcardbutton, '', $limit, 0, 0, 1);
 
 // Add code for pre mass action (confirmation or email presend form)
 $topicmail = "SendUserRef";
@@ -980,5 +997,17 @@ print '</form>'."\n";
 
 
 // End of page
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
