@@ -175,7 +175,7 @@ $arrayfields = array(
 	'p.label'=>array('label'=>$langs->trans("Label"), 'checked'=>1, 'position'=>10),
 	'p.fk_product_type'=>array('label'=>$langs->trans("Type"), 'checked'=>0, 'enabled'=>(!empty($conf->product->enabled) && !empty($conf->service->enabled)), 'position'=>11),
 	'p.barcode'=>array('label'=>$langs->trans("Gencod"), 'checked'=>0, 'enabled'=>(!empty($conf->barcode->enabled)), 'position'=>12),
-	'p.duration'=>array('label'=>$langs->trans("Duration"), 'checked'=>($contextpage != 'productlist'), 'enabled'=>(!empty($conf->service->enabled) && (string) $type == '1'), 'position'=>13),
+	'p.duration'=>array('label'=>$langs->trans("Duration"), 'checked'=>($contextpage != 'productlist'), 'enabled'=>(!empty($conf->service->enabled) && (string) $type == '0'), 'position'=>13),
 	'p.finished'=>array('label'=>$langs->trans("Nature"), 'checked'=>0, 'enabled'=>(!empty($conf->product->enabled) && $type != '1'), 'position'=>19),
 	'p.weight'=>array('label'=>$langs->trans('Weight'), 'checked'=>0, 'enabled'=>(!empty($conf->product->enabled) && $type != '1'), 'position'=>20),
 	'p.weight_units'=>array('label'=>$langs->trans('WeightUnits'), 'checked'=>0, 'enabled'=>(!empty($conf->product->enabled) && $type != '1'), 'position'=>21),
@@ -224,7 +224,7 @@ if ($conf->global->PRODUIT_MULTIPRICES) {
 		} else {
 			$labelp = $langs->trans("SellingPrice")." ".$i;
 		}
-		$arrayfields['p.sellprice'.$i] = array('label'=>$labelp, 'checked'=>1, 'enabled'=>$conf->global->PRODUIT_MULTIPRICES, 'position'=>floatval('40.'.sprintf('%03s', $i)));
+		$arrayfields['p.sellprice'.$i] = array('label'=>$labelp, 'checked'=>0, 'enabled'=>$conf->global->PRODUIT_MULTIPRICES, 'position'=>floatval('40.'.sprintf('%03s', $i)));
 		$arraypricelevel[$i] = array($i);
 	}
 }
