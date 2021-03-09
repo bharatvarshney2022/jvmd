@@ -910,7 +910,7 @@ class FormCompany extends Form
 			$out .= ajax_multiautocompleter($htmlname, $fields, DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
 			$moreattrib .= ' autocomplete="off"';
 		}
-		$out .= '<input id="'.$htmlname.'" class="maxwidthonsmartphone'.($morecss ? ' '.$morecss : '').'" type="text"'.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'" '.$size.' value="'.$selected.'">'."\n";
+		$out .= '<input id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" type="text"'.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'" '.$size.' value="'.$selected.'">'."\n";
 
 		return $out;
 	}
