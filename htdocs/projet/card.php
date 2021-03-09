@@ -335,7 +335,11 @@ if (empty($reshook))
 			$object->ref          = GETPOST('ref', 'alpha');
 			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, we want field as it is
 			//$object->statut       = GETPOST('status', 'int');
-			$object->statut       = $object->statut;
+			if($user_group_id == 4){
+				$object->statut       = $object->statut;
+			}else{
+				$object->statut       = GETPOST('status', 'int');
+			}
 			$object->socid        = GETPOST('socid', 'int');
 			$object->fk_technician        = GETPOST('fk_technician', 'int');
 			/*if($object->fk_technician > 0){
@@ -344,6 +348,9 @@ if (empty($reshook))
 			$object->tech_assigndatetime   =  dol_mktime(GETPOST("tech_assigndatetimehour"), GETPOST("tech_assigndatetimemin"), date('s'), GETPOST("tech_assigndatetimemonth"), GETPOST("tech_assigndatetimeday"), GETPOST("tech_assigndatetimeyear"));
 			
 			 $object->response_reschedule   = dol_mktime(GETPOST("response_reschedulehour"), GETPOST("response_reschedulemin"), date('s'), GETPOST("response_reschedulemonth"), GETPOST("response_rescheduleday"), GETPOST("response_rescheduleyear"))
+			;
+
+			$object->response_reschedule   = dol_mktime(GETPOST("response_reschedulehour"), GETPOST("response_reschedulemin"), date('s'), GETPOST("response_reschedulemonth"), GETPOST("response_rescheduleday"), GETPOST("response_rescheduleyear"))
 			;
 
 			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
@@ -380,7 +387,11 @@ if (empty($reshook))
 		if (!$error)
 		{
 			$result = $object->update($user);
-
+			if($user_group_id == 17){
+				$vendorid = $user->id;
+				$typeid = 160;
+				$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+			}
 			if ($result < 0)
 			{
 				$error++;
@@ -1349,7 +1360,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if($user_group_id == '4'){
 			print dol_print_date($object->date_c, 'dayhoursec');
 		}else{
-			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
+			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
+			//print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
 			
 		}
 
