@@ -166,6 +166,170 @@ class FormActions
 	 *  @param	string	$morehtmlcenter			More html text on center of title line
 	 *	@return	int								<0 if KO, >=0 if OK
 	 */
+
+	
+	public function showactionsLayout($object, $typeelement, $socid = 0, $forceshowtitle = 0, $morecss = 'listactions', $max = 0, $moreparambacktopage = '', $morehtmlcenter = '')
+	{
+		global $langs, $conf, $user;
+
+		require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
+
+		$sortfield = 'a.datep,a.id';
+		$sortorder = 'DESC,DESC';
+
+		$listofactions = ActionComm::getActions($this->db, $socid, $object->id, $typeelement, '', $sortfield, $sortorder, ($max ? ($max + 1) : 0));
+		if (!is_array($listofactions)) dol_print_error($this->db, 'FailedToGetActions');
+
+		$num = count($listofactions);
+		if ($num || $forceshowtitle)
+		{
+			if ($typeelement == 'invoice')               $title = $langs->trans('ActionsOnBill');
+			elseif ($typeelement == 'invoice_supplier' || $typeelement == 'supplier_invoice') $title = $langs->trans('ActionsOnBill');
+			elseif ($typeelement == 'propal')            $title = $langs->trans('ActionsOnPropal');
+			elseif ($typeelement == 'supplier_proposal') $title = $langs->trans('ActionsOnSupplierProposal');
+			elseif ($typeelement == 'order')             $title = $langs->trans('ActionsOnOrder');
+			elseif ($typeelement == 'order_supplier' || $typeelement == 'supplier_order')   $title = $langs->trans('ActionsOnOrder');
+			elseif ($typeelement == 'shipping')          $title = $langs->trans('ActionsOnShipping');
+			elseif ($typeelement == 'fichinter')         $title = $langs->trans('ActionsOnFicheInter');
+			elseif ($typeelement == 'project')           $title = $langs->trans('LatestLinkedEvents', $max ? $max : '');
+			elseif ($typeelement == 'task')              $title = $langs->trans('LatestLinkedEvents', $max ? $max : '');
+			elseif ($typeelement == 'member')            $title = $langs->trans('LatestLinkedEvents', $max ? $max : '');
+			else $title = $langs->trans("LatestLinkedEvents", $max ? $max : '');
+
+			$urlbacktopage = $_SERVER['PHP_SELF'].'?id='.$object->id.($moreparambacktopage ? '&'.$moreparambacktopage : '');
+
+			$projectid = $object->fk_project;
+			if ($typeelement == 'project') $projectid = $object->id;
+
+			$newcardbutton = '';
+			if (!empty($conf->agenda->enabled) && !empty($user->rights->agenda->myactions->create))
+			{
+				$newcardbutton .= dolGetButtonTitle($langs->trans("AddEvent"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/comm/action/card.php?action=create&amp;datep='.urlencode(dol_print_date(dol_now(), 'dayhourlog')).'&amp;origin='.urlencode($typeelement).'&amp;originid='.$object->id.($object->socid > 0 ? '&amp;socid='.$object->socid : ($socid > 0 ? '&amp;socid='.$socid : '')).($projectid > 0 ? '&amp;projectid='.$projectid : '').'&amp;backtopage='.urlencode($urlbacktopage));
+			}
+
+
+			print '<!-- formactions->showactions -->'."\n";
+			print '<div class="card card-custom gutter-b">';
+			print load_fiche_titre_layout($title, $newcardbutton, '', 0, 0, '', $morehtmlcenter);
+			print '<div class="card-body">';
+
+			print '<div class="table-responsive">';
+
+			$page = 0; $param = '';
+
+			print '<table class="table table-bordered'.($morecss ? ' '.$morecss : '').'">';
+			print '<thead><tr class="">';
+			print getTitleFieldOfListLayout('Ref', 0, $_SERVER["PHP_SELF"], '', $page, $param, '', $sortfield, $sortorder, '', 1);
+			print getTitleFieldOfListLayout('By', 0, $_SERVER["PHP_SELF"], '', $page, $param, '', $sortfield, $sortorder, '', 1);
+			print getTitleFieldOfListLayout('Type', 0, $_SERVER["PHP_SELF"], '', $page, $param, '', $sortfield, $sortorder, '', 1);
+			print getTitleFieldOfListLayout('Title', 0, $_SERVER["PHP_SELF"], '', $page, $param, '', $sortfield, $sortorder, '', 1);
+			print getTitleFieldOfListLayout('Date', 0, $_SERVER["PHP_SELF"], 'a.datep', $page, $param, '', $sortfield, $sortorder, ' ', 1);
+			print getTitleFieldOfListLayout('Status', 0, $_SERVER["PHP_SELF"], '', $page, $param, '', $sortfield, $sortorder, ' ', 1);
+			print '</tr></thead><tbody>';
+			print "\n";
+
+			if (is_array($listofactions) && count($listofactions))
+			{
+				$cacheusers = array();
+
+				$cursorevent = 0;
+				foreach ($listofactions as $actioncomm)
+				{
+					if ($max && $cursorevent >= $max) break;
+
+					$ref = $actioncomm->getNomUrl(1, -1);
+					$label = $actioncomm->getNomUrl(0, 36);
+
+					print '<tr class="">';
+
+					// Ref
+					print '<td class="">'.$ref.'</td>';
+
+					// Onwer
+					print '<td class="">';
+					if (!empty($actioncomm->userownerid))
+					{
+						if (is_object($cacheusers[$actioncomm->userownerid]))
+						{
+							$tmpuser = $cacheusers[$actioncomm->userownerid];
+						} else {
+							$tmpuser = new User($this->db);
+							$tmpuser->fetch($actioncomm->userownerid);
+							$cacheusers[$actioncomm->userownerid] = $tmpuser;
+						}
+						if ($tmpuser->id > 0)
+						{
+							print $tmpuser->getNomUrl(-1, '', 0, 0, 16, 0, 'firstelselast', '');
+						}
+					}
+					print '</td>';
+
+					// Type
+					print '<td>';
+					// TODO Code common with code into comm/action/list.php
+					$imgpicto = '';
+					if (!empty($conf->global->AGENDA_USE_EVENT_TYPE))
+					{
+						if ($actioncomm->type_picto) {
+							$imgpicto = img_picto('', $actioncomm->type_picto);
+						} else {
+							if ($actioncomm->type_code == 'AC_RDV')         $imgpicto = img_picto('', 'object_group', '', false, 0, 0, '', 'paddingright');
+							elseif ($actioncomm->type_code == 'AC_TEL')     $imgpicto = img_picto('', 'object_phoning', '', false, 0, 0, '', 'paddingright');
+							elseif ($actioncomm->type_code == 'AC_FAX')     $imgpicto = img_picto('', 'object_phoning_fax', '', false, 0, 0, '', 'paddingright');
+							elseif ($actioncomm->type_code == 'AC_EMAIL')   $imgpicto = img_picto('', 'object_email', '', false, 0, 0, '', 'paddingright');
+							elseif ($actioncomm->type_code == 'AC_INT')     $imgpicto = img_picto('', 'object_intervention', '', false, 0, 0, '', 'paddingright');
+							elseif ($actioncomm->type_code == 'AC_OTH' && $actioncomm->code == 'TICKET_MSG') $imgpicto = img_picto('', 'object_conversation', '', false, 0, 0, '', 'paddingright');
+							elseif (!preg_match('/_AUTO/', $actioncomm->type_code)) $imgpicto = img_picto('', 'object_action', '', false, 0, 0, '', 'paddingright');
+						}
+					}
+					print $imgpicto;
+					if ($actioncomm->type_code == 'AC_OTH' && $actioncomm->code == 'TICKET_MSG') {
+						print $langs->trans("Message");
+					} else {
+						print $actioncomm->type_short ? $actioncomm->type_short : $actioncomm->type;
+					}
+					print '</td>';
+
+					// Label
+					print '<td>'.$label.'</td>';
+
+					// Date
+					print '<td class="">'.dol_print_date($actioncomm->datep, 'dayhour', 'tzuserrel');
+					if ($actioncomm->datef)
+					{
+						$tmpa = dol_getdate($actioncomm->datep);
+						$tmpb = dol_getdate($actioncomm->datef);
+						if ($tmpa['mday'] == $tmpb['mday'] && $tmpa['mon'] == $tmpb['mon'] && $tmpa['year'] == $tmpb['year'])
+						{
+							if ($tmpa['hours'] != $tmpb['hours'] || $tmpa['minutes'] != $tmpb['minutes'] && $tmpa['seconds'] != $tmpb['seconds']) print '-'.dol_print_date($actioncomm->datef, 'hour', 'tzuserrel');
+						} else print '-'.dol_print_date($actioncomm->datef, 'dayhour', 'tzuserrel');
+					}
+					print '</td>';
+					print '<td class="right">';
+					print $actioncomm->getLibStatut(3);
+					print '</td>';
+					print '</tr>';
+
+					$cursorevent++;
+				}
+			} else {
+				print '<tr class=""><td colspan="6" class="text-center">'.$langs->trans("None").'</td></tr>';
+			}
+
+			if ($max && $num > $max)
+			{
+				print '<tr class=""><td colspan="6" class="text-center">'.$langs->trans("More").'...</td></tr>';
+			}
+
+			print '<tbody></table>';
+			print '</div>';
+			print '</div>';
+			print '</div>';
+		}
+
+		return $num;
+	}
+
 	public function showactions($object, $typeelement, $socid = 0, $forceshowtitle = 0, $morecss = 'listactions', $max = 0, $moreparambacktopage = '', $morehtmlcenter = '')
 	{
 		global $langs, $conf, $user;

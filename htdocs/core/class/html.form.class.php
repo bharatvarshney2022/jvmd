@@ -7665,6 +7665,140 @@ class Form
 	 *  @param  array           $compatibleImportElementsList  Array of compatibles elements object for "import from" action
 	 *  @return	int							      <0 if KO, >=0 if OK
 	 */
+	
+	public function showLinkedObjectBlockLayout($object, $morehtmlright = '', $compatibleImportElementsList = false)
+	{
+		global $conf, $langs, $hookmanager;
+		global $bc, $action;
+
+		$object->fetchObjectLinked();
+
+		// Bypass the default method
+		$hookmanager->initHooks(array('commonobject'));
+		$parameters = array(
+			'morehtmlright' => $morehtmlright,
+			'compatibleImportElementsList' => &$compatibleImportElementsList,
+		);
+		$reshook = $hookmanager->executeHooks('showLinkedObjectBlock', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
+
+		if (empty($reshook))
+		{
+			$nbofdifferenttypes = count($object->linkedObjects);
+
+			print '<!-- showLinkedObjectBlock -->';
+			print '<div class="card card-custom gutter-b">';
+			print load_fiche_titre_layout($langs->trans('RelatedObjects'), $morehtmlright, '', 0, 0, 'showlinkedobjectblock');
+			print '<div class="card-body">';
+
+			print '<div class="table-responsive">';
+			print '<table class="table table-bordered" data-block="showLinkedObject" data-element="'.$object->element.'"  data-elementid="'.$object->id.'" ><thead>';
+
+			print '<tr class="">';
+			print '<th>'.$langs->trans("Type").'</th>';
+			print '<th>'.$langs->trans("Ref").'</th>';
+			print '<th class=""></td>';
+			print '<th class="">'.$langs->trans("Date").'</th>';
+			print '<th class="">'.$langs->trans("AmountHTShort").'</th>';
+			print '<th class="">'.$langs->trans("Status").'</th>';
+			print '<th></th>';
+			print '</tr>
+			</thead><tbody>';
+
+			$nboftypesoutput = 0;
+
+			foreach ($object->linkedObjects as $objecttype => $objects)
+			{
+				$tplpath = $element = $subelement = $objecttype;
+
+				// to display inport button on tpl
+				$showImportButton = false;
+				if (!empty($compatibleImportElementsList) && in_array($element, $compatibleImportElementsList)) {
+					$showImportButton = true;
+				}
+
+				$regs = array();
+				if ($objecttype != 'supplier_proposal' && preg_match('/^([^_]+)_([^_]+)/i', $objecttype, $regs))
+				{
+					$element = $regs[1];
+					$subelement = $regs[2];
+					$tplpath = $element.'/'.$subelement;
+				}
+				$tplname = 'linkedobjectblock';
+
+				// To work with non standard path
+				if ($objecttype == 'facture') {
+					$tplpath = 'compta/'.$element;
+					if (empty($conf->facture->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'facturerec') {
+					$tplpath = 'compta/facture';
+					$tplname = 'linkedobjectblockForRec';
+					if (empty($conf->facture->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'propal') {
+					$tplpath = 'comm/'.$element;
+					if (empty($conf->propal->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'supplier_proposal') {
+					if (empty($conf->supplier_proposal->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'shipping' || $objecttype == 'shipment') {
+					$tplpath = 'expedition';
+					if (empty($conf->expedition->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'reception') {
+					$tplpath = 'reception';
+					if (empty($conf->reception->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'delivery') {
+					$tplpath = 'delivery';
+					if (empty($conf->expedition->enabled)) continue; // Do not show if module disabled
+				} elseif ($objecttype == 'invoice_supplier') {
+					$tplpath = 'fourn/facture';
+				} elseif ($objecttype == 'order_supplier') {
+					$tplpath = 'fourn/commande';
+				} elseif ($objecttype == 'expensereport') {
+					$tplpath = 'expensereport';
+				} elseif ($objecttype == 'subscription') {
+					$tplpath = 'adherents';
+				}
+
+				global $linkedObjectBlock;
+				$linkedObjectBlock = $objects;
+
+
+				// Output template part (modules that overwrite templates must declare this into descriptor)
+				$dirtpls = array_merge($conf->modules_parts['tpl'], array('/'.$tplpath.'/tpl'));
+				foreach ($dirtpls as $reldir)
+				{
+					if ($nboftypesoutput == ($nbofdifferenttypes - 1))    // No more type to show after
+					{
+						global $noMoreLinkedObjectBlockAfter;
+						$noMoreLinkedObjectBlockAfter = 1;
+					}
+
+					$res = @include dol_buildpath($reldir.'/'.$tplname.'.tpl.php');
+					if ($res)
+					{
+						$nboftypesoutput++;
+						break;
+					}
+				}
+			}
+
+			if (!$nboftypesoutput)
+			{
+				print '<tr><td class="text-center" colspan="7">'.$langs->trans("None").'</td></tr>';
+			}
+
+			print '</tbody></table>';
+
+			if (!empty($compatibleImportElementsList))
+			{
+				$res = @include dol_buildpath('core/tpl/ajax/objectlinked_lineimport.tpl.php');
+			}
+
+
+			print '</div></div></div>';
+
+			return $nbofdifferenttypes;
+		}
+	}
+
 	public function showLinkedObjectBlock($object, $morehtmlright = '', $compatibleImportElementsList = false)
 	{
 		global $conf, $langs, $hookmanager;

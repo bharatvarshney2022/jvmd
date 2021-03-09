@@ -2857,7 +2857,7 @@ if ($action == 'create' || $action == 'adduserldap')
 
 		if ($action != 'edit' && $action != 'presend')
 		{
-			
+
 			print '<div class="row"><div class="col-sm-6"><div class="card card-custom gutter-b"><div class="card-body">';
 			/*
              * Documents generes
@@ -2873,14 +2873,14 @@ if ($action == 'create' || $action == 'adduserldap')
 
 			// Show links to link elements
 			$linktoelem = $form->showLinkToObjectBlock($object, null, null);
-			$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
+			$somethingshown = $form->showLinkedObjectBlockLayout($object, $linktoelem);
 
 			print '</div></div></div><div class="col-sm-6"><div class="card card-custom gutter-b"><div class="card-body">';
 
 			// List of actions on element
 			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 			$formactions = new FormActions($db);
-			$somethingshown = $formactions->showactions($object, 'user', $socid, 1);
+			$somethingshown = $formactions->showactionsLayout($object, 'user', $socid, 1);
 
 
 			print '</div></div>';

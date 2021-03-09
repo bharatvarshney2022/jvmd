@@ -4901,6 +4901,9 @@ function getTitleFieldOfListLayout($name, $thead = 0, $file = "", $field = "", $
 	return $out;
 }
 
+
+
+
 function getTitleFieldOfList($name, $thead = 0, $file = "", $field = "", $begin = "", $moreparam = "", $moreattrib = "", $sortfield = "", $sortorder = "", $prefix = "", $disablesortlink = 0, $tooltip = '', $forcenowrapcolumntitle = 0)
 {
 	global $conf, $langs, $form;
@@ -5056,6 +5059,32 @@ function print_fiche_titre($title, $mesg = '', $picto = 'generic', $pictoisfullp
  * 	@return	string
  *  @see print_barre_liste()
  */
+
+function load_fiche_titre_layout_footer($titre, $morehtmlright = '', $picto = 'generic', $pictoisfullpath = 0, $id = '', $morecssontable = '', $morehtmlcenter = '')
+{
+	global $conf;
+
+	$return = '';
+
+	if ($picto == 'setup') $picto = 'generic';
+
+	$return .= "\n";
+	$return .= '<div class="card-header-layout"><h3 class="">';
+	if ($picto) $return .= img_picto('', $picto, 'class="valignmiddle widthpictotitle pictotitle"', $pictoisfullpath);
+	$return .= $titre.'</h3>';
+	$return .= '</div>';
+	if (dol_strlen($morehtmlcenter))
+	{
+		//$return .= '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
+	}
+	if (dol_strlen($morehtmlright))
+	{
+		//$return .= '<td class="nobordernopadding titre_right wordbreakimp right valignmiddle">'.$morehtmlright.'</td>';
+	}
+	//$return .= '</div>'."\n";
+
+	return $return;
+}
 
 function load_fiche_titre_layout($titre, $morehtmlright = '', $picto = 'generic', $pictoisfullpath = 0, $id = '', $morecssontable = '', $morehtmlcenter = '')
 {

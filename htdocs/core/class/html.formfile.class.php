@@ -662,16 +662,18 @@ class FormFile
 			$out .= '<input type="hidden" name="action" value="builddoc">';
 			$out .= '<input type="hidden" name="token" value="'.newToken().'">';
 
-			$out .= load_fiche_titre($titletoshow, '', '');
-			$out .= '<div class="div-table-responsive-no-min">';
-			$out .= '<table class="liste formdoc noborder centpercent">';
+			$out .= '<div class="card card-custom gutter-b">';
 
-			$out .= '<tr class="liste_titre">';
+			$out .= load_fiche_titre_layout_footer($titletoshow, '', '');
+			$out .= '<div class="card-body"><div class="table-responsive">';
+			$out .= '<table class="table table-bordered">';
+
+			$out .= '<tr class="">';
 
 			$addcolumforpicto = ($delallowed || $printer || $morepicto);
 			$colspan = (3 + ($addcolumforpicto ? 1 : 0)); $colspanmore = 0;
 
-			$out .= '<th colspan="'.$colspan.'" class="formdoc liste_titre maxwidthonsmartphone center">';
+			$out .= '<td colspan="'.$colspan.'" class="">';
 
 			// Model
 			if (!empty($modellist))
@@ -720,7 +722,7 @@ class FormFile
 			if (!$allowgenifempty && !is_array($modellist) && empty($modellist) && empty($conf->dol_no_mouse_hover) && $modulepart != 'unpaid') $genbutton = '';
 			if (empty($modellist) && !$showempty && $modulepart != 'unpaid') $genbutton = '';
 			$out .= $genbutton;
-			$out .= '</th>';
+			$out .= '</td>';
 
 			if (!empty($hookmanager->hooks['formfile']))
 			{
@@ -729,7 +731,7 @@ class FormFile
 					if (method_exists($module, 'formBuilddocLineOptions'))
 					{
 						$colspanmore++;
-						$out .= '<th></th>';
+						$out .= '<td></td>';
 					}
 				}
 			}
@@ -778,13 +780,13 @@ class FormFile
 					if ($modulesubdir) $relativepath = $modulesubdir."/".$file["name"]; // Cas propal, facture...
 					if ($modulepart == 'export') $relativepath = $file["name"]; // Other case
 
-					$out .= '<tr class="oddeven">';
+					$out .= '<tr class="">';
 
 					$documenturl = DOL_URL_ROOT.'/document.php';
 					if (isset($conf->global->DOL_URL_ROOT_DOCUMENT_PHP)) $documenturl = $conf->global->DOL_URL_ROOT_DOCUMENT_PHP; // To use another wrapper
 
 					// Show file name with link to download
-					$out .= '<td class="minwidth200">';
+					$out .= '<td class="">';
 					$out .= '<a class="documentdownload paddingright" href="'.$documenturl.'?modulepart='.$modulepart.'&amp;file='.urlencode($relativepath).($param ? '&'.$param : '').'"';
 
 					$mime = dol_mimetype($relativepath, '', 0);
@@ -798,15 +800,15 @@ class FormFile
 
 					// Show file size
 					$size = (!empty($file['size']) ? $file['size'] : dol_filesize($filedir."/".$file["name"]));
-					$out .= '<td class="nowrap right">'.dol_print_size($size, 1, 1).'</td>';
+					$out .= '<td class="">'.dol_print_size($size, 1, 1).'</td>';
 
 					// Show file date
 					$date = (!empty($file['date']) ? $file['date'] : dol_filemtime($filedir."/".$file["name"]));
-					$out .= '<td class="nowrap right">'.dol_print_date($date, 'dayhour', 'tzuser').'</td>';
+					$out .= '<td class="">'.dol_print_date($date, 'dayhour', 'tzuser').'</td>';
 
 					if ($delallowed || $printer || $morepicto)
 					{
-						$out .= '<td class="right nowraponall">';
+						$out .= '<td class="">';
 						if ($delallowed)
 						{
 							$tmpurlsource = preg_replace('/#[a-zA-Z0-9_]*$/', '', $urlsource);
@@ -854,7 +856,7 @@ class FormFile
 
 				foreach ($link_list as $file)
 				{
-					$out .= '<tr class="oddeven">';
+					$out .= '<tr class="">';
 					$out .= '<td colspan="'.$colspan.'" class="maxwidhtonsmartphone">';
 					$out .= '<a data-ajax="false" href="'.$file->url.'" target="_blank">';
 					$out .= $file->label;
@@ -871,7 +873,7 @@ class FormFile
 
 		 	if (count($file_list) == 0 && count($link_list) == 0 && $headershown)
 			{
-				$out .= '<tr><td colspan="'.(3 + ($addcolumforpicto ? 1 : 0)).'" class="opacitymedium">'.$langs->trans("None").'</td></tr>'."\n";
+				$out .= '<tr><td colspan="'.(3 + ($addcolumforpicto ? 1 : 0)).'" class="text-center">'.$langs->trans("None").'</td></tr>'."\n";
 			}
 		}
 
@@ -879,6 +881,8 @@ class FormFile
 		{
 			// Affiche pied du tableau
 			$out .= "</table>\n";
+			$out .= "</div>\n";
+			$out .= "</div>\n";
 			$out .= "</div>\n";
 			if ($genallowed)
 			{
@@ -889,7 +893,7 @@ class FormFile
 		//return ($i?$i:$headershown);
 		return $out;
 	}
-	
+
 	public function showdocuments($modulepart, $modulesubdir, $filedir, $urlsource, $genallowed, $delallowed = 0, $modelselected = '', $allowgenifempty = 1, $forcenomultilang = 0, $iconPDF = 0, $notused = 0, $noform = 0, $param = '', $title = '', $buttonlabel = '', $codelang = '', $morepicto = '', $object = null, $hideifempty = 0, $removeaction = 'remove_file')
 	{
 		// Deprecation warning
