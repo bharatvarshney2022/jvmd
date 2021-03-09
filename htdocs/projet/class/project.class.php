@@ -510,6 +510,13 @@ class Project extends CommonObject
 			$sql .= ", fk_product = ".($this->fk_product > 0 ? $this->fk_product : "null");
 
 			$sql .= ", fk_statut = ".$this->statut;
+
+			$sql .= ", problem = ".($this->problem != '' ? "'".$this->problem."'" : "null");
+			$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
+			$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
+			$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
+			$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
+
 			$sql .= ", fk_opp_status = ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'null');
 			$sql .= ", opp_percent = ".((is_numeric($this->opp_percent) && $this->opp_percent != '') ? $this->opp_percent : 'null');
 			$sql .= ", public = ".($this->public ? 1 : 0);
@@ -526,7 +533,7 @@ class Project extends CommonObject
 			$sql .= ", usage_bill_time = ".($this->usage_bill_time ? 1 : 0);
 			$sql .= ", usage_organize_event = ".($this->usage_organize_event ? 1 : 0);
 			$sql .= " WHERE rowid = ".$this->id;
-			
+
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)

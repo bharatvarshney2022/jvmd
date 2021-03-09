@@ -62,8 +62,8 @@ $sortfield = GETPOST("sortfield", "aZ09comma");
 $sortorder = GETPOST("sortorder", 'aZ09comma');
 $page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
 if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) { $page = 0; }     // If $page is not defined, or '' or -1 or if we click on clear filters
-if (!$sortfield) $sortfield = "p.ref";
-if (!$sortorder) $sortorder = "ASC";
+if (!$sortfield) $sortfield = "p.rowid";
+if (!$sortorder) $sortorder = "DESC";
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
@@ -447,6 +447,7 @@ $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
 
 
+
 // Count total nb of records
 $nbtotalofrecords = '';
 if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST)) {
@@ -457,7 +458,7 @@ if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST)) {
 		$offset = 0;
 	}
 }
-//echo $sql;
+
 // if total of record found is smaller than limit, no need to do paging and to restart another select with limits set.
 if (is_numeric($nbtotalofrecords) && ($limit > $nbtotalofrecords || empty($limit))) {
 	$num = $nbtotalofrecords;
