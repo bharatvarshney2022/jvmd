@@ -2988,24 +2988,24 @@ class FormFile
 
 		foreach ($links as $link)
 		{
-			print '<tr class="oddeven">';
+			print '<tr class="">';
 			//edit mode
-			if ($action == 'update' && $selected === $link->id)
+			if ($action == 'update_doc' && $selected === $link->id)
 			{
 				print '<td>';
 				print '<input type="hidden" name="id" value="'.$object->id.'">';
 				print '<input type="hidden" name="linkid" value="'.$link->id.'">';
 				print '<input type="hidden" name="action" value="confirm_updateline">';
-				print $langs->trans('Link').': <input type="text" name="link" value="'.$link->url.'">';
+				print $langs->trans('Link').': <input class="form-control" type="text" name="link" value="'.$link->url.'">';
 				print '</td>';
 				print '<td>';
-				print $langs->trans('Label').': <input type="text" name="label" value="'.dol_escape_htmltag($link->label).'">';
+				print $langs->trans('Label').': <input class="form-control" type="text" name="label" value="'.dol_escape_htmltag($link->label).'">';
 				print '</td>';
 				print '<td class="center">'.dol_print_date(dol_now(), "dayhour", "tzuser").'</td>';
 				print '<td class="right"></td>';
 				print '<td class="right">';
-				print '<input type="submit" name="save" class="button button-save" value="'.dol_escape_htmltag($langs->trans("Save")).'">';
-				print '<input type="submit" name="cancel" class="button button-cancel" value="'.dol_escape_htmltag($langs->trans("Cancel")).'">';
+				print '<input type="submit" name="save" class="btn btn-info button-save" value="'.dol_escape_htmltag($langs->trans("Save")).'">';
+				print '<input type="submit" name="cancel" class="btn btn-warning button-cancel" value="'.dol_escape_htmltag($langs->trans("Cancel")).'">';
 				print '</td>';
 			} else {
 				print '<td>';
@@ -3018,7 +3018,7 @@ class FormFile
 				print '<td class="center">'.dol_print_date($link->datea, "dayhour", "tzuser").'</td>';
 				print '<td class="center"></td>';
 				print '<td class="right">';
-				print '<a href="'.$_SERVER['PHP_SELF'].'?action=update&linkid='.$link->id.$param.'" class="editfilelink editfielda reposition" >'.img_edit().'</a>'; // id= is included into $param
+				print '<a href="'.$_SERVER['PHP_SELF'].'?action=update_doc&linkid='.$link->id.$param.'" class="editfilelink editfielda reposition" >'.img_edit().'</a>'; // id= is included into $param
 				if ($permissiontodelete) {
 					print ' &nbsp; <a class="deletefilelink" href="'.$_SERVER['PHP_SELF'].'?action=delete&token='.newToken().'&linkid='.$link->id.$param.'">'.img_delete().'</a>'; // id= is included into $param
 				} else {
