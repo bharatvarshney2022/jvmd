@@ -8133,11 +8133,11 @@ class Form
 
 		if ($previous_ref || $next_ref || $morehtml)
 		{
-			$ret .= '<div class="pagination paginationref"><ul class="right">';
+			$ret .= '<div class="row"><div class="col-sm-12"><div class="pagination paginationref"><ul class="right">';
 		}
 		if ($morehtml)
 		{
-			$ret .= '<li class="noborder litext'.(($shownav && $previous_ref && $next_ref) ? ' clearbothonsmartphone' : '').'">'.$morehtml.'</li>';
+			$ret .= '<li class="litext'.(($shownav && $previous_ref && $next_ref) ? ' ' : '').'">'.$morehtml.'</li>';
 		}
 		if ($shownav && ($previous_ref || $next_ref))
 		{
@@ -8146,14 +8146,14 @@ class Form
 		}
 		if ($previous_ref || $next_ref || $morehtml)
 		{
-			$ret .= '</ul></div>';
+			$ret .= '</ul></div></div></div>';
 		}
 
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('moreHtmlStatus', $parameters, $object); // Note that $action and $object may have been modified by hook
 		if (empty($reshook)) $morehtmlstatus .= $hookmanager->resPrint;
 		else $morehtmlstatus = $hookmanager->resPrint;
-		if ($morehtmlstatus) $ret .= '<div class="statusref">'.$morehtmlstatus.'</div>';
+		if ($morehtmlstatus) $ret .= '<div class="statusref pull-right">'.$morehtmlstatus.'</div>';
 
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('moreHtmlRef', $parameters, $object); // Note that $action and $object may have been modified by hook
@@ -8164,11 +8164,11 @@ class Form
 		if ($morehtmlleft)
 		{
 			if ($conf->browser->layout == 'phone') $ret .= '<!-- morehtmlleft --><div class="floatleft">'.$morehtmlleft.'</div>'; // class="center" to have photo in middle
-			else $ret .= '<!-- morehtmlleft --><div class="inline-block floatleft">'.$morehtmlleft.'</div>';
+			else $ret .= '<!-- morehtmlleft --><div class="d-flex mb-9"><div class="flex-shrink-0 mr-7 mt-lg-0 mt-3"><div class="symbol symbol-50 symbol-lg-120">'.$morehtmlleft.'</div></div>';
 		}
 
 		//if ($conf->browser->layout == 'phone') $ret.='<div class="clearboth"></div>';
-		$ret .= '<div class="inline-block floatleft valignmiddle maxwidth750 marginbottomonly refid'.(($shownav && ($previous_ref || $next_ref)) ? ' refidpadding' : '').'">';
+		$ret .= '<div class="flex-grow-1'.(($shownav && ($previous_ref || $next_ref)) ? ' ' : '').'">';
 
 		// For thirdparty, contact, user, member, the ref is the id, so we show something else
 		if ($object->element == 'societe')
@@ -8215,7 +8215,7 @@ class Form
 			}
 		} elseif (in_array($object->element, array('contact', 'user', 'usergroup')))
 		{
-			$ret .= dol_htmlentities($object->getFullName($langs));
+			$ret .= '<div class="d-flex justify-content-between flex-wrap mt-1"><div class="d-flex mr-3"><div class="text-dark-75 text-hover-primary font-size-h5 font-weight-bold mr-3">'.dol_htmlentities($object->getFullName($langs)).'</div><i class="flaticon2-correct text-success font-size-h5"></i></div></div>';
 		} elseif (in_array($object->element, array('action', 'agenda')))
 		{
 			$ret .= $object->ref.'<br>'.$object->label;
@@ -8241,6 +8241,7 @@ class Form
 			$ret .= $morehtmlref;
 		}
 
+		$ret .= '</div>';
 		$ret .= '</div>';
 		$ret .= '</div>';
 
@@ -8575,7 +8576,11 @@ class Form
 					$defaultimg = 'mm';
 					$ret .= '<img class="photo'.$modulepart.($cssclass ? ' '.$cssclass : '').'" alt="Gravatar avatar" title="'.$email.' Gravatar avatar" '.($width ? ' width="'.$width.'"' : '').($height ? ' height="'.$height.'"' : '').' src="https://www.gravatar.com/avatar/'.md5(strtolower(trim($email))).'?s='.$width.'&d='.$defaultimg.'">'; // gravatar need md5 hash
 				} else {
-					$ret .= '<img class="photo'.$modulepart.($cssclass ? ' '.$cssclass : '').'" alt="No photo" '.($width ? ' width="'.$width.'"' : '').($height ? ' height="'.$height.'"' : '').' src="'.DOL_URL_ROOT.$nophoto.'">';
+					if($modulepart == "userphoto")
+					{
+						$modulepart = "";
+					}
+					$ret .= '<img class="'.$modulepart.($cssclass ? ' '.$cssclass : '').'" alt="No photo" '.($width ? ' width="'.$width.'"' : '').($height ? ' height="'.$height.'"' : '').' src="'.DOL_URL_ROOT.$nophoto.'">';
 				}
 			}
 

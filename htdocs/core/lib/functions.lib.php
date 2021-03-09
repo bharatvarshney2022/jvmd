@@ -1843,7 +1843,7 @@ function dol_banner_tab_layout($object, $paramid, $morehtml = '', $shownav = 1, 
 
 	if ($object->element == 'product')
 	{
-		$width = 80; $cssclass = 'photoref';
+		$width = 80; $cssclass = '';
 		$showimage = $object->is_photo_available($conf->product->multidir_output[$entity]);
 		$maxvisiblephotos = (isset($conf->global->PRODUCT_MAX_VISIBLE_PHOTO) ? $conf->global->PRODUCT_MAX_VISIBLE_PHOTO : 5);
 		if ($conf->browser->layout == 'phone') $maxvisiblephotos = 1;
@@ -1946,13 +1946,13 @@ function dol_banner_tab_layout($object, $paramid, $morehtml = '', $shownav = 1, 
 						}
 					}
 				} elseif (!$phototoshow) { // example if modulepart = 'photo'
-					$phototoshow .= $form->showphoto($modulepart, $object, 0, 0, 0, 'photoref', 'small', 1, 0, $maxvisiblephotos);
+					$phototoshow .= $form->showphoto($modulepart, $object, 0, 0, 0, '', 'small', 1, 0, $maxvisiblephotos);
 				}
 
 				if ($phototoshow) {
-					$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">';
+					//$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">';
 					$morehtmlleft .= $phototoshow;
-					$morehtmlleft .= '</div>';
+					//$morehtmlleft .= '</div>';
 				}
 			}
 
@@ -2040,19 +2040,19 @@ function dol_banner_tab_layout($object, $paramid, $morehtml = '', $shownav = 1, 
 	}
 
 	// Add alias for thirdparty
-	if (!empty($object->name_alias)) $morehtmlref .= '<div class="refidno">'.$object->name_alias.'</div>';
+	if (!empty($object->name_alias)) $morehtmlref .= '<div class="refidno flex-wrap justify-content-between mt-1">'.$object->name_alias.'</div>';
 
 	// Add label
 	if (in_array($object->element, array('product', 'bank_account', 'project_task')))
 	{
-		if (!empty($object->label)) $morehtmlref .= '<div class="refidno">'.$object->label.'</div>';
+		if (!empty($object->label)) $morehtmlref .= '<div class="refidno flex-wrap justify-content-between mt-1">'.$object->label.'</div>';
 	}
 
 	if (method_exists($object, 'getBannerAddress') && !in_array($object->element, array('product', 'bookmark', 'ecm_directories', 'ecm_files')))
 	{
 		$moreaddress = $object->getBannerAddress('refaddress', $object);
 		if ($moreaddress) {
-			$morehtmlref .= '<div class="refidno">';
+			$morehtmlref .= '<div class="refidno flex-wrap justify-content-between mt-1">';
 			$morehtmlref .= $moreaddress;
 			$morehtmlref .= '</div>';
 		}

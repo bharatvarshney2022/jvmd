@@ -1428,6 +1428,11 @@ if ($action == 'create' || $action == 'adduserldap')
 
 											dol_banner_tab_layout($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
 
+										print '</div>
+									</div>';
+
+									print '<div class="card card-custom gutter-b"><div class="card-body">';
+
 									
 
 									print '<div class="fichecenter">';
@@ -2905,7 +2910,6 @@ llxFooterLayout();
 print '<!--begin::Page Vendors(used by this page)-->
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
-<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
 <!--end::Page Vendors-->';
 
 print "	</body>\n";
