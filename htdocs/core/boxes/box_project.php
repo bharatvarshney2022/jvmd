@@ -71,7 +71,7 @@ class box_project extends ModeleBoxes
 	 *  @param   int		$max        Maximum number of records to load
 	 *  @return  void
 	 */
-	public function loadBox($max = 5)
+	public function loadBox($max = 10)
 	{
 		global $conf, $user, $langs;
 
@@ -81,7 +81,7 @@ class box_project extends ModeleBoxes
 		$totalnb = 0;
 		$totalnbTask = 0;
 
-		$textHead = $langs->trans("Top 5 Pending Support Tickets");
+		$textHead = $langs->trans("Top 10 Pending / Rejected Support Tickets");
 		$this->info_box_head = array('text' => $textHead, 'label' => 'project', 'limit'=> dol_strlen($textHead));
 
 		if(!$user->admin)
@@ -171,7 +171,7 @@ class box_project extends ModeleBoxes
 				}
 			}
 
-			$sql .= " ORDER BY p.datec DESC";
+			$sql .= " ORDER BY fk_statut DESC, p.datec DESC";
 			$sql.= $this->db->plimit($max, 0);
 			
 			//echo $sql;
