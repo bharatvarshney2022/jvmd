@@ -119,7 +119,7 @@ class box_project extends ModeleBoxes
 				$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
 			}
 			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
-			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut = 0"; // Only pending projects
+			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut IN (0,3)"; // Only pending projects
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
 			
 			if(!$user->admin)

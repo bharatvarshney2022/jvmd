@@ -84,7 +84,7 @@ llxHeaderLayout('', $title, $title);
 
 
 $resultboxes = FormOther::getBoxesArea($user, "0"); // Load $resultboxes (selectboxlist + boxactivated + boxlista + boxlistb)
-
+//print_r($resultboxes);
 
 print load_fiche_titre_layout('&nbsp;', $resultboxes['selectboxlist'], '', 0, '', 'titleforhome');
 
@@ -1224,7 +1224,7 @@ $boxlist .= $resultboxes['boxlista'];
 
 $boxlist .= '</div>';
 
-
+// For graph view
 if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 {
 	// Remove allready present info in new dash board
