@@ -116,7 +116,7 @@ if (empty($reshook)) {
 
 $form = new Form($db);
 
-llxHeader('', $langs->trans("UserCard").' - '.$langs->trans("Files"));
+llxHeaderLayout('', $langs->trans("UserCard").' - '.$langs->trans("Files"), $langs->trans("UserCard").' - '.$langs->trans("Files"));
 
 if ($object->id)
 {
@@ -126,19 +126,36 @@ if ($object->id)
 	if (!empty($conf->notification->enabled)) $langs->load("mails");
 	$head = user_prepare_head($object);
 
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
 	$form = new Form($db);
 
-	print dol_get_fiche_head($head, 'document', $langs->trans("User"), -1, 'user');
+	print dol_get_fiche_head_layout($head, 'document', $langs->trans("User"), -1, 'user');
 
 	$linkback = '';
 	if ($user->rights->user->user->lire || $user->admin) {
 		$linkback = '<a href="'.DOL_URL_ROOT.'/user/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	}
 
-	dol_banner_tab($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
+	print '</div>
+		<div class="card-body">';
 
-	print '<div class="fichecenter">';
-	print '<div class="underbanner clearboth"></div>';
+	dol_banner_tab_layout($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
+
+	print '</div>
+	</div>'; // card
+
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
 
 	// Build file list
 	$filearray = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ?SORT_DESC:SORT_ASC), 1);
@@ -148,8 +165,17 @@ if ($object->id)
 		$totalsize += $file['size'];
 	}
 
+		print '</div>
+		</div>'; // card
+	print '</div>
+	</div>'; // card
 
-	print '<table class="border tableforfield centpercent">';
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+
+	print '<table class="table table-bordered">';
 
 	// Login
 	print '<tr><td class="titlefield">'.$langs->trans("Login").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
@@ -162,19 +188,42 @@ if ($object->id)
 
 	print '</table>';
 	print '</div>';
+	print '</div>';
 
-	print dol_get_fiche_end();
+	print '</div>
+	</div>'; // card
+
+	print '<div class="card card-custom gutter-b">';
 
 
 	$modulepart = 'user';
 	$permission = $user->rights->user->user->creer;
 	$permtoedit = $user->rights->user->user->creer;
 	$param = '&id='.$object->id;
-	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers_layout.tpl.php';
+
+	print '
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 } else {
 	accessforbidden('', 0, 1);
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

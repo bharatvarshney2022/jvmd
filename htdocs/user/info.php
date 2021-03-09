@@ -58,13 +58,25 @@ if (($object->id != $user->id) && (!$user->rights->user->user->lire))
 
 $form = new Form($db);
 
-llxHeader();
+llxHeaderLayout();
 
 $head = user_prepare_head($object);
 
 $title = $langs->trans("User");
-print dol_get_fiche_head($head, 'info', $title, -1, 'user');
 
+print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+print dol_get_fiche_head_layout($head, 'info', $title, -1, 'user');
+
+print '</div>
+		<div class="card-body">';
 
 $linkback = '';
 
@@ -72,24 +84,40 @@ if ($user->rights->user->user->lire || $user->admin) {
 	$linkback = '<a href="'.DOL_URL_ROOT.'/user/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 }
 
-dol_banner_tab($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
+dol_banner_tab_layout($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
 
 
 $object->info($id); // This overwrite ->ref with login instead of id
 
+print '</div>
+</div>'; // card
 
-print '<div class="fichecenter">';
-print '<div class="underbanner clearboth"></div>';
+print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-print '<br>';
+
+print '<div class="row">';
+print '<div class="col-sm-12">';
+
 
 dol_print_object_info($object);
 
 print '</div>';
+print '</div>';
 
-
-print dol_get_fiche_end();
+print '</div>';
+print '</div>';
+print '</div>';
+print '</div>';
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
