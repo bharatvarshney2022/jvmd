@@ -1105,7 +1105,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 	if ($action == 'close_form' && $confirm == 'yes')
 	{
-	print '<input type="hidden" name="token" value="'.GETPOST('token').'">';
+		print '<input type="hidden" name="token" value="'.$_SESSION['token'].'">';
 	}else{
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 	}
@@ -1116,7 +1116,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	$head = project_prepare_head($object);
 	
-	if ($action == 'close_form' && $confirm == 'yes')
+	if ($action == 'close_form' && $confirm == 'yes' && $userWrite > 0)
 	{
 		print '<input type="hidden" name="close_action" value="close_form">';
 		

@@ -1297,7 +1297,20 @@ class Project extends CommonObject
 	public function LibStatutLayout($status, $mode = 0)
 	{
 		// phpcs:enable
-		global $langs;
+		global $langs, $user;
+
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($this->db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
 
 		$statustrans = array(
 			0 => 'btn-info', //Draft
@@ -1319,6 +1332,7 @@ class Project extends CommonObject
 		if($status == 3)
 		{
 			$status = "Reject";
+
 			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 		}
 		else if($status == 0)
@@ -1327,8 +1341,11 @@ class Project extends CommonObject
 			//$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
 			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 		}
-
-		return '<span class="btn '.$statusClass.'">'.$status.'</span>&nbsp;'.$extraBtn;
+		if($user_group_id == 17){
+			return '<span class="btn '.$statusClass.'">'.$status.'</span>&nbsp;'.$extraBtn;
+		}else{
+			return '<span class="btn '.$statusClass.'">'.$status.'</span>';
+		}
 	}
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
