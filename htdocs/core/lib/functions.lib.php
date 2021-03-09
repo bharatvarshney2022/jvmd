@@ -1682,11 +1682,11 @@ function dol_get_fiche_head_layout($links = array(), $active = '', $title = '', 
 				//print "x $i $active ".$links[$i][2]." z";
 				if ($isactive)
 				{
-					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="active nav-link'.($morecss ? ' '.$morecss : '').'" data-toggle="tab" href="'.$links[$i][0].'">';
+					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="active nav-link'.($morecss ? ' '.$morecss : '').'"  href="'.$links[$i][0].'">';
 					$out .= $links[$i][1];
 					$out .= '</a>'."\n";
 				} else {
-					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="nav-link'.($morecss ? ' '.$morecss : '').'" data-toggle="tab" href="'.$links[$i][0].'">';
+					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="nav-link'.($morecss ? ' '.$morecss : '').'"  href="'.$links[$i][0].'">';
 					$out .= $links[$i][1];
 					$out .= '</a>'."\n";
 				}

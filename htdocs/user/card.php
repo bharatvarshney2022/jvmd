@@ -1435,10 +1435,11 @@ if ($action == 'create' || $action == 'adduserldap')
 
 									
 
-									print '<div class="fichecenter">';
-									print '<div class="fichehalfleft">';
+									print '<div class="row">';
+									print '<div class="col-sm-6">
+									<div class="table-responsive">';
 
-									print '<table class="border tableforfield" width="100%">';
+									print '<table class="table table-bordered">';
 
 									// Login
 									print '<tr><td class="titlefield">'.$langs->trans("Login").'</td>';
@@ -1451,7 +1452,7 @@ if ($action == 'create' || $action == 'adduserldap')
 									print '</tr>'."\n";
 
 									// Password
-									print '<tr style="display:none;"><td>'.$langs->trans("Password").'</td>';
+									print '<tr style="display:none1;"><td>'.$langs->trans("Password").'</td>';
 
 									print '<td class="wordbreak">';
 									$valuetoshow = '';
@@ -1719,10 +1720,11 @@ if ($action == 'create' || $action == 'adduserldap')
 									print '</table>';
 
 									print '</div>';
-									print '<div class="fichehalfright"><div class="ficheaddleft">';
+									print '</div>';
+									print '<div class="col-sm-6">
+									<table class="table-responsive">';
 
-									print '<div class="underbanner clearboth"></div>';
-									print '<table class="border tableforfield centpercent">';
+									print '<table class="table table-bordered">';
 
 									// Color user
 									if (!empty($conf->agenda->enabled))
@@ -1878,13 +1880,14 @@ if ($action == 'create' || $action == 'adduserldap')
 									print "</table>\n";
 									print '</div>';
 
-									print '</div></div>';
-									print '<div style="clear:both"></div> <hr />';
+									print '</div>';
 
 									// Other attributes
-									print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+									print '<div class="row"><div class="col-sm-12"><table class="border tableforfield" width="100%"><tbody>';
 									include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
-									print '</tbody></table></div>';
+									print '</tbody></table></div></div>';
+
+									// gutter-b
 
 
 									//print dol_get_fiche_end();
@@ -1904,7 +1907,7 @@ if ($action == 'create' || $action == 'adduserldap')
 											if (!empty($object->email))
 											{
 												$langs->load("mails");
-												print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a></div>';
+												print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a></div>';
 											} else {
 												$langs->load("mails");
 												print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoEMail")).'">'.$langs->trans('SendMail').'</a></div>';
@@ -1916,12 +1919,12 @@ if ($action == 'create' || $action == 'adduserldap')
 											if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
 												print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")).'">'.$langs->trans("Modify").'</a></div>';
 											} else {
-												print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a></div>';
+												print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a></div>';
 											}
 										} elseif ($caneditpassword && !$object->ldap_sid &&
 										(empty($conf->multicompany->enabled) || !$user->entity || ($object->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)))
 										{
-											print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a></div>';
+											print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a></div>';
 										}
 
 										// Si on a un gestionnaire de generation de mot de passe actif
@@ -1933,7 +1936,7 @@ if ($action == 'create' || $action == 'adduserldap')
 											} elseif (($user->id != $id && $caneditpassword) && $object->login && !$object->ldap_sid &&
 											((empty($conf->multicompany->enabled) && $object->entity == $user->entity) || !$user->entity || ($object->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)))
 											{
-												print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a></div>';
+												print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a></div>';
 											}
 
 											if ($object->statut == 0)
@@ -1942,7 +1945,7 @@ if ($action == 'create' || $action == 'adduserldap')
 											} elseif (($user->id != $id && $caneditpassword) && $object->login && !$object->ldap_sid &&
 											((empty($conf->multicompany->enabled) && $object->entity == $user->entity) || !$user->entity || ($object->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)))
 											{
-												if ($object->email) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a></div>';
+												if ($object->email) print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a></div>';
 												else print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoEMail")).'">'.$langs->trans("SendNewPassword").'</a></div>';
 											}
 										}
@@ -1951,13 +1954,13 @@ if ($action == 'create' || $action == 'adduserldap')
 										if ($user->id <> $id && $candisableuser && $object->statut == 0 &&
 										((empty($conf->multicompany->enabled) && $object->entity == $user->entity) || !$user->entity || ($object->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)))
 										{
-											print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a></div>';
+											print '<div class="inline-block divButAction"><a class="btn btn-success" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a></div>';
 										}
 										// Disable user
 										if ($user->id <> $id && $candisableuser && $object->statut == 1 &&
 										((empty($conf->multicompany->enabled) && $object->entity == $user->entity) || !$user->entity || ($object->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)))
 										{
-											print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("DisableUser").'</a></div>';
+											print '<div class="inline-block divButAction"><a class="btn btn-warning" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("DisableUser").'</a></div>';
 										} else {
 											if ($user->id == $id)
 											{
@@ -1970,7 +1973,7 @@ if ($action == 'create' || $action == 'adduserldap')
 										{
 											if ($user->admin || !$object->admin) // If user edited is admin, delete is possible on for an admin
 											{
-												print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=delete&amp;token='.newToken().'&amp;id='.$object->id.'">'.$langs->trans("DeleteUser").'</a></div>';
+												print '<div class="inline-block divButAction"><a class="btn btn-danger" href="'.$_SERVER['PHP_SELF'].'?action=delete&amp;token='.newToken().'&amp;id='.$object->id.'">'.$langs->trans("DeleteUser").'</a></div>';
 											} else {
 												print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("MustBeAdminToDeleteOtherAdmin")).'">'.$langs->trans("DeleteUser").'</a></div>';
 											}
@@ -2081,6 +2084,11 @@ if ($action == 'create' || $action == 'adduserldap')
 											}
 										}
 									}
+
+
+				// TO DO
+				print "</div>\n";
+				print "</div>\n";
 								
 		}
 
@@ -2849,7 +2857,8 @@ if ($action == 'create' || $action == 'adduserldap')
 
 		if ($action != 'edit' && $action != 'presend')
 		{
-			print '<div class="fichecenter"><div class="fichehalfleft">';
+			
+			print '<div class="row"><div class="col-sm-6"><div class="card card-custom gutter-b"><div class="card-body">';
 			/*
              * Documents generes
              */
@@ -2859,14 +2868,14 @@ if ($action == 'create' || $action == 'adduserldap')
 			$genallowed = $user->rights->user->user->lire;
 			$delallowed = $user->rights->user->user->creer;
 
-			print $formfile->showdocuments('user', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf, 1, 0, 0, 28, 0, '', 0, '', $soc->default_lang);
+			print $formfile->showdocumentsLayout('user', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf, 1, 0, 0, 28, 0, '', 0, '', $soc->default_lang);
 			$somethingshown = $formfile->numoffiles;
 
 			// Show links to link elements
 			$linktoelem = $form->showLinkToObjectBlock($object, null, null);
 			$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
-			print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+			print '</div></div></div><div class="col-sm-6"><div class="card card-custom gutter-b"><div class="card-body">';
 
 			// List of actions on element
 			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
@@ -2874,11 +2883,10 @@ if ($action == 'create' || $action == 'adduserldap')
 			$somethingshown = $formactions->showactions($object, 'user', $socid, 1);
 
 
-			print '</div></div></div>';
+			print '</div></div>';
+			print '</div></div>';
 		}
 
-		print "</div>\n";
-				print "</div>\n";
 			print "</div>\n";
 		print "</div>\n";
 
