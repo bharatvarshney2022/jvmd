@@ -2551,6 +2551,43 @@ class Societe extends CommonObject
 	 *    @param  	int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
 	 *    @return   string     	   		Label of status
 	 */
+	
+	public function getLibStatutLayout($mode = 0)
+	{
+		return $this->LibStatutLayout($this->status, $mode);
+	}
+
+	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
+	/**
+	 *  Return the label of a given status
+	 *
+	 *  @param	int		$status         Status id
+	 *  @param	int		$mode           0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
+	 *  @return	string          		Status label
+	 */
+	public function LibStatutLayout($status, $mode = 0)
+	{
+		// phpcs:enable
+		global $langs;
+		$langs->load('companies');
+
+		$statusBtn = '';
+		if($status == 1)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-success icon-md ml-2"></i>';
+		}
+		else if($status == 0)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-danger icon-md ml-2"></i>';//Draft";
+		}
+		else if($status == 2)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-info icon-md ml-2"></i>';
+		}
+
+		return $statusBtn;
+	}
+
 	public function getLibStatut($mode = 0)
 	{
 		return $this->LibStatut($this->status, $mode);

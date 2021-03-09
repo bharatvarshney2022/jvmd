@@ -2374,7 +2374,7 @@ function top_menu_layout($head, $title = '', $target = '', $disablejs = 0, $disa
 {
 	global $user, $conf, $langs, $db, $mysoc;
 	global $dolibarr_main_authentication, $dolibarr_main_demo;
-	global $hookmanager, $menumanager;
+	global $hookmanager, $menumanager, $dolibarr_main_url_root;
 
 	$searchform = '';
 	$bookmarks = '';
