@@ -3263,7 +3263,7 @@ function print_left_oblyon_menu($db,$menu_array_before,$menu_array_after,&$tabMe
 	$usemenuhider = !empty($menu_invert) && ($conf->global->OBLYON_HIDE_LEFTMENU || $conf->dol_optimize_smallscreen);
 
 	if ( $usemenuhider ) {
-		print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
+		//print '<div class="pushy-btn" title="'.$langs->trans("ShowLeftMenu").'">&#8801;</div>';
 	}
 
 	// Show logo company
