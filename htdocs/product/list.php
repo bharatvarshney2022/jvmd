@@ -199,7 +199,7 @@ $arrayfields = array(
 	'p.seuil_stock_alerte'=>array('label'=>$langs->trans("StockLimit"), 'checked'=>0, 'enabled'=>(!empty($conf->stock->enabled) && $user->rights->stock->lire && $contextpage != 'service'), 'position'=>50),
 	'p.desiredstock'=>array('label'=>$langs->trans("DesiredStock"), 'checked'=>1, 'enabled'=>(!empty($conf->stock->enabled) && $user->rights->stock->lire && $contextpage != 'service'), 'position'=>51),
 	'p.stock'=>array('label'=>$langs->trans("PhysicalStock"), 'checked'=>1, 'enabled'=>(!empty($conf->stock->enabled) && $user->rights->stock->lire && $contextpage != 'service'), 'position'=>52),
-	'stock_virtual'=>array('label'=>$langs->trans("VirtualStock"), 'checked'=>1, 'enabled'=>(!empty($conf->stock->enabled) && $user->rights->stock->lire && $contextpage != 'service' && $virtualdiffersfromphysical), 'position'=>53),
+	'stock_virtual'=>array('label'=>$langs->trans("VirtualStock"), 'checked'=>0, 'enabled'=>(!empty($conf->stock->enabled) && $user->rights->stock->lire && $contextpage != 'service' && $virtualdiffersfromphysical), 'position'=>53),
 	'p.tobatch'=>array('label'=>$langs->trans("ManageLotSerial"), 'checked'=>0, 'enabled'=>(!empty($conf->productbatch->enabled)), 'position'=>60),
 	'p.fk_country'=>array('label'=>$langs->trans("Country"), 'checked'=>0, 'position'=>100),
 	'p.fk_state'=>array('label'=>$langs->trans("State"), 'checked'=>0, 'position'=>101),
@@ -209,9 +209,9 @@ $arrayfields = array(
 	'p.accountancy_code_buy'=>array('label'=>$langs->trans("ProductAccountancyBuyCode"), 'checked'=>0, 'position'=>403),
 	'p.accountancy_code_buy_intra'=>array('label'=>$langs->trans("ProductAccountancyBuyIntraCode"), 'checked'=>0, 'enabled'=>$isInEEC, 'position'=>404),
 	'p.accountancy_code_buy_export'=>array('label'=>$langs->trans("ProductAccountancyBuyExportCode"), 'checked'=>0, 'position'=>405),
-	'p.datec'=>array('label'=>$langs->trans("DateCreation"), 'checked'=>0, 'position'=>500),
-	'p.tms'=>array('label'=>$langs->trans("DateModificationShort"), 'checked'=>0, 'position'=>500),
-	'p.tosell'=>array('label'=>$langs->trans("Status").' ('.$langs->trans("Sell").')', 'checked'=>1, 'position'=>1000)
+	'p.datec'=>array('label'=>$langs->trans("DateCreation"), 'checked'=>1, 'position'=>500),
+	'p.tms'=>array('label'=>$langs->trans("DateModificationShort"), 'checked'=>1, 'position'=>500),
+	'p.tosell'=>array('label'=>$langs->trans("Status").' ('.$langs->trans("Sell").')', 'checked'=> 0, 'position'=>1000)
 );
 
 // MultiPrices
@@ -686,8 +686,7 @@ if ($resql)
 											//print '</div>';
 										}
 
-										$varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
-										$selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage); // This also change content of $arrayfields
+										
 										if ($massactionbutton) $selectedfields .= $form->showCheckAddButtons('checkforselect', 1);
 
 										print '<div class="clearfix"></div>';
@@ -707,31 +706,31 @@ if ($resql)
 											print_liste_field_titre_layout($arrayfields['p.label']['label'], $_SERVER["PHP_SELF"], "p.label", "", $param, "", $sortfield, $sortorder);
 										}
 										if (!empty($arrayfields['p.fk_product_type']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.fk_product_type']['label'], $_SERVER["PHP_SELF"], "p.fk_product_type", "", $param, "", $sortfield, $sortorder, 'center ');
+											print_liste_field_titre_layout($arrayfields['p.fk_product_type']['label'], $_SERVER["PHP_SELF"], "p.fk_product_type", "", $param, "", $sortfield, $sortorder, ' ');
 										}
 										if (!empty($arrayfields['p.barcode']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.barcode']['label'], $_SERVER["PHP_SELF"], "p.barcode", "", $param, "", $sortfield, $sortorder);
+											//print_liste_field_titre_layout($arrayfields['p.barcode']['label'], $_SERVER["PHP_SELF"], "p.barcode", "", $param, "", $sortfield, $sortorder);
 										}
 										if (!empty($arrayfields['p.duration']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.duration']['label'], $_SERVER["PHP_SELF"], "p.duration", "", $param, '', $sortfield, $sortorder, 'center ');
+											//print_liste_field_titre_layout($arrayfields['p.duration']['label'], $_SERVER["PHP_SELF"], "p.duration", "", $param, '', $sortfield, $sortorder, ' ');
 										}
 										if (!empty($arrayfields['p.finished']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.finished']['label'], $_SERVER["PHP_SELF"], "p.finished", "", $param, '', $sortfield, $sortorder, 'center ');
+											print_liste_field_titre_layout($arrayfields['p.finished']['label'], $_SERVER["PHP_SELF"], "p.finished", "", $param, '', $sortfield, $sortorder, ' ');
 										}
 
-										if (!empty($arrayfields['p.weight']['checked']))  		print_liste_field_titre_layout($arrayfields['p.weight']['label'], $_SERVER['PHP_SELF'], 'p.weight', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.weight_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.weight_units']['label'], $_SERVER['PHP_SELF'], 'p.weight_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.length']['checked']))  		print_liste_field_titre_layout($arrayfields['p.length']['label'], $_SERVER['PHP_SELF'], 'p.length', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.length_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.length_units']['label'], $_SERVER['PHP_SELF'], 'p.length_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.width']['checked']))   		print_liste_field_titre_layout($arrayfields['p.width']['label'], $_SERVER['PHP_SELF'], 'p.width', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.width_units']['checked']))	print_liste_field_titre_layout($arrayfields['p.width_units']['label'], $_SERVER['PHP_SELF'], 'p.width_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.height']['checked']))  		print_liste_field_titre_layout($arrayfields['p.height']['label'], $_SERVER['PHP_SELF'], 'p.height', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.height_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.height_units']['label'], $_SERVER['PHP_SELF'], 'p.height_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.surface']['checked']))		print_liste_field_titre_layout($arrayfields['p.surface']['label'], $_SERVER['PHP_SELF'], "p.surface", '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.surface_units']['checked'])) print_liste_field_titre_layout($arrayfields['p.surface_units']['label'], $_SERVER['PHP_SELF'], 'p.surface_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.volume']['checked']))  		print_liste_field_titre_layout($arrayfields['p.volume']['label'], $_SERVER['PHP_SELF'], 'p.volume', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['p.volume_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.volume_units']['label'], $_SERVER['PHP_SELF'], 'p.volume_units', '', $param, '', $sortfield, $sortorder, 'center ');
-										if (!empty($arrayfields['cu.label']['checked']))  		print_liste_field_titre_layout($arrayfields['cu.label']['label'], $_SERVER['PHP_SELF'], '', '', $param, '', $sortfield, $sortorder, 'center ');
+										if (!empty($arrayfields['p.weight']['checked']))  		print_liste_field_titre_layout($arrayfields['p.weight']['label'], $_SERVER['PHP_SELF'], 'p.weight', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.weight_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.weight_units']['label'], $_SERVER['PHP_SELF'], 'p.weight_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.length']['checked']))  		print_liste_field_titre_layout($arrayfields['p.length']['label'], $_SERVER['PHP_SELF'], 'p.length', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.length_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.length_units']['label'], $_SERVER['PHP_SELF'], 'p.length_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.width']['checked']))   		print_liste_field_titre_layout($arrayfields['p.width']['label'], $_SERVER['PHP_SELF'], 'p.width', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.width_units']['checked']))	print_liste_field_titre_layout($arrayfields['p.width_units']['label'], $_SERVER['PHP_SELF'], 'p.width_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.height']['checked']))  		print_liste_field_titre_layout($arrayfields['p.height']['label'], $_SERVER['PHP_SELF'], 'p.height', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.height_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.height_units']['label'], $_SERVER['PHP_SELF'], 'p.height_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.surface']['checked']))		print_liste_field_titre_layout($arrayfields['p.surface']['label'], $_SERVER['PHP_SELF'], "p.surface", '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.surface_units']['checked'])) print_liste_field_titre_layout($arrayfields['p.surface_units']['label'], $_SERVER['PHP_SELF'], 'p.surface_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.volume']['checked']))  		print_liste_field_titre_layout($arrayfields['p.volume']['label'], $_SERVER['PHP_SELF'], 'p.volume', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['p.volume_units']['checked']))  print_liste_field_titre_layout($arrayfields['p.volume_units']['label'], $_SERVER['PHP_SELF'], 'p.volume_units', '', $param, '', $sortfield, $sortorder, ' ');
+										if (!empty($arrayfields['cu.label']['checked']))  		print_liste_field_titre_layout($arrayfields['cu.label']['label'], $_SERVER['PHP_SELF'], '', '', $param, '', $sortfield, $sortorder, ' ');
 										if (!empty($arrayfields['p.sellprice']['checked'])) {
 											//print_liste_field_titre_layout($arrayfields['p.sellprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
 										}
@@ -742,13 +741,13 @@ if ($resql)
 											{
 												if (!empty($arrayfields['p.sellprice'.$key]['checked']))
 												{
-													print_liste_field_titre_layout($arrayfields['p.sellprice'.$key]['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
+													//print_liste_field_titre_layout($arrayfields['p.sellprice'.$key]['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
 												}
 											}
 										}
 
 										if (!empty($arrayfields['p.minbuyprice']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.minbuyprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
+											//print_liste_field_titre_layout($arrayfields['p.minbuyprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['p.numbuyprice']['checked'])) {
 											print_liste_field_titre_layout($arrayfields['p.numbuyprice']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
@@ -766,13 +765,13 @@ if ($resql)
 											print_liste_field_titre_layout($arrayfields['p.seuil_stock_alerte']['label'], $_SERVER["PHP_SELF"], "p.seuil_stock_alerte", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['p.desiredstock']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.desiredstock']['label'], $_SERVER["PHP_SELF"], "p.desiredstock", "", $param, '', $sortfield, $sortorder, '');
+											//print_liste_field_titre_layout($arrayfields['p.desiredstock']['label'], $_SERVER["PHP_SELF"], "p.desiredstock", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['p.stock']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['p.stock']['label'], $_SERVER["PHP_SELF"], "p.stock", "", $param, '', $sortfield, $sortorder, '');
+											//print_liste_field_titre_layout($arrayfields['p.stock']['label'], $_SERVER["PHP_SELF"], "p.stock", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['stock_virtual']['checked'])) {
-											print_liste_field_titre_layout($arrayfields['stock_virtual']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
+											//print_liste_field_titre_layout($arrayfields['stock_virtual']['label'], $_SERVER["PHP_SELF"], "", "", $param, '', $sortfield, $sortorder, '');
 										}
 										if (!empty($arrayfields['p.tobatch']['checked'])) {
 											print_liste_field_titre_layout($arrayfields['p.tobatch']['label'], $_SERVER["PHP_SELF"], "p.tobatch", "", $param, '', $sortfield, $sortorder, 'center ');
@@ -801,12 +800,12 @@ if ($resql)
 										if (!empty($arrayfields['p.accountancy_code_buy_export']['checked'])) {
 											print_liste_field_titre_layout($arrayfields['p.accountancy_code_buy_export']['label'], $_SERVER["PHP_SELF"], "p.accountancy_code_buy_export", "", $param, '', $sortfield, $sortorder);
 										}
-										// Extra fields
-										include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+										
 										// Hook fields
 										$parameters = array('arrayfields'=>$arrayfields, 'param'=>$param, 'sortfield'=>$sortfield, 'sortorder'=>$sortorder);
-										$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters); // Note that $action and $object may have been modified by hook
-										print $hookmanager->resPrint;
+										$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object); // Note that $action 
+										$parameters = array('arrayfields'=>$arrayfields, 'param'=>$param, 'sortfield'=>$sortfield, 'sortorder'=>$sortorder);
+										//print $hookmanager->resPrint;
 										if (!empty($arrayfields['p.datec']['checked'])) {
 											print_liste_field_titre_layout($arrayfields['p.datec']['label'], $_SERVER["PHP_SELF"], "p.datec", "", $param, '', $sortfield, $sortorder, ' ');
 										}
@@ -816,6 +815,12 @@ if ($resql)
 										if (!empty($arrayfields['p.tosell']['checked'])) {
 											print_liste_field_titre_layout($arrayfields['p.tosell']['label'], $_SERVER["PHP_SELF"], "p.tosell", "", $param, '', $sortfield, $sortorder, '');
 										}
+
+										// Extra fields
+										include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+
+										$varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
+										$selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage); // This also change content of $arrayfields
 										print_liste_field_titre_layout($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center  ');
 										print '</tr>
 											</thead>
@@ -945,14 +950,14 @@ if ($resql)
 											// Barcode
 											if (!empty($arrayfields['p.barcode']['checked']))
 											{
-												print '<td>'.$obj->barcode.'</td>';
-												if (!$i) $totalarray['nbfield']++;
+												//print '<td>'.$obj->barcode.'</td>';
+												//if (!$i) $totalarray['nbfield']++;
 											}
 
 											// Duration
 											if (!empty($arrayfields['p.duration']['checked']))
 											{
-												print '<td class="">';
+												/*print '<td class="">';
 
 												if (preg_match('/([^a-z]+)[a-z]$/i', $obj->duration))
 												{
@@ -974,7 +979,7 @@ if ($resql)
 												}
 
 												print '</td>';
-												if (!$i) $totalarray['nbfield']++;
+												if (!$i) $totalarray['nbfield']++;*/
 											}
 
 											// Finished
@@ -1034,14 +1039,14 @@ if ($resql)
 											// Height
 											if (!empty($arrayfields['p.height']['checked']))
 											{
-												print '<td align="center">';
+												print '<td align="">';
 												print $obj->height;
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
 											}
 											// Height units
 											if (!empty($arrayfields['p.height_units']['checked'])) {
-												print '<td class="center">';
+												print '<td class="">';
 												if ($product_static->height != '')	print measuringUnitString(0, 'size', $product_static->height_units);
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
@@ -1049,14 +1054,14 @@ if ($resql)
 											// Surface
 											if (!empty($arrayfields['p.surface']['checked']))
 											{
-												print '<td class="center">';
+												print '<td class="">';
 												print $obj->surface;
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
 											}
 											// Surface units
 											if (!empty($arrayfields['p.surface_units']['checked'])) {
-												print '<td class="center">';
+												print '<td class="">';
 												if ($product_static->surface != '')	print measuringUnitString(0, 'surface', $product_static->surface_units);
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
@@ -1064,14 +1069,14 @@ if ($resql)
 											// Volume
 											if (!empty($arrayfields['p.volume']['checked']))
 											{
-												print '<td class="center">';
+												print '<td class="">';
 												print $obj->volume;
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
 											}
 											// Volume units
 											if (!empty($arrayfields['p.volume_units']['checked'])) {
-												print '<td class="center">';
+												print '<td class="">';
 												if ($product_static->volume != '')	print measuringUnitString(0, 'volume', $product_static->volume_units);
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
@@ -1079,7 +1084,7 @@ if ($resql)
 											// Unit
 											if (!empty($arrayfields['cu.label']['checked']))
 											{
-												print '<td align="center">';
+												print '<td align="">';
 												if (!empty($obj->cu_label)) {
 													print $langs->trans($obj->cu_label);
 												}
@@ -1090,24 +1095,24 @@ if ($resql)
 											// Sell price
 											if (!empty($arrayfields['p.sellprice']['checked']))
 											{
-												/*print '<td class="nowraponall">';
+												/*print '<td class="">';
 												if ($obj->tosell)
 												{
 													if ($obj->price_base_type == 'TTC') print price($obj->price_ttc).' '.$langs->trans("TTC");
 													else print price($obj->price).' '.$langs->trans("HT");
 												}
-												print '</td>';*/
-												//if (!$i) $totalarray['nbfield']++;
+												print '</td>';
+												if (!$i) $totalarray['nbfield']++;*/
 											}
 
 											// invoice date
 											if ($obj->invoicedate > 0)
 											{
-											/*print '<td class="nowraponall">';
+												print '<td class="">';
 												
-												 print date('d/m/Y',$obj->invoicedate);
-													print '</td>';
-													if (!$i) $totalarray['nbfield']++;*/
+												print date('d/m/Y',$obj->invoicedate);
+												print '</td>';
+												if (!$i) $totalarray['nbfield']++;
 											}		
 											// Multiprices
 											if (! empty($conf->global->PRODUIT_MULTIPRICES)) {
@@ -1155,7 +1160,7 @@ if ($resql)
 												{
 													if (!empty($arrayfields['p.sellprice'.$key]['checked']))
 													{
-														print '<td class="nowraponall">';
+														print '<td class="">';
 														if (!empty($productpricescache[$obj->rowid]))
 														{
 															if ($productpricescache[$obj->rowid][$key]['price_base_type'] == 'TTC') {
@@ -1173,7 +1178,7 @@ if ($resql)
 											// Better buy price
 											if (!empty($arrayfields['p.minbuyprice']['checked']))
 											{
-												print  '<td class="nowraponall">';
+												/*print  '<td class="">';
 												if ($obj->tobuy && $obj->minsellprice != '')
 												{
 													//print price($obj->minsellprice).' '.$langs->trans("HT");
@@ -1190,13 +1195,13 @@ if ($resql)
 													}
 												}
 												print '</td>';
-												if (!$i) $totalarray['nbfield']++;
+												if (!$i) $totalarray['nbfield']++;*/
 											}
 
 											// Number of buy prices
 											if (!empty($arrayfields['p.numbuyprice']['checked']))
 											{
-												print  '<td class="right">';
+												print  '<td class="">';
 												if ($obj->tobuy)
 												{
 													if (count($productFournList = $product_fourn->list_product_fournisseur_price($obj->rowid)) > 0)
@@ -1236,7 +1241,7 @@ if ($resql)
 											// Limit alert
 											if (!empty($arrayfields['p.seuil_stock_alerte']['checked']))
 											{
-												print '<td class="right">';
+												print '<td class="">';
 												if ($obj->fk_product_type != 1)
 												{
 													print $obj->seuil_stock_alerte;
@@ -1247,30 +1252,30 @@ if ($resql)
 											// Desired stock
 											if (!empty($arrayfields['p.desiredstock']['checked']))
 											{
-												print '<td class="right">';
+												/*print '<td class="">';
 												if ($obj->fk_product_type != 1)
 												{
 													print $obj->desiredstock;
 												}
 												print '</td>';
-												if (!$i) $totalarray['nbfield']++;
+												if (!$i) $totalarray['nbfield']++;*/
 											}
 											// Stock real
 											if (!empty($arrayfields['p.stock']['checked']))
 											{
-												print '<td class="right">';
+												/*print '<td class="">';
 												if ($obj->fk_product_type != 1)
 												{
 													if ($obj->seuil_stock_alerte != '' && $product_static->stock_reel < (float) $obj->seuil_stock_alerte) print img_warning($langs->trans("StockLowerThanLimit", $obj->seuil_stock_alerte)).' ';
 													print price2num($product_static->stock_reel, 'MS');
 												}
 												print '</td>';
-												if (!$i) $totalarray['nbfield']++;
+												if (!$i) $totalarray['nbfield']++;*/
 											}
 											// Stock virtual
 											if (!empty($arrayfields['stock_virtual']['checked']))
 											{
-												print '<td class="right">';
+												print '<td class="">';
 												if ($obj->fk_product_type != 1)
 												{
 													if ($obj->seuil_stock_alerte != '' && $product_static->stock_theorique < (float) $obj->seuil_stock_alerte) print img_warning($langs->trans("StockLowerThanLimit", $obj->seuil_stock_alerte)).' ';
@@ -1282,7 +1287,7 @@ if ($resql)
 											// Lot/Serial
 											if (!empty($arrayfields['p.tobatch']['checked']))
 											{
-												print '<td class="center">';
+												print '<td class="">';
 												print yn($obj->tobatch);
 												print '</td>';
 												if (!$i) $totalarray['nbfield']++;
@@ -1359,7 +1364,7 @@ if ($resql)
 											// Status (to sell)
 											if (!empty($arrayfields['p.tosell']['checked']))
 											{
-												print '<td class="nowrap">';
+												print '<td class="">';
 												if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
 													print ajax_object_onoff($product_static, 'status', 'tosell', 'ProductStatusOnSell', 'ProductStatusNotOnSell');
 												} else {

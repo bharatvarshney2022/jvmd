@@ -4805,7 +4805,7 @@ function print_barre_liste_layout($titre, $page, $file, $options = '', $sortfiel
 	}
 
 	if ($savlimit || $morehtmlright || $morehtmlrightbeforearrow) {
-		print_fleche_navigation_layout($page, $file, $options, $nextpage, $pagelist, $morehtmlright, $savlimit, $totalnboflines, $hideselectlimit, $morehtmlrightbeforearrow); // output the div and ul for previous/last completed with page numbers into $pagelist
+		//print_fleche_navigation_layout($page, $file, $options, $nextpage, $pagelist, $morehtmlright, $savlimit, $totalnboflines, $hideselectlimit, $morehtmlrightbeforearrow); // output the div and ul for previous/last completed with page numbers into $pagelist
 	}
 
 	// js to autoselect page field on focus

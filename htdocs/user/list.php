@@ -133,8 +133,8 @@ $arrayfields = array(
     'u.salary'=>array('label'=>"Salary", 'checked'=>1, 'position'=>80, 'enabled'=>($conf->salaries->enabled && !empty($user->rights->salaries->readall))),
     'u.datelastlogin'=>array('label'=>"LastConnexion", 'checked'=>1, 'position'=>100),
 	'u.datepreviouslogin'=>array('label'=>"PreviousConnexion", 'checked'=>0, 'position'=>110),
-	'u.datec'=>array('label'=>"DateCreation", 'checked'=>0, 'position'=>500),
-	'u.tms'=>array('label'=>"DateModificationShort", 'checked'=>0, 'position'=>500),
+	'u.datec'=>array('label'=>"DateCreation", 'checked'=> 1, 'position'=>500),
+	'u.tms'=>array('label'=>"DateModificationShort", 'checked'=> 1, 'position'=>500),
 	'u.statut'=>array('label'=>"Status", 'checked'=>1, 'position'=>1000),
 );
 // Extra fields
@@ -701,18 +701,21 @@ print '<!--begin::Entry-->
 									if (!empty($arrayfields['u.salary']['checked']))         print_liste_field_titre_layout("Salary", $_SERVER['PHP_SELF'], "u.salary", $param, "", "", $sortfield, $sortorder, 'right ');
 									if (!empty($arrayfields['u.datelastlogin']['checked']))  print_liste_field_titre_layout("LastConnexion", $_SERVER['PHP_SELF'], "u.datelastlogin", $param, "", '', $sortfield, $sortorder, 'center ');
 									if (!empty($arrayfields['u.datepreviouslogin']['checked'])) print_liste_field_titre_layout("PreviousConnexion", $_SERVER['PHP_SELF'], "u.datepreviouslogin", $param, "", '', $sortfield, $sortorder, 'center ');
+									if (!empty($arrayfields['u.datec']['checked']))
+									{
+										print_liste_field_titre_layout("DateCreationShort", $_SERVER["PHP_SELF"], "u.datec", "", $param, '', $sortfield, $sortorder, '');
+									}
+									if (!empty($arrayfields['u.tms']['checked']))    print_liste_field_titre_layout("DateModificationShort", $_SERVER["PHP_SELF"], "u.tms", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
+									if (!empty($arrayfields['u.statut']['checked'])) print_liste_field_titre_layout("Status", $_SERVER["PHP_SELF"], "u.statut", "", $param, '', $sortfield, $sortorder, 'center ');
+									// Action column
+
 									// Extra fields
 									include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
 									// Hook fields
 									$parameters = array('arrayfields'=>$arrayfields, 'param'=>$param, 'sortfield'=>$sortfield, 'sortorder'=>$sortorder);
 									$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object); // Note that $action and $object may have been modified by hook
 									print $hookmanager->resPrint;
-									if (!empty($arrayfields['u.datec']['checked']))  print_liste_field_titre_layout("DateCreationShort", $_SERVER["PHP_SELF"], "u.datec", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
-									if (!empty($arrayfields['u.tms']['checked']))    print_liste_field_titre_layout("DateModificationShort", $_SERVER["PHP_SELF"], "u.tms", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
-									if (!empty($arrayfields['u.statut']['checked'])) print_liste_field_titre_layout("Status", $_SERVER["PHP_SELF"], "u.statut", "", $param, '', $sortfield, $sortorder, 'center ');
-									// Action column
-
-									print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+									print getTitleFieldOfListLayout($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
 
 									print '</tr>
 							</thead>
