@@ -1209,7 +1209,7 @@ class FormOther
 			$boxlista .= "\n<!-- Box left container -->\n";
 
 			// Define $box_max_lines
-			$box_max_lines = 5;
+			$box_max_lines = 10;
 			if (!empty($conf->global->MAIN_BOXES_MAXLINES)) $box_max_lines = $conf->global->MAIN_BOXES_MAXLINES;
 
 			$ii = 0;

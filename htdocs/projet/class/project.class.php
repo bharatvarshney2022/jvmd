@@ -1309,13 +1309,19 @@ class Project extends CommonObject
 		{
 			$status = "Active";
 		}
+		if($status == 3)
+		{
+			$status = "Reject";
+			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
+		}
 		else if($status == 0)
 		{
-			$status = "";//Draft";
-			$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
+			$status = "Not Accepted";//Draft";
+			//$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
+			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 		}
 
-		return '<span class="'.$statusClass.'">'.$status.'</span>'.$extraBtn;
+		return '<span class="btn '.$statusClass.'">'.$status.'</span>&nbsp;'.$extraBtn;
 	}
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
