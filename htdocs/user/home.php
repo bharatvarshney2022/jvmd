@@ -68,39 +68,62 @@ if ($groupslist != '-1')
 		$user_group_id = $groupforuser->id;
 	}
 }
-llxHeader();
+llxHeaderLayout();
+
+print '<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card card-custom">';
 
 if($user_group_id == '17'){
-	print load_fiche_titre($langs->trans("Assign Vendors"), '', 'user');
+	print load_fiche_titre_layout($langs->trans("Assign Vendors"), '', '');
 }else{
-	print load_fiche_titre($langs->trans("MenuUsersAndGroups"), '', 'user');
+	print load_fiche_titre_layout($langs->trans("MenuUsersAndGroups"), '', '');
 }
 
-print '<div class="fichecenter"><div class="fichethirdleft">';
+print '<div class="card-body"><div class="row"><div class="col-md-6">';
 
 
 // Search User
-print '<form method="post" action="'.DOL_URL_ROOT.'/core/search.php">';
-print '<input type="hidden" name="token" value="'.newToken().'">';
+print '<div class="card card-custom">
 
-print '<table class="noborder nohover centpercent">';
-print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("Search").'</td></tr>';
-print '<tr><td>';
-print $langs->trans("User").':</td><td><input class="flat inputsearch" type="text" name="search_user" size="18"></td></tr>';
+	<div class="card-header"><h3 class="card-title">'.$langs->trans("Search").'</h3></div>
+	<div class="card-body">
+		<form method="post" action="'.DOL_URL_ROOT.'/core/search.php">';
+		print '<input type="hidden" name="token" value="'.newToken().'">';
 
-// Search Group
-if ($canreadperms && $user_group_id != '17')
-{
-	print '<tr><td>';
-	print $langs->trans("Group").':</td><td><input class="flat inputsearch" type="text" name="search_group" size="18"></td></tr>';
-}
+			print '<div class="form-group row">
+				<label class="col-2 col-form-label">'.$langs->trans("User").'</label>
+				<div class="col-10">
+					<input class="form-control" name="search_user" size="18" type="text" value="" id="example-text-input">
+				</div>
+			</div>';
 
-print '<tr><td class="center" colspan="2"><input type="submit" value="'.$langs->trans("Search").'" class="button"></td></tr>';
-print "</table><br>\n";
+			// Search Group
+			if ($canreadperms && $user_group_id != '17')
+			{
+				print '<div class="form-group row">
+					<label class="col-2 col-form-label">'.$langs->trans("Group").'</label>
+					<div class="col-10">
+						<input class="form-control" name="search_group" size="18" type="text" value="" id="example-text-input">
+					</div>
+				</div>';
+			}
 
-print '</form>';
+			print '<div class="row">
+				<div class="col-2"></div>
+				<div class="col-10">
+					<button type="submit" class="btn btn-success mr-2">'.$langs->trans("Search").'</button>
+				</div>
+			</div>';
 
-print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
+		print '</form>
+	</div>
+</div>';
+
+print '</div><div class="col-md-6">';
 
 
 /*
@@ -158,82 +181,100 @@ if ($resql)
 {
 	$num = $db->num_rows($resql);
 
-	print '<div class="div-table-responsive-no-min">';
-	print '<table class="noborder centpercent">';
-	print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("LastUsersCreated", min($num, $max)).'</td>';
-	print '<td class="right" colspan="2"><a class="commonlink" href="'.DOL_URL_ROOT.'/user/list.php?sortfield=u.datec&sortorder=DESC">'.$langs->trans("FullList").'</td>';
-	print '</tr>';
-	$i = 0;
+	print '<div class="card card-custom gutter-b">
 
-	while ($i < $num && $i < $max)
-	{
-		$obj = $db->fetch_object($resql);
+		<div class="card-header"><h3 class="card-title">'.$langs->trans("LastUsersCreated", min($num, $max)).'</h3>
+			<div class="card-toolbar"><div class="example-tools justify-content-center"><a class="" href="'.DOL_URL_ROOT.'/user/list.php?sortfield=u.datec&sortorder=DESC">'.$langs->trans("FullList").'</a></div></div>
+		</div>
+		<div class="card-body">
+			<table class="table table-bordered table-checkable" id="kt_datatable">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Username</th>
+						<th>User Type</th>
+						<th>Created at</th>
+						<th>Status</th>
+					</tr>
+				</thead>
 
-		$fuserstatic->id = $obj->rowid;
-		$fuserstatic->statut = $obj->statut;
-		$fuserstatic->lastname = $obj->lastname;
-		$fuserstatic->firstname = $obj->firstname;
-		$fuserstatic->login = $obj->login;
-		$fuserstatic->photo = $obj->photo;
-		$fuserstatic->admin = $obj->admin;
-		$fuserstatic->email = $obj->email;
-		$fuserstatic->socid = $obj->fk_soc;
+				<tbody>';
 
-		$companystatic->id = $obj->fk_soc;
-		$companystatic->name = $obj->name;
-		$companystatic->code_client = $obj->code_client;
-		$companystatic->canvas = $obj->canvas;
+				$i = 0;
 
-		print '<tr class="oddeven">';
-		print '<td class="nowraponall">';
-		print $fuserstatic->getNomUrl(-1);
-		if (!empty($conf->multicompany->enabled) && $obj->admin && !$obj->entity)
-		{
-			print img_picto($langs->trans("SuperAdministrator"), 'redstar');
-		} elseif ($obj->admin)
-		{
-			print img_picto($langs->trans("Administrator"), 'star');
-		}
-		print "</td>";
-		print '<td>'.$obj->login.'</td>';
-		print "<td>";
-		if ($obj->fk_soc)
-		{
-			print $companystatic->getNomUrl(1);
-		} else {
-			print $langs->trans("InternalUser");
-		}
-		if ($obj->ldap_sid)
-		{
-			print ' ('.$langs->trans("DomainUser").')';
-		}
+				while ($i < $num && $i < $max)
+				{
+					$obj = $db->fetch_object($resql);
 
-		$entity = $obj->entity;
-		$entitystring = '';
-		// TODO Set of entitystring should be done with a hook
-		if (!empty($conf->multicompany->enabled) && is_object($mc))
-		{
-			if (empty($entity))
-			{
-				$entitystring = $langs->trans("AllEntities");
-			} else {
-				$mc->getInfo($entity);
-				$entitystring = $mc->label;
-			}
-		}
-		print ($entitystring ? ' ('.$entitystring.')' : '');
+					$fuserstatic->id = $obj->rowid;
+					$fuserstatic->statut = $obj->statut;
+					$fuserstatic->lastname = $obj->lastname;
+					$fuserstatic->firstname = $obj->firstname;
+					$fuserstatic->login = $obj->login;
+					$fuserstatic->photo = $obj->photo;
+					$fuserstatic->admin = $obj->admin;
+					$fuserstatic->email = $obj->email;
+					$fuserstatic->socid = $obj->fk_soc;
 
-		print '</td>';
-		print '<td class="center nowrap">'.dol_print_date($db->jdate($obj->datec), 'dayhour').'</td>';
-		print '<td class="right">';
-		print $fuserstatic->getLibStatut(3);
-		print '</td>';
+					$companystatic->id = $obj->fk_soc;
+					$companystatic->name = $obj->name;
+					$companystatic->code_client = $obj->code_client;
+					$companystatic->canvas = $obj->canvas;
 
-		print '</tr>';
-		$i++;
-	}
-	print "</table>";
-	print "</div><br>";
+					print '<tr>';
+					print '<td class="">';
+					print $fuserstatic->getNomUrl(-1);
+					if (!empty($conf->multicompany->enabled) && $obj->admin && !$obj->entity)
+					{
+						print img_picto($langs->trans("SuperAdministrator"), 'redstar');
+					} elseif ($obj->admin)
+					{
+						print img_picto($langs->trans("Administrator"), 'star');
+					}
+					print "</td>";
+					print '<td>'.$obj->login.'</td>';
+					print "<td>";
+					if ($obj->fk_soc)
+					{
+						print $companystatic->getNomUrl(1);
+					} else {
+						print $langs->trans("InternalUser");
+					}
+					if ($obj->ldap_sid)
+					{
+						print ' ('.$langs->trans("DomainUser").')';
+					}
+
+					$entity = $obj->entity;
+					$entitystring = '';
+					// TODO Set of entitystring should be done with a hook
+					if (!empty($conf->multicompany->enabled) && is_object($mc))
+					{
+						if (empty($entity))
+						{
+							$entitystring = $langs->trans("AllEntities");
+						} else {
+							$mc->getInfo($entity);
+							$entitystring = $mc->label;
+						}
+					}
+					print ($entitystring ? ' ('.$entitystring.')' : '');
+
+					print '</td>';
+					print '<td class="">'.dol_print_date($db->jdate($obj->datec), 'dayhour').'</td>';
+					print '<td class="">';
+					print $fuserstatic->getLibStatutLayout(3);
+					print '</td>';
+
+					print '</tr>';
+					$i++;
+				}
+
+
+				print "</tbody>
+			</table>
+		</div>
+	</div>";
 
 	$db->free($resql);
 } else {
@@ -266,44 +307,57 @@ if ($canreadperms && $user_group_id != '17')
 		if (!empty($conf->multicompany->enabled)) $colspan++;
 		$num = $db->num_rows($resql);
 
-		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre"><td colspan="'.$colspan.'">'.$langs->trans("LastGroupsCreated", ($num ? $num : $max)).'</td>';
-		print '<td class="right"><a class="commonlink" href="'.DOL_URL_ROOT.'/user/group/list.php?sortfield=g.datec&sortorder=DESC">'.$langs->trans("FullList").'</td>';
-		print '</tr>';
-		$i = 0;
+		print '<div class="card card-custom gutter-b">
 
-		$grouptemp = new UserGroup($db);
+		<div class="card-header"><h3 class="card-title">'.$langs->trans("LastGroupsCreated", ($num ? $num : $max)).'</h3>
+			<div class="card-toolbar"><div class="example-tools justify-content-center"><a class="" href="'.DOL_URL_ROOT.'/user/group/list.php?sortfield=g.datec&sortorder=DESC">'.$langs->trans("FullList").'</a></div></div>
+		</div>
+		<div class="card-body">
+			<table class="table table-bordered table-checkable" id="kt_datatable">
+				<thead>
+					<tr>
+						<th>Group Name</th>
+						<th>Created at</th>
+					</tr>
+				</thead>
 
-		while ($i < $num && (!$max || $i < $max))
-		{
-			$obj = $db->fetch_object($resql);
+				<tbody>';
 
-			$grouptemp->id = $obj->rowid;
-			$grouptemp->name = $obj->name;
-			$grouptemp->note = $obj->note;
+					$i = 0;
 
-			print '<tr class="oddeven">';
-			print '<td>';
-			print $grouptemp->getNomUrl(1);
-			if (!$obj->entity)
-			{
-				print img_picto($langs->trans("GlobalGroup"), 'redstar');
-			}
-			print "</td>";
-			if (!empty($conf->multicompany->enabled) && is_object($mc))
-			{
-				$mc->getInfo($obj->entity);
-				print '<td>';
-				print $mc->label;
-				print '</td>';
-			}
-			print '<td class="nowrap right">'.dol_print_date($db->jdate($obj->datec), 'dayhour').'</td>';
-			print "</tr>";
-			$i++;
-		}
-		print "</table>";
-		print "</div><br>";
+					$grouptemp = new UserGroup($db);
+
+					while ($i < $num && (!$max || $i < $max))
+					{
+						$obj = $db->fetch_object($resql);
+
+						$grouptemp->id = $obj->rowid;
+						$grouptemp->name = $obj->name;
+						$grouptemp->note = $obj->note;
+
+						print '<tr class="">';
+						print '<td>';
+						print $grouptemp->getNomUrl(1);
+						if (!$obj->entity)
+						{
+							print img_picto($langs->trans("GlobalGroup"), 'redstar');
+						}
+						print "</td>";
+						if (!empty($conf->multicompany->enabled) && is_object($mc))
+						{
+							$mc->getInfo($obj->entity);
+							print '<td>';
+							print $mc->label;
+							print '</td>';
+						}
+						print '<td class="nowrap right">'.dol_print_date($db->jdate($obj->datec), 'dayhour').'</td>';
+						print "</tr>";
+						$i++;
+					}
+
+		print "	</tbody>
+			</table>
+		</div></div>";
 
 		$db->free($resql);
 	} else {
@@ -312,12 +366,22 @@ if ($canreadperms && $user_group_id != '17')
 }
 
 //print '</td></tr></table>';
-print '</div></div></div>';
+print '</div></div></div></div>';
+print '</div></div></div></div>';
 
 // Initialize technical object to manage hooks. Note that conf->hooks_modules contains array
 $parameters = array('user' => $user);
 $reshook = $hookmanager->executeHooks('dashboardUsersGroups', $parameters, $object); // Note that $action and $object may have been modified by hook
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

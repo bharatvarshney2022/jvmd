@@ -4634,21 +4634,19 @@ function load_fiche_titre_layout($titre, $morehtmlright = '', $picto = 'generic'
 	if ($picto == 'setup') $picto = 'generic';
 
 	$return .= "\n";
-	$return .= '<div class="table-responsive"><table '.($id ? 'id="'.$id.'" ' : '').'class="table'.($morecssontable ? ' '.$morecssontable : '').'">'; // maring bottom must be same than into print_barre_list
-	$return .= '<tr class="titre">';
-	if ($picto) $return .= '<td class="nobordernopadding widthpictotitle valignmiddle col-picto">'.img_picto('', $picto, 'class="valignmiddle widthpictotitle pictotitle"', $pictoisfullpath).'</td>';
-	$return .= '<td class="nobordernopadding valignmiddle col-title">';
-	$return .= '<div class="titre inline-block">'.$titre.'</div>';
-	$return .= '</td>';
+	$return .= '<div class="card-header"><h3 class="card-title">';
+	if ($picto) $return .= img_picto('', $picto, 'class="valignmiddle widthpictotitle pictotitle"', $pictoisfullpath);
+	$return .= $titre.'</h3>';
+	$return .= '</div>';
 	if (dol_strlen($morehtmlcenter))
 	{
-		$return .= '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
+		//$return .= '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
 	}
 	if (dol_strlen($morehtmlright))
 	{
-		$return .= '<td class="nobordernopadding titre_right wordbreakimp right valignmiddle">'.$morehtmlright.'</td>';
+		//$return .= '<td class="nobordernopadding titre_right wordbreakimp right valignmiddle">'.$morehtmlright.'</td>';
 	}
-	$return .= '</tr></table></div>'."\n";
+	//$return .= '</div>'."\n";
 
 	return $return;
 }

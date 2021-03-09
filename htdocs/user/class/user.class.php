@@ -2601,6 +2601,29 @@ class User extends CommonObject
 	 *  @param  int		$mode          0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
 	 *  @return	string 			       Label of status
 	 */
+	public function getLibStatutLayout($mode = 0)
+	{
+		return $this->LibStatutLayout(isset($this->statut) ? $this->statut : $this->status, $mode);
+	}
+
+	public function LibStatutLayout($status, $mode = 0)
+	{
+		// phpcs:enable
+		global $langs;
+
+		$statusBtn = '';
+		if($status == 1)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-success icon-md ml-2"></i>';
+		}
+		else if($status == 0)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-danger icon-md ml-2"></i>';//Draft";
+		}
+
+		return $statusBtn;
+	}
+
 	public function getLibStatut($mode = 0)
 	{
 		return $this->LibStatut($this->statut, $mode);
