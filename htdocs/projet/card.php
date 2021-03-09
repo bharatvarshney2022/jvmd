@@ -372,21 +372,41 @@ if (empty($reshook))
 			$object->usage_task           = (GETPOST('usage_task', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_bill_time      = (GETPOST('usage_bill_time', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_organize_event = (GETPOST('usage_organize_event', 'alpha') == 'on' ? 1 : 0);
+
+			if(GETPOST('close_action') == 'close_form'){
+				if ($object->ticket_otp && ($object->ticket_otp <= 0))
+				{
+				   	$error++;
+					setEventMessages($langs->trans("OTP is required"), null, 'errors');
+				}
+				$object->problem     = (!GETPOST('problem')) ? '' : GETPOST('problem');
+				$object->solution     = (!GETPOST('solution')) ? '' : GETPOST('solution');
+				$object->ticket_otp     = (!GETPOST('ticket_otp')) ? '' : GETPOST('ticket_otp');
+				$object->customer_response     = (!GETPOST('customer_response')) ? '' : GETPOST('customer_response');
+				$object->customer_remark     = (!GETPOST('customer_remark')) ? '' : GETPOST('customer_remark');
+			}
 			
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
 			if ($ret < 0) $error++;
 		}
 
-		if ($object->opp_amount && ($object->opp_status <= 0))
+		/*if ($object->opp_amount && ($object->opp_status <= 0))
 		{
 		   	$error++;
 			setEventMessages($langs->trans("ErrorOppStatusRequiredIfAmount"), null, 'errors');
-		}
+		}*/
 
 		if (!$error)
 		{
 			$result = $object->update($user);
+			if($user_group_id == 4){
+				//$resultclose = $object->setClose($user);
+				if ($resultclose <= 0)
+				{
+					setEventMessages($object->error, $object->errors, 'errors');
+				}
+			}
 			if($user_group_id == 17){
 				$vendorid = $user->id;
 				$typeid = 160;
@@ -517,6 +537,8 @@ if (empty($reshook))
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	}
+
+	
 
 	if ($action == 'confirm_close' && $confirm == 'yes')
 	{
@@ -1035,7 +1057,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 	// Confirmation close
 	if ($action == 'close')
 	{
-		print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);
+		if($user_group_id == 4){
+			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);	
+		}else{
+			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);	
+		}
+		
 	}
 	// Confirmation reopen
 	if ($action == 'reopen')
@@ -1076,15 +1103,113 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 
 	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
+	if ($action == 'close_form' && $confirm == 'yes')
+	{
+	print '<input type="hidden" name="token" value="'.GETPOST('token').'">';
+	}else{
+		print '<input type="hidden" name="token" value="'.newToken().'">';
+	}
 	print '<input type="hidden" name="action" value="update">';
 	print '<input type="hidden" name="id" value="'.$object->id.'">';
 	print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
 	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="'.$object->fk_customer_product.'">';
 
 	$head = project_prepare_head($object);
+	
+	if ($action == 'close_form' && $confirm == 'yes')
+	{
+		print '<input type="hidden" name="close_action" value="close_form">';
+		
+		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
+		print '<h3>'.$langs->trans("Close Support Tickets").'</h3>';
+		print '<table class="border centpercent">';
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Lead Detail").'</h5></td></tr>';
+		// Ref
+		$suggestedref = $object->ref;
+		print '<tr><td width="15%">'.$langs->trans("Ref").'</td>';
+		print '<td>'.$suggestedref.'</td>';
 
-	if ($action == 'edit' && $userWrite > 0)
+		// Label
+		print '<td width="15%" >'.$langs->trans("ProjectLabel").'</td>';
+		print '<td>'.dol_escape_htmltag($object->title).'</td></tr>';
+		
+
+		// Date start
+		print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
+		print dol_print_date($object->date_c, 'dayhoursec');
+		print '</td>';
+
+		// Description
+		print '<td class="tdtop">'.$langs->trans("Description").'</td>';
+		print '<td colspan="3">'.$object->description.'</td></tr>';
+		
+		// Brand name
+		print '<tr><td class="tdtop">'.$langs->trans("Brand").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_brand,'c_brands','nom'));
+		print '</td>';
+
+		// Category name
+		print '<td class="tdtop">'.$langs->trans("Category").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_category,'c_product_family','nom'));
+		print '</td></tr>';
+
+		// Sub Category name
+		print '<tr><td class="tdtop">'.$langs->trans("Sub Category").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_sub_category,'c_product_subfamily','nom'));
+		print '</td>';
+
+		// Model name
+		print '<td class="tdtop">'.$langs->trans("Model No.").'</td><td>';
+		print dol_htmlentitiesbr($object->getValuebyid($object->fk_model,'c_product_model','code'));
+		print '</td></tr>';
+
+		require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+		$prdobject = new Product($db);
+		$productjson =  $prdobject->getCustomerProductModelInfo($object->thirdparty->id,$object->fk_brand,$object->fk_category,$object->fk_sub_category,$object->fk_model);
+		$prdarr = json_decode($productjson);
+		
+		// Label
+		print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
+			print dol_htmlentitiesbr($object->getValuebyid($object->fk_model,'c_product_model','nom'));
+		print '</td>';
+		// Ac Capacity
+		print '<td>'.$langs->trans("AC Capacity").'</td><td>'.dol_escape_htmltag($prdarr->ac_capacity).'</td></tr>';
+
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Action Taking").'</h5></td></tr>';
+			
+		// Problem
+		print '<tr><td class="tdtop">'.$langs->trans("Problem Detail").'</td>';
+		print '<td><textarea row="5" class="minwidth400" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
+		print '<td class="tdtop">'.$langs->trans("Problem Solution").'</td>';
+		print '<td><textarea row="5" class="minwidth400" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
+		print '</tr>';
+
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Detect Code").'</h5></td></tr>';
+			
+		// Problem
+		print '<tr><td class="tdtop">'.$langs->trans("OTP").'</td>';
+		print '<td><input type="text"class="minwidth400" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
+		print '<td class="tdtop">'.$langs->trans("Customer Sign").'</td>';
+		print '<td><img src="#" width="50"/></td>';
+		print '</tr>';
+
+		// Problem
+		print '<tr><td class="tdtop">'.$langs->trans("Ticket Customer Response").'</td>';
+		print '<td><select name="customer_response">
+				<option value="Satisfied">Satisfied</option>
+				<option value="Un-Satisfied">Un-Satisfied</option>
+				<option value="OK">OK</option>
+		</select></td>';
+		print '<td class="tdtop">'.$langs->trans("Customer Remark").'</td>';
+		print '<td><textarea row="5" class="minwidth400" name="customer_remark">'.dol_escape_htmltag($object->customer_remark).'</textarea></td>';
+		print '</tr>';
+		
+		
+		
+
+		print '</table>';
+	
+	}elseif ($action == 'edit' && $userWrite > 0)
 	{
 		
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
@@ -1697,6 +1822,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</div>';
 	}
 
+	if ($action == 'close_form' && $userWrite > 0)
+	{
+		print '<div class="center">';
+		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
+		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '</div>';
+	}
+
 	print '</form>';
 
 	// Change probability from status
@@ -1771,7 +1904,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 																							  // modified by hook
 	if (empty($reshook))
 	{
-		if ($action != "edit" && $action != 'presend')
+		if ($action != "edit" && $action != "close_form" && $action != 'presend')
 		{
 			// Create event
 			/*if ($conf->agenda->enabled && ! empty($conf->global->MAIN_ADD_EVENT_ON_ELEMENT_CARD)) 				// Add hidden condition because this is not a
