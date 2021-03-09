@@ -8076,6 +8076,179 @@ class Form
 	 *	  @param	string	$morehtmlright	More html code to show after ref.
 	 * 	  @return	string    				Portion HTML with ref + navigation buttons
 	 */
+	public function showrefnavLayout($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlstatus = '', $morehtmlright = '')
+	{
+		global $langs, $conf, $hookmanager, $extralanguages;
+
+		$ret = '';
+		if (empty($fieldid))  $fieldid = 'rowid';
+		if (empty($fieldref)) $fieldref = 'ref';
+
+		// Add where from hooks
+		if (is_object($hookmanager))
+		{
+			$parameters = array();
+			$reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
+			$object->next_prev_filter .= $hookmanager->resPrint;
+		}
+		$previous_ref = $next_ref = '';
+		if ($shownav)
+		{
+			//print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
+			$object->load_previous_next_ref((isset($object->next_prev_filter) ? $object->next_prev_filter : ''), $fieldid, $nodbprefix);
+
+			$navurl = $_SERVER["PHP_SELF"];
+			// Special case for project/task page
+			if ($paramid == 'project_ref')
+			{
+				if (preg_match('/\/tasks\/(task|contact|note|document)\.php/', $navurl))     // TODO Remove this when nav with project_ref on task pages are ok
+				{
+					$navurl = preg_replace('/\/tasks\/(task|contact|time|note|document)\.php/', '/tasks.php', $navurl);
+					$paramid = 'ref';
+				}
+			}
+
+			// accesskey is for Windows or Linux:  ALT + key for chrome, ALT + SHIFT + KEY for firefox
+			// accesskey is for Mac:               CTRL + key for all browsers
+			$stringforfirstkey = $langs->trans("KeyboardShortcut");
+			if ($conf->browser->name == 'chrome')
+			{
+				$stringforfirstkey .= ' ALT +';
+			} elseif ($conf->browser->name == 'firefox')
+			{
+				$stringforfirstkey .= ' ALT + SHIFT +';
+			} else {
+				$stringforfirstkey .= ' CTL +';
+			}
+
+			$previous_ref = $object->ref_previous ? '<a accesskey="p" title="'.$stringforfirstkey.' p" class="classfortooltip" href="'.$navurl.'?'.$paramid.'='.urlencode($object->ref_previous).$moreparam.'"><i class="fa fa-chevron-left"></i></a>' : '<span class="inactive"><i class="fa fa-chevron-left opacitymedium"></i></span>';
+			$next_ref     = $object->ref_next ? '<a accesskey="n" title="'.$stringforfirstkey.' n" class="classfortooltip" href="'.$navurl.'?'.$paramid.'='.urlencode($object->ref_next).$moreparam.'"><i class="fa fa-chevron-right"></i></a>' : '<span class="inactive"><i class="fa fa-chevron-right opacitymedium"></i></span>';
+		}
+
+		//print "xx".$previous_ref."x".$next_ref;
+		$ret .= '<!-- Start banner content --><div class="row"><div class="col-sm-12">';
+
+		// Right part of banner
+		if ($morehtmlright) $ret .= '<div class="inline-block floatleft">'.$morehtmlright.'</div>';
+
+		if ($previous_ref || $next_ref || $morehtml)
+		{
+			$ret .= '<div class="pagination paginationref"><ul class="right">';
+		}
+		if ($morehtml)
+		{
+			$ret .= '<li class="noborder litext'.(($shownav && $previous_ref && $next_ref) ? ' clearbothonsmartphone' : '').'">'.$morehtml.'</li>';
+		}
+		if ($shownav && ($previous_ref || $next_ref))
+		{
+			$ret .= '<li class="pagination">'.$previous_ref.'</li>';
+			$ret .= '<li class="pagination">'.$next_ref.'</li>';
+		}
+		if ($previous_ref || $next_ref || $morehtml)
+		{
+			$ret .= '</ul></div>';
+		}
+
+		$parameters = array();
+		$reshook = $hookmanager->executeHooks('moreHtmlStatus', $parameters, $object); // Note that $action and $object may have been modified by hook
+		if (empty($reshook)) $morehtmlstatus .= $hookmanager->resPrint;
+		else $morehtmlstatus = $hookmanager->resPrint;
+		if ($morehtmlstatus) $ret .= '<div class="statusref">'.$morehtmlstatus.'</div>';
+
+		$parameters = array();
+		$reshook = $hookmanager->executeHooks('moreHtmlRef', $parameters, $object); // Note that $action and $object may have been modified by hook
+		if (empty($reshook)) $morehtmlref .= $hookmanager->resPrint;
+		elseif ($reshook > 0) $morehtmlref = $hookmanager->resPrint;
+
+		// Left part of banner
+		if ($morehtmlleft)
+		{
+			if ($conf->browser->layout == 'phone') $ret .= '<!-- morehtmlleft --><div class="floatleft">'.$morehtmlleft.'</div>'; // class="center" to have photo in middle
+			else $ret .= '<!-- morehtmlleft --><div class="inline-block floatleft">'.$morehtmlleft.'</div>';
+		}
+
+		//if ($conf->browser->layout == 'phone') $ret.='<div class="clearboth"></div>';
+		$ret .= '<div class="inline-block floatleft valignmiddle maxwidth750 marginbottomonly refid'.(($shownav && ($previous_ref || $next_ref)) ? ' refidpadding' : '').'">';
+
+		// For thirdparty, contact, user, member, the ref is the id, so we show something else
+		if ($object->element == 'societe')
+		{
+			$ret .= dol_htmlentities($object->name);
+
+			// List of extra languages
+			$arrayoflangcode = array();
+			if (!empty($conf->global->PDF_USE_ALSO_LANGUAGE_CODE)) $arrayoflangcode[] = $conf->global->PDF_USE_ALSO_LANGUAGE_CODE;
+
+			if (is_array($arrayoflangcode) && count($arrayoflangcode)) {
+				if (!is_object($extralanguages)) {
+					include_once DOL_DOCUMENT_ROOT.'/core/class/extralanguages.class.php';
+					$extralanguages = new ExtraLanguages($this->db);
+				}
+				$extralanguages->fetch_name_extralanguages('societe');
+
+				if (!empty($extralanguages->attributes['societe']['name']))
+				{
+					$object->fetchValuesForExtraLanguages();
+
+					$htmltext = '';
+					// If there is extra languages
+					foreach ($arrayoflangcode as $extralangcode) {
+						$htmltext .= picto_from_langcode($extralangcode, 'class="pictoforlang paddingright"');
+						if ($object->array_languages['name'][$extralangcode]) {
+							$htmltext .= $object->array_languages['name'][$extralangcode];
+						} else {
+							$htmltext .= '<span class="opacitymedium">'.$langs->trans("SwitchInEditModeToAddTranslation").'</span>';
+						}
+					}
+					$ret .= '<!-- Show translations of name -->'."\n";
+					$ret .= $this->textwithpicto('', $htmltext, -1, 'language', 'opacitymedium paddingleft');
+				}
+			}
+		} elseif ($object->element == 'member')
+		{
+			$ret .= $object->ref.'<br>';
+			$fullname = $object->getFullName($langs);
+			if ($object->morphy == 'mor' && $object->societe) {
+				$ret .= dol_htmlentities($object->societe).((!empty($fullname) && $object->societe != $fullname) ? ' ('.dol_htmlentities($fullname).')' : '');
+			} else {
+				$ret .= dol_htmlentities($fullname).((!empty($object->societe) && $object->societe != $fullname) ? ' ('.dol_htmlentities($object->societe).')' : '');
+			}
+		} elseif (in_array($object->element, array('contact', 'user', 'usergroup')))
+		{
+			$ret .= dol_htmlentities($object->getFullName($langs));
+		} elseif (in_array($object->element, array('action', 'agenda')))
+		{
+			$ret .= $object->ref.'<br>'.$object->label;
+		} elseif (in_array($object->element, array('adherent_type')))
+		{
+			$ret .= $object->label;
+		} elseif ($object->element == 'ecm_directories')
+		{
+			$ret .= '';
+		} elseif ($fieldref != 'none')
+		{
+			$ret .= dol_htmlentities($object->$fieldref);
+		}
+
+		if ($morehtmlref)
+		{
+			// don't add a additional space, when "$morehtmlref" starts with a HTML div tag
+			if (substr($morehtmlref, 0, 4) != '<div')
+			{
+				$ret .= ' ';
+			}
+
+			$ret .= $morehtmlref;
+		}
+
+		$ret .= '</div>';
+		$ret .= '</div>';
+
+		$ret .= '</div><!-- End banner content -->';
+
+		return $ret;
+	}
+
 	public function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlstatus = '', $morehtmlright = '')
 	{
 		global $langs, $conf, $hookmanager, $extralanguages;

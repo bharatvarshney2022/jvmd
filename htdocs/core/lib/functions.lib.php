@@ -1596,6 +1596,175 @@ function dol_get_fiche_head($links = array(), $active = '', $title = '', $notab 
 	return $out;
 }
 
+function dol_get_fiche_head_layout($links = array(), $active = '', $title = '', $notab = 0, $picto = '', $pictoisfullpath = 0, $morehtmlright = '', $morecss = '', $limittoshow = 0, $moretabssuffix = '')
+{
+	global $conf, $langs, $hookmanager;
+
+	// Show title
+	$showtitle = 1;
+	if (!empty($conf->dol_optimize_smallscreen)) $showtitle = 0;
+
+	$out = "\n\n";
+	//$out = "\n".'<!-- dol_fiche_head - dol_get_fiche_head -->';
+
+	if ((!empty($title) && $showtitle) || $morehtmlright || !empty($links)) {
+		$out .= '			<ul class="nav nav-tabs nav-tabs-line'.($picto ? '' : ' nopaddingleft').'">'."\n";
+	}
+
+	// Show right part
+	//if ($morehtmlright) $out .= '<div class="inline-block floatright tabsElem">'.$morehtmlright.'</div>'; // Output right area first so when space is missing, text is in front of tabs and not under.
+
+	// Show title
+	if (!empty($title) && $showtitle && empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+	{
+		$limittitle = 30;
+		/*$out .= '	<li class="nav-item">
+	        <a class="nav-link" data-toggle="tab" href="#">'.dol_trunc($title, $limittitle).'</a>
+	    </li>'."\n";*/
+		
+		/*$out .= '<a class="tabTitle">';
+		if ($picto) $out .= img_picto($title, ($pictoisfullpath ? '' : 'object_').$picto, '', $pictoisfullpath, 0, 0, '', 'imgTabTitle').' ';
+		$out .= '<span class="tabTitleText"></span>';
+		$out .= '</a>';*/
+	}
+
+	// Show tabs
+
+	// Define max of key (max may be higher than sizeof because of hole due to module disabling some tabs).
+	$maxkey = -1;
+	if (is_array($links) && !empty($links))
+	{
+		$keys = array_keys($links);
+		if (count($keys)) $maxkey = max($keys);
+	}
+
+	// Show tabs
+	// if =0 we don't use the feature
+	if (empty($limittoshow)) {
+		$limittoshow = (empty($conf->global->MAIN_MAXTABS_IN_CARD) ? 99 : $conf->global->MAIN_MAXTABS_IN_CARD);
+	}
+	if (!empty($conf->dol_optimize_smallscreen)) $limittoshow = 2;
+
+	$displaytab = 0;
+	$nbintab = 0;
+	$popuptab = 0;
+	$outmore = '';
+	for ($i = 0; $i <= $maxkey; $i++)
+	{
+		if ((is_numeric($active) && $i == $active) || (!empty($links[$i][2]) && !is_numeric($active) && $active == $links[$i][2])) {
+			// If active tab is already present
+			if ($i >= $limittoshow) $limittoshow--;
+		}
+	}
+
+	for ($i = 0; $i <= $maxkey; $i++)
+	{
+		if ((is_numeric($active) && $i == $active) || (!empty($links[$i][2]) && !is_numeric($active) && $active == $links[$i][2])) {
+			$isactive = true;
+		} else {
+			$isactive = false;
+		}
+
+		if ($i < $limittoshow || $isactive)
+		{
+			$out .= '<li class="nav-item '.($isactive ? ' ' : '').((!$isactive && !empty($conf->global->MAIN_HIDE_INACTIVETAB_ON_PRINT)) ? ' hideonprint' : '').'">
+			<!-- id tab = '.(empty($links[$i][2]) ? '' : $links[$i][2]).' -->'."\n";
+			if (isset($links[$i][2]) && $links[$i][2] == 'image')
+			{
+				if (!empty($links[$i][0]))
+				{
+					$out .= '<a class="tabimage'.($morecss ? ' '.$morecss : '').'" href="'.$links[$i][0].'">'.$links[$i][1].'</a>'."\n";
+				} else {
+					$out .= '<span class="tabspan">'.$links[$i][1].'</span>'."\n";
+				}
+			} elseif (!empty($links[$i][1]))
+			{
+				//print "x $i $active ".$links[$i][2]." z";
+				if ($isactive)
+				{
+					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="active nav-link'.($morecss ? ' '.$morecss : '').'" data-toggle="tab" href="'.$links[$i][0].'">';
+					$out .= $links[$i][1];
+					$out .= '</a>'."\n";
+				} else {
+					$out .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="nav-link'.($morecss ? ' '.$morecss : '').'" data-toggle="tab" href="'.$links[$i][0].'">';
+					$out .= $links[$i][1];
+					$out .= '</a>'."\n";
+				}
+			}
+			$out .= '</li>'."\n";
+		} else {
+			// The popup with the other tabs
+			if (!$popuptab)
+			{
+				$popuptab = 1;
+				$outmore .= '<div class="popuptabset wordwrap">'; // The css used to hide/show popup
+			}
+			$outmore .= '<div class="popuptab wordwrap" style="display:inherit;">';
+			if (isset($links[$i][2]) && $links[$i][2] == 'image')
+			{
+				if (!empty($links[$i][0]))
+					$outmore .= '<a class="tabimage'.($morecss ? ' '.$morecss : '').'" href="'.$links[$i][0].'">'.$links[$i][1].'</a>'."\n";
+				else $outmore .= '<span class="tabspan">'.$links[$i][1].'</span>'."\n";
+			} elseif (!empty($links[$i][1]))
+			{
+				$outmore .= '<a'.(!empty($links[$i][2]) ? ' id="'.$links[$i][2].'"' : '').' class="wordwrap inline-block'.($morecss ? ' '.$morecss : '').'" href="'.$links[$i][0].'">';
+				$outmore .= preg_replace('/([a-z])\/([a-z])/i', '\\1 / \\2', $links[$i][1]); // Replace x/y with x / y to allow wrap on long composed texts.
+				$outmore .= '</a>'."\n";
+			}
+			$outmore .= '</div>';
+
+			$nbintab++;
+		}
+		$displaytab = $i;
+	}
+	if ($popuptab) $outmore .= '</div>';
+
+	if ($popuptab)	// If there is some tabs not shown
+	{
+		$left = ($langs->trans("DIRECTION") == 'rtl' ? 'right' : 'left');
+		$right = ($langs->trans("DIRECTION") == 'rtl' ? 'left' : 'right');
+		$widthofpopup = 200;
+
+		$tabsname = $moretabssuffix;
+		if (empty($tabsname)) { $tabsname = str_replace("@", "", $picto); }
+		$out .= '<div id="moretabs'.$tabsname.'" class="inline-block tabsElem">';
+		$out .= '<a href="#" class="tab moretab inline-block tabunactive">'.$langs->trans("More").'... ('.$nbintab.')</a>'; // Do not use "reposition" class in the "More".
+		$out .= '<div id="moretabsList'.$tabsname.'" style="width: '.$widthofpopup.'px; position: absolute; '.$left.': -999em; text-align: '.$left.'; margin:0px; padding:2px; z-index:10;">';
+		$out .= $outmore;
+		$out .= '</div>';
+		$out .= '<div></div>';
+		$out .= "</div>\n";
+
+		$out .= "<script>";
+		$out .= "$('#moretabs".$tabsname."').mouseenter( function() {
+			var x = this.offsetLeft, y = this.offsetTop;
+			console.log('mouseenter ".$left." x='+x+' y='+y+' window.innerWidth='+window.innerWidth);
+			if ((window.innerWidth - x) < ".($widthofpopup + 10).") {
+				$('#moretabsList".$tabsname."').css('".$right."','8px');
+			}
+			$('#moretabsList".$tabsname."').css('".$left."','auto');
+			});
+		";
+		$out .= "$('#moretabs".$tabsname."').mouseleave( function() { console.log('mouseleave ".$left."'); $('#moretabsList".$tabsname."').css('".$left."','-999em');});";
+		$out .= "</script>";
+	}
+
+	if ((!empty($title) && $showtitle) || $morehtmlright || !empty($links)) {
+		$out .= "</ul>\n";
+	}
+
+	if (!$notab || $notab == -1 || $notab == -2) //$out .= "\n".'<div class="tabBar'.($notab == -1 ? '' : ($notab == -2 ? ' tabBarNoTop' : ' tabBarWithBottom')).'">'."\n";
+
+	$parameters = array('tabname' => $active, 'out' => $out);
+	$reshook = $hookmanager->executeHooks('printTabsHead', $parameters); // This hook usage is called just before output the head of tabs. Take also a look at "completeTabsHead"
+	if ($reshook > 0)
+	{
+		$out = $hookmanager->resPrint;
+	}
+
+	return $out;
+}
+
 /**
  *  Show tab footer of a card
  *
@@ -1639,6 +1808,269 @@ function dol_get_fiche_end($notab = 0)
  *	@param	string	$morehtmlright	More html code to show before navigation arrows
  *  @return	void
  */
+function dol_banner_tab_layout($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlstatus = '', $onlybanner = 0, $morehtmlright = '')
+{
+	global $conf, $form, $user, $langs;
+
+	$error = 0;
+
+	$maxvisiblephotos = 1;
+	$showimage = 1;
+	$entity = (empty($object->entity) ? $conf->entity : $object->entity);
+	$showbarcode = empty($conf->barcode->enabled) ? 0 : ($object->barcode ? 1 : 0);
+	if (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && empty($user->rights->barcode->lire_advance)) $showbarcode = 0;
+	$modulepart = 'unknown';
+
+	if ($object->element == 'societe')         $modulepart = 'societe';
+	if ($object->element == 'contact')         $modulepart = 'contact';
+	if ($object->element == 'member')          $modulepart = 'memberphoto';
+	if ($object->element == 'user')            $modulepart = 'userphoto';
+	if ($object->element == 'product')         $modulepart = 'product';
+	if ($object->element == 'ticket')          $modulepart = 'ticket';
+
+	if (class_exists("Imagick"))
+	{
+		if ($object->element == 'propal')            $modulepart = 'propal';
+		if ($object->element == 'commande')          $modulepart = 'commande';
+		if ($object->element == 'facture')           $modulepart = 'facture';
+		if ($object->element == 'fichinter')         $modulepart = 'ficheinter';
+		if ($object->element == 'contrat')           $modulepart = 'contract';
+		if ($object->element == 'supplier_proposal') $modulepart = 'supplier_proposal';
+		if ($object->element == 'order_supplier')    $modulepart = 'supplier_order';
+		if ($object->element == 'invoice_supplier')  $modulepart = 'supplier_invoice';
+		if ($object->element == 'expensereport')     $modulepart = 'expensereport';
+	}
+
+	if ($object->element == 'product')
+	{
+		$width = 80; $cssclass = 'photoref';
+		$showimage = $object->is_photo_available($conf->product->multidir_output[$entity]);
+		$maxvisiblephotos = (isset($conf->global->PRODUCT_MAX_VISIBLE_PHOTO) ? $conf->global->PRODUCT_MAX_VISIBLE_PHOTO : 5);
+		if ($conf->browser->layout == 'phone') $maxvisiblephotos = 1;
+		if ($showimage) {
+			$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">'.$object->show_photos('product', $conf->product->multidir_output[$entity], 'small', $maxvisiblephotos, 0, 0, 0, $width, 0).'</div>';
+		} else {
+			if (!empty($conf->global->PRODUCT_NODISPLAYIFNOPHOTO)) {
+				$nophoto = '';
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref"></div>';
+			} else {    // Show no photo link
+				$nophoto = '/public/theme/common/nophoto.png';
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref"><img class="photo'.$modulepart.($cssclass ? ' '.$cssclass : '').'" alt="No photo"'.($width ? ' style="width: '.$width.'px"' : '').' src="'.DOL_URL_ROOT.$nophoto.'"></div>';
+			}
+		}
+	} elseif ($object->element == 'ticket') {
+		$width = 80; $cssclass = 'photoref';
+		$showimage = $object->is_photo_available($conf->ticket->multidir_output[$entity].'/'.$object->ref);
+		$maxvisiblephotos = (isset($conf->global->TICKET_MAX_VISIBLE_PHOTO) ? $conf->global->TICKET_MAX_VISIBLE_PHOTO : 2);
+		if ($conf->browser->layout == 'phone') $maxvisiblephotos = 1;
+
+		if ($showimage)
+		{
+			$showphoto = $object->show_photos('ticket', $conf->ticket->multidir_output[$entity], 'small', $maxvisiblephotos, 0, 0, 0, $width, 0);
+			if ($object->nbphoto > 0)
+			{
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">'.$showphoto.'</div>';
+			} else {
+				$showimage = 0;
+			}
+		}
+		if (!$showimage)
+		{
+			if (!empty($conf->global->TICKET_NODISPLAYIFNOPHOTO)) {
+				$nophoto = '';
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref"></div>';
+			} else {    // Show no photo link
+				$nophoto = img_picto('No photo', 'object_ticket');
+				$morehtmlleft .= '<!-- No photo to show -->';
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref"><div class="photoref">';
+				$morehtmlleft .= $nophoto;
+				$morehtmlleft .= '</div></div>';
+			}
+		}
+	} else {
+		if ($showimage)
+		{
+			if ($modulepart != 'unknown')
+			{
+				$phototoshow = '';
+				// Check if a preview file is available
+				if (in_array($modulepart, array('propal', 'commande', 'facture', 'ficheinter', 'contract', 'supplier_order', 'supplier_proposal', 'supplier_invoice', 'expensereport')) && class_exists("Imagick"))
+				{
+					$objectref = dol_sanitizeFileName($object->ref);
+					$dir_output = (empty($conf->$modulepart->multidir_output[$entity]) ? $conf->$modulepart->dir_output : $conf->$modulepart->multidir_output[$entity])."/";
+					if (in_array($modulepart, array('invoice_supplier', 'supplier_invoice')))
+					{
+						$subdir = get_exdir($object->id, 2, 0, 1, $object, $modulepart);
+						$subdir .= ((!empty($subdir) && !preg_match('/\/$/', $subdir)) ? '/' : '').$objectref; // the objectref dir is not included into get_exdir when used with level=2, so we add it at end
+					} else {
+						$subdir = get_exdir($object->id, 0, 0, 1, $object, $modulepart);
+					}
+					if (empty($subdir)) $subdir = 'errorgettingsubdirofobject'; // Protection to avoid to return empty path
+
+					$filepath = $dir_output.$subdir."/";
+
+					$filepdf = $filepath.$objectref.".pdf";
+					$relativepath = $subdir.'/'.$objectref.'.pdf';
+
+					// Define path to preview pdf file (preview precompiled "file.ext" are "file.ext_preview.png")
+					$fileimage = $filepdf.'_preview.png';
+					$relativepathimage = $relativepath.'_preview.png';
+
+					$pdfexists = file_exists($filepdf);
+
+					// If PDF file exists
+					if ($pdfexists)
+					{
+						// Conversion du PDF en image png si fichier png non existant
+						if (!file_exists($fileimage) || (filemtime($fileimage) < filemtime($filepdf)))
+						{
+							if (empty($conf->global->MAIN_DISABLE_PDF_THUMBS))		// If you experience trouble with pdf thumb generation and imagick, you can disable here.
+							{
+								include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+								$ret = dol_convert_file($filepdf, 'png', $fileimage, '0'); // Convert first page of PDF into a file _preview.png
+								if ($ret < 0) $error++;
+							}
+						}
+					}
+
+					if ($pdfexists && !$error)
+					{
+						$heightforphotref = 80;
+						if (!empty($conf->dol_optimize_smallscreen)) $heightforphotref = 60;
+						// If the preview file is found
+						if (file_exists($fileimage))
+						{
+							$phototoshow = '<div class="photoref">';
+							$phototoshow .= '<img height="'.$heightforphotref.'" class="photo photowithmargin photowithborder" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=apercu'.$modulepart.'&amp;file='.urlencode($relativepathimage).'">';
+							$phototoshow .= '</div>';
+						}
+					}
+				} elseif (!$phototoshow) { // example if modulepart = 'photo'
+					$phototoshow .= $form->showphoto($modulepart, $object, 0, 0, 0, 'photoref', 'small', 1, 0, $maxvisiblephotos);
+				}
+
+				if ($phototoshow) {
+					$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">';
+					$morehtmlleft .= $phototoshow;
+					$morehtmlleft .= '</div>';
+				}
+			}
+
+			if (!$phototoshow)      // Show No photo link (picto of object)
+			{
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">';
+				if ($object->element == 'action')
+				{
+					$width = 80;
+					$cssclass = 'photorefcenter';
+					$nophoto = img_picto('No photo', 'title_agenda');
+				} else {
+					$width = 14; $cssclass = 'photorefcenter';
+					$picto = $object->picto;
+					if ($object->element == 'project' && !$object->public) $picto = 'project'; // instead of projectpub
+					$nophoto = img_picto('No photo', 'object_'.$picto);
+				}
+				$morehtmlleft .= '<!-- No photo to show -->';
+				$morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref"><div class="photoref">';
+				$morehtmlleft .= $nophoto;
+				$morehtmlleft .= '</div></div>';
+
+				$morehtmlleft .= '</div>';
+			}
+		}
+	}
+
+	if ($showbarcode) $morehtmlleft .= '<div class="floatleft inline-block valignmiddle divphotoref">'.$form->showbarcode($object).'</div>';
+
+	if ($object->element == 'societe')
+	{
+		if (!empty($conf->use_javascript_ajax) && $user->rights->societe->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE))
+		{
+		   	$morehtmlstatus .= ajax_object_onoff($object, 'status', 'status', 'InActivity', 'ActivityCeased');
+		} else {
+			$morehtmlstatus .= $object->getLibStatut(6);
+		}
+	} elseif ($object->element == 'product')
+	{
+		//$morehtmlstatus.=$langs->trans("Status").' ('.$langs->trans("Sell").') ';
+		if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
+			//$morehtmlstatus .= ajax_object_onoff($object, 'status', 'tosell', 'ProductStatusOnSell', 'ProductStatusNotOnSell');
+		} else {
+			//$morehtmlstatus .= '<span class="statusrefsell">'.$object->getLibStatut(6, 0).'</span>';
+		}
+		$morehtmlstatus .= ' &nbsp; ';
+		//$morehtmlstatus.=$langs->trans("Status").' ('.$langs->trans("Buy").') ';
+		if (!empty($conf->use_javascript_ajax) && $user->rights->produit->creer && !empty($conf->global->MAIN_DIRECT_STATUS_UPDATE)) {
+			//$morehtmlstatus .= ajax_object_onoff($object, 'status_buy', 'tobuy', 'ProductStatusOnBuy', 'ProductStatusNotOnBuy');
+		} else {
+			//$morehtmlstatus .= '<span class="statusrefbuy">'.$object->getLibStatut(6, 1).'</span>';
+		}
+	} elseif (in_array($object->element, array('facture', 'invoice', 'invoice_supplier', 'chargesociales', 'loan'))) {
+		$tmptxt = $object->getLibStatut(6, $object->totalpaye);
+		if (empty($tmptxt) || $tmptxt == $object->getLibStatut(3)) $tmptxt = $object->getLibStatut(5, $object->totalpaye);
+		$morehtmlstatus .= $tmptxt;
+	} elseif ($object->element == 'contrat' || $object->element == 'contract') {
+		if ($object->statut == 0) $morehtmlstatus .= $object->getLibStatut(5);
+		else $morehtmlstatus .= $object->getLibStatut(4);
+	} elseif ($object->element == 'facturerec') {
+		if ($object->frequency == 0) $morehtmlstatus .= $object->getLibStatut(2);
+		else $morehtmlstatus .= $object->getLibStatut(5);
+	} elseif ($object->element == 'project_task') {
+		$object->fk_statut = 1;
+		if ($object->progress > 0) $object->fk_statut = 2;
+		if ($object->progress >= 100) $object->fk_statut = 3;
+		$tmptxt = $object->getLibStatut(5);
+		$morehtmlstatus .= $tmptxt; // No status on task
+	} else { // Generic case
+		$tmptxt = $object->getLibStatut(6);
+		if (empty($tmptxt) || $tmptxt == $object->getLibStatut(3)) $tmptxt = $object->getLibStatut(5);
+		$morehtmlstatus .= $tmptxt;
+	}
+
+	// Add if object was dispatched "into accountancy"
+	if (!empty($conf->accounting->enabled) && in_array($object->element, array('bank', 'paiementcharge', 'facture', 'invoice', 'invoice_supplier', 'expensereport', 'payment_various')))
+	{
+		// Note: For 'chargesociales', 'salaries'... this is the payments that are dispatched (so element = 'bank')
+		if (method_exists($object, 'getVentilExportCompta'))
+		{
+			$accounted = $object->getVentilExportCompta();
+			$langs->load("accountancy");
+			$morehtmlstatus .= '</div><div class="statusref statusrefbis"><span class="opacitymedium">'.($accounted > 0 ? $langs->trans("Accounted") : $langs->trans("NotYetAccounted")).'</span>';
+		}
+	}
+
+	// Add alias for thirdparty
+	if (!empty($object->name_alias)) $morehtmlref .= '<div class="refidno">'.$object->name_alias.'</div>';
+
+	// Add label
+	if (in_array($object->element, array('product', 'bank_account', 'project_task')))
+	{
+		if (!empty($object->label)) $morehtmlref .= '<div class="refidno">'.$object->label.'</div>';
+	}
+
+	if (method_exists($object, 'getBannerAddress') && !in_array($object->element, array('product', 'bookmark', 'ecm_directories', 'ecm_files')))
+	{
+		$moreaddress = $object->getBannerAddress('refaddress', $object);
+		if ($moreaddress) {
+			$morehtmlref .= '<div class="refidno">';
+			$morehtmlref .= $moreaddress;
+			$morehtmlref .= '</div>';
+		}
+	}
+	if (!empty($conf->global->MAIN_SHOW_TECHNICAL_ID) && ($conf->global->MAIN_SHOW_TECHNICAL_ID == '1' || preg_match('/'.preg_quote($object->element, '/').'/i', $conf->global->MAIN_SHOW_TECHNICAL_ID)) && !empty($object->id))
+	{
+		$morehtmlref .= '<div style="clear: both;"></div>';
+		$morehtmlref .= '<div class="refidno">';
+		$morehtmlref .= $langs->trans("TechnicalID").': '.$object->id;
+		$morehtmlref .= '</div>';
+	}
+
+	print '<div class="'.($onlybanner ? ' ' : ' ').'container">';
+	print $form->showrefnavLayout($object, $paramid, $morehtml, $shownav, $fieldid, $fieldref, $morehtmlref, $moreparam, $nodbprefix, $morehtmlleft, $morehtmlstatus, $morehtmlright);
+	print '</div>';
+	print '<div class="underrefbanner clearboth"></div>';
+}
+
 function dol_banner_tab($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlstatus = '', $onlybanner = 0, $morehtmlright = '')
 {
 	global $conf, $form, $user, $langs;
