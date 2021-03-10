@@ -182,7 +182,7 @@ class box_project extends ModeleBoxes
 				}
 			}
 
-			$sql .= " ORDER BY fk_statut DESC, p.datec DESC";
+			$sql .= " ORDER BY fk_statut ASC, p.datec DESC";
 			$sql.= $this->db->plimit($max, 0);
 			
 			//echo $sql;
