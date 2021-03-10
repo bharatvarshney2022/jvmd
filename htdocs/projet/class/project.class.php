@@ -1313,10 +1313,10 @@ class Project extends CommonObject
 		}
 
 		$statustrans = array(
-			0 => 'btn-info', //Draft
-			1 => 'btn-success', // Active
-			2 => 'btn-danger', // Close
-			3 => 'btn-warning', // Reject
+			0 => 'btn-outline-info', //Draft
+			1 => 'btn-outline-success', // Active
+			2 => 'btn-outline-danger', // Close
+			3 => 'btn-outline-warning', // Reject
 		);
 
 		$statusClass = 'status0';
@@ -1332,21 +1332,26 @@ class Project extends CommonObject
 		if($status == 3)
 		{
 			$status = "Reject";
-
-			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
+			if($user_group_id == 17){
+				$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
+			}
 		}
 		else if($status == 0)
 		{
 			$status = "Not Accepted";//Draft";
-			//$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
-			$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
+			if($user_group_id == 4){
+				$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
+			}
+			if($user_group_id == 17){
+				$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
+			}
 		}
-		if($user_group_id == 17){
-			return '<span class="btn '.$statusClass.'">'.$status.'</span>&nbsp;'.$extraBtn;
+		if($user_group_id == 17 || $user_group_id == 4){
+			return '<span class="btn '.$statusClass.' btn-sm">'.$status.'</span>&nbsp;'.$extraBtn;
 		}else{
-			return '<span class="btn '.$statusClass.'">'.$status.'</span>';
+			return '<span class="btn '.$statusClass.' btn-sm">'.$status.'</span>';
 		}
-	}
+	} 
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
