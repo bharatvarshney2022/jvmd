@@ -44,8 +44,10 @@ $status = GETPOST('status', 'int');
 $opp_status = GETPOST('opp_status', 'int');
 $opp_percent = price2num(GETPOST('opp_percent', 'alpha'));
 
-if ($id == '' && $ref == '' && ($action != "create" && $action != "add" && $action != "update" && !$_POST["cancel"])) accessforbidden();
 
+
+if ($id == '' && $ref == '' && ($action != "create" && $action != "add" && $action != "update" && !$_POST["cancel"])) accessforbidden();
+//echo $action;
 $mine = GETPOST('mode') == 'mine' ? 1 : 0;
 //if (! $user->rights->projet->all->lire) $mine=1;	// Special for projects
 
@@ -373,22 +375,13 @@ if (empty($reshook))
 			$object->usage_bill_time      = (GETPOST('usage_bill_time', 'alpha') == 'on' ? 1 : 0);
 			$object->usage_organize_event = (GETPOST('usage_organize_event', 'alpha') == 'on' ? 1 : 0);
 
-			if(GETPOST('close_action') == 'close_form'){
-				if ($object->ticket_otp && ($object->ticket_otp <= 0))
-				{
-				   	$error++;
-					setEventMessages($langs->trans("OTP is required"), null, 'errors');
-				}
-				$object->problem     = (!GETPOST('problem')) ? '' : GETPOST('problem');
-				$object->solution     = (!GETPOST('solution')) ? '' : GETPOST('solution');
-				$object->ticket_otp     = (!GETPOST('ticket_otp')) ? '' : GETPOST('ticket_otp');
-				$object->customer_response     = (!GETPOST('customer_response')) ? '' : GETPOST('customer_response');
-				$object->customer_remark     = (!GETPOST('customer_remark')) ? '' : GETPOST('customer_remark');
-			}
+			
 			
 			// Fill array 'array_options' with data from add form
-			$ret = $extrafields->setOptionalsFromPost(null, $object);
-			if ($ret < 0) $error++;
+			
+				$ret = $extrafields->setOptionalsFromPost(null, $object);
+				if ($ret < 0) $error++;
+			
 		}
 
 		/*if ($object->opp_amount && ($object->opp_status <= 0))
@@ -400,25 +393,19 @@ if (empty($reshook))
 		if (!$error)
 		{
 			$result = $object->update($user);
-			if($user_group_id == 4){
-				//$resultclose = $object->setClose($user);
-				if ($resultclose <= 0)
-				{
-					setEventMessages($object->error, $object->errors, 'errors');
-				}
-			}
-			if($user_group_id == 17){
-				$vendorid = $user->id;
-				$typeid = 160;
-				$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
-			}
+			
+			
 			if ($result < 0)
 			{
 				$error++;
 				if ($result == -4) setEventMessages($langs->trans("ErrorRefAlreadyExists"), null, 'errors');
 				else setEventMessages($object->error, $object->errors, 'errors');
 			} else {
-
+				if($user_group_id == 17){
+					$vendorid = $user->id;
+					$typeid = 160;
+					$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+				}
 				if($object->statut =='3' && $user_group_id == 17){
 					$cloneURL = DOL_URL_ROOT.'/projet/card.php?id='.$object->id.'&action=confirm_clone&confirm=yes&token='.$token.'&socid='.$object->socid;
 					header('location: '.$cloneURL);
@@ -479,6 +466,73 @@ if (empty($reshook))
 			if (GETPOST('socid', 'int') > 0) $object->fetch_thirdparty(GETPOST('socid', 'int'));
 			else unset($object->thirdparty);
 		}
+	}
+
+
+	if ($action == 'close_form_update' && !$_POST["cancel"] && $user->rights->projet->creer)
+	{
+		$error = 0;
+		$ticket_otp = GETPOST('ticket_otp');
+		if (empty($ref))
+		{
+			$error++;
+			//$_GET["id"]=$_POST["id"]; // We return on the project card
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Ref")), null, 'errors');
+		}
+
+		if (empty($ticket_otp))
+		{
+			$error++;
+			//$_GET["id"]=$_POST["id"]; // We return on the project card
+			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("OTP")), null, 'errors');
+		}
+		
+		$db->begin();
+
+		if (!$error)
+		{
+			$object->ref          = GETPOST('ref', 'alpha');
+			$object->title        = GETPOST('title', 'alphanohtml'); // Do not use 'alpha' here, 
+			$object->problem     = GETPOST('problem', 'alphanohtml');
+			$object->solution     = GETPOST('solution', 'alphanohtml');
+			$object->ticket_otp     = $ticket_otp;
+			$object->customer_response     = GETPOST('customer_response', 'alphanohtml');
+			$object->customer_remark     = GETPOST('customer_remark', 'alphanohtml');
+			
+			$result1 = $object->close_form_update($user);
+
+
+			if ($result1 < 0)
+			{
+				$error++;
+				if ($result == -4) setEventMessages($langs->trans("ErrorRefAlreadyExists"), null, 'errors');
+				else setEventMessages($object->error, $object->errors, 'errors');
+			} else {
+				$resclose = $object->setClose($user);
+				if ($resclose < 0)
+				{
+					$error++;
+					setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
+				}
+				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
+				header("Location: ".$backurl);
+				exit;*/
+				
+				if ($error)
+				{
+					$db->rollback();
+					$action = 'view';
+				} else {
+					$db->commit();
+					$action = 'view';
+					if (GETPOST('socid', 'int') > 0) $object->fetch_thirdparty(GETPOST('socid', 'int'));
+					else unset($object->thirdparty);
+
+				}
+			}
+		}
+
+		
 	}
 
 	// Build doc
@@ -1058,7 +1112,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	if ($action == 'close')
 	{
 		if($user_group_id == 4){
-			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);	
+			//print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
+			$action = 'close_form';	
 		}else{
 			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);	
 		}
@@ -1103,23 +1158,28 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 
 	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-	if ($action == 'close_form' && $confirm == 'yes')
+	
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	
+	if ($action == 'close_form' && $userWrite > 0)
 	{
-		print '<input type="hidden" name="token" value="'.$_SESSION['token'].'">';
+		print '<input type="hidden" name="action" value="close_form_update">';
 	}else{
-		print '<input type="hidden" name="token" value="'.newToken().'">';
-	}
-	print '<input type="hidden" name="action" value="update">';
+		print '<input type="hidden" name="action" value="update">';	
+	}	
+	
 	print '<input type="hidden" name="id" value="'.$object->id.'">';
 	print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
 	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="'.$object->fk_customer_product.'">';
 
 	$head = project_prepare_head($object);
 	
-	if ($action == 'close_form' && $confirm == 'yes' && $userWrite > 0)
+	if ($action == 'close_form' && $userWrite > 0)
 	{
 		print '<input type="hidden" name="close_action" value="close_form">';
-		
+		print '<input type="hidden" name="ref" value="'.$object->ref.'">';
+		print '<input type="hidden" name="title" value="'.$object->title.'">';
+
 		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
 		print '<h3>'.$langs->trans("Close Support Tickets").'</h3>';
 		print '<table class="border centpercent">';
@@ -1186,27 +1246,25 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Detect Code").'</h5></td></tr>';
 			
-		// Problem
+		// OTP
 		print '<tr><td class="tdtop">'.$langs->trans("OTP").'</td>';
-		print '<td><input type="text"class="minwidth400" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
-		print '<td class="tdtop">'.$langs->trans("Customer Sign").'</td>';
-		print '<td><img src="#" width="50"/></td>';
+		print '<td><input type="text" class="minwidth400" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
+		//print '<td class="tdtop">'.$langs->trans("Customer Sign").'</td>';
+		//print '<td><img src="#" width="50"/></td>';
 		print '</tr>';
 
-		// Problem
+		// Response
 		print '<tr><td class="tdtop">'.$langs->trans("Ticket Customer Response").'</td>';
 		print '<td><select name="customer_response">
-				<option value="Satisfied">Satisfied</option>
-				<option value="Un-Satisfied">Un-Satisfied</option>
-				<option value="OK">OK</option>
-		</select></td>';
+					<option value="Satisfied">Satisfied</option>
+					<option value="UnSatisfied">Un-Satisfied</option>
+					<option value="OK">OK</option>
+				</select>
+		</td>';
 		print '<td class="tdtop">'.$langs->trans("Customer Remark").'</td>';
 		print '<td><textarea row="5" class="minwidth400" name="customer_remark">'.dol_escape_htmltag($object->customer_remark).'</textarea></td>';
 		print '</tr>';
-		
-		
-		
-
+	
 		print '</table>';
 	
 	}elseif ($action == 'edit' && $userWrite > 0)

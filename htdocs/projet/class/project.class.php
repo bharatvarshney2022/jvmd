@@ -511,12 +511,6 @@ class Project extends CommonObject
 
 			$sql .= ", fk_statut = ".$this->statut;
 
-			$sql .= ", problem = ".($this->problem != '' ? "'".$this->problem."'" : "null");
-			$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
-			$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
-			$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
-			$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
-
 			$sql .= ", fk_opp_status = ".((is_numeric($this->opp_status) && $this->opp_status > 0) ? $this->opp_status : 'null');
 			$sql .= ", opp_percent = ".((is_numeric($this->opp_percent) && $this->opp_percent != '') ? $this->opp_percent : 'null');
 			$sql .= ", public = ".($this->public ? 1 : 0);
@@ -2594,5 +2588,155 @@ class Project extends CommonObject
 		}else{
 			return 'N/A';
 		}	
+	}
+
+	public function close_form_update($user, $notrigger = 0)
+	{
+		global $langs, $conf;
+
+		$error = 0;
+
+		// Clean parameters
+		
+
+		if (dol_strlen(trim($this->ref)) > 0)
+		{
+			$this->db->begin();
+
+			$sql = "UPDATE ".MAIN_DB_PREFIX."projet SET";
+			$sql .= " problem = ".($this->problem != '' ? "'".$this->problem."'" : "null");
+			$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
+			$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
+			$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
+			$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
+			$sql .= " WHERE rowid = ".$this->id;
+			dol_syslog(get_class($this)."::update", LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			if ($resql)
+			{
+				dol_syslog($resql."::update_projet", LOG_DEBUG);
+				// Update extrafield
+				if (!$error)
+				{
+					$result = $this->insertExtraFields();
+					if ($result < 0)
+					{
+						$error++;
+					}
+				}
+
+				if (!$error && !$notrigger)
+				{
+					// Call trigger
+					$result = $this->call_trigger('PROJECT_MODIFY', $user);
+					if ($result < 0) { $error++; }
+					// End call triggers
+				}
+
+				if (!$error && (is_object($this->oldcopy) && $this->oldcopy->ref !== $this->ref))
+				{
+					// We remove directory
+					if ($conf->projet->dir_output)
+					{
+						$olddir = $conf->projet->dir_output."/".dol_sanitizeFileName($this->oldcopy->ref);
+						$newdir = $conf->projet->dir_output."/".dol_sanitizeFileName($this->ref);
+						if (file_exists($olddir))
+						{
+							include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+							$res = @rename($olddir, $newdir);
+							if (!$res)
+							{
+								$langs->load("errors");
+								$this->error = $langs->trans('ErrorFailToRenameDir', $olddir, $newdir);
+								$error++;
+							}
+						}
+					}
+				}
+				if (!$error)
+				{
+					$this->db->commit();
+					$result = 1;
+				} else {
+					$this->db->rollback();
+					$result = -1;
+				}
+			} else {
+				$this->error = $this->db->lasterror();
+				$this->errors[] = $this->error;
+				$this->db->rollback();
+				if ($this->db->lasterrno() == 'DB_ERROR_RECORD_ALREADY_EXISTS')
+				{
+					$result = -4;
+				} else {
+					$result = -2;
+				}
+				dol_syslog(get_class($this)."::update error ".$result." ".$this->error, LOG_ERR);
+			}
+		} else {
+			dol_syslog(get_class($this)."::update ref null");
+			$result = -1;
+		}
+
+		return $result;
+	}
+
+	public function close_form_update1($user, $notrigger = 0)
+	{
+		global $langs, $conf;
+
+		$now = dol_now();
+
+		$error = 0;
+
+		$this->db->begin();
+
+		$sql = "UPDATE ".MAIN_DB_PREFIX."projet SET ";
+		$sql .= " problem = ".($this->problem != '' ? "'".$this->problem."'" : "null");
+		$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
+		$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
+		$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
+		$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
+		$sql .= " WHERE rowid = ".$this->id;
+		echo $sql;
+		//dol_syslog(get_class($this)."::update", LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			$this->db->commit();
+			$result = 1;
+			/*if ($resql)
+			{
+				dol_syslog($resql."::update_projet", LOG_DEBUG);
+				
+				if (!$error && !$notrigger)
+				{
+					// Call trigger
+					$result = $this->call_trigger('PROJECT_MODIFY', $user);
+					if ($result < 0) { $error++; }
+					// End call triggers
+				}
+
+				
+				if (!$error)
+				{
+					$this->db->commit();
+					$result = 1;
+				} else {
+					$this->db->rollback();
+					$result = -1;
+				}
+			} else {
+				$this->error = $this->db->lasterror();
+				$this->errors[] = $this->error;
+				$this->db->rollback();
+				if ($this->db->lasterrno() == 'DB_ERROR_RECORD_ALREADY_EXISTS')
+				{
+					$result = -4;
+				} else {
+					$result = -2;
+				}
+				dol_syslog(get_class($this)."::update error ".$result." ".$this->error, LOG_ERR);
+			}*/
+		
+		return $result;
 	}
 }
