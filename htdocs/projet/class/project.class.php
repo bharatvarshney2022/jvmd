@@ -2621,16 +2621,7 @@ class Project extends CommonObject
 			if ($resql)
 			{
 				dol_syslog($resql."::update_projet", LOG_DEBUG);
-				// Update extrafield
-				if (!$error)
-				{
-					$result = $this->insertExtraFields();
-					if ($result < 0)
-					{
-						$error++;
-					}
-				}
-
+				
 				if (!$error && !$notrigger)
 				{
 					// Call trigger
@@ -2639,26 +2630,6 @@ class Project extends CommonObject
 					// End call triggers
 				}
 
-				if (!$error && (is_object($this->oldcopy) && $this->oldcopy->ref !== $this->ref))
-				{
-					// We remove directory
-					if ($conf->projet->dir_output)
-					{
-						$olddir = $conf->projet->dir_output."/".dol_sanitizeFileName($this->oldcopy->ref);
-						$newdir = $conf->projet->dir_output."/".dol_sanitizeFileName($this->ref);
-						if (file_exists($olddir))
-						{
-							include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-							$res = @rename($olddir, $newdir);
-							if (!$res)
-							{
-								$langs->load("errors");
-								$this->error = $langs->trans('ErrorFailToRenameDir', $olddir, $newdir);
-								$error++;
-							}
-						}
-					}
-				}
 				if (!$error)
 				{
 					$this->db->commit();
