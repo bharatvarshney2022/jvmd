@@ -616,7 +616,7 @@ class Project extends CommonObject
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
 		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
-		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid ";
+		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid, problem, solution, ticket_otp, customer_response, customer_remark ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
 		{
@@ -689,7 +689,13 @@ class Project extends CommonObject
 				$this->usage_task = (int) $obj->usage_task;
 				$this->usage_bill_time = (int) $obj->usage_bill_time;
 				$this->usage_organize_event = (int) $obj->usage_organize_event;
-				$this->email_msgid = $obj->email_msgid;
+
+				$this->problem = $obj->problem;
+				$this->solution = $obj->solution;
+				$this->ticket_otp = $obj->ticket_otp;
+				$this->customer_response = $obj->customer_response;
+				$this->customer_remark = $obj->customer_remark;
+				
 
 				$this->db->free($resql);
 
@@ -2681,62 +2687,5 @@ class Project extends CommonObject
 		return $result;
 	}
 
-	public function close_form_update1($user, $notrigger = 0)
-	{
-		global $langs, $conf;
-
-		$now = dol_now();
-
-		$error = 0;
-
-		$this->db->begin();
-
-		$sql = "UPDATE ".MAIN_DB_PREFIX."projet SET ";
-		$sql .= " problem = ".($this->problem != '' ? "'".$this->problem."'" : "null");
-		$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
-		$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
-		$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
-		$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
-		$sql .= " WHERE rowid = ".$this->id;
-		echo $sql;
-		//dol_syslog(get_class($this)."::update", LOG_DEBUG);
-			$resql = $this->db->query($sql);
-			$this->db->commit();
-			$result = 1;
-			/*if ($resql)
-			{
-				dol_syslog($resql."::update_projet", LOG_DEBUG);
-				
-				if (!$error && !$notrigger)
-				{
-					// Call trigger
-					$result = $this->call_trigger('PROJECT_MODIFY', $user);
-					if ($result < 0) { $error++; }
-					// End call triggers
-				}
-
-				
-				if (!$error)
-				{
-					$this->db->commit();
-					$result = 1;
-				} else {
-					$this->db->rollback();
-					$result = -1;
-				}
-			} else {
-				$this->error = $this->db->lasterror();
-				$this->errors[] = $this->error;
-				$this->db->rollback();
-				if ($this->db->lasterrno() == 'DB_ERROR_RECORD_ALREADY_EXISTS')
-				{
-					$result = -4;
-				} else {
-					$result = -2;
-				}
-				dol_syslog(get_class($this)."::update error ".$result." ".$this->error, LOG_ERR);
-			}*/
-		
-		return $result;
-	}
+	
 }

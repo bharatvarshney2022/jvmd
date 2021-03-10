@@ -1112,8 +1112,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	if ($action == 'close')
 	{
 		if($user_group_id == 4){
-			//print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
-			$action = 'close_form';	
+			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
+			//$action = 'close_form';	
 		}else{
 			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);	
 		}
@@ -1795,7 +1795,31 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print dol_print_date($object->response_reschedule, 'dayhoursec');
 			print '</td></tr>';
 		}
-
+		if($object->problem){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Problem").'</td><td>';
+			print $object->problem;
+			print '</td></tr>';
+		}
+		if($object->solution){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Solution").'</td><td>';
+			print $object->solution;
+			print '</td></tr>';
+		}
+		if($object->ticket_otp){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Ticket OTP").'</td><td>';
+			print $object->ticket_otp;
+			print '</td></tr>';
+		}
+		if($object->customer_response){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Customer Response").'</td><td>';
+			print $object->customer_response;
+			print '</td></tr>';
+		}
+		if($object->customer_remark){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Customer Remark").'</td><td>';
+			print $object->customer_remark;
+			print '</td></tr>';
+		}
 		// Budget
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 		if (strcmp($object->budget_amount, '')) print price($object->budget_amount, 0, $langs, 1, 0, 0, $conf->currency);
