@@ -181,8 +181,11 @@ class box_project extends ModeleBoxes
 					}
 				}
 			}
-
-			$sql .= " ORDER BY fk_statut ASC, p.datec DESC";
+			if($user_group_id == 17){
+				$sql .= " ORDER BY fk_statut DESC, p.datec DESC";
+			}else{
+				$sql .= " ORDER BY fk_statut ASC, p.datec DESC";
+			}	
 			$sql.= $this->db->plimit($max, 0);
 			
 			//echo $sql;
