@@ -521,10 +521,16 @@ if (empty($reshook))
 				if ($error)
 				{
 					$db->rollback();
-					$action = 'view';
+					//$action = 'view';
+					$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
+					header("Location: ".$backurl);
+					exit;
 				} else {
 					$db->commit();
-					$action = 'view';
+					//$action = 'view';
+					$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
+					header("Location: ".$backurl);
+					exit;
 					if (GETPOST('socid', 'int') > 0) $object->fetch_thirdparty(GETPOST('socid', 'int'));
 					else unset($object->thirdparty);
 
