@@ -1298,7 +1298,7 @@ class Project extends CommonObject
 	{
 		// phpcs:enable
 		global $langs, $user;
-
+		//echo $status;
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
 		$user_group_id = 0;
 		$usergroup = new UserGroup($this->db);
@@ -1313,10 +1313,10 @@ class Project extends CommonObject
 		}
 
 		$statustrans = array(
-			0 => 'btn-outline-info', //Draft
-			1 => 'btn-outline-success', // Active
-			2 => 'btn-outline-danger', // Close
-			3 => 'btn-outline-warning', // Reject
+			0 => 'btn-info', //Draft
+			1 => 'btn-success', // Active
+			2 => 'btn-danger', // Close
+			3 => 'btn-warning', // Reject
 		);
 
 		$statusClass = 'status0';
@@ -1327,29 +1327,36 @@ class Project extends CommonObject
 		$extraBtn = '';
 		if($status == 1)
 		{
-			$status = "Active";
+			$statustxt = "Active";
 		}
 		if($status == 3)
 		{
-			$status = "Reject";
+			$statustxt = "Reject";
 			if($user_group_id == 17){
 				$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 			}
 		}
-		else if($status == 0)
+		if($status == 0)
 		{
-			$status = "Not Accepted";//Draft";
+			$statustxt = "Not Accepted";//Draft";
 			if($user_group_id == 4){
-				$extraBtn = '<a target="_blank" class="btn btn-success" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp; <a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
+				$statustxt = "Draft";
+				$extraBtn = '<a target="_blank" class="btn btn-info" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=validate">'.$langs->trans("Accept").'</a><a target="_blank" class="btn btn-danger" href="'.DOL_URL_ROOT.'/projet/card.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Reject").'</a>';
 			}
 			if($user_group_id == 17){
 				$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 			}
 		}
+		
 		if($user_group_id == 17 || $user_group_id == 4){
-			return '<span class="btn '.$statusClass.' btn-sm">'.$status.'</span>&nbsp;'.$extraBtn;
+			if($status == 0)
+			{
+				return '<span>'.$extraBtn.'</span>';
+			}else{
+				return '<span class="btn '.$statusClass.'">'.$statustxt.'</span>&nbsp;'.$extraBtn;
+			}	
 		}else{
-			return '<span class="btn '.$statusClass.' btn-sm">'.$status.'</span>';
+			return '<span class="btn '.$statusClass.'">'.$statustxt.'</span>';
 		}
 	} 
 

@@ -114,19 +114,30 @@ class box_project extends ModeleBoxes
 
 			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, s.address, s.town, s.zip";
 			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s";
+			if($user_group_id == 4)
+			{
+				$sql .= ",  ".MAIN_DB_PREFIX."societe_extrafields as esf ";
+			}
 			if ($user_group_id == 17) 
 			{
 				$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
 			}
-			$sql .= " WHERE p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
-			$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut IN (0,3)"; // Only pending projects
+			$sql .= " WHERE  p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
+			if($user_group_id == 4)
+			{
+				$sql .= " AND p.fk_soc = esf.fk_object AND p.fk_soc = s.rowid AND p.fk_statut IN (0,1)"; // Only pending projects
+			}else{
+				$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut IN (0,3)"; // Only pending projects
+			}
 			if (!$user->rights->projet->all->lire) $sql .= " AND p.rowid IN (".$projectsListId.")"; // public and assigned to, or restricted to company for external users
 			
 			if(!$user->admin)
 			{
 				if($user_group_id == 4)
 				{
-					$apply_zipcode = $user->array_options['options_apply_zipcode'];
+					$sql .= "  AND FIND_IN_SET(esf.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+
+					/*$apply_zipcode = $user->array_options['options_apply_zipcode'];
 					if($apply_zipcode != "")
 					{
 						// Get Zip Data from Master
@@ -147,7 +158,7 @@ class box_project extends ModeleBoxes
 
 							$sql .= " AND s.zip IN (".$zipData.")";
 						}
-					}
+					}*/
 				}
 
 				if($user_group_id == 17){
