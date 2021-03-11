@@ -497,6 +497,7 @@ if (empty($reshook))
 			$object->solution     = GETPOST('solution', 'alphanohtml');
 			$object->ticket_otp     = $ticket_otp;
 			$object->customer_response     = GETPOST('customer_response', 'alphanohtml');
+			$object->customer_sign     = GETPOST('customer_sign', 'restricthtml');
 			$object->customer_remark     = GETPOST('customer_remark', 'alphanohtml');
 			
 			$result1 = $object->close_form_update($user);
@@ -1255,9 +1256,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// OTP
 		print '<tr><td class="tdtop">'.$langs->trans("OTP").'</td>';
 		print '<td><input type="text" class="minwidth400" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
-		//print '<td class="tdtop">'.$langs->trans("Customer Sign").'</td>';
-		//print '<td><img src="#" width="50"/></td>';
-		print '</tr>';
+		print '<td class="tdtop">'.$langs->trans("Signature").'</td>';
+		print '<td>';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	$doleditor = new DolEditor('customer_sign', GETPOST('customer_sign', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, true, empty($conf->global->FCKEDITOR_ENABLE_USERSIGN) ? 0 : 1, ROWS_4, '90%');
+	print $doleditor->Create(1);
+	print '</td></tr>';
+
+
 
 		// Response
 		print '<tr><td class="tdtop">'.$langs->trans("Ticket Customer Response").'</td>';
@@ -1819,6 +1825,11 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if($object->customer_response){
 			print '<tr><td class="titlefield tdtop">'.$langs->trans("Customer Response").'</td><td>';
 			print $object->customer_response;
+			print '</td></tr>';
+		}
+		if($object->customer_sign){
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Signature").'</td><td>';
+			print dol_htmlentitiesbr($object->customer_sign);
 			print '</td></tr>';
 		}
 		if($object->customer_remark){

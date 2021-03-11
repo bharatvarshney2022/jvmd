@@ -615,7 +615,7 @@ class Project extends CommonObject
 		if (empty($id) && empty($ref)) return -1;
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
-		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
+		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, customer_sign, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
 		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid, problem, solution, ticket_otp, customer_response, customer_remark ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
@@ -665,7 +665,7 @@ class Project extends CommonObject
 				$this->call_resolved = $this->db->jdate($obj->call_resolved); // TODO deprecated
 				$this->call_rejected_date = $this->db->jdate($obj->call_rejected_date); // TODO deprecated
 				$this->response_reschedule = $this->db->jdate($obj->response_reschedule); // TODO deprecated
-
+				
 				$this->fk_customer_product = $obj->fk_customer_product;
 				$this->fk_brand = $obj->fk_brand;
 				$this->fk_category = $obj->fk_category;
@@ -695,6 +695,7 @@ class Project extends CommonObject
 				$this->ticket_otp = $obj->ticket_otp;
 				$this->customer_response = $obj->customer_response;
 				$this->customer_remark = $obj->customer_remark;
+				$this->customer_sign = $obj->customer_sign;
 				
 
 				$this->db->free($resql);
@@ -2626,6 +2627,7 @@ class Project extends CommonObject
 			$sql .= ", solution = ".($this->solution != '' ? "'".$this->solution."'" : "null");
 			$sql .= ", ticket_otp = ".($this->ticket_otp != '' ? "'".$this->ticket_otp."'" : "null");
 			$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
+			$sql .= ", customer_sign = ".($this->customer_sign != '' ? "'".$this->customer_sign."'" : "null");
 			$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
 			$sql .= " WHERE rowid = ".$this->id;
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
