@@ -414,8 +414,9 @@ if (empty($reshook))
 				$_POST['message'] = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
 				$_POST['subject'] = 'JVMD OTP Detail';
 				
-				$fromtype = 'company';
+				$_POST['fromtype'] = 'company';
 				$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+				$_POST['sender'] = 'ashok.sharma@microprixs.in';
 				
 				$triggersendname = 'COMPANY_SENTBYMAIL';
 				$paramname = 'contact';
