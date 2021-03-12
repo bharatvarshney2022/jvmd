@@ -15,6 +15,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
+	$email = GETPOST('email', 'alpha');
 	$device_id = GETPOST('device_id', 'alpha');
 	$fcmToken = GETPOST('fcmToken', 'alpha');
 	
@@ -22,7 +23,8 @@
 	
 	$object = new User($db);
 	
-	$isExist = check_user_mobile($mobile, $device_id);
+	//$isExist = check_user_mobile($mobile, $device_id);
+	$isExist = check_user_mobile_email($mobile, $email);
 	$isExist1 = check_user_mobile_temp($mobile);
 	$isDeviceExist = check_user_device($device_id);
 
@@ -39,9 +41,23 @@
 
           	$table = MAIN_DB_PREFIX."socpeople";
             $updateSql ="UPDATE ".$table." SET";
-			$updateSql.= " otp = '".$db->escape($otp)."', fcmToken = '".$db->escape($fcmToken)."' ";
+			$updateSql.= " otp = '".$db->escape($otp)."',  email = '".$db->escape($email)."', fcmToken = '".$db->escape($fcmToken)."', device_id = '".$db->escape($device_id)."' ";
 			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
 			$resql = $db->query($updateSql);
+
+			/*Email*/
+			// Actions to send emails
+			$action = 'send';
+			$sendto = $email;
+			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+
+			$sendtocc = 'ashok.sharma@microprixs.in';
+			$subject = "JVMD OTP Detail";	
+			$triggersendname = 'COMPANY_SENTBYMAIL';
+			$paramname = 'contact';
+			$mode = 'Information';
+			$trackid = 'ctc'.$object->id;
+			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
@@ -72,51 +88,60 @@
 		}
 		else
 		{
-			if($isDeviceExist){
-				$status_code = '0';
-				$message = 'Device ID already added to another customer!!';
-	
-				$json = array('status_code' => $status_code, 'message' => $message);
-			}else{
-				// Save data in Temp table
-				$objectSoc = new SocieteTemp($db);
-
-				$otp = rand(111111, 999999);
-
-				$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($mobile)."'";
-				$resql = $db->query($sql);
-
-				$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($mobile)."', statut = '0'";
-				$resql = $db->query($sql);
-				$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
-
-				$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($mobile)."', phone_mobile = '".$db->escape($mobile)."', otp = '".$db->escape($otp)."', statut = '0'";
-				$resql = $db->query($sql);
-				$last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
-				
-				/*
-				$object = new ContactTemp($db);
-
-				$object->firstname = $object->lastname = $object->priv = "";
-				$object->statut = 0;
-
-				$object->create($tempUser);*/
-
-				$status_code = '1';
-				$message = 'New account has been created!';
-
-				$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
-				$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
-				$PHONE = $mobile;
-				$MESSAGE = $smsmessage;
-				$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 			
-				require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
-				$smsfile = new CSMSSend($url);
-				$result = $smsfile->sendSMS();
+			// Save data in Temp table
+			$objectSoc = new SocieteTemp($db);
+
+			$otp = rand(111111, 999999);
+
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($mobile)."'";
+			$resql = $db->query($sql);
+
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($mobile)."', email = '".$db->escape($email)."', statut = '0'";
+			$resql = $db->query($sql);
+			$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
+
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($mobile)."', phone_mobile = '".$db->escape($mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
+			$resql = $db->query($sql);
+			$last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
+			
+			/*
+			$object = new ContactTemp($db);
+
+			$object->firstname = $object->lastname = $object->priv = "";
+			$object->statut = 0;
+
+			$object->create($tempUser);*/
+
+			$status_code = '1';
+			$message = 'New account has been created!';
+
+			$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
+			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+			$PHONE = $mobile;
+			$MESSAGE = $smsmessage;
+			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+		
+			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+			$smsfile = new CSMSSend($url);
+			$result = $smsfile->sendSMS();
+
+			/*Email*/
+			// Actions to send emails
+			$action = 'send';
+			$sendto = $email;
+			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+
+			$sendtocc = 'ashok.sharma@microprixs.in';
+			$subject = "JVMD OTP Detail";	
+			$triggersendname = 'COMPANY_SENTBYMAIL';
+			$paramname = 'contact';
+			$mode = 'Information';
+			$trackid = 'ctc'.$object->id;
+			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+			
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 				
-				$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
-			}	
 		}
 	}
 	
