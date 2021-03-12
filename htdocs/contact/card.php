@@ -409,14 +409,14 @@ if (empty($reshook))
 				/*Email*/
 				// Actions to send emails
 				$action = 'send';
-				$sendto = 'ashok.sharma@microprixs.in';
+				$_POST['sendto'] = 'ashok.sharma@microprixs.in';
 				$_POST['receiver'] = 'contact';
 				$_POST['message'] = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
 				$_POST['subject'] = 'JVMD OTP Detail';
 				
 				$fromtype = 'company';
-				$sendtocc = 'ashok.sharma@microprixs.in';
-				$subject = "JVMD OTP Detail";	
+				$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+				
 				$triggersendname = 'COMPANY_SENTBYMAIL';
 				$paramname = 'contact';
 				$mode = 'Information';
