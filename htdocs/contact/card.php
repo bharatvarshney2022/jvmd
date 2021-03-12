@@ -406,6 +406,21 @@ if (empty($reshook))
 			{
 				$result = $object->update($contactid, $user);
 
+				/*Email*/
+				// Actions to send emails
+				$action = 'send';
+				$sendto = 'ashok.sharma@microprixs.in';
+				$message = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
+				$fromtype = 'company';
+				$sendtocc = 'ashok.sharma@microprixs.in';
+				$subject = "JVMD OTP Detail";	
+				$triggersendname = 'COMPANY_SENTBYMAIL';
+				$paramname = 'contact';
+				$mode = 'Information';
+				$trackid = 'ctc'.$object->id;
+				include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+			
+
 				if ($result > 0) {
 					// Categories association
 					$categories = GETPOST('contcats', 'array');

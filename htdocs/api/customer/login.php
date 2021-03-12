@@ -50,7 +50,7 @@
 			$action = 'send';
 			$sendto = $email;
 			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
-
+			$fromtype = 'company';
 			$sendtocc = 'ashok.sharma@microprixs.in';
 			$subject = "JVMD OTP Detail";	
 			$triggersendname = 'COMPANY_SENTBYMAIL';
@@ -131,7 +131,7 @@
 			$action = 'send';
 			$sendto = $email;
 			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
-
+			$fromtype = 'company';
 			$sendtocc = 'ashok.sharma@microprixs.in';
 			$subject = "JVMD OTP Detail";	
 			$triggersendname = 'COMPANY_SENTBYMAIL';
