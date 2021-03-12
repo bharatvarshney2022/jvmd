@@ -418,10 +418,11 @@ if (empty($reshook))
 				$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
 				$_POST['sender'] = 'ashok.sharma@microprixs.in';
 				
-				$triggersendname = 'COMPANY_SENTBYMAIL';
+				/*$triggersendname = 'COMPANY_SENTBYMAIL';
 				$paramname = 'contact';
 				$mode = 'Information';
-				$trackid = 'ctc'.$object->id;
+				$trackid = 'ctc'.$object->id;*/
+				
 				include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
 
