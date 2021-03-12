@@ -410,6 +410,7 @@ if (empty($reshook))
 				// Actions to send emails
 				$action = 'send';
 				$sendto = 'ashok.sharma@microprixs.in';
+				$_POST['receiver'] = 'contact';
 				$message = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
 				$fromtype = 'company';
 				$sendtocc = 'ashok.sharma@microprixs.in';
