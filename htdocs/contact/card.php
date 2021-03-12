@@ -411,8 +411,8 @@ if (empty($reshook))
 				$action = 'send';
 				$sendto = 'ashok.sharma@microprixs.in';
 				$_POST['receiver'] = 'contact';
-				$message = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
-				$_POST['withtopic'] = 'JVMD OTP';
+				$_POST['message'] = "Dear Ashok Your OTP for login is 12345. Please DO NOT share OTP.";
+				$_POST['subject'] = 'JVMD OTP Detail';
 				
 				$fromtype = 'company';
 				$sendtocc = 'ashok.sharma@microprixs.in';
