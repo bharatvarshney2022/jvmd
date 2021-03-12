@@ -468,8 +468,10 @@ if (($action == 'send' || $action == 'relance') && !$_POST['addfile'] && !$_POST
 
   					$moreparam = '';
 	  				if (isset($paramname2) || isset($paramval2)) $moreparam .= '&'.($paramname2 ? $paramname2 : 'mid').'='.$paramval2;
-		  			/*header('Location: '.$_SERVER["PHP_SELF"].'?'.($paramname ? $paramname : 'id').'='.(is_object($object) ? $object->id : '').$moreparam);
-			  		exit;*/
+		  			if($paramname != ''){
+			  			header('Location: '.$_SERVER["PHP_SELF"].'?'.($paramname ? $paramname : 'id').'='.(is_object($object) ? $object->id : '').$moreparam);
+				  		exit;
+				  	}
 				} else {
 					$langs->load("other");
 					$mesg = '<div class="error">';
