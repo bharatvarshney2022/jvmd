@@ -13,6 +13,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
+	//$email = GETPOST('email', 'alpha');
 	
 	$json = array();
 	
@@ -41,6 +42,27 @@
 		$smsfile = new CSMSSend($url);
 		$result = $smsfile->sendSMS();
 
+		/*Email*/
+		// Actions to send emails
+		$action = 'send';
+		$_POST['sendto'] = $email;
+		$_POST['receiver'] = 'contact';
+		
+		$_POST['message'] = "Dear ".$isExist['firstname']." ".$isExist['lastname'].", Your OTP is ".$otp.". Please DO NOT share OTP.";
+
+		$_POST['subject'] = 'JVMD OTP Detail';
+		
+		$_POST['fromtype'] = 'company';
+		//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+		$_POST['sender'] = $email;
+		
+		$triggersendname = 'COMPANY_SENTBYMAIL';
+		$paramname = '';
+		$mode = 'Information';
+		$trackid = '';
+
+		include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+		/* End mail Action */
 		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
 	}
 	else

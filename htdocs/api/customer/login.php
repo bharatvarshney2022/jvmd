@@ -48,15 +48,21 @@
 			/*Email*/
 			// Actions to send emails
 			$action = 'send';
-			$sendto = $email;
-			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
-			$fromtype = 'company';
-			$sendtocc = 'ashok.sharma@microprixs.in';
-			$subject = "JVMD OTP Detail";	
+			$_POST['sendto'] = $email;
+			$_POST['receiver'] = 'contact';
+			
+			$_POST['message'] = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+
+			$_POST['subject'] = 'JVMD OTP Detail';
+			
+			$_POST['fromtype'] = 'company';
+			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+			$_POST['sender'] = $email;
+			
 			$triggersendname = 'COMPANY_SENTBYMAIL';
-			$paramname = 'contact';
+			$paramname = '';
 			$mode = 'Information';
-			$trackid = 'ctc'.$object->id;
+			$trackid = '';
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
@@ -126,18 +132,24 @@
 			$smsfile = new CSMSSend($url);
 			$result = $smsfile->sendSMS();
 
+			
 			/*Email*/
 			// Actions to send emails
 			$action = 'send';
-			$sendto = $email;
-			$message = "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.";
-			$fromtype = 'company';
-			$sendtocc = 'ashok.sharma@microprixs.in';
-			$subject = "JVMD OTP Detail";	
+			$_POST['sendto'] = $email;
+			$_POST['receiver'] = 'contact';
+			$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+			$_POST['subject'] = 'JVMD OTP Detail';
+			
+			$_POST['fromtype'] = 'company';
+			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+			$_POST['sender'] = $email;
+			
 			$triggersendname = 'COMPANY_SENTBYMAIL';
-			$paramname = 'contact';
+			$paramname = '';
 			$mode = 'Information';
-			$trackid = 'ctc'.$object->id;
+			$trackid = '';
+
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
