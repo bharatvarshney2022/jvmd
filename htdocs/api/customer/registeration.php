@@ -95,7 +95,7 @@
 				if($societe_id > 0)
 				{
 					$objectSociete->address = $address;
-					$objectSociete->email = $email;
+					$objectSociete->email = $object->email;
 					$objectSociete->town = $city;
 					$objectSociete->state_id = $fk_departement; // Country
 					$objectSociete->country_id = '117'; // Country
@@ -134,7 +134,7 @@
 
 						$objectContact->otp = $otp;
 						$objectContact->address = $address;
-						$objectContact->email = $email;
+						$objectContact->email = $object->email;
 						$objectContact->town = $city;
 						$objectContact->state_id = $fk_departement; // Country
 						$objectContact->country_id = '117'; // Country
