@@ -22,7 +22,7 @@
 	
 	$json = array();
 	
-	$object = new Contact($db);
+	
 	
 	//$isExist = check_user_mobile($user_mobile, $device_id);
 	$isExist = check_user_mobile_email($user_mobile, $email);
@@ -45,6 +45,9 @@
 			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
 			$resql = $db->query($updateSql);
 
+			$id = $isExist->rowid;
+			$object = new Contact($db);
+			$object->fetch($id);
 			/*Email*/
 			// Actions to send emails
 			$action = 'send';
@@ -144,8 +147,8 @@
 			$resql = $db->query($sql);
 			$id = $last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
 			
-			$objectTemp = new ContactTemp($db);
-			$objectTemp->fetch($id);
+			$object = new ContactTemp($db);
+			$object->fetch($id);
 
 			/*$object->firstname = $object->lastname = $object->priv = "";
 			$object->statut = 0;
@@ -170,7 +173,7 @@
 			// Actions to send emails
 			$action = 'send';
 			$_POST['sendto'] = $email;
-			$_POST['receiver'] = 'contact';
+			$_POST['receiver'] = 'contact_temp';
 			$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
 			$_POST['subject'] = 'JVMD OTP Detail';
 			
@@ -185,7 +188,7 @@
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new1');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 				
 		}
 	}
