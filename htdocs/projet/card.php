@@ -635,6 +635,8 @@ if (empty($reshook))
 		$objectNot = new FCMNotify($db);
 
 		$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
+
+		print_r($notifyData); exit;
 		
 		if($notifyData)
 		{
