@@ -108,7 +108,7 @@ class CSMSFile
 
 		$res = false;
 
-		dol_syslog("CSMSFile::sendfile addr_to=".$this->addr_to, LOG_DEBUG);
+		dol_syslog("CSMSFile::sendfile11 addr_to=".$this->addr_to, LOG_DEBUG);
 		dol_syslog("CSMSFile::sendfile message=\n".$this->message);
 
 		$this->message = stripslashes($this->message);

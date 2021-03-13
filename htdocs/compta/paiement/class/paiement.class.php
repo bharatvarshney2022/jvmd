@@ -1298,6 +1298,12 @@ class Paiement extends CommonObject
 	 *	@param		int		$force_thirdparty_id	Force thirdparty id
 	 *	@return		int								<0 if KO, >0 if OK
 	 */
+	public function fetch_thirdparty_temp($force_thirdparty_id = 0)
+	{
+		return parent::fetch_thirdparty_temp($force_thirdparty_id);
+	}
+	
+
 	public function fetch_thirdparty($force_thirdparty_id = 0)
 	{
 		// phpcs:enable

@@ -1514,6 +1514,34 @@ abstract class CommonObject
 	 *		@param		int		$force_thirdparty_id	Force thirdparty id
 	 *		@return		int								<0 if KO, >0 if OK
 	 */
+	public function fetch_thirdparty_temp($force_thirdparty_id = 0)
+	{
+		// phpcs:enable
+		global $conf;
+
+		if (empty($this->socid) && empty($this->fk_soc) && empty($this->fk_thirdparty) && empty($force_thirdparty_id))
+			return 0;
+
+		require_once DOL_DOCUMENT_ROOT.'/societe/class/societe_temp.class.php';
+
+		$idtofetch = isset($this->socid) ? $this->socid : (isset($this->fk_soc) ? $this->fk_soc : $this->fk_thirdparty);
+		if ($force_thirdparty_id)
+			$idtofetch = $force_thirdparty_id;
+
+		if ($idtofetch) {
+			$thirdparty = new SocieteTemp($this->db);
+			$result = $thirdparty->fetch($idtofetch);
+			$this->thirdparty = $thirdparty;
+
+			// Use first price level if level not defined for third party
+			if (!empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->thirdparty->price_level)) {
+				$this->thirdparty->price_level = 1;
+			}
+
+			return $result;
+		} else return -1;
+	}
+
 	public function fetch_thirdparty($force_thirdparty_id = 0)
 	{
 		// phpcs:enable

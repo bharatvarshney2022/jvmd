@@ -8,6 +8,7 @@
 
 	require '../../main.inc.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/contact/class/contact_temp.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe_temp.class.php';
@@ -21,7 +22,7 @@
 	
 	$json = array();
 	
-	$object = new User($db);
+	$object = new Contact($db);
 	
 	//$isExist = check_user_mobile($user_mobile, $device_id);
 	$isExist = check_user_mobile_email($user_mobile, $email);
@@ -74,19 +75,16 @@
 	}
 	else
 	{
-		
 		if($isExist1)
 		{
 			$status_code = '1';
 			$message = 'New account has been created';
 
-			$table = MAIN_DB_PREFIX."socpeople";
+			$table = MAIN_DB_PREFIX."socpeople_temp";
             $updateSql ="UPDATE ".$table." SET";
-			$updateSql.= " otp = '".$db->escape($isExist1->otp)."',  email = '".$db->escape($email)."', fcmToken = '".$db->escape($fcmToken)."', device_id = '".$db->escape($device_id)."' ";
-			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
+			$updateSql.= " otp = '".$db->escape($isExist1->otp)."',  email = '".$db->escape($email)."' ";
+			$updateSql.= " WHERE rowid = '".(int)$isExist1->rowid."' ";
 			$resql = $db->query($updateSql);
-
-
 
 			$smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
@@ -99,11 +97,17 @@
 			$smsfile = new CSMSSend($url);
 			$result = $smsfile->sendSMS();
 
+			$object = new SocieteTemp($db);
+			$object->fetch($isExist1->rowid);
+
+			$id = $isExist1->rowid;
+
+
 			/*Email*/
 			// Actions to send emails
 			$action = 'send';
 			$_POST['sendto'] = $email;
-			$_POST['receiver'] = 'contact';
+			$_POST['receiver'] = 'societe_temp';
 			$_POST['message'] = "Dear, Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.";
 			$_POST['subject'] = 'JVMD OTP Detail';
 			
@@ -117,24 +121,8 @@
 			$trackid = '';
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
-			/*Email*/
-			// Actions to send emails
-			$action = 'send';
-			$_POST['sendto'] = $email;
-			$_POST['receiver'] = 'contact';
-			$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
-			$_POST['subject'] = 'JVMD OTP Detail';
 			
-			$_POST['fromtype'] = 'company';
-			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
-			$_POST['sender'] = $email;
-			
-			$triggersendname = 'COMPANY_SENTBYMAIL';
-			$paramname = '';
-			$mode = 'Information';
-			$trackid = '';
 
-			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 		}
 		else
@@ -154,12 +142,12 @@
 
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($user_mobile)."', phone_mobile = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
 			$resql = $db->query($sql);
-			$last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
+			$id = $last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
 			
-			/*
-			$object = new ContactTemp($db);
+			$objectTemp = new ContactTemp($db);
+			$objectTemp->fetch($id);
 
-			$object->firstname = $object->lastname = $object->priv = "";
+			/*$object->firstname = $object->lastname = $object->priv = "";
 			$object->statut = 0;
 
 			$object->create($tempUser);*/

@@ -112,9 +112,10 @@ if (($action == 'send' || $action == 'relance') && !$_POST['addfile'] && !$_POST
 	if (is_object($object))
 	{
 		$result = $object->fetch($id);
+		//echo $object->element; exit;
 
 		$sendtosocid = 0; // Id of related thirdparty
-		if (method_exists($object, "fetch_thirdparty") && !in_array($object->element, array('member', 'user', 'expensereport', 'societe', 'contact')))
+		if (method_exists($object, "fetch_thirdparty") && !in_array($object->element, array('member', 'user', 'expensereport', 'societe', 'societe_temp', 'contact', 'contact_temp')))
 		{
 			$resultthirdparty = $object->fetch_thirdparty();
 			$thirdparty = $object->thirdparty;
@@ -138,6 +139,17 @@ if (($action == 'send' || $action == 'relance') && !$_POST['addfile'] && !$_POST
 			$contact = $object;
 			if ($contact->id > 0) {
 				$contact->fetch_thirdparty();
+				$thirdparty = $contact->thirdparty;
+				if (is_object($thirdparty) && $thirdparty->id > 0) $sendtosocid = $thirdparty->id;
+			}
+		} elseif ($object->element == 'societe_temp')
+		{
+			$thirdparty = $object;
+		} elseif ($object->element == 'contact_temp')
+		{
+			$contact = $object;
+			if ($contact->id > 0) {
+				$contact->fetch_thirdparty_temp($contact->id);
 				$thirdparty = $contact->thirdparty;
 				if (is_object($thirdparty) && $thirdparty->id > 0) $sendtosocid = $thirdparty->id;
 			}
@@ -181,7 +193,7 @@ if (($action == 'send' || $action == 'relance') && !$_POST['addfile'] && !$_POST
 			// Recipient was provided from combo list
 			foreach ($receiver as $key=>$val)
 			{
-				if ($val == 'thirdparty') // Key selected means current third party ('thirdparty' may be used for current member or current user too)
+				if ($val == 'thirdparty' || $val == 'societe_temp') // Key selected means current third party ('thirdparty' may be used for current member or current user too)
 				{
 					$tmparray[] = dol_string_nospecial($thirdparty->getFullName($langs), ' ', array(",")).' <'.$thirdparty->email.'>';
 				}

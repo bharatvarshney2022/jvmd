@@ -88,9 +88,7 @@ class CSMSSend
 
 		$res = false;
 
-		dol_syslog("CSMSFile::sendfile addr_to=".$this->addr_to, LOG_DEBUG);
-		dol_syslog("CSMSFile::sendfile message=\n".$this->message);
-
+		
 		$this->addr_url = stripslashes($this->addr_url);
 
 		
@@ -105,11 +103,11 @@ class CSMSSend
 				$sms->url = $this->addr_url;
 
 				$res = $sms->SmsSend();
-				if ($res <= 0)
+				if (!$res)
 				{
 					dol_syslog("CSMSFile::sendfile: sms send error=".$this->error, LOG_ERR);
 				} else {
-					var_dump($res);        // 1973128
+					//var_dump($res);        // 1973128
 					if (!empty($conf->global->MAIN_SMS_DEBUG)) $this->dump_sms_result($res);
 				}
 			} catch (Exception $e)
