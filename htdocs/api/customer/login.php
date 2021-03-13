@@ -116,7 +116,7 @@
 			
 			$_POST['fromtype'] = 'company';
 			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
-			$_POST['sender'] = $email;
+			$_POST['sender'] = "support@serve.jmvdgroup.in";
 			
 			$triggersendname = 'COMPANY_SENTBYMAIL';
 			$paramname = '';
@@ -126,7 +126,7 @@
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
 
-			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new2');
 		}
 		else
 		{
