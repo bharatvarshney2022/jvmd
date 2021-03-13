@@ -308,14 +308,32 @@ class FCMNotify
 
 					//echo '<pre>'; print_r($obj);
 
-					$projtitle = $projref = $projtechnician = '';
+					$projtitle = $projref = "";
+					$projtechnician = '';
+					$technician = 0;
 					if (!empty($obj->fk_projet)) {
 						
 						$proj = new Project($this->db);
 						$proj->fetch($obj->fk_projet);
 						$projtitle = $proj->title;
 						$projref = $proj->ref;
-						$projprojtechnician = $proj->fk_technician;
+						$technician = $proj->fk_technician;
+
+						if($technician)
+						{
+							$sqlTech = "SELECT lastname, firstname FROM ".MAIN_DB_PREFIX."user WHERE rowid = '".$technician."'";
+							$resultTech = $this->db->query($sqlTech);
+							if ($resultTech) {
+								$numTech = $this->db->num_rows($resultTech);
+
+								if($numTech > 0)
+								{
+									$objTech = $this->db->fetch_object($resultTech);
+
+									$projtechnician = dolGetFirstLastname($objTech->firstname, $objTech->lastname);
+								}
+							}
+						}
 					}
 
 					$sendto = dolGetFirstLastname($obj->firstname, $obj->lastname)." <".$obj->email.">";
@@ -335,7 +353,7 @@ class FCMNotify
 					}
 					elseif($obj->code == 'PROJET_TECHNICIAN_ASSIGN')
 					{
-						$notify_text =  $projprojtechnician." Technician has been assigned to Lead #".$projref;
+						$notify_text =  $projtechnician." Technician has been assigned to Lead #".$projref;
 					}
 
 
