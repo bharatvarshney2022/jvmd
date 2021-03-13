@@ -323,6 +323,8 @@ class FCMNotify
 					$object_type = 'projet';
 					$type_target = 'tosocid';
 
+					$notify_text = "";
+
 					if($obj->code == 'PROJET_CREATE')
 					{
 						$notify_text =  "Lead #".$projref." has been created";
@@ -330,6 +332,10 @@ class FCMNotify
 					elseif($obj->code == 'PROJET_ACCEPT')
 					{
 						$notify_text =  "Lead #".$projref." has been accepted";
+					}
+					elseif($obj->code == 'PROJET_TECHNICIAN_ASSIGN')
+					{
+						$notify_text =  $projprojtechnician." Technician has been assigned to Lead #".$projref;
 					}
 
 
