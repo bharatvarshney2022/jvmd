@@ -196,7 +196,7 @@
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'email' => "".$email, 'customer_type' => 'new1');
 				
 		}
 	}
