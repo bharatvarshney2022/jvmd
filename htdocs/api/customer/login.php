@@ -15,7 +15,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
-	echo $email = GETPOST('email', 'alpha');
+	$email = GETPOST('email', 'alpha');
 	$device_id = GETPOST('device_id', 'alpha');
 	$fcmToken = GETPOST('fcmToken', 'alpha');
 	
@@ -92,6 +92,7 @@
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 			$PHONE = $mobile;
 			$MESSAGE = $smsmessage;
+			
 			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 		
 			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
