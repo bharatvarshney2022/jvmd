@@ -14,7 +14,7 @@
 	
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
-	$mobile = GETPOST('mobile', 'alpha');
+	$user_mobile = GETPOST('mobile', 'alpha');
 	$email = GETPOST('email', 'alpha');
 	$device_id = GETPOST('device_id', 'alpha');
 	$fcmToken = GETPOST('fcmToken', 'alpha');
@@ -23,9 +23,9 @@
 	
 	$object = new User($db);
 	
-	//$isExist = check_user_mobile($mobile, $device_id);
-	$isExist = check_user_mobile_email($mobile, $email);
-	$isExist1 = check_user_mobile_temp($mobile);
+	//$isExist = check_user_mobile($user_mobile, $device_id);
+	$isExist = check_user_mobile_email($user_mobile, $email);
+	$isExist1 = check_user_mobile_temp($user_mobile);
 	$isDeviceExist = check_user_device($device_id);
 
 	
@@ -65,7 +65,7 @@
 			$trackid = '';
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$user_mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
 			$status_code = '0';
 			$message = 'Customer not activated! Please contact support!!';
@@ -90,7 +90,7 @@
 
 			$smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
-			$PHONE = $mobile;
+			$PHONE = $user_mobile;
 			$MESSAGE = $smsmessage;
 			
 			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
@@ -135,7 +135,7 @@
 			$trackid = '';
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$mobile, 'email' => "".$email, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 		}
 		else
 		{
@@ -145,14 +145,14 @@
 
 			$otp = rand(111111, 999999);
 
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($mobile)."'";
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($user_mobile)."'";
 			$resql = $db->query($sql);
 
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($mobile)."', email = '".$db->escape($email)."', statut = '0'";
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', statut = '0'";
 			$resql = $db->query($sql);
 			$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
 
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($mobile)."', phone_mobile = '".$db->escape($mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
+			$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($user_mobile)."', phone_mobile = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
 			$resql = $db->query($sql);
 			$last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
 			
@@ -169,7 +169,7 @@
 
 			$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
-			$PHONE = $mobile;
+			$PHONE = $user_mobile;
 			$MESSAGE = $smsmessage;
 			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 		
@@ -197,7 +197,7 @@
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$mobile, 'email' => "".$email, 'customer_type' => 'new1');
+			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new1');
 				
 		}
 	}
