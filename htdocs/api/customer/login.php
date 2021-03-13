@@ -28,7 +28,6 @@
 	$isExist1 = check_user_mobile_temp($user_mobile);
 	$isDeviceExist = check_user_device($device_id);
 
-	
 	if($isExist)
 	{
 		if($isExist->statut)
@@ -75,6 +74,7 @@
 	}
 	else
 	{
+		
 		if($isExist1)
 		{
 			$status_code = '1';
@@ -92,7 +92,7 @@
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 			$PHONE = $user_mobile;
 			$MESSAGE = $smsmessage;
-			
+
 			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 		
 			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
