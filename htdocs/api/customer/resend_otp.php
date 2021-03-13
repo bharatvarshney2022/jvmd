@@ -36,8 +36,8 @@
 		$smsmessage = str_replace(" ", "%20", "Dear ".$isExist['firstname']." ".$isExist['lastname'].", Your OTP is ".$otp.". Please DO NOT share OTP.");
 		$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 		$PHONE = $mobile;
-		$MESSAGE = $smsmessage;
-		$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
+		$SMSMESSAGE = $smsmessage;
+		$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$SMSMESSAGE."&route=15";
 	
 		require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
 		$smsfile = new CSMSSend($url);
@@ -68,7 +68,7 @@
 
 		include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 		/* End mail Action */
-		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
+		$json = array('status_code' => $status_code, 'message' => $message1, 'user_otp' => "".$otp);
 	}
 	else
 	{
