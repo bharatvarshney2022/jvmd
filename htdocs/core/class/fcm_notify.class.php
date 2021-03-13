@@ -297,8 +297,6 @@ class FCMNotify
 			$sql .= " AND s.rowid = ".$object->socid;
 		}
 
-		echo $sql; exit;
-
 		$count = 0;
 		$result = $this->db->query($sql);
 		if ($result) {
