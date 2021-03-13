@@ -338,7 +338,7 @@ class FCMNotify
 					if($this->db->query($sql))
 					{
 						$fcmResult = sendFCM($obj->label, $notify_text, $obj->fcmToken);
-						print_r($fcmResult); exit;
+						echo $obj->fcmToken; print_r($fcmResult); exit;
 						$fcmResultRow = json_decode($fcmResult);
 						
 						if($fcmResultRow->success == 1)
