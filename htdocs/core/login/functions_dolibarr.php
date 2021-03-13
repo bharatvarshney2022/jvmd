@@ -439,7 +439,8 @@ function check_user_mobile_temp($usermobile, $entitytotest = 1)
 		dol_syslog("functions_subpe::check_user_mobile_temp usermobile=".$usermobile." entitytotest=".$entitytotest);
 
 		// If test username/password asked, we define $test=false if ko and $login var to login if ok, set also $_SESSION["dol_loginmesg"] if ko
-		$table = MAIN_DB_PREFIX."socpeople_temp";
+		//$table = MAIN_DB_PREFIX."socpeople_temp";
+		$table = MAIN_DB_PREFIX."socpeople";
 		
 		$sql ='SELECT rowid, firstname, lastname, email, phone_mobile, photo, otp, statut';
 		$sql.=' FROM '.$table;

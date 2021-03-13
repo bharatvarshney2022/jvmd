@@ -76,67 +76,48 @@
 	
 			$json = array('status_code' => $status_code, 'message' => $message);
 		}	
-	}else{
-		if($isEmailExist){
-			$status_code = '0';
-			$message = 'Email already exist!!';
-	
-			$json = array('status_code' => $status_code, 'message' => $message);
-		}else if($isExist1){
-			$status_code = '0';
-			$message = 'Mobile number already exist!!';
-	
-			$json = array('status_code' => $status_code, 'message' => $message);
-		}else{
-			// Save data in Temp table
-			$objectSoc = new SocieteTemp($db);
-
-			$otp = rand(111111, 999999);
-
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($user_mobile)."'";
-			$resql = $db->query($sql);
-
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', statut = '0'";
-			$resql = $db->query($sql);
-			$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
-
-			$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($user_mobile)."', phone_mobile = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
-			$resql = $db->query($sql);
-			$id = $last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
-			
-			$object = new ContactTemp($db);
-			$object->fetch($id);
-
-			/*$object->firstname = $object->lastname = $object->priv = "";
-			$object->statut = 0;
-
-			$object->create($tempUser);*/
-
+	}
+	else
+	{
+		if($isExist1)
+		{
 			$status_code = '1';
-			$messagetxt = 'New account has been created, Your OTP have been send on your email for verification';
+			$messagetxt = 'New account has been created, Your OTP have been send on your email for verification.';
 
-			$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
+			$table = MAIN_DB_PREFIX."socpeople_temp";
+            $updateSql ="UPDATE ".$table." SET";
+			$updateSql.= " otp = '".$db->escape($isExist1->otp)."',  email = '".$db->escape($email)."' ";
+			$updateSql.= " WHERE rowid = '".(int)$isExist1->rowid."' ";
+			$resql = $db->query($updateSql);
+
+			$smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 			$PHONE = $user_mobile;
 			$MESSAGE = $smsmessage;
+
 			$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 		
 			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
 			$smsfile = new CSMSSend($url);
 			$result = $smsfile->sendSMS();
 
-			
+			$object = new SocieteTemp($db);
+			$object->fetch($isExist1->rowid);
+
+			$id = $isExist1->rowid;
+
+
 			/*Email*/
 			// Actions to send emails
 			$action = 'send';
 			$_POST['sendto'] = $email;
-			$_POST['receiver'] = 'contact_temp';
-			$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+			$_POST['receiver'] = 'societe_temp';
+			$_POST['message'] = "Dear, Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.";
 			$_POST['subject'] = 'JVMD OTP Detail';
 			
 			$_POST['fromtype'] = 'company';
 			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
-			$_POST['sender'] = $email;
+			$_POST['sender'] = "support@serve.jmvdgroup.in";
 			
 			$triggersendname = 'COMPANY_SENTBYMAIL';
 			$paramname = '';
@@ -145,10 +126,80 @@
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
-			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
+
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 		}
+		else
+		{
+			if($isEmailExist)
+			{
+				$status_code = '0';
+				$message = 'Email id already exit, Please try another!!';
+		
+				$json = array('status_code' => $status_code, 'message' => $message);
+			}else{	
+				// Save data in Temp table
+				$objectSoc = new SocieteTemp($db);
+
+				$otp = rand(111111, 999999);
+
+				$sql = "DELETE FROM ".MAIN_DB_PREFIX."societe_temp WHERE phone = '".$db->escape($user_mobile)."'";
+				$resql = $db->query($sql);
+
+				$sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_temp SET phone = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', statut = '0'";
+				$resql = $db->query($sql);
+				$last_insert = $db->last_insert_id(MAIN_DB_PREFIX."societe_temp");
+
+				$sql = "INSERT INTO ".MAIN_DB_PREFIX."socpeople_temp SET fk_soc = '".(int)$last_insert."', phone = '".$db->escape($user_mobile)."', phone_mobile = '".$db->escape($user_mobile)."', email = '".$db->escape($email)."', otp = '".$db->escape($otp)."', statut = '0'";
+				$resql = $db->query($sql);
+				$id = $last_insert_people = $db->last_insert_id(MAIN_DB_PREFIX."socpeople_temp");
+				
+				$object = new ContactTemp($db);
+				$object->fetch($id);
+
+				/*$object->firstname = $object->lastname = $object->priv = "";
+				$object->statut = 0;
+
+				$object->create($tempUser);*/
+
+				$status_code = '1';
+				$messagetxt = 'New account has been created, Your OTP have been send on your email for verification';
+
+				$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
+				$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
+				$PHONE = $user_mobile;
+				$MESSAGE = $smsmessage;
+				$url = "http://opensms.microprixs.com/api/mt/SendSMS?user=jmvd&password=jmvd&senderid=".$SENDERID."&channel=TRANS&DCS=0&flashsms=0&number=".$PHONE."&text=".$MESSAGE."&route=15";
 			
-	
+				require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
+				$smsfile = new CSMSSend($url);
+				$result = $smsfile->sendSMS();
+
+				
+				/*Email*/
+				// Actions to send emails
+				$action = 'send';
+				$_POST['sendto'] = $email;
+				$_POST['receiver'] = 'contact_temp';
+				$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+				$_POST['subject'] = 'JVMD OTP Detail';
+				
+				$_POST['fromtype'] = 'company';
+				//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+				$_POST['sender'] = $email;
+				
+				$triggersendname = 'COMPANY_SENTBYMAIL';
+				$paramname = '';
+				$mode = 'Information';
+				$trackid = '';
+
+				include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+				
+				$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
+				
+			}	
+				
+		}
 	}
 	
 	$headers = 'Content-type: application/json';
