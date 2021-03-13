@@ -80,6 +80,14 @@
 			$status_code = '1';
 			$message = 'New account has been created';
 
+			$table = MAIN_DB_PREFIX."socpeople";
+            $updateSql ="UPDATE ".$table." SET";
+			$updateSql.= " otp = '".$db->escape($isExist1->otp)."',  email = '".$db->escape($email)."', fcmToken = '".$db->escape($fcmToken)."', device_id = '".$db->escape($device_id)."' ";
+			$updateSql.= " WHERE rowid = '".(int)$isExist->rowid."' ";
+			$resql = $db->query($updateSql);
+
+
+
 			$smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
 			$PHONE = $mobile;
@@ -89,7 +97,43 @@
 			require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSSend.class.php';
 			$smsfile = new CSMSSend($url);
 			$result = $smsfile->sendSMS();
+
+			/*Email*/
+			// Actions to send emails
+			$action = 'send';
+			$_POST['sendto'] = $email;
+			$_POST['receiver'] = 'contact';
+			$_POST['message'] = "Dear, Your OTP for login is ".$isExist1->otp.". Please DO NOT share OTP.";
+			$_POST['subject'] = 'JVMD OTP Detail';
 			
+			$_POST['fromtype'] = 'company';
+			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+			$_POST['sender'] = $email;
+			
+			$triggersendname = 'COMPANY_SENTBYMAIL';
+			$paramname = '';
+			$mode = 'Information';
+			$trackid = '';
+
+			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+			/*Email*/
+			// Actions to send emails
+			$action = 'send';
+			$_POST['sendto'] = $email;
+			$_POST['receiver'] = 'contact';
+			$_POST['message'] = "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.";
+			$_POST['subject'] = 'JVMD OTP Detail';
+			
+			$_POST['fromtype'] = 'company';
+			//$_POST['sendtocc'] = 'ashok.sharma@microprixs.in';
+			$_POST['sender'] = $email;
+			
+			$triggersendname = 'COMPANY_SENTBYMAIL';
+			$paramname = '';
+			$mode = 'Information';
+			$trackid = '';
+
+			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$mobile, 'customer_type' => 'new');
 		}
 		else

@@ -13,7 +13,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
-	//$email = GETPOST('email', 'alpha');
+	$email = GETPOST('email', 'alpha');
 	
 	$json = array();
 	
