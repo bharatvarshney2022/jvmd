@@ -18,7 +18,8 @@
 	$firstname = GETPOST('firstname', 'alpha');
 	$lastname = GETPOST('lastname', 'alpha');
 	$address = GETPOST('address', 'alpha');
-	$email = GETPOST('email', 'alpha');
+	//$email = GETPOST('email', 'alpha');
+	$email = '';
 	$city = GETPOST('city', 'alpha');
 	$state = GETPOST('state', 'alpha');
 	$country = GETPOST('country', 'alpha');
@@ -69,7 +70,7 @@
 			$object->firstname = $firstname;
 			$object->lastname = $lastname;
 			$object->address = $address;
-			$object->email = $email;
+			//$object->email = $email;
 			$object->town = $city;
 			$object->fk_departement = $fk_departement; // Country
 			$object->fk_pays = '117'; // Country
