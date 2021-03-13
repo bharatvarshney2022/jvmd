@@ -421,7 +421,7 @@ if (empty($reshook))
 
 				$objectNot = new FCMNotify($db);
 
-				$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+				$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
 				
 				if($notifyData)
 				{
@@ -634,7 +634,7 @@ if (empty($reshook))
 
 		$objectNot = new FCMNotify($db);
 
-		$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+		$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
 		
 		if($notifyData)
 		{
