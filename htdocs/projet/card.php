@@ -636,6 +636,7 @@ if (empty($reshook))
 
 		$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
 
+		echo $object->socid;
 		print_r($notifyData); exit;
 		
 		if($notifyData)
