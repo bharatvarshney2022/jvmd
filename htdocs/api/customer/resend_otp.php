@@ -68,7 +68,7 @@
 
 		include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 		/* End mail Action */
-		$json = array('status_code' => $status_code, 'message' => $message1, 'user_otp' => "".$otp);
+		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
 	}
 	else
 	{
