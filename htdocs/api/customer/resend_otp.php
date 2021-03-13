@@ -24,7 +24,7 @@
 	if($isExist)
 	{
 		$status_code = '1';
-		$message = 'Resend OTP';
+		$messagetxt = 'Resend OTP';
 
 		$otp = rand(111111, 999999);
 		$table = MAIN_DB_PREFIX."socpeople_temp";
@@ -68,7 +68,7 @@
 
 		include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 		/* End mail Action */
-		$json = array('status_code' => $status_code, 'message' => $message, 'user_otp' => "".$otp);
+		$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_otp' => "".$otp);
 	}
 	else
 	{
