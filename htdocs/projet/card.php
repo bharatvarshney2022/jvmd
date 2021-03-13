@@ -419,6 +419,10 @@ if (empty($reshook))
 				$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 110, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
 				$resqlVendor = $db->query($sqlNotify);
 
+				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+				$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 111, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
+				$resqlVendor = $db->query($sqlNotify);
+
 				$objectNot = new FCMNotify($db);
 
 				$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
@@ -548,6 +552,35 @@ if (empty($reshook))
 				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
 				header("Location: ".$backurl);
 				exit;*/
+
+				// notifications
+				// Create Notification
+				$objectSoc = new Societe($db);
+				$contactData = $objectSoc->societe_contact($object->socid);
+
+				$contactRow = array_keys($contactData);
+
+				$contact_id = 0;
+				if($contactRow)
+				{
+					$contact_id = $contactRow[0];
+				}
+				
+				$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+				$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 112, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
+				$resqlVendor = $db->query($sqlNotify);
+
+				$objectNot = new FCMNotify($db);
+
+				$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
+
+				if($notifyData)
+				{
+					foreach($notifyData as $rowid => $notifyRow)
+					{
+						$objectNot->send($notifyRow['code'], $object);	
+					}
+				}
 				
 				if ($error)
 				{

@@ -353,7 +353,15 @@ class FCMNotify
 					}
 					elseif($obj->code == 'PROJET_TECHNICIAN_ASSIGN')
 					{
-						$notify_text =  $projtechnician." Technician has been assigned to Lead #".$projref;
+						$notify_text =  $projtechnician." has been assigned to Lead #".$projref;
+					}
+					elseif($obj->code == 'PROJET_RESCHEDULED')
+					{
+						$notify_text =  "Lead #".$projref." has been re-schefuled";
+					}
+					elseif($obj->code == 'PROJET_COMPLETE')
+					{
+						$notify_text =  "Lead #".$projref." has been completed";
 					}
 
 
