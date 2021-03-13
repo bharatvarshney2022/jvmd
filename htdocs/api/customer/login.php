@@ -15,7 +15,7 @@
 	require_once DOL_DOCUMENT_ROOT.'/core/login/functions_dolibarr.php';
 	
 	$mobile = GETPOST('mobile', 'alpha');
-	$email = GETPOST('email', 'alpha');
+	echo $email = GETPOST('email', 'alpha');
 	$device_id = GETPOST('device_id', 'alpha');
 	$fcmToken = GETPOST('fcmToken', 'alpha');
 	
