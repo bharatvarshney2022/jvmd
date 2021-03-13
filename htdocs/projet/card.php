@@ -30,6 +30,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/fcm_notify.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'companies'));
@@ -584,6 +585,36 @@ if (empty($reshook))
 	if ($action == 'confirm_validate' && $confirm == 'yes')
 	{
 		$result = $object->setValid($user);
+
+		$objectSoc = new Societe($db);
+		$contactData = $objectSoc->societe_contact($object->socid);
+
+		$contactRow = array_keys($contactData);
+
+		$contact_id = 0;
+		if($contactRow)
+		{
+			$contact_id = $contactRow[0];
+		}
+
+
+		// Create Notification
+		$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+		$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 109, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
+		$resqlVendor = $db->query($sqlNotify);
+
+		$objectNot = new FCMNotify($db);
+
+		$notifyData = $objectNot->getNotificationsArray('', $user_id, $objectNot, 0);
+		
+		if($notifyData)
+		{
+			foreach($notifyData as $rowid => $notifyRow)
+			{
+				$objectNot->send($notifyRow['code'], $object);	
+			}
+		}
+
 		if ($result <= 0)
 		{
 			setEventMessages($object->error, $object->errors, 'errors');
