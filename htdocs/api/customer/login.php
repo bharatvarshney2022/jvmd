@@ -34,7 +34,7 @@
 		if($isExist->statut)
 		{		
 			$status_code = '1';
-			$message = 'Customer verified successfully';
+			$messagetxt = 'Customer verified successfully';
 			
 			$otp = rand(111111, 999999);
             $smsmessage = str_replace(" ", "%20", "Dear ".$isExist->firstname." ".$isExist->lastname.", Your OTP for login is ".$otp.". Please DO NOT share OTP.");
@@ -68,7 +68,7 @@
 			$trackid = '';
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$user_mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$user_mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
 			$status_code = '0';
 			$message = 'Customer not activated! Please contact support!!';
@@ -81,7 +81,7 @@
 		if($isExist1)
 		{
 			$status_code = '1';
-			$message = 'New account has been created';
+			$messagetxt = 'New account has been created';
 
 			$table = MAIN_DB_PREFIX."socpeople_temp";
             $updateSql ="UPDATE ".$table." SET";
@@ -126,7 +126,7 @@
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
 
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$isExist1->otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 		}
 		else
 		{
@@ -156,7 +156,7 @@
 			$object->create($tempUser);*/
 
 			$status_code = '1';
-			$message = 'New account has been created!';
+			$messagetxt = 'New account has been created!';
 
 			$smsmessage = str_replace(" ", "%20", "Dear, Your OTP for login is ".$otp.". Please DO NOT share OTP.");
 			$SENDERID = $conf->global->MAIN_MAIL_SMS_FROM;
@@ -188,7 +188,7 @@
 
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 			
-			$json = array('status_code' => $status_code, 'message' => $message, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "", 'user_otp' => "".$otp, 'fullname' => '', 'mobile' => "".$user_mobile, 'email' => "".$email, 'customer_type' => 'new');
 				
 		}
 	}
