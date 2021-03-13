@@ -190,8 +190,6 @@ class FCMNotify
 					$sql .= " AND s.rowid = ".$socid;
 				}
 
-				echo $sql; exit;
-
 				dol_syslog(__METHOD__." ".$notifcode.", ".$socid."", LOG_DEBUG);
 
 				$resql = $this->db->query($sql);
