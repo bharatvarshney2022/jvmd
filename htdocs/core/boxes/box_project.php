@@ -81,7 +81,7 @@ class box_project extends ModeleBoxes
 		$totalnb = 0;
 		$totalnbTask = 0;
 
-		$textHead = $langs->trans("Top 10 Pending / Rejected Support Tickets");
+		$textHead = $langs->trans("Pending / Rejected Support Tickets");
 		$this->info_box_head = array('text' => $textHead, 'label' => 'project', 'limit'=> dol_strlen($textHead));
 
 		if(!$user->admin)

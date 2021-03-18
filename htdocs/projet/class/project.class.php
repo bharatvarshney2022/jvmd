@@ -1332,7 +1332,7 @@ class Project extends CommonObject
 		}
 		if($status == 3)
 		{
-			$statustxt = "Reject";
+			$statustxt = "Rejected";
 			if($user_group_id == 17){
 				$extraBtn = '<a target="_blank" class="btn btn-primary" href="'.DOL_URL_ROOT.'/projet/contact.php?id='.$this->id.'&action=invalidate">'.$langs->trans("Transfer").'</a>';
 			}

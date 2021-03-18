@@ -1224,6 +1224,8 @@ $boxlist .= $resultboxes['boxlista'];
 
 $boxlist .= '</div>';
 
+$boxlist .= $resultboxes['boxlistb'];
+
 // For graph view
 if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 {
@@ -1302,7 +1304,7 @@ if (empty($user->socid) && empty($conf->global->MAIN_DISABLE_GLOBAL_BOXSTATS))
 $boxlist .= '<div class=" boxhalfright" id="boxhalfright">';
 
 $boxlist .= $boxstat;
-$boxlist .= $resultboxes['boxlistb'];
+
 
 $boxlist .= '</div>';
 $boxlist .= "\n";
