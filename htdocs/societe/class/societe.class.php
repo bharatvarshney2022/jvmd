@@ -941,6 +941,7 @@ class Societe extends CommonObject
 			$sql .= ",name_alias = '".$this->db->escape($this->name_alias)."'";
 			$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
 			$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
+			$sql .= ",address = ".(!empty($this->address) ? "'".$this->db->escape($this->address)."'" : "null");
 			$sql .= ",town = ".(!empty($this->town) ? "'".$this->db->escape($this->town)."'" : "null");
 			$sql .= ",fk_departement = ".(!empty($this->fk_departement) ? "'".$this->db->escape($this->fk_departement)."'" : "null");
 			$sql .= ",zip = ".(!empty($this->zip) ? "'".$this->db->escape($this->zip)."'" : "null");
@@ -953,6 +954,7 @@ class Societe extends CommonObject
 				$sql .= " firstname = '".$this->db->escape($this->name)."'"; // Required
 				$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
 				$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
+				$sql .= ",address = ".(!empty($this->address) ? "'".$this->db->escape($this->address)."'" : "null");
 				$sql .= ",town = ".(!empty($this->town) ? "'".$this->db->escape($this->town)."'" : "null");
 				$sql .= ",fk_departement = ".(!empty($this->fk_departement) ? "'".$this->db->escape($this->fk_departement)."'" : "null");
 				$sql .= ",zip = ".(!empty($this->zip) ? "'".$this->db->escape($this->zip)."'" : "null");
@@ -960,7 +962,11 @@ class Societe extends CommonObject
 				$sql .= ",userlongitude = ".(!empty($this->userlongitude) ? "'".$this->db->escape($this->userlongitude)."'" : "null");
 				$sql .= " WHERE fk_soc = ".(int) $this->rowid;
 
-				$result = 1;
+				$resql1 = $this->db->query($sql);
+
+				if ($resql) {
+					$result = 1;
+				}
 			}
 		}
 

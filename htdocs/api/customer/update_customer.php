@@ -72,6 +72,7 @@
 			$object->full_name = $full_name;
 			$object->fax = $secondary_phone;
 			$object->email = $email;
+			$object->address = $address;
 			$object->town = $city;
 			$object->fk_departement = $fk_departement; // Country
 			$object->zip = $postalCode;
