@@ -944,12 +944,22 @@ class Societe extends CommonObject
 			$sql .= ",town = ".(!empty($this->town) ? "'".$this->db->escape($this->town)."'" : "null");
 			$sql .= ",fk_departement = ".(!empty($this->fk_departement) ? "'".$this->db->escape($this->fk_departement)."'" : "null");
 			$sql .= ",zip = ".(!empty($this->zip) ? "'".$this->db->escape($this->zip)."'" : "null");
-			$sql .= ",userlatitude = ".(!empty($this->userlatitude) ? "'".$this->db->escape($this->userlatitude)."'" : "null");
-			$sql .= ",userlongitude = ".(!empty($this->userlongitude) ? "'".$this->db->escape($this->userlongitude)."'" : "null");
 			$sql .= " WHERE rowid = ".(int) $this->rowid;
 
 			$resql = $this->db->query($sql);
 			if ($resql) {
+
+				$sql  = "UPDATE ".MAIN_DB_PREFIX."socpeople SET ";
+				$sql .= " firstname = '".$this->db->escape($this->name)."'"; // Required
+				$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
+				$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
+				$sql .= ",town = ".(!empty($this->town) ? "'".$this->db->escape($this->town)."'" : "null");
+				$sql .= ",fk_departement = ".(!empty($this->fk_departement) ? "'".$this->db->escape($this->fk_departement)."'" : "null");
+				$sql .= ",zip = ".(!empty($this->zip) ? "'".$this->db->escape($this->zip)."'" : "null");
+				$sql .= ",userlatitude = ".(!empty($this->userlatitude) ? "'".$this->db->escape($this->userlatitude)."'" : "null");
+				$sql .= ",userlongitude = ".(!empty($this->userlongitude) ? "'".$this->db->escape($this->userlongitude)."'" : "null");
+				$sql .= " WHERE fk_soc = ".(int) $this->rowid;
+
 				$result = 1;
 			}
 		}
