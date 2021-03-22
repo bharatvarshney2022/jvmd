@@ -941,6 +941,11 @@ class Societe extends CommonObject
 			$sql .= ",name_alias = '".$this->db->escape($this->name_alias)."'";
 			$sql .= ",fax = ".(!empty($this->fax) ? "'".$this->db->escape($this->fax)."'" : "null");
 			$sql .= ",email = ".(!empty($this->email) ? "'".$this->db->escape($this->email)."'" : "null");
+			$sql .= ",town = ".(!empty($this->town) ? "'".$this->db->escape($this->town)."'" : "null");
+			$sql .= ",state_id = ".(!empty($this->fk_departement) ? "'".$this->db->escape($this->fk_departement)."'" : "null");
+			$sql .= ",zip = ".(!empty($this->zip) ? "'".$this->db->escape($this->zip)."'" : "null");
+			$sql .= ",userlatitude = ".(!empty($this->userlatitude) ? "'".$this->db->escape($this->userlatitude)."'" : "null");
+			$sql .= ",userlongitude = ".(!empty($this->userlongitude) ? "'".$this->db->escape($this->userlongitude)."'" : "null");
 			$sql .= " WHERE rowid = ".(int) $this->rowid;
 
 			$resql = $this->db->query($sql);

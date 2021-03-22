@@ -14,6 +14,33 @@
 	$full_name = GETPOST('full_name', 'alpha');
 	$secondary_phone = GETPOST('secondary_phone', 'alpha');
 	$email = GETPOST('email', 'aphda');
+
+	$address = GETPOST('address', 'alpha');
+	$city = GETPOST('city', 'alpha');
+	$state = GETPOST('state', 'alpha');
+	$country = GETPOST('country', 'alpha');
+	$userlatitude = GETPOST('userlatitude', 'alpha');
+	$userlongitude = GETPOST('userlongitude', 'alpha');
+	$postalCode = GETPOST('postalCode', 'alpha');
+
+	$fk_pincode = $fk_departement = 0;
+	$sql = "SELECT z.rowid, z.zip FROM ".MAIN_DB_PREFIX."c_pincodes as z";
+	$sql .= " WHERE z.active = 1 AND z.zip LIKE '".$db->escape($postalCode)."%'";
+	$resql1 = $db->query($sql);
+	if ($resql1)
+	{
+		$row = $db->fetch_array($resql1);
+		$fk_pincode = $row['rowid'];
+	}
+
+	$sql = "SELECT z.rowid, z.nom FROM ".MAIN_DB_PREFIX."c_departements as z";
+	$sql .= " WHERE z.active = 1 AND z.nom LIKE '".$db->escape($state)."%'";
+	$resql1 = $db->query($sql);
+	if ($resql1)
+	{
+		$row = $db->fetch_array($resql1);
+		$fk_departement = $row['rowid'];
+	}
 	
 	$json = array();
 	
@@ -45,6 +72,11 @@
 			$object->full_name = $full_name;
 			$object->fax = $secondary_phone;
 			$object->email = $email;
+			$object->town = $city;
+			$object->fk_departement = $fk_departement; // Country
+			$object->zip = $postalCode;
+			$object->userlatitude = $userlatitude;
+			$object->userlongitude = $userlongitude;
 			$resultUpdate = $object->updateProfile();
 
 			if($resultUpdate > 0)
