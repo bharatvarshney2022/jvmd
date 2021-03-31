@@ -1,12 +1,5 @@
 <?php
-/* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005      Brice Davoleau       <brice.davoleau@gmail.com>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2006-2015 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2007      Patrick Raguin  		<patrick.raguin@gmail.com>
- * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2015      Marcos García        <marcosgdf@gmail.com>
- *
+/* 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -73,21 +66,35 @@ if ($socid)
 
 	$title = $langs->trans("Projects");
 	if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/thirdpartynameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->name." - ".$title;
-	llxHeader('', $title);
+	llxHeaderLayout('', $title, $title);
 
 	if (!empty($conf->notification->enabled)) $langs->load("mails");
 	$head = societe_prepare_head($object);
 
-	print dol_get_fiche_head($head, 'project', $langs->trans("ThirdParty"), -1, 'company');
+	print '<div class="d-flex flex-column-fluid">
+	<!--begin::Container-->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<!--begin::Card-->
+				<div class="card card-custom gutter-b">
+					<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'project', $langs->trans("ThirdParty"), -1, 'company');
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-	dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
+	print '</div>
+	<div class="card-body">';
 
-	print '<div class="fichecenter">';
+	dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
 
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border centpercent tableforfield">';
+	print '</div>
+	</div>'; //card-custom
+
+	print '<div class="card card-custom gutter-b">';
+
+	print '<table class="table table-bordered">';
 
 	if (!empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
 	{
@@ -122,11 +129,9 @@ if ($socid)
 
 	print '</div>';
 
-	print dol_get_fiche_end();
-
 	$params = '';
 
-	$newcardbutton .= dolGetButtonTitle($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
+	$newcardbutton .= dolGetButtonTitleLayout($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
 	print '<br>';
 
@@ -136,5 +141,15 @@ if ($socid)
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
+
 $db->close();

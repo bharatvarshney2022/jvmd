@@ -1,17 +1,5 @@
 <?php
-/* Copyright (C) 2004-2005  Rodolphe Quiedeville    <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2019  Laurent Destailleur     <eldy@users.sourceforge.net>
- * Copyright (C) 2004       Benoit Mortier          <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2017  Regis Houssin           <regis.houssin@inodbox.com>
- * Copyright (C) 2007       Franky Van Liedekerke   <franky.van.liedekerke@telenet.be>
- * Copyright (C) 2013       Florian Henry           <florian.henry@open-concept.pro>
- * Copyright (C) 2013-2016  Alexandre Spangaro      <aspangaro@open-dsi.fr>
- * Copyright (C) 2014       Juanjo Menent           <jmenent@2byte.es>
- * 
- * Copyright (C) 2018-2020  Frédéric France         <frederic.france@netlogic.fr>
- * Copyright (C) 2019       Josep Lluís Amador      <joseplluis@lliuretic.cat>
- * Copyright (C) 2020       Open-Dsi     			<support@open-dsi.fr>
- *
+/*  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -674,14 +662,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Address
 			if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $objsoc->address; // Predefined with third party
 			print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
-			print '<td colspan="'.$colspan.'"><textarea class="form-control quatrevingtpercent" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
+			print '<td colspan="'.$colspan.'"><textarea class="form-control" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
 
 			if ($conf->use_javascript_ajax && $socid > 0)
 			{
-				$rowspan = 3;
+				$rowspan = 0;
 				if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
 
-				print '<td class="valignmiddle center" rowspan="'.$rowspan.'">';
+				print '<td class="" rowspan="'.$rowspan.'">';
 				print '<a href="#" id="copyaddressfromsoc">'.$langs->trans('CopyAddressFromSoc').'</a>';
 				print '</td>';
 			}
