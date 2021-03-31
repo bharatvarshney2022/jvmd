@@ -708,7 +708,7 @@ if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE))
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
 
-llxHeader('', $title, $helpurl);
+llxHeaderLayout('', $title, $title, $helpurl);
 
 $form = new Form($db);
 $formfile = new FormFile($db);
@@ -874,6 +874,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
              });'."\n";     
 		print '</script>'."\n";
 
+		print '<div class="d-flex flex-column-fluid">
+					<!--begin::Container-->
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-12">
+								<!--begin::Card-->
+								<div class="card card-custom gutter-b">
+									';
+
 		// Load object modCodeProduct
 		$module = (!empty($conf->global->PRODUCT_CODEPRODUCT_ADDON) ? $conf->global->PRODUCT_CODEPRODUCT_ADDON : 'mod_codeproduct_leopard');
 		if (substr($module, 0, 16) == 'mod_codeproduct_' && substr($module, -3) == 'php')
@@ -888,22 +897,25 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		//dol_set_focus('select[name="family"]');
 		$socid = GETPOST('socid');
+		
+		$picto = '';
+		$title = $langs->trans("Add Customer Product");
+		
+		$linkback = "";
+		print load_fiche_titre_layout($title, $linkback, $picto);
+		//print "<h3>Product Information</h3>";
+
+		print dol_get_fiche_head_layout($head, 'card', '', 0, '');
+
+		print '<div class="card-body">';
+
 		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="formprod">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 		print '<input type="hidden" name="action" value="add">';
 		print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 		print '<input type="hidden" name="fk_soc" value="'.$socid.'">';
 
-		
-		$picto = 'product';
-		$title = $langs->trans("Add Customer Product");
-		
-		$linkback = "";
-		print load_fiche_titre($title, $linkback, $picto);
-		print "<h3>Product Information</h3>";
-
-		print dol_get_fiche_head($head, 'card', '', 0, '');
-		print '<table class="border centpercent">';
+		print '<table class="table table-bordered">';
 
 		// Brand
 		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
@@ -913,27 +925,27 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Product Category
 
 		print '<td >'.$langs->trans("Category").'</td><td>';
-		print '<select class="flat" id="fk_category" name="fk_category">';
+		print '<select class="form-control" id="fk_category" name="fk_category">';
 		print '<option value="0">Select Category</option>';
 		print '</select>';
 		print '</td></tr>';
 
 		// Product sub Category
 		print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
-		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 		print '<option value="0">Select Sub Category</option>';
 		print '</select>';
 		print '</td>';
 		// Model
 		print '<td >'.$langs->trans("Model No.").'</td><td>';
-		print '<select class="flat" id="fk_model" name="fk_model">';
+		print '<select class="form-control" id="fk_model" name="fk_model">';
 		print '<option value="0">Select Model</option>';
 		print '</select>';
 		print '</td></tr>';
 
 		// Label
 		print '<tr><td >'.$langs->trans("Product Name").'</td><td>';
-		print '<select class="flat" id="fk_product" name="fk_product">';
+		print '<select class="form-control" id="fk_product" name="fk_product">';
 		print '<option value="0">Select Product</option>';
 		print '</select>';
 		print '</td>';
@@ -954,20 +966,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		// Date
 		print '<tr><td >'.$langs->trans("Product ODU").'</td><td>';
-		print '<input type="text" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
+		print '<input type="text" class="form-control" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
 		print '</td></tr>';
 
 		
 		print '</table>';
-		print dol_get_fiche_end();
 
 		print '<div class="center">';
-		print '<input type="submit" class="button" value="'.$langs->trans("Create").'">';
+		print '<input type="submit" class="btn btn-info " value="'.$langs->trans("Create").'">';
 		print ' &nbsp; &nbsp; ';
-		print '<input type="button" class="button button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+		print '<input type="button" class="btn btn-warning button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+		print '</div>';
 		print '</div>';
 
 		print '</form>';
+		print '</div>';
+		print '</div>';
 	} elseif ($object->id > 0) {
 		/*
          * Product card
@@ -982,6 +996,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$custprodid = GETPOST('id', 'int');
 			$formcompany = new FormCompany($db);
 			$custprdobject = $object->fetch($custprodid);
+
+			print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+									<div class="card-footer">';
 
 
 			print '<script type="text/javascript">';
@@ -1085,6 +1108,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print '</script>'."\n";
 
+			$head = product_customer_prepare_head($object);
+			$title = $langs->trans("CardProductCustomer");
+			$picto = 'product_customer';
+			print dol_get_fiche_head_layout($head, 'card', $title, 0, 'product_customer');
+
+			print '</div>
+			<div class="card-body">';
+
 			print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" method="POST" name="formprod">'."\n";
 			print '<input type="hidden" name="token" value="'.newToken().'">';
 			print '<input type="hidden" name="action" value="update">';
@@ -1092,14 +1123,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<input type="hidden" name="id" value="'.$id.'">';
 			print '<input type="hidden" name="canvas" value="'.$object->canvas.'">';
 
-			$head = product_customer_prepare_head($object);
-			$title = $langs->trans("CardProductCustomer");
-			$picto = 'product_customer';
-			print dol_get_fiche_head($head, 'card', $title, 0, 'product_customer');
-
 			//print "<h3>Edit Product Information</h3>";
 			print "<h3>Customer Product Information</h3>";
-			print '<table class="border allwidth">';
+			print '<table class="table table-bordered">';
 
 			// Brand
 			print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
@@ -1113,7 +1139,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print $formcompany->select_family($object->fk_category, $object->fk_brand ,'fk_category');
 				//print $object->getCategoryByBrand($object->fk_brand);
 			}else{
-				print '<select class="flat" id="fk_category" name="fk_category">';
+				print '<select class="form-control" id="fk_category" name="fk_category">';
 				print '<option value="0">Select Sub Category</option>';
 				print '</select>';
 			}
@@ -1124,7 +1150,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if($object->fk_brand > 0 && $object->fk_category > 0){
 				print $formcompany->select_subfamily($object->fk_subcategory  , $object->fk_brand,$object->fk_category,'fk_sub_category');
 			}else{
-				print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+				print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 				print '<option value="0">Select Sub Category</option>';
 				print '</select>';
 			}
@@ -1135,7 +1161,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if($object->fk_brand > 0 && $object->fk_category > 0 && $object->fk_subcategory  > 0){
 				print $formcompany->select_modelName($object->fk_model , $object->fk_brand, $object->fk_category, $object->fk_subcategory , 'fk_model');
 			}else{
-				print '<select class="flat" id="fk_model" name="fk_model">'; 
+				print '<select class="form-control" id="fk_model" name="fk_model">'; 
 				print '<option value="0">Select Model</option>';
 				print '</select>';
 			}
@@ -1143,7 +1169,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Label
 			print '<tr><td >'.$langs->trans("Product Name").'</td><td>';
-			print '<select class="flat" id="fk_product" name="fk_product">';
+			print '<select class="form-control" id="fk_product" name="fk_product">';
 			print '<option value="0">Select Product</option>';
 			print '</select>';
 			print '</td>';
@@ -1167,20 +1193,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 			
 			print '</table>';
-			print dol_get_fiche_end();
+			
 			$backurl = DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int');
 			print '<div class="center">';
-			print '<input type="submit" class="button" value="'.$langs->trans("Save").'">';
+			print '<input type="submit" class="btn btn-info" value="'.$langs->trans("Save").'">';
 			print ' &nbsp; &nbsp; ';
-			print '<a href = "'.$backurl.'" class="button button-cancel">'.$langs->trans("Cancel").'</a>';
+			print '<a href = "'.$backurl.'" class="btn btn-warning button-cancel">'.$langs->trans("Cancel").'</a>';
 			print '</div>';
 
 			print '</form>';
 
-			print '<div style="clear:both"></div>';
-
-
-			print dol_get_fiche_end();
+			print '</div>';
+			print '</div>';
 		}
 	} elseif ($action != 'create')
 	{
@@ -1382,9 +1406,9 @@ if (!empty($conf->global->PRODUCT_ADD_FORM_ADD_TO) && $object->id && ($action ==
 		print dol_get_fiche_head('');
 
 		$html .= '<tr><td class="nowrap">'.$langs->trans("Quantity").' ';
-		$html .= '<input type="text" class="flat" name="qty" size="1" value="1"></td>';
+		$html .= '<input type="text" class="form-control" name="qty" size="1" value="1"></td>';
 		$html .= '<td class="nowrap">'.$langs->trans("ReductionShort").'(%) ';
-		$html .= '<input type="text" class="flat" name="remise_percent" size="1" value="0">';
+		$html .= '<input type="text" class="form-control" name="remise_percent" size="1" value="0">';
 		$html .= '</td></tr>';
 
 		print '<table width="100%" class="border">';
@@ -1443,5 +1467,14 @@ if ($action != 'create' && $action != 'edit' && $action != 'delete')
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

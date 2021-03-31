@@ -73,21 +73,33 @@ if ($socid)
 
 	$title = $langs->trans("Projects");
 	if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/thirdpartynameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->name." - ".$title;
-	llxHeader('', $title);
+	llxHeaderLayout('', $title, $title);
 
 	if (!empty($conf->notification->enabled)) $langs->load("mails");
 	$head = societe_prepare_head($object);
 
-	print dol_get_fiche_head($head, 'products', $langs->trans("ThirdParty"), -1, 'company');
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'products', $langs->trans("ThirdParty"), -1, 'company');
+
+	print '</div>
+	<div class="card-body">';
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-	dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
+	dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
 
-	print '<div class="fichecenter">';
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
 
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border centpercent tableforfield">';
+	print '<table class="table table-bordered">';
 
 	if (!empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
 	{
@@ -121,16 +133,28 @@ if ($socid)
 	print '</table>';
 
 	print '</div>';
-
-	print dol_get_fiche_end();
+	print '</div>';
 
 	$params = '';
 
 	
 	// Product list
 	$result = show_products($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id, 1, $newcardbutton);
+
+	
+	print '</div>';
+	print '</div>';
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

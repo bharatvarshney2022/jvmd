@@ -942,15 +942,15 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 		if($user->admin || $user_group_id == '4' || $user_group_id == '5'){
 
-			$newcardbutton .= dolGetButtonTitle($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
+			$newcardbutton .= dolGetButtonTitleLayout($langs->trans("New Customer Product"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/product_customer/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
 			print '<br>';
 		}
 
 		print "\n";
-		print load_fiche_titre($langs->trans("Products Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
-		print '<div class="div-table-responsive">';
-		print "\n".'<table class="noborder" width=100%>';
+		print load_fiche_titre_layout($langs->trans("Products Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
+		print '<div class="table-responsive">';
+		print '<table class="table table-bordered">';
 
 		$sql  = "SELECT p.rowid as id, p.fk_soc, p.fk_product, b.nom as brandname, f.nom as familyname, sf.nom as subfamily, m.code as c_product_model, m.nom as pname, p.ac_capacity as capacity, p.component_no, p.datec as de, p.tms as date_update";
 		$sql .= " FROM ".MAIN_DB_PREFIX."product_customer as p";
@@ -966,19 +966,21 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 		if ($result) {
 			$num = $db->num_rows($result);
 
-			print '<tr class="liste_titre">';
+			print '<thead><tr class="">';
 			print '<td>'.$langs->trans("S.No.").'</td>';
 			print '<td>'.$langs->trans("Component No.").'</td>';
 			print '<td>'.$langs->trans("Model No.").' / '.$langs->trans("Name").'</td>';
 			//print '<td>'.$langs->trans("Name").'</td>';
-			print '<td class="center">'.$langs->trans("Brand").'</td>';
-			print '<td class="center">'.$langs->trans("Category").'</td>';
-			print '<td class="right">'.$langs->trans("Sub Category").'</td>';
-			print '<td class="center">'.$langs->trans("Capacity").'</td>';
+			print '<td class="">'.$langs->trans("Brand").'</td>';
+			print '<td class="">'.$langs->trans("Category").'</td>';
+			print '<td class="">'.$langs->trans("Sub Category").'</td>';
+			print '<td class="">'.$langs->trans("Capacity").'</td>';
 			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
-			print '<td class="right">'.$langs->trans("Added Date").'</td>';
-			print '<td class="right">'.$langs->trans("Option").'</td>';
-			print '</tr>';
+			print '<td class="">'.$langs->trans("Added Date").'</td>';
+			print '<td class="">'.$langs->trans("Option").'</td>';
+			print '</tr></thead>';
+
+			print '<tbody>';
 
 			if ($num > 0) {
 				require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
@@ -994,7 +996,7 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 
 					// To verify role of users
 					
-						print '<tr class="oddeven">';
+						print '<tr class="">';
 
 						// Ref
 						print '<td>';
@@ -1025,10 +1027,10 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
 						
 						// Status
-						print '<td class="right">';
+						print '<td class="">';
 						
 						if($user->admin || $user_group_id == '4' || $user_group_id == '5'){
-							print '<a class="editfielda paddingleft" href="'.DOL_URL_ROOT.'/product_customer/card.php?action=edit&fk_soc='.$obj->fk_soc.'&id='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
+							print '<a class="btn btn-info" href="'.DOL_URL_ROOT.'/product_customer/card.php?action=edit&fk_soc='.$obj->fk_soc.'&id='.$obj->id.'&backtopage='.urlencode($backtopage).'">';
 								print img_edit();
 							print '</a>';
 						}
@@ -1039,16 +1041,16 @@ function show_products($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 					$i++;
 				}
 			} else {
-				print '<tr class="oddeven"><td colspan="9" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+				print '<tr class=""><td colspan="9" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
 			}
 			$db->free($result);
 		} else {
 			dol_print_error($db);
 		}
+
+		print '</tbody>';
 		print "</table>";
 		print '</div>';
-
-		print "<br>\n";
 	}
 
 	return $i;

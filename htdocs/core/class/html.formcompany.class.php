@@ -1184,7 +1184,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="brand flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="brand form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 			print '<option value="0">Select Brand</option>';
 			echo $num = $this->db->num_rows($resql);
 			$i = 0;
