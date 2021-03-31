@@ -3354,7 +3354,7 @@ if (!empty($conf->global->PRODUCT_ADD_FORM_ADD_TO) && $object->id && ($action ==
 
 if ($action != 'create' && $action != 'edit' && $action != 'delete')
 {
-	print '<div class="fichecenter"><div class="fichehalfleft">';
+	print '<br /><br /><div class="row"><div class="col-sm-6">';
 	print '<a name="builddoc"></a>'; // ancre
 
 	// Documents
@@ -3369,10 +3369,10 @@ if ($action != 'create' && $action != 'edit' && $action != 'delete')
 	$genallowed = $usercanread;
 	$delallowed = $usercancreate;
 
-	print $formfile->showdocuments($modulepart, $object->ref, $filedir, $urlsource, $genallowed, $delallowed, '', 0, 0, 0, 28, 0, '', 0, '', $object->default_lang, '', $object);
+	print $formfile->showdocumentsLayout($modulepart, $object->ref, $filedir, $urlsource, $genallowed, $delallowed, '', 0, 0, 0, 28, 0, '', 0, '', $object->default_lang, '', $object);
 	$somethingshown = $formfile->numoffiles;
 
-	print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+	print '</div><div class="col-sm-6">';
 
 	$MAXEVENT = 10;
 
@@ -3383,9 +3383,9 @@ if ($action != 'create' && $action != 'edit' && $action != 'delete')
 	// List of actions on element
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 	$formactions = new FormActions($db);
-	$somethingshown = $formactions->showactions($object, 'product', 0, 1, '', $MAXEVENT, '', $morehtmlright); // Show all action for product
+	$somethingshown = $formactions->showactionsLayout($object, 'product', 0, 1, '', $MAXEVENT, '', $morehtmlright); // Show all action for product
 
-	print '</div></div></div>';
+	print '</div></div>';
 }
 
 // End of page
