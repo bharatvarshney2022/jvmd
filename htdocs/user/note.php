@@ -1,8 +1,5 @@
 <?php
 /* 
- * 
- * 
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -79,7 +76,7 @@ if (empty($reshook)) {
  * View
  */
 
-llxHeader();
+llxHeaderLayout();
 
 $form = new Form($db);
 
@@ -88,7 +85,19 @@ if ($id)
 	$head = user_prepare_head($object);
 
 	$title = $langs->trans("User");
-	print dol_get_fiche_head($head, 'note', $title, -1, 'user');
+
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+	print dol_get_fiche_head_layout($head, 'note', $title, -1, 'user');
+
+	print '</div>
+		<div class="card-body">';
 
 	$linkback = '';
 
@@ -96,15 +105,14 @@ if ($id)
 		$linkback = '<a href="'.DOL_URL_ROOT.'/user/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	}
 
-	dol_banner_tab($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
-
-	print '<div class="underbanner clearboth"></div>';
+	dol_banner_tab_layout($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
 
 	print "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 
-	print '<div class="fichecenter">';
-	print '<table class="border centpercent tableforfield">';
+	print '<div class=" container">';
+	print '<div class="row"><div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	// Login
 	print '<tr><td class="titlefield">'.$langs->trans("Login").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
@@ -128,16 +136,15 @@ if ($id)
 	print "</td></tr>";
 
 	print "</table>";
-	print '</div>';
+	print '</div></div></div>';
 
-	print dol_get_fiche_end();
 
 	if ($action == 'edit')
 	{
 		print '<div class="center">';
-		print '<input type="submit" class="button button-save" name="update" value="'.$langs->trans("Save").'">';
+		print '<input type="submit" class="btn btn-info button-save" name="update" value="'.$langs->trans("Save").'">';
 		print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '<input type="submit" class="btn btn-warning button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
 		print '</div>';
 	}
 
@@ -150,14 +157,23 @@ if ($id)
 
 	if ($user->rights->user->user->creer && $action != 'edit')
 	{
-		print "<a class=\"butAction\" href=\"note.php?id=".$object->id."&amp;action=edit\">".$langs->trans('Modify')."</a>";
+		print '<a class="btn btn-info" href="note.php?id='.$object->id.'&amp;action=edit">'.$langs->trans('Modify').'</a>';
 	}
 
 	print "</div>";
 
 	print "</form>\n";
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

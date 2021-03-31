@@ -2068,7 +2068,6 @@ function dol_banner_tab_layout($object, $paramid, $morehtml = '', $shownav = 1, 
 	print '<div class="'.($onlybanner ? ' ' : ' ').'container">';
 	print $form->showrefnavLayout($object, $paramid, $morehtml, $shownav, $fieldid, $fieldref, $morehtmlref, $moreparam, $nodbprefix, $morehtmlleft, $morehtmlstatus, $morehtmlright);
 	print '</div>';
-	print '<div class="underrefbanner clearboth"></div>';
 }
 
 function dol_banner_tab($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlstatus = '', $onlybanner = 0, $morehtmlright = '')
@@ -4550,7 +4549,7 @@ function info_admin($text, $infoonimgalt = 0, $nodiv = 0, $admin = '1', $morecss
 	} else {
 		if (empty($conf->use_javascript_ajax)) $textfordropdown = '';
 
-		$class = (empty($admin) ? 'undefined' : ($admin == '1' ? 'info' : $admin));
+		$class = (empty($admin) ? 'undefined' : ($admin == '1' ? 'alert alert-info' : $admin));
 		$result = ($nodiv ? '' : '<div class="'.$class.' hideonsmartphone'.($morecss ? ' '.$morecss : '').($textfordropdown ? ' hidden' : '').'">').'<span class="fa fa-info-circle" title="'.dol_escape_htmltag($admin ? $langs->trans('InfoAdmin') : $langs->trans('Note')).'"></span> '.$text.($nodiv ? '' : '</div>');
 
 		if ($textfordropdown) {

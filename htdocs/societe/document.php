@@ -177,5 +177,9 @@ if ($object->id)
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

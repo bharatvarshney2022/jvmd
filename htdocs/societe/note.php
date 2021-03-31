@@ -63,7 +63,7 @@ $form = new Form($db);
 $title = $langs->trans("ThirdParty").' - '.$langs->trans("Notes");
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/thirdpartynameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->name.' - '.$langs->trans("Notes");
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 if ($object->id > 0)
 {
@@ -74,20 +74,30 @@ if ($object->id > 0)
 
 	$head = societe_prepare_head($object);
 
-	print dol_get_fiche_head($head, 'note', $langs->trans("ThirdParty"), -1, 'company');
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'note', $langs->trans("ThirdParty"), -1, 'company');
+
+	print '</div>
+		<div class="card-body">';
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-	dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
+	dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
 
 	$cssclass = 'titlefield';
 	//if ($action == 'editnote_public') $cssclass='titlefieldcreate';
 	//if ($action == 'editnote_private') $cssclass='titlefieldcreate';
 
-	print '<div class="fichecenter">';
-
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border centpercent tableforfield">';
+	print '<div class="row"><div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	if (!empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
 	{
@@ -117,7 +127,7 @@ if ($object->id > 0)
     }
 
 	print "</table>";
-
+	print '</div>';
 	print '</div>';
 
 	//print '<br>';
@@ -125,12 +135,18 @@ if ($object->id > 0)
 	//print '<div class="underbanner clearboth"></div>';
 	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
-	print dol_get_fiche_end();
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 } else {
 	$langs->load("errors");
 	print $langs->trans("ErrorRecordNotFound");
 }
 
-// End of page
-llxFooter();
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

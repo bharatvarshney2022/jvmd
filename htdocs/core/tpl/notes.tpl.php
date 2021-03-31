@@ -86,28 +86,32 @@ if (!empty($conf->fckeditor->enabled) && !empty($conf->global->FCKEDITOR_ENABLE_
 else $typeofdata = 'textarea:12:95%';
 
 print '<!-- BEGIN PHP TEMPLATE NOTES -->'."\n";
-print '<div class="tagtable border table-border tableforfield centpercent">'."\n";
-print '<div class="tagtr table-border-row">'."\n";
-$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_public);
-print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
-print $form->editfieldkey("NotePublic", $note_public, $value_public, $object, $permission, $typeofdata, $moreparam, '', 0);
-print '</div>'."\n";
-print '<div class="tagtd wordbreak table-val-border-col'.($editmode ? '' : ' sensiblehtmlcontent').'">'."\n";
+print '<div class="row"><div class="col-sm-12">';
+print '<table class="table table-bordered">';
+
+print '<tr><td class="'.($editmode ? '' : ' ').'">'."\n";
 print $form->editfieldval("NotePublic", $note_public, $value_public, $object, $permission, $typeofdata, '', null, null, $moreparam, 1)."\n";
-print '</div>'."\n";
-print '</div>'."\n";
+print '</td></tr>'."\n";
+
+$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_public);
+print '<tr><td class="'.($editmode ? '' : ' ').' '.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
+print $form->editfieldkey("NotePublic", $note_public, $value_public, $object, $permission, $typeofdata, $moreparam, '', 0);
+print '</td></tr>'."\n";
+
 if (empty($user->socid)) {
 	// Private notes (always hidden to external users)
-	print '<div class="tagtr table-border-row">'."\n";
-	$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_private);
-	print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
-	print $form->editfieldkey("NotePrivate", $note_private, $value_private, $object, $permission, $typeofdata, $moreparam, '', 0);
-	print '</div>'."\n";
-	print '<div class="tagtd wordbreak table-val-border-col'.($editmode ? '' : ' sensiblehtmlcontent').'">'."\n";
+	print '<tr><td class="'.($editmode ? '' : ' sensiblehtmlcontent').'">'."\n";
 	print $form->editfieldval("NotePrivate", $note_private, $value_private, $object, $permission, $typeofdata, '', null, null, $moreparam, 1);
-	print '</div>'."\n";
-	print '</div>'."\n";
+	print '</td></tr>'."\n";
+
+	print '<tr><td class="">'."\n";
+	$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_private);
+	//print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
+	print $form->editfieldkey("NotePrivate", $note_private, $value_private, $object, $permission, $typeofdata, $moreparam, '', 0);
+	print '</td></tr>'."\n";
+	
 }
-print '</div>'."\n";
+
+print '</table>';
 ?>
 <!-- END PHP TEMPLATE NOTES-->
