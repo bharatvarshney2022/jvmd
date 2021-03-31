@@ -1,24 +1,5 @@
 <?php
 /* 
- * Copyright (C) 2004-2016	Laurent Destailleur	 <eldy@users.sourceforge.net>
- * Copyright (C) 2005		Eric Seigne		     <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2015	Regis Houssin		 <regis.houssin@capnetworks.com>
- * Copyright (C) 2006		Andre Cianfarani	 <acianfa@free.fr>
- * Copyright (C) 2006		Auguria SARL		 <info@auguria.org>
- * Copyright (C) 2010-2015	Juanjo Menent		 <jmenent@2byte.es>
- * Copyright (C) 2013-2016	Marcos García		 <marcosgdf@gmail.com>
- * Copyright (C) 2012-2013	Cédric Salvador		 <csalvador@gpcsolutions.fr>
- * Copyright (C) 2011-2020	Alexandre Spangaro	 <aspangaro@open-dsi.fr>
- * Copyright (C) 2014		Cédric Gross		 <c.gross@kreiz-it.fr>
- * Copyright (C) 2014-2015	Ferran Marcet		 <fmarcet@2byte.es>
- * Copyright (C) 2015		Jean-François Ferry	 <jfefe@aternatik.fr>
- * Copyright (C) 2015		Raphaël Doursenaud	 <rdoursenaud@gpcsolutions.fr>
- * Copyright (C) 2016		Charlie Benke		 <charlie@patas-monkey.com>
- * Copyright (C) 2016		Meziane Sof		     <virtualsof@yahoo.fr>
- * Copyright (C) 2017		Josep Lluís Amador	 <joseplluis@lliuretic.cat>
- * Copyright (C) 2019-2021  Frédéric France      <frederic.france@netlogic.fr>
- * Copyright (C) 2019-2020  Thibault FOUCART     <support@ptibogxiv.net>
- * Copyright (C) 2020  		Pierre Ardoin     	 <mapiolca@me.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -997,7 +978,7 @@ if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE))
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
 
-llxHeader('', $title, $helpurl);
+llxHeaderLayout('', $title, $title, $helpurl);
 
 $form = new Form($db);
 $formfile = new FormFile($db);
@@ -1175,7 +1156,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 					print $formcompany->select_family($custprdobject->fk_category, $custprdobject->fk_brand ,'fk_category');
 					//print $object->getCategoryByBrand($object->fk_brand);
 				}else{
-					print '<select class="flat" id="fk_category" name="fk_category">';
+					print '<select class="form-control" id="fk_category" name="fk_category">';
 					print '<option value="0">Select Sub Category</option>';
 					print '</select>';
 				}
@@ -1186,7 +1167,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if($custprdobject->fk_brand > 0 && $custprdobject->fk_category > 0){
 					print $formcompany->select_subfamily($custprdobject->fk_subcategory  , $custprdobject->fk_brand,$object->fk_category,'fk_sub_category');
 				}else{
-					print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+					print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 					print '<option value="0">Select Sub Category</option>';
 					print '</select>';
 				}
@@ -1197,7 +1178,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if($custprdobject->fk_brand > 0 && $custprdobject->fk_category > 0 && $custprdobject->fk_subcategory  > 0){
 					print $formcompany->select_modelName($custprdobject->fk_model , $custprdobject->fk_brand, $custprdobject->fk_category, $custprdobject->fk_subcategory , 'fk_model');
 				}else{
-					print '<select class="flat" id="fk_model" name="fk_model">'; 
+					print '<select class="form-control" id="fk_model" name="fk_model">'; 
 					print '<option value="0">Select Model</option>';
 					print '</select>';
 				}
@@ -1205,12 +1186,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 				// Label
 				print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
-				print '<select class="flat" id="fk_product" name="fk_product">';
+				print '<select class="form-control" id="fk_product" name="fk_product">';
 				print '<option value="0">Select Product</option>';
 				print '</select>';
 				print '</td>';
 				// Ac Capacity
-				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($custprdobject->ac_capacity).'"></td></tr>';
+				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="form-control" maxlength="255" value="'.dol_escape_htmltag($custprdobject->ac_capacity).'"></td></tr>';
 
 				
 				print '</table>';
@@ -1348,32 +1329,32 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// Product Category
 
 				print '<td class="fieldrequired">'.$langs->trans("Category").'</td><td>';
-				print '<select class="flat" id="fk_category" name="fk_category">';
+				print '<select class="form-control" id="fk_category" name="fk_category">';
 				print '<option value="0">Select Category</option>';
 				print '</select>';
 				print '</td></tr>';
 
 				// Product sub Category
 				print '<tr><td class="fieldrequired">'.$langs->trans("Sub Category").'</td><td>';
-				print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+				print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 				print '<option value="0">Select Sub Category</option>';
 				print '</select>';
 				print '</td>';
 				// Model
 				print '<td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-				print '<select class="flat" id="fk_model" name="fk_model">';
+				print '<select class="form-control" id="fk_model" name="fk_model">';
 				print '<option value="0">Select Model</option>';
 				print '</select>';
 				print '</td></tr>';
 
 				// Label
 				print '<tr><td class="fieldrequired">'.$langs->trans("Product Name").'</td><td>';
-				print '<select class="flat" id="fk_product" name="fk_product">';
+				print '<select class="form-control" id="fk_product" name="fk_product">';
 				print '<option value="0">Select Product</option>';
 				print '</select>';
 				print '</td>';
 				// Ac Capacity
-				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
+				print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" class="form-control" maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
 				
 				// Component No
 				$component_no = '1900000';
@@ -1500,6 +1481,27 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		dol_set_focus('input[name="ref"]');
 
+		if ($type == 1) {
+			$picto = 'service';
+			$title = $langs->trans("NewService");
+		} else {
+			$picto = 'product';
+			$title = $langs->trans("NewProduct");
+		}
+		$linkback = "";
+
+		print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										'.
+										load_fiche_titre_layout($title, '', '').
+
+										'<div class="card-body">';										
+
 		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="formprod">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 		print '<input type="hidden" name="action" value="add">';
@@ -1510,15 +1512,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<input type="hidden" name="barcode_auto" value="1">';
 		print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 
-		if ($type == 1) {
-			$picto = 'service';
-			$title = $langs->trans("NewService");
-		} else {
-			$picto = 'product';
-			$title = $langs->trans("NewProduct");
-		}
-		$linkback = "";
-		print load_fiche_titre($title, $linkback, $picto);
 
 		// We set country_id, country_code and country for the selected country
 		$object->country_id = GETPOSTISSET('country_id') ? GETPOST('country_id', 'int') : null;
@@ -1528,15 +1521,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$object->country_code = $tmparray['code'];
 			$object->country = $tmparray['label'];
 		}
-		print "<h3>Product Information</h3>";
-		print dol_get_fiche_head('');
+		
+		print dol_get_fiche_head_layout('');
 
-		print '<table class="border centpercent">';
+		print '<table class="table table-bordered">';
 
 		print '<tr>';
 		$tmpcode = '';
 		if (!empty($modCodeProduct->code_auto)) $tmpcode = $modCodeProduct->getNextValue($object, $type);
-		print '<td class="titlefieldcreate fieldrequired">'.$langs->trans("Registration no").'</td><td><input id="ref" name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag(GETPOSTISSET('ref') ? GETPOST('ref', 'alphanohtml') : $tmpcode).'">';
+		print '<td class="titlefieldcreate fieldrequired">'.$langs->trans("Registration no").'</td><td><input id="ref" name="ref" class="form-control" maxlength="128" value="'.dol_escape_htmltag(GETPOSTISSET('ref') ? GETPOST('ref', 'alphanohtml') : $tmpcode).'">';
 		if ($refalreadyexists)
 		{
 			print $langs->trans("RefAlreadyExists");
@@ -1551,34 +1544,34 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Product Category
 
 		print '<tr><td>'.$langs->trans("Category").'</td><td>';
-		print '<select class="flat" id="fk_category" name="fk_category">';
+		print '<select class="form-control" id="fk_category" name="fk_category">';
 		print '<option value="0">Select Category</option>';
 		print '</select>';
 		print '</td>';
 
 		// Product sub Category
 		print '<td>'.$langs->trans("Sub Category").'</td><td>';
-		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 		print '<option value="0">Select Sub Category</option>';
 		print '</select>';
 		print '</td></tr>';
 		// Model
 		print '<tr><td class="fieldrequired">'.$langs->trans("Model No.").'</td><td>';
-		print '<select class="flat" id="fk_model" name="fk_model">';
+		print '<select class="form-control" id="fk_model" name="fk_model">';
 		print '<option value="0">Select Model</option>';
 		print '</select>';
 		print '</td>';
 
 		// Label
-		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
+		print '<td class="fieldrequired">'.$langs->trans("Name").'</td><td><input name="label" id="label" class="form-control" maxlength="255" value="'.dol_escape_htmltag(GETPOST('label', $label_security_check)).'"></td></tr>';
 
 		
 
 		// ERP Invoice No
-		print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td></tr>';
+		print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="form-control" maxlength="255" value="'.dol_escape_htmltag(GETPOST('erpinvoice_no')).'"></td></tr>';
 
 		// Component No.
-		print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
+		print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="form-control" maxlength="255" value="'.dol_escape_htmltag(GETPOST('component_no')).'"></td></tr>';
 
 		// Invoice Date
 		print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'</td><td>';
@@ -2056,15 +2049,21 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		}
 		print '</table>';
 
-		print dol_get_fiche_end();
+		//print dol_get_fiche_end();
 
 		print '<div class="center">';
-		print '<input type="submit" class="button" value="'.$langs->trans("Create").'">';
+		print '<input type="submit" class="btn btn-info" value="'.$langs->trans("Create").'">';
 		print ' &nbsp; &nbsp; ';
-		print '<input type="button" class="button button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+		print '<input type="button" class="btn btn-warning button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
 		print '</div>';
 
 		print '</form>';
+
+		print '</div>';
+		print '</div>';
+		print '</div>';
+		print '</div>';
+		print '</div>';
 	} elseif ($object->id > 0) {
 		/*
          * Product card
@@ -2213,7 +2212,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<table class="border allwidth">';
 
 			// Ref
-			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="maxwidth200" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
+			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="form-control" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
 
 			// Brand
 				print '<td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
@@ -2228,7 +2227,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 					print $formcompany->select_family($object->fk_category, $object->fk_brand ,'fk_category');
 					//print $object->getCategoryByBrand($object->fk_brand);
 				}else{
-					print '<select class="flat" id="fk_category" name="fk_category">';
+					print '<select class="form-control" id="fk_category" name="fk_category">';
 					print '<option value="0">Select Sub Category</option>';
 					print '</select>';
 				}
@@ -2240,7 +2239,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if($object->fk_brand > 0 && $object->fk_category > 0){
 					print $formcompany->select_subfamily($object->fk_sub_category , $object->fk_brand,$object->fk_category,'fk_sub_category');
 				}else{
-					print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+					print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 					print '<option value="0">Select Sub Category</option>';
 					print '</select>';
 				}
@@ -2250,22 +2249,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				if($object->fk_brand > 0 && $object->fk_category > 0 && $object->fk_sub_category > 0){
 					print $formcompany->select_modelName($object->fk_model , $object->fk_brand, $object->fk_category, $object->fk_sub_category, 'fk_model');
 				}else{
-					print '<select class="flat" id="fk_model" name="fk_model">'; 
+					print '<select class="form-control" id="fk_model" name="fk_model">'; 
 					print '<option value="0">Select Model</option>';
 					print '</select>';
 				}
 				print '</td>';
 		  
 			// Label
-				print '<td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" id="label" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
+				print '<td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" id="label" class="form-control" maxlength="255" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
 
 			
 
 			// ERP Invoice No
-			print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td></tr>';
+			print '<tr style="display:none;"><td>'.$langs->trans("ERP Invoice No").'</td><td><input name="erpinvoice_no" class="form-control" maxlength="255" value="'.dol_escape_htmltag($object->erpinvoice_no).'"></td></tr>';
 
 			// Component No.
-			print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="minwidth300 maxwidth400onsmartphone" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
+			print '<tr style="display:none;"><td>'.$langs->trans("Component No.").'</td><td colspan="3"><input name="component_no" class="form-control" maxlength="255" value="'.dol_escape_htmltag($object->component_no).'"></td></tr>';
 
 			// Invoice Date
 			print '<tr style="display:none;"><td>'.$langs->trans("Invoice Date").'-'.date("m/d/Y",$object->invoicedate).'</td><td>';
@@ -2281,7 +2280,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		// Customer Sale
 		print '<tr style="display:none;"><td>'.$langs->trans("Is Direct Customer Sale?").'</td><td>';
 		
-		print '<select class="flat" name="custsale">';
+		print '<select class="form-control" name="custsale">';
 			if ($object->custsale)
 			{
 				print '<option value="1" selected>'.$langs->trans("Yes").'</option>';
@@ -2298,7 +2297,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Status To sell
 			print '<tr><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
-			print '<select class="flat" name="statut">';
+			print '<select class="form-control" name="statut">';
 			if ($object->status)
 			{
 				print '<option value="1" selected>'.$langs->trans("OnSell").'</option>';
@@ -2312,7 +2311,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Status To Buy
 			print '<tr style="display:none;"><td class="fieldrequired">'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
-			print '<select class="flat" name="statut_buy">';
+			print '<select class="form-control" name="statut_buy">';
 			if ($object->status_buy)
 			{
 				print '<option value="1" selected>'.$langs->trans("ProductStatusOnBuy").'</option>';
@@ -2581,38 +2580,38 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				// For external software
 				// Accountancy_code_sell
 				print '<tr><td class="titlefield">'.$langs->trans("ProductAccountancySellCode").'</td>';
-				print '<td><input name="accountancy_code_sell" class="maxwidth200" value="'.$object->accountancy_code_sell.'">';
+				print '<td><input name="accountancy_code_sell" class="form-control" value="'.$object->accountancy_code_sell.'">';
 				print '</td></tr>';
 
 				// Accountancy_code_sell_intra
 				if ($mysoc->isInEEC())
 				{
 					print '<tr><td class="titlefield">'.$langs->trans("ProductAccountancySellIntraCode").'</td>';
-					print '<td><input name="accountancy_code_sell_intra" class="maxwidth200" value="'.$object->accountancy_code_sell_intra.'">';
+					print '<td><input name="accountancy_code_sell_intra" class="form-control" value="'.$object->accountancy_code_sell_intra.'">';
 					print '</td></tr>';
 				}
 
 				// Accountancy_code_sell_export
 				print '<tr><td class="titlefield">'.$langs->trans("ProductAccountancySellExportCode").'</td>';
-				print '<td><input name="accountancy_code_sell_export" class="maxwidth200" value="'.$object->accountancy_code_sell_export.'">';
+				print '<td><input name="accountancy_code_sell_export" class="form-control" value="'.$object->accountancy_code_sell_export.'">';
 				print '</td></tr>';
 
 				// Accountancy_code_buy
 				print '<tr><td>'.$langs->trans("ProductAccountancyBuyCode").'</td>';
-				print '<td><input name="accountancy_code_buy" class="maxwidth200" value="'.$object->accountancy_code_buy.'">';
+				print '<td><input name="accountancy_code_buy" class="form-control" value="'.$object->accountancy_code_buy.'">';
 				print '</td></tr>';
 
 				// Accountancy_code_buy_intra
 				if ($mysoc->isInEEC())
 				{
 					print '<tr><td class="titlefield">'.$langs->trans("ProductAccountancyBuyIntraCode").'</td>';
-					print '<td><input name="accountancy_code_buy_intra" class="maxwidth200" value="'.$object->accountancy_code_buy_intra.'">';
+					print '<td><input name="accountancy_code_buy_intra" class="form-control" value="'.$object->accountancy_code_buy_intra.'">';
 					print '</td></tr>';
 				}
 
 				// Accountancy_code_buy_export
 				print '<tr><td class="titlefield">'.$langs->trans("ProductAccountancyBuyExportCode").'</td>';
-				print '<td><input name="accountancy_code_buy_export" class="maxwidth200" value="'.$object->accountancy_code_buy_export.'">';
+				print '<td><input name="accountancy_code_buy_export" class="form-control" value="'.$object->accountancy_code_buy_export.'">';
 				print '</td></tr>';
 			}
 			print '</table>';
@@ -3302,9 +3301,9 @@ if (!empty($conf->global->PRODUCT_ADD_FORM_ADD_TO) && $object->id && ($action ==
 		print dol_get_fiche_head('');
 
 		$html .= '<tr><td class="nowrap">'.$langs->trans("Quantity").' ';
-		$html .= '<input type="text" class="flat" name="qty" size="1" value="1"></td>';
+		$html .= '<input type="text" class="form-control" name="qty" size="1" value="1"></td>';
 		$html .= '<td class="nowrap">'.$langs->trans("ReductionShort").'(%) ';
-		$html .= '<input type="text" class="flat" name="remise_percent" size="1" value="0">';
+		$html .= '<input type="text" class="form-control" name="remise_percent" size="1" value="0">';
 		$html .= '</td></tr>';
 
 		print '<table width="100%" class="border">';
@@ -3363,5 +3362,14 @@ if ($action != 'create' && $action != 'edit' && $action != 'delete')
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

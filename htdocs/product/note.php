@@ -1,11 +1,5 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2013      Florian Henry	  	<florian.henry@open-concept.pro>
- * Copyright (C) 2015      Marcos García        <marcosgdf@gmail.com>
- *
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -79,7 +73,7 @@ if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE))
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
 
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 if ($id > 0 || !empty($ref))
 {
@@ -92,7 +86,19 @@ if ($id > 0 || !empty($ref))
 	$titre = $langs->trans("CardProduct".$object->type);
 	$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
 
-	print dol_get_fiche_head($head, 'note', $titre, -1, $picto);
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'note', $titre, -1, $picto);
+
+	print '</div>
+		<div class="card-body">';
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/product/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	$object->next_prev_filter = " fk_product_type = ".$object->type;
@@ -100,7 +106,7 @@ if ($id > 0 || !empty($ref))
 	$shownav = 1;
 	if ($user->socid && !in_array('product', explode(',', $conf->global->MAIN_MODULES_FOR_EXTERNAL))) $shownav = 0;
 
-	dol_banner_tab($object, 'ref', $linkback, $shownav, 'ref');
+	dol_banner_tab_layout($object, 'ref', $linkback, $shownav, 'ref');
 
 	$cssclass = 'titlefield';
 	//if ($action == 'editnote_public') $cssclass='titlefieldcreate';
@@ -108,11 +114,12 @@ if ($id > 0 || !empty($ref))
 
 	//print '<div class="fichecenter">';
 
-	print '<div class="underbanner clearboth"></div>';
-
 	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
-	print dol_get_fiche_end();
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 }
 
 // End of page

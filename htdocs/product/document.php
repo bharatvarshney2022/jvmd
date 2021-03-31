@@ -182,7 +182,7 @@ if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE))
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
 
-llxHeader('', $title, $helpurl);
+llxHeaderLayout('', $title, $title, $helpurl);
 
 
 if ($object->id)
@@ -191,7 +191,19 @@ if ($object->id)
 	$titre = $langs->trans("CardProduct".$object->type);
 	$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
 
-	print dol_get_fiche_head($head, 'documents', $titre, -1, $picto);
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'documents', $titre, -1, $picto);
+
+	print '</div>
+		<div class="card-body">';
 
 	$parameters = array();
 	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -221,24 +233,39 @@ if ($object->id)
 	$shownav = 1;
 	if ($user->socid && !in_array('product', explode(',', $conf->global->MAIN_MODULES_FOR_EXTERNAL))) $shownav = 0;
 
-	dol_banner_tab($object, 'ref', $linkback, $shownav, 'ref');
+	dol_banner_tab_layout($object, 'ref', $linkback, $shownav, 'ref');
 
-	print '<div class="fichecenter">';
+	print '</div>
+	</div>'; // card
 
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border tableforfield centpercent">';
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.dol_print_size($totalsize, 1, 1).'</td></tr>';
-	print '</table>';
 
-	print '</div>';
-	print '<div style="clear:both"></div>';
+	print '</div>
+		</div>'; // card
+	print '</div>
+	</div>'; // card
 
-	print dol_get_fiche_end();
+	print '<div class="card card-custom gutter-b">';
 
 	$param = '&id='.$object->id;
-	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers_layout.tpl.php';
+
+	print '
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 
 
 	// Merge propal PDF document PDF files
@@ -294,7 +321,7 @@ if ($object->id)
 				print Form::selectarray('lang_id', $langs_available, $default_lang, 0, 0, 0, '', 0, 0, 0, 'ASC');
 
 				if ($conf->global->MAIN_MULTILANGS) {
-					print  '<input type="submit" class="button" name="refresh" value="'.$langs->trans('Refresh').'">';
+					print  '<input type="submit" class="btn btn-info" name="refresh" value="'.$langs->trans('Refresh').'">';
 				}
 
 				print  '</td></tr>';
@@ -328,7 +355,7 @@ if ($object->id)
 			}
 
 			print  '<tr><td>';
-			print  '<input type="submit" class="button button-save" name="save" value="'.$langs->trans("Save").'">';
+			print  '<input type="submit" class="btn btn-info button-save" name="save" value="'.$langs->trans("Save").'">';
 			print  '</td></tr>';
 
 			print  '</table>';
