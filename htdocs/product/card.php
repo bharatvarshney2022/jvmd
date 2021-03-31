@@ -2076,6 +2076,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			//WYSIWYG Editor
 			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
+			print '<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<!--begin::Card-->
+						<div class="card card-custom gutter-b">
+							<div class="card-footer">';
+
 			$object->fk_model = GETPOST('modelname') ? GETPOST('modelname') : $object->fk_model;
 			print '<script type="text/javascript">';
 				print '$(document).ready(function () {
@@ -2196,6 +2205,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($object->isService()) $type = $langs->trans('Service');
 			//print load_fiche_titre($langs->trans('Modify').' '.$type.' : '.(is_object($object->oldcopy)?$object->oldcopy->ref:$object->ref), "");
 
+			$head = product_prepare_head($object);
+			$titre = $langs->trans("CardProduct".$object->type);
+			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
+			print dol_get_fiche_head_layout($head, 'card', $titre, 0, $picto);
+
+			print '</div>
+			<div class="card-body">';
+
 			// Main official, simple, and not duplicated code
 			print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" method="POST" name="formprod">'."\n";
 			print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -2203,13 +2220,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<input type="hidden" name="id" value="'.$object->id.'">';
 			print '<input type="hidden" name="canvas" value="'.$object->canvas.'">';
 
-			$head = product_prepare_head($object);
-			$titre = $langs->trans("CardProduct".$object->type);
-			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
-			print dol_get_fiche_head($head, 'card', $titre, 0, $picto);
+			
 
-			print "<h3>Product Information</h3>";
-			print '<table class="border allwidth">';
+			print '<table class="table table-bordered">';
 
 			// Ref
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Ref").'</td><td><input name="ref" class="form-control" maxlength="128" value="'.dol_escape_htmltag($object->ref).'"></td>';
@@ -2616,15 +2629,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 			print '</table>';
 
-			print dol_get_fiche_end();
-
 			print '<div class="center">';
-			print '<input type="submit" class="button button-save" value="'.$langs->trans("Save").'">';
+			print '<input type="submit" class="btn btn-info button-save" value="'.$langs->trans("Save").'">';
 			print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+			print '<input type="submit" class="btn btn-warning button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
 			print '</div>';
 
 			print '</form>';
+
+			print '</div>';
+					print '</div>';
+				print '</div>';
+			print '</div>';
+		print '</div>';
 		} else {
 			// Fiche en mode visu
 			$showbarcode = empty($conf->barcode->enabled) ? 0 : 1;
@@ -2635,7 +2652,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$picto = ($object->type == Product::TYPE_SERVICE ? 'service' : 'product');
 			/*echo '<pre>';
 			print_r($head);*/
-			print dol_get_fiche_head($head, 'card', $titre, -1, $picto);
+			print '<div class="d-flex flex-column-fluid">
+					<!--begin::Container-->
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-12">
+								<!--begin::Card-->
+								<div class="card card-custom gutter-b">
+									<div class="card-footer">';
+
+			print dol_get_fiche_head_layout($head, 'card', $titre, -1, $picto);
+
+			print '</div>
+			<div class="card-body">';
 
 			$linkback = '<a href="'.DOL_URL_ROOT.'/product/list.php?restore_lastsearch_values=1&type='.$object->type.'">'.$langs->trans("BackToList").'</a>';
 			$object->next_prev_filter = " fk_product_type = ".$object->type;
@@ -2643,14 +2672,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			$shownav = 1;
 			if ($user->socid && !in_array('product', explode(',', $conf->global->MAIN_MODULES_FOR_EXTERNAL))) $shownav = 0;
 
-			dol_banner_tab($object, 'ref', $linkback, $shownav, 'ref');
+			dol_banner_tab_layout($object, 'ref', $linkback, $shownav, 'ref');
 
+			print '</div>
+			</div>';
 
-			print '<div class="fichecenter" style="display:none;">';
-			print '<div class="fichehalfleft">';
+			print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-			print '<div class="underbanner clearboth"></div>';
-			print '<table class="border tableforfield" width="100%" style="display:none;">';
+			
+
+			print '<div class="row">';
+			print '<div class="col-sm-12">
+			<div class="table-responsive">';
+
+			print '<table class="table table-bordered" style="display:none;">';
 
 			// Type
 			if (!empty($conf->product->enabled) && !empty($conf->service->enabled))
@@ -2667,8 +2702,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			if ($showbarcode)
 			{
 				// Barcode type
-				print '<tr><td class="nowrap">';
-				print '<table width="100%" class="nobordernopadding"><tr><td class="nowrap">';
+				print '<tr><td class="">';
+				print '<table width="100%" class="nobordernopadding"><tr><td class="">';
 				print $langs->trans("BarcodeType");
 				print '</td>';
 				if (($action != 'editbarcodetype') && $usercancreate && $createbarcode) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editbarcodetype&amp;id='.$object->id.'">'.img_edit($langs->trans('Edit'), 1).'</a></td>';
@@ -2689,8 +2724,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				print '</td></tr>'."\n";
 
 				// Barcode value
-				print '<tr><td class="nowrap">';
-				print '<table width="100%" class="nobordernopadding" ><tr><td class="nowrap">';
+				print '<tr><td class="">';
+				print '<table width="100%" class="nobordernopadding" ><tr><td class="">';
 				print $langs->trans("BarcodeValue");
 				print '</td>';
 				if (($action != 'editbarcode') && $usercancreate && $createbarcode) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editbarcode&amp;id='.$object->id.'">'.img_edit($langs->trans('Edit'), 1).'</a></td>';
@@ -2715,7 +2750,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			// Accountancy sell code
-			print '<tr><td class="nowrap">';
+			print '<tr><td class="">';
 			print $langs->trans("ProductAccountancySellCode");
 			print '</td><td colspan="2">';
 			if (!empty($conf->accounting->enabled))
@@ -2735,7 +2770,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Accountancy sell code intra-community
 			if ($mysoc->isInEEC())
 			{
-				print '<tr><td class="nowrap">';
+				print '<tr><td class="">';
 				print $langs->trans("ProductAccountancySellIntraCode");
 				print '</td><td colspan="2">';
 				if (!empty($conf->accounting->enabled))
@@ -2754,7 +2789,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			// Accountancy sell code export
-			print '<tr><td class="nowrap">';
+			print '<tr><td class="">';
 			print $langs->trans("ProductAccountancySellExportCode");
 			print '</td><td colspan="2">';
 			if (!empty($conf->accounting->enabled))
@@ -2772,7 +2807,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '</td></tr>';
 
 			// Accountancy buy code
-			print '<tr><td class="nowrap">';
+			print '<tr><td class="">';
 			print $langs->trans("ProductAccountancyBuyCode");
 			print '</td><td colspan="2">';
 			if (!empty($conf->accounting->enabled))
@@ -2792,7 +2827,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// Accountancy buy code intra-community
 			if ($mysoc->isInEEC())
 			{
-				print '<tr><td class="nowrap">';
+				print '<tr><td class="">';
 				print $langs->trans("ProductAccountancyBuyIntraCode");
 				print '</td><td colspan="2">';
 				if (!empty($conf->accounting->enabled))
@@ -2811,7 +2846,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			// Accountancy buy code export
-			print '<tr><td class="nowrap">';
+			print '<tr><td class="">';
 			print $langs->trans("ProductAccountancyBuyExportCode");
 			print '</td><td colspan="2">';
 			if (!empty($conf->accounting->enabled))
@@ -2878,11 +2913,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			print '</table>';
-			print '</div>';
-			print '<div class="fichehalfright"><div class="ficheaddleft">';
 
-			print '<div class="underbanner clearboth"></div>';
-			print '<table class="border tableforfield" width="100%" style="display:none;">';
+			print '<table class="table table-bordered" style="display:none;">';
 
 			if ($object->isService())
 			{
@@ -3010,17 +3042,16 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			}
 
 			print "</table>\n";
-			print '</div>';
 
-			print '</div></div>';
-			print '<div style="clear:both"></div>';
+			print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-			print '<div class="fichecenter" >';
-			//print '<div class="fichehalfleft">';
-			print '<div class="fiche">';
+		
 
-			print '<div class="underbanner clearboth"></div>';
-			print '<table class="border tableforfield" width="100%" >';
+			print '<div class="row">';
+			print '<div class="col-sm-12">
+			<div class="table-responsive">';
+
+			print '<table class="table table-bordered">';
 
 			print '<tr><td class="valignmiddle">'.$langs->trans("Registration No").'</td><td colspan="3">';
 				print $object->ref;	
@@ -3093,13 +3124,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			
 
 			print "</table>\n";
-			print '</div>';
 
 			print '</div>';
-			print '<div style="clear:both"></div>';
-
-
-			print dol_get_fiche_end();
 		}
 	} elseif ($action != 'create')
 	{
@@ -3177,15 +3203,15 @@ if ($action != 'create' && $action != 'edit')
 	{
 		if ($usercancreate)
 		{
-			if (!isset($object->no_button_edit) || $object->no_button_edit <> 1) print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit&amp;id='.$object->id.'">'.$langs->trans("Modify").'</a>';
+			if (!isset($object->no_button_edit) || $object->no_button_edit <> 1) print '<a class="btn btn-info" href="'.$_SERVER["PHP_SELF"].'?action=edit&amp;id='.$object->id.'">'.$langs->trans("Modify").'</a> &nbsp;&nbsp;';
 
 			if (!isset($object->no_button_copy) || $object->no_button_copy <> 1)
 			{
 				if (!empty($conf->use_javascript_ajax) && empty($conf->dol_use_jmobile))
 				{
-					print '<span id="action-clone" class="butAction">'.$langs->trans('ToClone').'</span>'."\n";
+					print '<span id="action-clone" class="btn btn-info">'.$langs->trans('ToClone').'</span> &nbsp;&nbsp;'."\n";
 				} else {
-					print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=clone&amp;id='.$object->id.'">'.$langs->trans("ToClone").'</a>';
+					print '<a class="btn btn-info" href="'.$_SERVER["PHP_SELF"].'?action=clone&amp;id='.$object->id.'">'.$langs->trans("ToClone").'</a>';
 				}
 			}
 		}
@@ -3197,15 +3223,16 @@ if ($action != 'create' && $action != 'edit')
 			{
 				if (!empty($conf->use_javascript_ajax) && empty($conf->dol_use_jmobile))
 				{
-					print '<span id="action-delete" class="butActionDelete">'.$langs->trans('Delete').'</span>'."\n";
+					print '<span id="action-delete" class="btn btn-warning">'.$langs->trans('Delete').'</span> &nbsp;&nbsp;'."\n";
 				} else {
-					print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?action=delete&amp;token='.newToken().'&amp;id='.$object->id.'">'.$langs->trans("Delete").'</a>';
+					print '<a class="btn btn-info" href="'.$_SERVER["PHP_SELF"].'?action=delete&amp;token='.newToken().'&amp;id='.$object->id.'">'.$langs->trans("Delete").'</a> &nbsp;&nbsp;';
 				}
 			} else {
-				print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("ProductIsUsed").'">'.$langs->trans("Delete").'</a>';
+				print '<a class="btn btn-warning classfortooltip" href="#" title="'.$langs->trans("ProductIsUsed").'">'.$langs->trans("Delete").'</a> &nbsp;&nbsp;';
 			}
 		} else {
-			print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotEnoughPermissions").'">'.$langs->trans("Delete").'</a>';
+			print '<a class="btn btn-warning classfortooltip" href="#" title="'.$langs->trans("NotEnoughPermissions").'">'.$langs->trans("Delete").'</a>
+			 &nbsp;&nbsp;';
 		}
 	}
 
@@ -3300,9 +3327,9 @@ if (!empty($conf->global->PRODUCT_ADD_FORM_ADD_TO) && $object->id && ($action ==
 
 		print dol_get_fiche_head('');
 
-		$html .= '<tr><td class="nowrap">'.$langs->trans("Quantity").' ';
+		$html .= '<tr><td class="">'.$langs->trans("Quantity").' ';
 		$html .= '<input type="text" class="form-control" name="qty" size="1" value="1"></td>';
-		$html .= '<td class="nowrap">'.$langs->trans("ReductionShort").'(%) ';
+		$html .= '<td class="">'.$langs->trans("ReductionShort").'(%) ';
 		$html .= '<input type="text" class="form-control" name="remise_percent" size="1" value="0">';
 		$html .= '</td></tr>';
 
