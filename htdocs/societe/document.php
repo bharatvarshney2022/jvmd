@@ -93,7 +93,7 @@ $form = new Form($db);
 $title = $langs->trans("ThirdParty").' - '.$langs->trans("Files");
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/thirdpartynameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->name.' - '.$langs->trans("Files");
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 if ($object->id)
 {
@@ -103,10 +103,21 @@ if ($object->id)
 	if (!empty($conf->notification->enabled)) $langs->load("mails");
 	$head = societe_prepare_head($object);
 
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
 	$form = new Form($db);
 
-	print dol_get_fiche_head($head, 'document', $langs->trans("ThirdParty"), -1, 'company');
+	print dol_get_fiche_head_layout($head, 'document', $langs->trans("ThirdParty"), -1, 'company');
 
+	print '</div>
+		<div class="card-body">';
 
 	// Build file list
 	$filearray = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ?SORT_DESC:SORT_ASC), 1);
@@ -118,12 +129,16 @@ if ($object->id)
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-	dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
+	dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
 
-	print '<div class="fichecenter">';
+	print '</div>
+	</div>'; // card
 
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border tableforfield centpercent">';
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	// Prefix
 	if (!empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
@@ -155,6 +170,18 @@ if ($object->id)
 		print '</td></tr>';
 	}
 
+	print '</div>
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+
+	print '<table class="table table-bordered">';
+
 	// Number of files
 	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
@@ -162,22 +189,40 @@ if ($object->id)
 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.dol_print_size($totalsize, 1, 1).'</td></tr>';
 
 	print '</table>';
-
+	print '</div>';
 	print '</div>';
 
-	print dol_get_fiche_end();
+	print '</div>
+	</div>'; // card
+
+	print '<div class="card card-custom gutter-b">';
 
 	$modulepart = 'societe';
 	$permission = $user->rights->societe->creer;
 	$permtoedit = $user->rights->societe->creer;
 	$param = '&id='.$object->id;
-	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers_layout.tpl.php';
+
+	print '
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 } else {
 	accessforbidden('', 0, 0);
 }
 
 // End of page
 llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
 
 print "	</body>\n";
 print "</html>\n";
