@@ -2768,7 +2768,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		if ($action != 'presend')
 		{
-			print '<div class="fichecenter"><div class="fichehalfleft">';
+			print '<div class="row"><div class="col-sm-6">';
 
 			if (empty($conf->global->SOCIETE_DISABLE_BUILDDOC))
 			{
@@ -2782,7 +2782,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				$genallowed = $user->rights->societe->lire;
 				$delallowed = $user->rights->societe->creer;
 
-				print $formfile->showdocuments('company', $object->id, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf, 0, 0, 0, 28, 0, 'entity='.$object->entity, 0, '', $object->default_lang);
+				print $formfile->showdocumentsLayout('company', $object->id, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf, 0, 0, 0, 28, 0, 'entity='.$object->entity, 0, '', $object->default_lang);
 			}
 
 			// Subsidiaries list
@@ -2791,7 +2791,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 				$result = show_subsidiaries($conf, $langs, $db, $object);
 			}
 
-			print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+			print '</div><div class="col-sm-6">';
 
 			$MAXEVENT = 10;
 
@@ -2800,9 +2800,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			// List of actions on element
 			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 			$formactions = new FormActions($db);
-			$somethingshown = $formactions->showactions($object, '', $socid, 1, '', $MAXEVENT, '', $morehtmlright); // Show all action for thirdparty
+			$somethingshown = $formactions->showactionsLayout($object, '', $socid, 1, '', $MAXEVENT, '', $morehtmlright); // Show all action for thirdparty
 
-			print '</div></div></div>';
+			print '</div></div>';
 
 			if (!empty($conf->global->MAIN_DUPLICATE_CONTACTS_TAB_ON_MAIN_CARD))
 			{
