@@ -1031,7 +1031,7 @@ class FormCompany extends Form
 
 		global $conf, $langs;
 
-		$out = '<select class="flat '.$morecss.'" name="'.$htmlname.'" id="'.$htmlidname.'">';
+		$out = '<select class="form-control '.$morecss.'" name="'.$htmlname.'" id="'.$htmlidname.'">';
 		if ($typeinput == 'form') {
 			if ($selected == '' || $selected == '-1') $out .= '<option value="-1">&nbsp;</option>';
 			if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS)) {

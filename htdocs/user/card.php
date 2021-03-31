@@ -778,8 +778,8 @@ if ($action == 'create' || $action == 'adduserldap')
 
 										   	print '<form name="add_user_ldap" action="'.$_SERVER["PHP_SELF"].'" method="post">';
 										   	print '<input type="hidden" name="token" value="'.newToken().'">';
-										   	print '<table class="border centpercent"><tr>';
-										   	print '<td width="160">';
+										   	print '<table class="table table-bordered"><tr>';
+										   	print '<td>';
 										   	print $langs->trans("LDAPUsers");
 										   	print '</td>';
 										   	print '<td>';

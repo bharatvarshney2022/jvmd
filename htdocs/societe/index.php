@@ -56,7 +56,7 @@ print '<div class="d-flex flex-column-fluid">
 					<div class="col-md-12">
 						<div class="card card-custom">';
 $linkback = '';
-print load_fiche_titre_layout($transAreaType, $linkback, 'companies');
+print load_fiche_titre_layout($transAreaType, $linkback, '');
 
 
 print '<div class="card-body"><div class="row"><div class="col-md-6">';
