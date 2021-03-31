@@ -698,6 +698,118 @@ function isInEEC($object)
  *      @param	string		$morehtmlright	More html on right of title
  *      @return	int
  */
+
+function show_projects_layout($conf, $langs, $db, $object, $backtopage = '', $nocreatelink = 0, $morehtmlright = '')
+{
+	global $user;
+
+	$i = -1;
+
+	if (!empty($conf->projet->enabled) && $user->rights->projet->lire) {
+		$langs->load("projects");
+
+		$newcardbutton = '';
+		if (!empty($conf->projet->enabled) && $user->rights->projet->creer && empty($nocreatelink)) {
+			$newcardbutton .= dolGetButtonTitleLayout($langs->trans('AddProject'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
+		}
+
+		print "\n";
+		print load_fiche_titre_layout($langs->trans("Support Tickets Dedicated To This Customer"), $newcardbutton.$morehtmlright, '');
+		print '<div class="table-responsive">';
+		print '<table class="table table-bordered">';
+
+		$sql  = "SELECT p.rowid as id, p.entity, p.title, p.ref, p.public, p.dateo as do, p.datee as de, p.fk_statut as status, p.fk_opp_status, p.opp_amount, p.opp_percent, p.tms as date_update, p.budget_amount";
+		$sql .= ", cls.code as opp_status_code";
+		$sql .= " FROM ".MAIN_DB_PREFIX."projet as p";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = cls.rowid";
+		$sql .= " WHERE p.fk_soc = ".$object->id;
+		$sql .= " AND p.entity IN (".getEntity('project').")";
+		$sql .= " ORDER BY p.dateo DESC";
+
+		$result = $db->query($sql);
+		if ($result) {
+			$num = $db->num_rows($result);
+
+			print '<thead><tr class="">';
+			print '<td>'.$langs->trans("Ref").'</td>';
+			print '<td>'.$langs->trans("Name").'</td>';
+			print '<td class="">'.$langs->trans("DateStart").'</td>';
+			print '<td class="">'.$langs->trans("DateEnd").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityAmountShort").'</td>';
+			//print '<td class="center">'.$langs->trans("OpportunityStatusShort").'</td>';
+			//print '<td class="right">'.$langs->trans("OpportunityProbabilityShort").'</td>';
+			print '<td class="">'.$langs->trans("Status").'</td>';
+			print '</tr></thead>';
+
+			print '<tbody>';
+
+			if ($num > 0) {
+				require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+
+				$projecttmp = new Project($db);
+
+				$i = 0;
+
+				while ($i < $num) {
+					$obj = $db->fetch_object($result);
+					$projecttmp->fetch($obj->id);
+
+					// To verify role of users
+					$userAccess = $projecttmp->restrictedProjectArea($user);
+
+					if ($user->rights->projet->lire && $userAccess > 0) {
+						print '<tr class="">';
+
+						// Ref
+						print '<td>';
+						print $projecttmp->getNomUrl(1);
+						print '</td>';
+
+						// Label
+						print '<td>'.$obj->title.'</td>';
+						// Date start
+						print '<td class="center">'.dol_print_date($db->jdate($obj->do), "day").'</td>';
+						// Date end
+						print '<td class="center">'.dol_print_date($db->jdate($obj->de), "day").'</td>';
+						// Opp amount
+						/*print '<td class="right">';
+						if ($obj->opp_status_code) {
+							print price($obj->opp_amount, 1, '', 1, -1, -1, '');
+						}
+						print '</td>';
+						// Opp status
+						print '<td class="center">';
+						if ($obj->opp_status_code) print $langs->trans("OppStatus".$obj->opp_status_code);
+						print '</td>';
+						// Opp percent
+						print '<td class="right">';
+						if ($obj->opp_percent) print price($obj->opp_percent, 1, '', 1, 0).'%';
+						print '</td>';*/
+						// Status
+						print '<td class="right">'.$projecttmp->getLibStatut(5).'</td>';
+
+						print '</tr>';
+					}
+					$i++;
+				}
+			} else {
+				print '<tr class="oddeven"><td colspan="5" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
+			}
+			$db->free($result);
+		} else {
+			dol_print_error($db);
+		}
+
+		print '</tbody>';
+		print "</table>";
+		print '</div>';
+
+		print "<br>\n";
+	}
+
+	return $i;
+}
+
 function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatelink = 0, $morehtmlright = '')
 {
 	global $user;

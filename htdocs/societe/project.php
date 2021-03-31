@@ -92,7 +92,8 @@ if ($socid)
 	print '</div>
 	</div>'; //card-custom
 
-	print '<div class="card card-custom gutter-b">';
+	print '<div class="card card-custom gutter-b">
+	<div class="card-body">';
 
 	print '<table class="table table-bordered">';
 
@@ -126,18 +127,27 @@ if ($socid)
 	}
 
 	print '</table>';
-
 	print '</div>';
+	print '</div>'; // card
+	
+
+	print '<div class="card card-custom gutter-b">
+	<div class="card-body">';
+
 
 	$params = '';
 
 	$newcardbutton .= dolGetButtonTitleLayout($langs->trans("NewProject"), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/projet/card.php?action=create&socid='.$object->id.'&amp;backtopage='.urlencode($backtopage), '', 1, $params);
 
-	print '<br>';
+	
+	$result = show_projects_layout($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id, 1, $newcardbutton);
+	print '</div>';
+	print '</div>'; // card
 
-
-	// Projects list
-	$result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id, 1, $newcardbutton);
+	print "</div>\n";
+	print "</div>\n";
+	print "</div>\n"; // 
+	print "</div>\n"; // 
 }
 
 // End of page

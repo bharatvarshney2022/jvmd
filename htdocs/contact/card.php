@@ -881,14 +881,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print dol_get_fiche_end();
 
 			print '<div class="center">';
-			print '<input type="submit" class="button" name="add" value="'.$langs->trans("Add").'">';
+			print '<input type="submit" class="btn btn-info" name="add" value="'.$langs->trans("Add").'">';
 			if (!empty($backtopage))
 			{
 				print ' &nbsp; &nbsp; ';
-				print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+				print '<input type="submit" class="btn btn-danger button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
 			} else {
 				print ' &nbsp; &nbsp; ';
-				print '<input type="button" class="button button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+				print '<input type="button" class="btn btn-danger button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
 			}
 			print '</div>';
 
@@ -1229,7 +1229,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print dol_get_fiche_end();
 
 			print '<div class="center">';
-			print '<input type="submit" class="btn btn-info  button-save" name="save" value="'.$langs->trans("Save").'">';
+			print '<input type="submit" class="btn btn-info button-save" name="save" value="'.$langs->trans("Save").'">';
 			print ' &nbsp; &nbsp; ';
 			print '<input type="submit" class="btn btn-danger button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
 			print '</div>';

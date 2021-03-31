@@ -6018,7 +6018,7 @@ class Product extends CommonObject
 	public function getCustomerProductBrand($socid)
 	{
 		$outjson = array();
-		echo $sql = "SELECT p.rowid as rowid, p.fk_brand as brandid, b.nom as brandname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_brands as b where p.fk_brand = b.rowid AND p.fk_soc = '".$socid."' group by p.fk_brand ";
+		$sql = "SELECT p.rowid as rowid, p.fk_brand as brandid, b.nom as brandname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_brands as b where p.fk_brand = b.rowid AND p.fk_soc = '".$socid."' group by p.fk_brand ";
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Brand</option>';
@@ -6076,6 +6076,7 @@ class Product extends CommonObject
 	{
 		$outjson = array();
 		$sql = "SELECT p.rowid as rowid, p.fk_category as catid, p.fk_subcategory as subcatid, sc.nom as catname FROM ".MAIN_DB_PREFIX."product_customer as p , ".MAIN_DB_PREFIX."c_product_subfamily as sc where p.fk_subcategory  = sc.rowid AND p.fk_soc = '".$socid."' and p.fk_brand = '".$brandid."' AND p.fk_category = '".$catid."' group by p.fk_subcategory ";
+		
 
 		$result = $this->db->query($sql);
 		$str = '<option value="0">Select Sub Category</option>';

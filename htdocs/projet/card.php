@@ -784,7 +784,7 @@ $title = $langs->trans("Project").' - '.$object->ref.($object->thirdparty->name 
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/projectnameonly/', $conf->global->MAIN_HTML_TITLE)) $title = $object->ref.($object->thirdparty->name ? ' - '.$object->thirdparty->name : '').($object->title ? ' - '.$object->title : '');
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 
-llxHeader("", $title, $help_url);
+llxHeaderLayout("", $title, $title, $help_url);
 
 $titleboth = $langs->trans("Support Tickets");
 $titlenew = $langs->trans("New Support Ticket"); // Leads and opportunities by default
@@ -806,353 +806,366 @@ if ($action == 'create' && $user->rights->projet->creer)
 	$thirdparty = new Societe($db);
 	if ($socid > 0) $thirdparty->fetch($socid);
 
-	print load_fiche_titre($titlenew, '', 'project');
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										'.
+											load_fiche_titre_layout($titlenew, '', '').
 
-	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	print '<input type="hidden" name="action" value="add">';
-	print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
-	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="">';
+										'<div class="card-body">';
 
-	print dol_get_fiche_head();
+										print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+										print '<input type="hidden" name="token" value="'.newToken().'">';
+										print '<input type="hidden" name="action" value="add">';
+										print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+										print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="">';
 
-	
-	print '<table class="border centpercent tableforfieldcreate">';
+									print dol_get_fiche_head_layout();
 
-	$defaultref = '';
-	$modele = empty($conf->global->PROJECT_ADDON) ? 'mod_project_simple' : $conf->global->PROJECT_ADDON;
+									print '<table class="table table-bordered">';
 
-	// Search template files
-	$file = ''; $classname = ''; $filefound = 0;
-	$dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
-	foreach ($dirmodels as $reldir)
-	{
-		$file = dol_buildpath($reldir."core/modules/project/".$modele.'.php', 0);
-		if (file_exists($file))
-		{
-			$filefound = 1;
-			$classname = $modele;
-			break;
-		}
-	}
+									$defaultref = '';
+									$modele = empty($conf->global->PROJECT_ADDON) ? 'mod_project_simple' : $conf->global->PROJECT_ADDON;
 
-	if ($filefound)
-	{
-		$result = dol_include_once($reldir."core/modules/project/".$modele.'.php');
-		$modProject = new $classname;
+									// Search template files
+									$file = ''; $classname = ''; $filefound = 0;
+									$dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
+									foreach ($dirmodels as $reldir)
+									{
+										$file = dol_buildpath($reldir."core/modules/project/".$modele.'.php', 0);
+										if (file_exists($file))
+										{
+											$filefound = 1;
+											$classname = $modele;
+											break;
+										}
+									}
 
-		$defaultref = $modProject->getNextValue($thirdparty, $object);
-	}
+									if ($filefound)
+									{
+										$result = dol_include_once($reldir."core/modules/project/".$modele.'.php');
+										$modProject = new $classname;
 
-	if (is_numeric($defaultref) && $defaultref <= 0) $defaultref = '';
+										$defaultref = $modProject->getNextValue($thirdparty, $object);
+									}
 
-	// Ref
-	$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
-	print '<tr><td width="15%" class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="minwidth200" readonly size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
-	print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
-	print '</td>';
+									if (is_numeric($defaultref) && $defaultref <= 0) $defaultref = '';
 
-	// Label
-	print '<td width="15%"><span class="fieldrequired">'.$langs->trans("Label").'</span></td><td><input class="minwidth400" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
+									// Ref
+									$suggestedref = ($_POST["ref"] ? $_POST["ref"] : $defaultref);
+									print '<tr><td class=""><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td><input class="form-control" readonly size="20" type="text" name="ref" value="'.dol_escape_htmltag($suggestedref).'">';
+									print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
+									print '</td>';
 
-	// Usage (opp, task, bill time, ...)
-	print '<tr style="display:none;"><td class="tdtop">';
-	print $langs->trans("Usage");
-	print '</td>';
-	print '<td>';
-	if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES)) {
-		print '<input type="checkbox" id="usage_opportunity" name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ' checked="checked"').'"> ';
-		$htmltext = $langs->trans("ProjectFollowOpportunity");
-		print '<label for="usage_opportunity">'.$form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext).'</label>';
-		print '<script>';
-		print '$( document ).ready(function() {
-				jQuery("#usage_opportunity").change(function() {
-					if (jQuery("#usage_opportunity").prop("checked")) {
-						console.log("Show opportunities fields");
-						jQuery(".classuseopportunity").show();
-					} else {
-						console.log("Hide opportunities fields "+jQuery("#usage_opportunity").prop("checked"));
-						jQuery(".classuseopportunity").hide();
-					}
-				});
+									// Label
+									print '<td><span class="fieldrequired">'.$langs->trans("Label").'</span></td><td><input class="form-control" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", 'alphanohtml')).'" autofocus></td></tr>';
 
-
-				
-
-			});';
-		print '</script>';
-		print '<br>';
-	}
-	if (empty($conf->global->PROJECT_HIDE_TASKS))
-	{
-		print '<input type="checkbox" id="usage_task" name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ' checked="checked"').'"> ';
-		$htmltext = $langs->trans("ProjectFollowTasks");
-		print '<label for="usage_task">'.$form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext).'</label>';
-		print '<br>';
-	}
-	if (empty($conf->global->PROJECT_HIDE_TASKS) && !empty($conf->global->PROJECT_BILL_TIME_SPENT))
-	{
-		print '<input type="checkbox" id="usage_bill_time" name="usage_bill_time"'.(GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '').'"> ';
-		$htmltext = $langs->trans("ProjectBillTimeDescription");
-		print '<label for="usage_bill_time">'.$form->textwithpicto($langs->trans("BillTime"), $htmltext).'</label>';
-		print '<br>';
-	}
-	/*
-	print '<input type="checkbox" name="usage_organize_event"'.(GETPOST('usage_organize_event', 'alpha')!=''?' checked="checked"':'').'"> ';
-	$htmltext = $langs->trans("OrganizeEvent");
-	print $form->textwithpicto($langs->trans("OrganizeEvent"), $htmltext);*/
-	print '</td>';
-	print '</tr>';
-
-	print '<script>';
-		print '$( document ).ready(function() {
-
-				jQuery("#socid").change(function() {
-					var socid = $(this).val();
-                	$.ajax({
-						  dataType: "html",
-						  url: "customerproductBrand_data.php",
-						  data: {socid: socid},
-						  success: function(html) {
-						  	//alert(html);
-							$("#fk_brand").html(html);
-						  }
-					});
-				});
+									// Usage (opp, task, bill time, ...)
+									print '<tr style="display:none;"><td class="tdtop">';
+									print $langs->trans("Usage");
+									print '</td>';
+									print '<td>';
+									if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES)) {
+										print '<input type="checkbox" id="usage_opportunity" name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ' checked="checked"').'"> ';
+										$htmltext = $langs->trans("ProjectFollowOpportunity");
+										print '<label for="usage_opportunity">'.$form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext).'</label>';
+										print '<script>';
+										print '$( document ).ready(function() {
+												jQuery("#usage_opportunity").change(function() {
+													if (jQuery("#usage_opportunity").prop("checked")) {
+														console.log("Show opportunities fields");
+														jQuery(".classuseopportunity").show();
+													} else {
+														console.log("Hide opportunities fields "+jQuery("#usage_opportunity").prop("checked"));
+														jQuery(".classuseopportunity").hide();
+													}
+												});
 
 
-				jQuery("#fk_brand").change(function() {
-					var brandid = $(this).val();
-					var socid = $("#socid").val();
-                	$.ajax({
-						  dataType: "html",
-						  url: "customerproductCategory_data.php",
-						  data: {socid: socid,brandid: brandid},
-						  success: function(html) {
-						  	//alert(html);
-							$("#fk_category").html(html);
-						  }
-					});
-				});
+												
 
-				jQuery("#fk_category").change(function() {
-					var catid = $(this).val();
-					var brandid = $("#fk_brand").val();
-					var socid = $("#socid").val();
-                	$.ajax({
-						  dataType: "html",
-						  url: "customerproductSubCategory_data.php",
-						  data: {socid: socid,brandid: brandid ,catid: catid},
-						  success: function(html) {
-						  	//alert(html);
-							$("#fk_sub_category").html(html);
-						  }
-					});
-				});
+											});';
+										print '</script>';
+										print '<br>';
+									}
+									if (empty($conf->global->PROJECT_HIDE_TASKS))
+									{
+										print '<input type="checkbox" id="usage_task" name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ' checked="checked"').'"> ';
+										$htmltext = $langs->trans("ProjectFollowTasks");
+										print '<label for="usage_task">'.$form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext).'</label>';
+										print '<br>';
+									}
+									if (empty($conf->global->PROJECT_HIDE_TASKS) && !empty($conf->global->PROJECT_BILL_TIME_SPENT))
+									{
+										print '<input type="checkbox" id="usage_bill_time" name="usage_bill_time"'.(GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '').'"> ';
+										$htmltext = $langs->trans("ProjectBillTimeDescription");
+										print '<label for="usage_bill_time">'.$form->textwithpicto($langs->trans("BillTime"), $htmltext).'</label>';
+										print '<br>';
+									}
+									/*
+									print '<input type="checkbox" name="usage_organize_event"'.(GETPOST('usage_organize_event', 'alpha')!=''?' checked="checked"':'').'"> ';
+									$htmltext = $langs->trans("OrganizeEvent");
+									print $form->textwithpicto($langs->trans("OrganizeEvent"), $htmltext);*/
+									print '</td>';
+									print '</tr>';
 
-				jQuery("#fk_sub_category").change(function() {
-					var scatid = $(this).val();
-					var catid = $("#fk_category").val();
-					var brandid = $("#fk_brand").val();
-					var socid = $("#socid").val();
-                	$.ajax({
-						  dataType: "html",
-						  url: "customerproductmodeldata.php",
-						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid},
-						  success: function(html) {
-						  	//alert(html);
-							$("#fk_model").html(html);
-						  }
-					});
-				});
+									print '<script>';
+										print '$( document ).ready(function() {
 
-				jQuery("#fk_model").change(function() {
-					var model = $(this).val();
-					var scatid = $("#fk_sub_category").val();
-					var catid = $("#fk_category").val();
-					var brandid = $("#fk_brand").val();
-					var socid = $("#socid").val();
-                	$.ajax({
-						  dataType: "json",
-						  url: "productmodeldata.php",
-						  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid,model: model},
-						  success: function(data) {
-						  	$("#fk_product").html(data.prdstr);
-						  	$("#ac_capacity").val(data.ac_capacity);
-						  	$("#fk_customer_product").val(data.id);
-						  }
-					});
-				});
-
-			});
-
-			';
+												jQuery("#socid").change(function() {
+													var socid = $(this).val();
+								                	$.ajax({
+														  dataType: "html",
+														  url: "customerproductBrand_data.php",
+														  data: {socid: socid},
+														  success: function(html) {
+														  	//alert(html);
+															$("#fk_brand").html(html);
+														  }
+													});
+												});
 
 
-		print '</script>';
-	// Thirdparty
-	if ($conf->societe->enabled)
-	{
-		print '<tr><td class="fieldrequired">';
-		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
-		print $langs->trans("ThirdParty");
-		print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
-		print '</td><td class="maxwidthonsmartphone">';
-		$filteronlist = '';
-		if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
-	   	$text = img_picto('', 'company').$form->select_company(GETPOST('socid', 'int'), 'socid', $filteronlist, 'SelectThirdParty', 1, 0, array(), 0, 'minwidth300 widthcentpercentminusxx');
-		if (empty($conf->global->PROJECT_CAN_ALWAYS_LINK_TO_ALL_SUPPLIERS) && empty($conf->dol_use_jmobile))
-		{
-			$texthelp = $langs->trans("IfNeedToUseOtherObjectKeepEmpty");
-			print $form->textwithtooltip($text.' '.img_help(), $texthelp, 1);
-		} else print $text;
-		if($user_group_id != 4){
-			if (!GETPOSTISSET('backtopage')) print ' <a href="'.DOL_URL_ROOT.'/societe/card.php?action=create&backtopage='.urlencode($_SERVER["PHP_SELF"].'?action=create').'"><span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddThirdParty").'"></span></a>';
-		}
-		print '</td>';
-	}
+												jQuery("#fk_brand").change(function() {
+													var brandid = $(this).val();
+													var socid = $("#socid").val();
+								                	$.ajax({
+														  dataType: "html",
+														  url: "customerproductCategory_data.php",
+														  data: {socid: socid,brandid: brandid},
+														  success: function(html) {
+														  	//alert(html);
+															$("#fk_category").html(html);
+														  }
+													});
+												});
 
-	// Date start
-	print '<td>'.$langs->trans("DateStart").'</td><td>';
-	print $form->selectDate(($date_start ? $date_start : ''), 'projectstart', 0, 0, 0, '', 1, 0);
-	print '</td></tr>';
-	// Status
-	if ($status != '')
-	{
-		print '<tr><td>'.$langs->trans("Status").'</td><td>';
-		print '<input type="hidden" name="status" value="'.$status.'">';
-		print $object->LibStatut($status, 4);
-		print '</td></tr>';
-	}
+												jQuery("#fk_category").change(function() {
+													var catid = $(this).val();
+													var brandid = $("#fk_brand").val();
+													var socid = $("#socid").val();
+								                	$.ajax({
+														  dataType: "html",
+														  url: "customerproductSubCategory_data.php",
+														  data: {socid: socid,brandid: brandid ,catid: catid},
+														  success: function(html) {
+														  	//alert(html);
+															$("#fk_sub_category").html(html);
+														  }
+													});
+												});
 
-	// Visibility
-	print '<tr style="display:none;"><td>'.$langs->trans("Visibility").'</td><td class="maxwidthonsmartphone">';
-	$array = array();
-	if (empty($conf->global->PROJECT_DISABLE_PRIVATE_PROJECT)) $array[0] = $langs->trans("PrivateProject");
-	if (empty($conf->global->PROJECT_DISABLE_PUBLIC_PROJECT)) $array[1] = $langs->trans("SharedProject");
-	print $form->selectarray('public', $array, GETPOST('public') ?GETPOST('public') : $object->public, 0, 0, 0, '', 0, 0, 0, '', '', 1);
-	print '</td></tr>';
+												jQuery("#fk_sub_category").change(function() {
+													var scatid = $(this).val();
+													var catid = $("#fk_category").val();
+													var brandid = $("#fk_brand").val();
+													var socid = $("#socid").val();
+								                	$.ajax({
+														  dataType: "html",
+														  url: "customerproductmodeldata.php",
+														  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid},
+														  success: function(html) {
+														  	//alert(html);
+															$("#fk_model").html(html);
+														  }
+													});
+												});
 
-	
+												jQuery("#fk_model").change(function() {
+													var model = $(this).val();
+													var scatid = $("#fk_sub_category").val();
+													var catid = $("#fk_category").val();
+													var brandid = $("#fk_brand").val();
+													var socid = $("#socid").val();
+								                	$.ajax({
+														  dataType: "json",
+														  url: "productmodeldata.php",
+														  data: {socid: socid,brandid: brandid ,catid: catid,scatid: scatid,model: model},
+														  success: function(data) {
+														  	$("#fk_product").html(data.prdstr);
+														  	$("#ac_capacity").val(data.ac_capacity);
+														  	$("#fk_customer_product").val(data.id);
+														  }
+													});
+												});
 
-	// Date end
-	print '<tr style="display:none;"><td>'.$langs->trans("DateEnd").'</td><td>';
-	print $form->selectDate(($date_end ? $date_end : -1), 'projectend', 0, 0, 0, '', 1, 0);
-	print '</td></tr>';
+											});
 
-	if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
-	{
-		// Opportunity status
-		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityStatus").'</td>';
-		print '<td class="maxwidthonsmartphone">';
-		print $formproject->selectOpportunityStatus('opp_status', GETPOST('opp_status') ?GETPOST('opp_status') : $object->opp_status, 1, 0, 0, 0, '', 0, 1);
-		print '</tr>';
+											';
 
-		// Opportunity probability
-		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityProbability").'</td>';
-		print '<td><input size="5" type="text" id="opp_percent" name="opp_percent" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? GETPOST('opp_percent') : '').'"><span class="hideonsmartphone"> %</span>';
-		print '<input type="hidden" name="opp_percent_not_set" id="opp_percent_not_set" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? '0' : '1').'">';
-		print '</td>';
-		print '</tr>';
 
-		// Opportunity amount
-		print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityAmount").'</td>';
-		print '<td><input size="5" type="text" name="opp_amount" value="'.dol_escape_htmltag(GETPOSTISSET('opp_amount') ? GETPOST('opp_amount') : '').'"></td>';
-		print '</tr>';
-	}
+										print '</script>';
+									// Thirdparty
+									if ($conf->societe->enabled)
+									{
+										print '<tr><td class="fieldrequired">';
+										print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '<span class="fieldrequired">');
+										print $langs->trans("ThirdParty");
+										print (empty($conf->global->PROJECT_THIRDPARTY_REQUIRED) ? '' : '</span>');
+										print '</td><td class="maxwidthonsmartphone">';
+										$filteronlist = '';
+										if (!empty($conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST)) $filteronlist = $conf->global->PROJECT_FILTER_FOR_THIRDPARTY_LIST;
+									   	$text = img_picto('', 'company').$form->select_company(GETPOST('socid', 'int'), 'socid', $filteronlist, 'SelectThirdParty', 1, 0, array(), 0, 'minwidth300 widthcentpercentminusxx');
+										if (empty($conf->global->PROJECT_CAN_ALWAYS_LINK_TO_ALL_SUPPLIERS) && empty($conf->dol_use_jmobile))
+										{
+											$texthelp = $langs->trans("IfNeedToUseOtherObjectKeepEmpty");
+											print $form->textwithtooltip($text.' '.img_help(), $texthelp, 1);
+										} else print $text;
+										if($user_group_id != 4){
+											if (!GETPOSTISSET('backtopage')) print ' <a href="'.DOL_URL_ROOT.'/societe/card.php?action=create&backtopage='.urlencode($_SERVER["PHP_SELF"].'?action=create').'"><span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddThirdParty").'"></span></a>';
+										}
+										print '</td>';
+									}
 
-	// Budget
-	print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td>';
-	print '<td><input size="5" type="text" name="budget_amount" value="'.dol_escape_htmltag(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : '').'"></td>';
-	print '</tr>';
+									// Date start
+									print '<td>'.$langs->trans("DateStart").'</td><td>';
+									print $form->selectDate(($date_start ? $date_start : ''), 'projectstart', 0, 0, 0, '', 1, 0);
+									print '</td></tr>';
+									// Status
+									if ($status != '')
+									{
+										print '<tr><td>'.$langs->trans("Status").'</td><td>';
+										print '<input type="hidden" name="status" value="'.$status.'">';
+										print $object->LibStatut($status, 4);
+										print '</td></tr>';
+									}
 
-	// Description
-	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td>';
-	print '<td colspan="3">';
-	$doleditor = new DolEditor('description', GETPOST("description", 'restricthtml'), '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
-	$doleditor->Create();
-	print '</td></tr>';
+									// Visibility
+									print '<tr style="display:none;"><td>'.$langs->trans("Visibility").'</td><td class="maxwidthonsmartphone">';
+									$array = array();
+									if (empty($conf->global->PROJECT_DISABLE_PRIVATE_PROJECT)) $array[0] = $langs->trans("PrivateProject");
+									if (empty($conf->global->PROJECT_DISABLE_PUBLIC_PROJECT)) $array[1] = $langs->trans("SharedProject");
+									print $form->selectarray('public', $array, GETPOST('public') ?GETPOST('public') : $object->public, 0, 0, 0, '', 0, 0, 0, '', '', 1);
+									print '</td></tr>';
 
-	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-	$prdobject = new Product($db);
-	
-	// Brand
-	print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
-	print '<select class="flat" id="fk_brand" name="fk_brand">';
-	if(GETPOST('socid', 'int')){
-		print $prdobject->getCustomerProductBrand(GETPOST('socid', 'int'));
-	}else{
-		print '<option value="0">Select Brand</option>';
-	}
-	print '</select>';
-	print '</td>';
-	
-	// Product Category
+									
 
-	print '<td >'.$langs->trans("Category").'</td><td>';
-	print '<select class="flat" id="fk_category" name="fk_category">';
-	print '<option value="0">Select Category</option>';
-	print '</select>';
-	print '</td></tr>';
+									// Date end
+									print '<tr style="display:none;"><td>'.$langs->trans("DateEnd").'</td><td>';
+									print $form->selectDate(($date_end ? $date_end : -1), 'projectend', 0, 0, 0, '', 1, 0);
+									print '</td></tr>';
 
-	// Product sub Category
-	print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
-	print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
-	print '<option value="0">Select Sub Category</option>';
-	print '</select>';
-	print '</td>';
-	// Model
-	print '<td>'.$langs->trans("Model No.").'</td><td>';
-	print '<select class="flat" id="fk_model" name="fk_model">';
-	print '<option value="0">Select Model</option>';
-	print '</select>';
-	print '</td></tr>';
+									if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
+									{
+										// Opportunity status
+										print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityStatus").'</td>';
+										print '<td class="maxwidthonsmartphone">';
+										print $formproject->selectOpportunityStatus('opp_status', GETPOST('opp_status') ?GETPOST('opp_status') : $object->opp_status, 1, 0, 0, 0, '', 0, 1);
+										print '</tr>';
 
-	// Label
-	print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
-	print '<select class="flat" id="fk_product" name="fk_product">';
-	print '<option value="0">Select Product</option>';
-	print '</select>';
-	print '</td>';
-	// Ac Capacity
-	print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="minwidth300 maxwidth400onsmartphone" readonly maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
+										// Opportunity probability
+										print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityProbability").'</td>';
+										print '<td><input size="5" type="text" id="opp_percent" name="opp_percent" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? GETPOST('opp_percent') : '').'"><span class="hideonsmartphone"> %</span>';
+										print '<input type="hidden" name="opp_percent_not_set" id="opp_percent_not_set" value="'.dol_escape_htmltag(GETPOSTISSET('opp_percent') ? '0' : '1').'">';
+										print '</td>';
+										print '</tr>';
 
-	if ($conf->categorie->enabled) {
-		// Categories
-		print '<tr><td>'.$langs->trans("Categories").'</td><td colspan="3">';
-		$cate_arbo = $form->select_all_categories(Categorie::TYPE_PROJECT, '', 'parent', 64, 0, 1);
-		$arrayselected = GETPOST('categories', 'array');
-		print img_picto('', 'category').$form->multiselectarray('categories', $cate_arbo, $arrayselected, '', 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
-		print "</td></tr>";
-	}
+										// Opportunity amount
+										print '<tr style="display:none;" class="classuseopportunity"><td>'.$langs->trans("OpportunityAmount").'</td>';
+										print '<td><input size="5" type="text" name="opp_amount" value="'.dol_escape_htmltag(GETPOSTISSET('opp_amount') ? GETPOST('opp_amount') : '').'"></td>';
+										print '</tr>';
+									}
 
-	// Other options
-	$parameters = array();
-	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-	print $hookmanager->resPrint;
-	if (empty($reshook))
-	{
-		
-		print $object->showOptionals($extrafields, 'create');
-	}
+									// Budget
+									print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td>';
+									print '<td><input size="5" type="text" name="budget_amount" value="'.dol_escape_htmltag(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : '').'"></td>';
+									print '</tr>';
 
-	print '</table>';
+									// Description
+									print '<tr><td class="tdtop">'.$langs->trans("Description").'</td>';
+									print '<td colspan="3">';
+									$doleditor = new DolEditor('description', GETPOST("description", 'restricthtml'), '', 90, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_3, '90%');
+									$doleditor->Create();
+									print '</td></tr>';
 
-	print dol_get_fiche_end();
+									require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+									$prdobject = new Product($db);
+									
+									// Brand
+									print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
+									print '<select class="form-control" id="fk_brand" name="fk_brand">';
+									if(GETPOST('socid', 'int')){
+										print $prdobject->getCustomerProductBrand(GETPOST('socid', 'int'));
+									}else{
+										print '<option value="0">Select Brand</option>';
+									}
+									print '</select>';
+									print '</td>';
+									
+									// Product Category
 
-	print '<div class="center">';
-	print '<input type="submit" class="button" value="'.$langs->trans("Create Lead").'">';
-	if (!empty($backtopage))
-	{
-		print ' &nbsp; &nbsp; ';
-		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
-	} else {
-		print ' &nbsp; &nbsp; ';
-		print '<input type="button" class="button button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
-	}
-	print '</div>';
+									print '<td >'.$langs->trans("Category").'</td><td>';
+									print '<select class="form-control" id="fk_category" name="fk_category">';
+									print '<option value="0">Select Category</option>';
+									print '</select>';
+									print '</td></tr>';
 
-	print '</form>';
+									// Product sub Category
+									print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
+									print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
+									print '<option value="0">Select Sub Category</option>';
+									print '</select>';
+									print '</td>';
+									// Model
+									print '<td>'.$langs->trans("Model No.").'</td><td>';
+									print '<select class="form-control" id="fk_model" name="fk_model">';
+									print '<option value="0">Select Model</option>';
+									print '</select>';
+									print '</td></tr>';
+
+									// Label
+									print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
+									print '<select class="form-control" id="fk_product" name="fk_product">';
+									print '<option value="0">Select Product</option>';
+									print '</select>';
+									print '</td>';
+									// Ac Capacity
+									print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="form-control " readonly maxlength="255" value="'.dol_escape_htmltag(GETPOST('ac_capacity')).'"></td></tr>';
+
+									if ($conf->categorie->enabled) {
+										// Categories
+										print '<tr><td>'.$langs->trans("Categories").'</td><td colspan="3">';
+										$cate_arbo = $form->select_all_categories(Categorie::TYPE_PROJECT, '', 'parent', 64, 0, 1);
+										$arrayselected = GETPOST('categories', 'array');
+										print img_picto('', 'category').$form->multiselectarray('categories', $cate_arbo, $arrayselected, '', 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
+										print "</td></tr>";
+									}
+
+									// Other options
+									$parameters = array();
+									$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
+									print $hookmanager->resPrint;
+									if (empty($reshook))
+									{
+										
+										print $object->showOptionals($extrafields, 'create');
+									}
+
+									print '</table>';
+
+									print '<div class="center">';
+									print '<input type="submit" class="btn btn-info button-save" value="'.$langs->trans("Create Lead").'">';
+									if (!empty($backtopage))
+									{
+										print ' &nbsp; &nbsp; ';
+										print '<input type="submit" class="btn btn-warning button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+									} else {
+										print ' &nbsp; &nbsp; ';
+										print '<input type="button" class="btn btn-warning button-cancel" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+									}
+									print '</div>';
+
+									print '</form>'."\n";
+
+									print '</div>';
+								print '</div>';
+							print '</div>';
+						print '</div>';
+					print '</div>';
 
 	// Change probability from status
 	print '<script type="text/javascript" language="javascript">
@@ -1256,21 +1269,15 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("ToClone"), $langs->trans("ConfirmCloneProject"), "confirm_clone", $formquestion, '', 1, 300, 590);
 	}
 
+	print '<div class="d-flex flex-column-fluid">
+					<!--begin::Container-->
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-12">
+								<!--begin::Card-->
+								<div class="card card-custom gutter-b">
+									<div class="card-footer">';
 
-	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-	
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	
-	if ($action == 'close_form' && $userWrite > 0)
-	{
-		print '<input type="hidden" name="action" value="close_form_update">';
-	}else{
-		print '<input type="hidden" name="action" value="update">';	
-	}	
-	
-	print '<input type="hidden" name="id" value="'.$object->id.'">';
-	print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
-	print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="'.$object->fk_customer_product.'">';
 
 	$head = project_prepare_head($object);
 	
@@ -1280,17 +1287,17 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 		print '<input type="hidden" name="title" value="'.$object->title.'">';
 
-		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head_layout($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
 		print '<h3>'.$langs->trans("Close Support Tickets").'</h3>';
 		print '<table class="border centpercent">';
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Lead Detail").'</h5></td></tr>';
 		// Ref
 		$suggestedref = $object->ref;
-		print '<tr><td width="15%">'.$langs->trans("Ref").'</td>';
+		print '<tr><td>'.$langs->trans("Ref").'</td>';
 		print '<td>'.$suggestedref.'</td>';
 
 		// Label
-		print '<td width="15%" >'.$langs->trans("ProjectLabel").'</td>';
+		print '<td >'.$langs->trans("ProjectLabel").'</td>';
 		print '<td>'.dol_escape_htmltag($object->title).'</td></tr>';
 		
 
@@ -1392,20 +1399,38 @@ if ($action == 'create' && $user->rights->projet->creer)
 			//$readonly = 'readonly';
 		}	
 
-		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head_layout($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
 
-		print '<table class="border centpercent">';
+		print '</div>
+			<div class="card-body">';
+
+		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+	
+		print '<input type="hidden" name="token" value="'.newToken().'">';
+		
+		if ($action == 'close_form' && $userWrite > 0)
+		{
+			print '<input type="hidden" name="action" value="close_form_update">';
+		}else{
+			print '<input type="hidden" name="action" value="update">';	
+		}	
+		
+		print '<input type="hidden" name="id" value="'.$object->id.'">';
+		print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
+		print '<input type="hidden" name="fk_customer_product" id="fk_customer_product" value="'.$object->fk_customer_product.'">';
+
+		print '<table class="table table-bordered">';
 
 		// Ref
 		$suggestedref = $object->ref;
-		print '<tr><td width="15%" class="fieldrequired">'.$langs->trans("Ref").'</td>';
-		print '<td><input size="12" class="minwidth200" readonly name="ref" value="'.$suggestedref.'">';
+		print '<tr><td class="fieldrequired">'.$langs->trans("Ref").'</td>';
+		print '<td><input size="12" class="form-control" readonly name="ref" value="'.$suggestedref.'">';
 		print ' '.$form->textwithpicto('', $langs->trans("YouCanCompleteRef", $suggestedref));
 		print '</td>';
 
 		// Label
-		print '<td width="15%" class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
-		print '<td><input class="quatrevingtpercent" '.$readonly.' class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
+		print '<td class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
+		print '<td><input class="form-control" '.$readonly.' class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
 		if($user_group_id == 4){
 			$disabled = 'disabled';
 		}else{
@@ -1413,7 +1438,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		// Status
 		print '<tr><td class="fieldrequired">'.$langs->trans("Status").'</td><td>';
-		print '<select class="flat" name="status" '.$disabled.'>';
+		print '<select class="form-control" name="status" '.$disabled.'>';
 		foreach ($object->statuts_short as $key => $val)
 		{
 			print '<option value="'.$key.'"'.((GETPOSTISSET('status') ?GETPOST('status') : $object->statut) == $key ? ' selected="selected"' : '').'>'.$langs->trans($val).'</option>';
@@ -1673,7 +1698,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 		if($user_group_id == '4'){
 			print '<td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td>';
-			print '<select class="flat" name="fk_technician"><option value="">Select </option>';
+			print '<select class="form-control" name="fk_technician"><option value="">Select </option>';
 			
 			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
 			$resqlTech = $db->query($sqlTechnician);
@@ -1716,7 +1741,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		$prdobject = new Product($db);
 		// Brand
 		print '<tr><td class="fieldrequired">'.$langs->trans("Brand").'</td><td>';
-		print '<select class="flat" id="fk_brand" name="fk_brand">';
+		print '<select class="form-control" id="fk_brand" name="fk_brand">';
 		print $prdobject->getCustomerProductBrand($object->thirdparty->id);
 		print '</select>';
 		print '</td>';
@@ -1724,20 +1749,20 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// Product Category
 
 		print '<td >'.$langs->trans("Category").'</td><td>';
-		print '<select class="flat" id="fk_category" name="fk_category">';
+		print '<select class="form-control" id="fk_category" name="fk_category">';
 		print $prdobject->getCustomerProductCategory($object->thirdparty->id,$object->fk_brand);
 		print '</select>';
 		print '</td></tr>';
 
 		// Product sub Category
 		print '<tr><td >'.$langs->trans("Sub Category").'</td><td>';
-		print '<select class="flat" id="fk_sub_category" name="fk_sub_category">';
+		print '<select class="form-control" id="fk_sub_category" name="fk_sub_category">';
 		print $prdobject->getCustomerProductSubCategory($object->thirdparty->id,$object->fk_brand,$object->fk_category);
 		print '</select>';
 		print '</td>';
 		// Model
 		print '<td>'.$langs->trans("Model No.").'</td><td>';
-		print '<select class="flat" id="fk_model" name="fk_model">';
+		print '<select class="form-control" id="fk_model" name="fk_model">';
 		print $prdobject->getCustomerProductModel($object->thirdparty->id,$object->fk_brand,$object->fk_category,$object->fk_sub_category,$object->fk_model);
 		print '</select>';
 		print '</td></tr>';
@@ -1746,12 +1771,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 		
 		// Label
 		print '<tr><td>'.$langs->trans("Product Name").'</td><td>';
-		print '<select class="flat" id="fk_product" name="fk_product">';
+		print '<select class="form-control" id="fk_product" name="fk_product">';
 		print $prdarr->prdstr;
 		print '</select>';
 		print '</td>';
 		// Ac Capacity
-		print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="minwidth300 maxwidth400onsmartphone" readonly maxlength="255" value="'.dol_escape_htmltag($prdarr->ac_capacity).'"></td></tr>';
+		print '<td>'.$langs->trans("AC Capacity").'</td><td><input name="ac_capacity" id="ac_capacity" class="form-control" readonly maxlength="255" value="'.dol_escape_htmltag($prdarr->ac_capacity).'"></td></tr>';
 
 		// Tags-Categories
 		if ($conf->categorie->enabled)
@@ -1778,8 +1803,15 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		print '</table>';
+
+		print '</div>';
 	} else {
-		print dol_get_fiche_head($head, 'project', $langs->trans("Support Tickets"), -1, ($object->public ? 'projectpub' : 'project'));
+		print dol_get_fiche_head_layout($head, 'project', $langs->trans("Support Tickets"), -1, ($object->public ? 'projectpub' : 'project'));
+
+		print '</div>
+		<div class="card-body">';
+
+
 
 		// Project card
 
@@ -1803,14 +1835,18 @@ if ($action == 'create' && $user->rights->projet->creer)
 			$object->next_prev_filter = " rowid in (".(count($objectsListId) ?join(',', array_keys($objectsListId)) : '0').")";
 		}
 
-		dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+		dol_banner_tab_layout($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
+		print '</div>
+		</div>';
 
-		print '<div class="fichecenter">';
-		print '<div class="fichehalfleft">';
-		print '<div class="underbanner clearboth"></div>';
+		print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-		print '<table class="border tableforfield" width="100%">';
+		print '<div class="row">';
+		print '<div class="col-sm-6">
+		<div class="table-responsive">';
+
+		print '<table class="table table-bordered">';
 
 		// Usage
 		print '<tr style="display:none;"><td class="tdtop">';
@@ -1934,16 +1970,15 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<tr style="display:none;"><td>'.$langs->trans("Budget").'</td><td>';
 		if (strcmp($object->budget_amount, '')) print price($object->budget_amount, 0, $langs, 1, 0, 0, $conf->currency);
 		print '</td></tr>';
-		print "</table>\n";
-			print '</div>';
 
-		
+		print '</table>';
 
-		print '<div class="fichehalfright">';
-		print '<div class="ficheaddleft">';
-		print '<div class="underbanner clearboth"></div>';
+		print '</div>';
+		print '</div>';
+		print '<div class="col-sm-6">
+		<table class="table-responsive">';
 
-		print '<table class="border tableforfield" width="100%">';
+		print '<table class="table table-bordered">';
 
 		// Title
 		print '<tr><td class="titlefield tdtop">'.$langs->trans("Title").'</td><td>';
@@ -1988,41 +2023,41 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print "</td></tr>";
 		}
 
-		print '</table>';
-
+		print "</table>\n";
 		print '</div>';
+
 		print '</div>';
 		print '</div>';
 
 		// Other attributes
-			print '<div style="clear:both"></div> <hr />';
-
-			// Other attributes
-			print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
+		print '<div class="card-body">';
+		print '<table class="table table-bordered"><tbody>';
 		$cols = 1;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
-		print '</tbody></table></div>';
+		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view_layout.tpl.php';
+		print '</tbody></table>';
 	}
-
-	print dol_get_fiche_end();
 
 	if ($action == 'edit' && $userWrite > 0)
 	{
-		print '<div class="center">';
-		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
+		print '<div class="card-body"><div class="center">';
+		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
 		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '</div>';
 		print '</div>';
 	}
 
 	if ($action == 'close_form' && $userWrite > 0)
 	{
-		print '<div class="center">';
-		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
+		print '<div class="card-body"><div class="center">';
+		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
 		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '</div>';
 		print '</div>';
 	}
 
 	print '</form>';
+
+	print "</div>\n";
 
 	// Change probability from status
 	if (!empty($conf->use_javascript_ajax) && !empty($conf->global->PROJECT_USE_OPPORTUNITIES))
@@ -2090,6 +2125,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	/*
      * Actions Buttons
      */
+
+	print '<div class="card-body">';
 	print '<div class="tabsAction">';
 	$parameters = array();
 	$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action); // Note that $action and $object may have been
@@ -2110,7 +2147,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			if (empty($user->socid)) {
 				if ($object->statut != 2)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a>';
+					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&amp;action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a> &nbsp;&nbsp;';
 				}
 			}
 
@@ -2120,7 +2157,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				if ($userWrite > 0)
 				{
 					
-					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
+					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a> &nbsp;&nbsp;';
 					
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Modify').'</a>';
@@ -2132,7 +2169,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&action=validate">'.$langs->trans("Accept").'</a>';
+					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&action=validate">'.$langs->trans("Accept").'</a> &nbsp;&nbsp;';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Accept').'</a>';
 				}
@@ -2143,7 +2180,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=close">'.$langs->trans("Close").'</a>';
+					print '<a class="btn btn-danger" href="card.php?id='.$object->id.'&amp;action=close">'.$langs->trans("Close").'</a> &nbsp;&nbsp;';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Close').'</a>';
 				}
@@ -2154,7 +2191,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=reopen">'.$langs->trans("ReOpen").'</a>';
+					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&amp;action=reopen">'.$langs->trans("ReOpen").'</a> &nbsp;&nbsp;';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('ReOpen').'</a>';
 				}
@@ -2164,7 +2201,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
-					print '<a class="butAction" href="card.php?id='.$object->id.'&amp;action=reject">'.$langs->trans("Reject").'</a>';
+					print '<a class="btn btn-danger" href="card.php?id='.$object->id.'&amp;action=reject">'.$langs->trans("Reject").'</a> &nbsp;&nbsp;';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Reject').'</a>';
 				}
@@ -2231,7 +2268,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				if ($userWrite > 0)
 				{
 					if($user_group_id != '4'){
-						print '<a class="butAction" href="card.php?id='.$object->id.'&action=clone">'.$langs->trans('ToClone').'</a>';
+						print '<a class="btn btn-info" href="card.php?id='.$object->id.'&action=clone">'.$langs->trans('ToClone').'</a> &nbsp;&nbsp;';
 					}
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('ToClone').'</a>';
@@ -2244,7 +2281,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			{
 				if ($userDelete > 0 || ($object->statut == 0 && $user->rights->projet->creer))
 				{
-					print '<a class="butActionDelete" href="card.php?id='.$object->id.'&amp;action=delete&amp;token='.newToken().'">'.$langs->trans("Delete").'</a>';
+					print '<a class="btn btn-danger" href="card.php?id='.$object->id.'&amp;action=delete&amp;token='.newToken().'">'.$langs->trans("Delete").'</a>';
 				} else {
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Delete').'</a>';
 				}
@@ -2253,6 +2290,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	}
 
 	print "</div>";
+	print "</div>";
 
 	if (GETPOST('modelselected')) {
 		$action = 'presend';
@@ -2260,7 +2298,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	if ($action != 'presend')
 	{
-		print '<div class="fichecenter"><div class="fichehalfleft">';
+		print '<div class="row"><div class="col-sm-6">';
 		print '<a name="builddoc"></a>'; // ancre
 
 		/*
@@ -2274,7 +2312,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		//print $formfile->showdocuments('project', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->model_pdf);
 
-		print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+		print '</div><div class="col-sm-6">';
 
 		$MAXEVENT = 10;
 
@@ -2287,7 +2325,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		$formactions = new FormActions($db);
 		//$somethingshown = $formactions->showactions($object, 'project', 0, 1, '', $MAXEVENT, '', $morehtmlright);
 
-		print '</div></div></div>';
+		print '</div></div>';
 	}
 
 	// Presend form
@@ -2307,5 +2345,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
