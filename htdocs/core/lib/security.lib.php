@@ -666,10 +666,28 @@ function accessforbidden($message = '', $printheader = 1, $printfooter = 1, $sho
 
 	if ($printheader)
 	{
-		if (function_exists("llxHeader")) llxHeader('');
+		if (function_exists("llxHeaderLayout")) llxHeaderLayout('');
 		elseif (function_exists("llxHeaderVierge")) llxHeaderVierge('');
 	}
-	print '<div class="error">';
+
+	print '<!--begin::Entry-->
+	<div class="d-flex flex-column-fluid">
+		<!--begin::Container-->
+		<div class="container">
+			<!--begin::Card-->
+			<div class="card card-custom">
+				<div class="card-header py-3">
+					<div class="card-title">
+						<span class="card-icon">
+							<i class="la la-warning text-primary"></i>
+						</span>
+					</div>
+				</div>
+
+				<div class="card-body">';
+
+
+	print '<div class="alert alert-danger">';
 	if (!$message) print $langs->trans("ErrorForbidden");
 	else print $message;
 	print '</div>';
@@ -697,6 +715,8 @@ function accessforbidden($message = '', $printheader = 1, $printfooter = 1, $sho
 			}
 		}
 	}
-	if ($printfooter && function_exists("llxFooter")) llxFooter();
+
+	print '</div></div></div>';
+	if ($printfooter && function_exists("llxFooterLayout")) llxFooterLayout();
 	exit(0);
 }
