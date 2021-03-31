@@ -1984,7 +1984,7 @@ class Form
 				$out .= ajax_combobox($htmlname);
 
 				// do not use maxwidthonsmartphone by default. Set it by caller so auto size to 100% will work when not defined
-				$out .= '<select class="flat'.($morecss ? ' '.$morecss : ' minwidth200').'" id="'.$htmlname.'" name="'.$htmlname.($multiple ? '[]' : '').'" '.($multiple ? 'multiple' : '').' '.($disabled ? ' disabled' : '').'>';
+				$out .= '<select class="form-control'.($morecss ? ' '.$morecss : ' ').'" id="'.$htmlname.'" name="'.$htmlname.($multiple ? '[]' : '').'" '.($multiple ? 'multiple' : '').' '.($disabled ? ' disabled' : '').'>';
 				if ($show_empty && !$multiple) $out .= '<option value="-1"'.((empty($selected) || in_array(-1, $selected)) ? ' selected' : '').'>&nbsp;</option>'."\n";
 				if ($show_every) $out .= '<option value="-2"'.((in_array(-2, $selected)) ? ' selected' : '').'>-- '.$langs->trans("Everybody").' --</option>'."\n";
 

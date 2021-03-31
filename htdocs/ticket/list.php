@@ -428,7 +428,7 @@ if ($num == 1 && !empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && $
 // Output page
 // --------------------------------------------------------------------
 
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 
 if ($socid && !$projectid && !$project_ref && $user->rights->societe->lire) {
@@ -440,14 +440,20 @@ if ($socid && !$projectid && !$project_ref && $user->rights->societe->lire) {
 		$head = societe_prepare_head($socstat);
 		$object = $tmpobject;
 
-		print dol_get_fiche_head($head, 'ticket', $langs->trans("ThirdParty"), -1, 'company');
+		print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+							<div class="card card-custom gutter-b">
+								<div class="card-body">';
 
-		dol_banner_tab($socstat, 'socid', '', ($user->socid ? 0 : 1), 'rowid', 'nom');
+		print dol_get_fiche_head_layout($head, 'ticket', $langs->trans("ThirdParty"), -1, 'company');
 
-		print '<div class="fichecenter">';
+		dol_banner_tab_layout($socstat, 'socid', '', ($user->socid ? 0 : 1), 'rowid', 'nom');
 
-		print '<div class="underbanner clearboth"></div>';
-		print '<table class="border centpercent tableforfield">';
+		print '<table class="table table-bordered">';
 
         // Customer code
         if ($socstat->client && !empty($socstat->code_client)) {
@@ -476,7 +482,7 @@ if ($socid && !$projectid && !$project_ref && $user->rights->societe->lire) {
 
 		print '</table>';
 		print '</div>';
-		print dol_get_fiche_end();
+		print '</div>';
 	}
 }
 
@@ -496,7 +502,17 @@ if ($projectid > 0 || $project_ref) {
 		//print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
 		$head = project_prepare_head($projectstat);
-		print dol_get_fiche_head($head, 'ticket', $langs->trans("Project"), -1, ($projectstat->public ? 'projectpub' : 'project'));
+
+		print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+							<div class="card card-custom gutter-b">
+								<div class="card-body">';
+
+		print dol_get_fiche_head_layout($head, 'ticket', $langs->trans("Project"), -1, ($projectstat->public ? 'projectpub' : 'project'));
 
 		// Project card
 
@@ -538,7 +554,7 @@ if ($projectid > 0 || $project_ref) {
 		print "</table>";
 
 		print '</div>';
-		print dol_get_fiche_end();
+		print '</div>';
 
 		$object = $savobject;
 	} else {
@@ -580,6 +596,9 @@ if ($user->rights->ticket->delete) $arrayofmassactions['predelete'] = '<span cla
 if (GETPOST('nomassaction', 'int') || in_array($massaction, array('presend', 'predelete'))) $arrayofmassactions = array();
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
+print '<div class="card card-custom gutter-b">
+								<div class="card-body">';
+
 print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">';
 if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -594,12 +613,12 @@ if ($projectid) print '<input type="hidden" name="projectid" value="'.$projectid
 
 $url = DOL_URL_ROOT.'/ticket/card.php?action=create'.($socid ? '&socid='.$socid : '').($projectid ? '&origin=projet_project&originid='.$projectid : '');
 if (!empty($socid)) $url .= '&socid='.$socid;
-$newcardbutton = dolGetButtonTitle($langs->trans('NewTicket'), '', 'fa fa-plus-circle', $url, '', $user->rights->ticket->write);
+$newcardbutton = dolGetButtonTitleLayout($langs->trans('NewTicket'), '', 'fa fa-plus-circle', $url, '', $user->rights->ticket->write);
 
 $picto = 'ticket';
 if ($socid > 0) $picto = '';
 
-print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, $newcardbutton, '', $limit, 0, 0, 1);
+print_barre_liste_layout($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, $newcardbutton, '', $limit, 0, 0, 1);
 
 if ($mode == 'mine') {
 	print '<div class="opacitymedium">'.$langs->trans('TicketAssignedToMeInfos').'</div><br>';
@@ -629,7 +648,7 @@ else $moreforfilter = $hookmanager->resPrint;
 
 if (!empty($moreforfilter))
 {
-	print '<div class="liste_titre liste_titre_bydiv centpercent">';
+	print '<div class="">';
 	print $moreforfilter;
 	print '</div>';
 }
@@ -638,35 +657,37 @@ $varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 $selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage); // This also change content of $arrayfields
 $selectedfields .= (count($arrayofmassactions) ? $form->showCheckAddButtons('checkforselect', 1) : '');
 
-print '<div class="div-table-responsive">'; // You can use div-table-responsive-no-min if you dont need reserved height for your table
-print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
+print '<div class="table-responsive">'; // You can use div-table-responsive-no-min if you dont need reserved height for your table
+print '<table class="table table-bordered'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
 
 // Fields title search
 // --------------------------------------------------------------------
-print '<tr class="liste_titre">';
+print '<thead><tr class="">';
+//echo '<pre>'; print_r($object->fields); exit;
+
 foreach ($object->fields as $key => $val)
 {
 	$cssforfield = (empty($val['css']) ? '' : $val['css']);
-	if ($key == 'fk_statut') $cssforfield .= ($cssforfield ? ' ' : '').'center';
-	elseif (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'center';
+	if ($key == 'fk_statut') $cssforfield .= ($cssforfield ? ' ' : '').'';
+	elseif (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'';
 	elseif (in_array($val['type'], array('timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'nowrap';
 	elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price')) && $val['label'] != 'TechnicalID') $cssforfield .= ($cssforfield ? ' ' : '').'right';
 	if (!empty($arrayfields['t.'.$key]['checked'])) {
 		if ($key == 'type_code') {
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'">';
 			$formTicket->selectTypesTickets(dol_escape_htmltag($search[$key]), 'search_'.$key.'', '', 2, 1, 1, 0, ($val['css'] ? $val['css'] : 'maxwidth150'));
 			print '</td>';
 		} elseif ($key == 'category_code') {
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'">';
 			$formTicket->selectGroupTickets(dol_escape_htmltag($search[$key]), 'search_'.$key.'', '', 2, 1, 1, 0, ($val['css'] ? $val['css'] : 'maxwidth150'));
 			print '</td>';
 		} elseif ($key == 'severity_code') {
-			print '<td class="liste_titre center'.($cssforfield ? ' '.$cssforfield : '').'">';
+			print '<td class=" '.($cssforfield ? ' '.$cssforfield : '').'">';
 			$formTicket->selectSeveritiesTickets(dol_escape_htmltag($search[$key]), 'search_'.$key.'', '', 2, 1, 1, 0, ($val['css'] ? $val['css'] : 'maxwidth150'));
 			print '</td>';
 		} elseif ($key == 'fk_user_assign' || $key == 'fk_user_create') {
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'">';
 			print $form->select_dolusers($search[$key], 'search_'.$key, 1, null, 0, '', '', '0', 0, 0, '', 0, '', ($val['css'] ? $val['css'] : 'maxwidth150'));
 			print '</td>';
 		} elseif ($key == 'fk_statut') {
@@ -677,16 +698,16 @@ foreach ($object->fields as $key => $val)
 				if ($key2 == Ticket::STATUS_CLOSED) $arrayofstatus['closeall'] = '-- '.$langs->trans('ClosedAll').' --';
 				$arrayofstatus[$key2] = $val2;
 			}
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'">';
 			//var_dump($arrayofstatus);var_dump($search['fk_statut']);var_dump(array_values($search[$key]));
 			$selectedarray = null;
 			if ($search[$key]) $selectedarray = array_values($search[$key]);
 			print Form::multiselectarray('search_fk_statut', $arrayofstatus, $selectedarray, 0, 0, 'minwidth150', 1, 0, '', '', '');
 			print '</td>';
 		} elseif ($key == "fk_soc") {
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'"><input type="text" class="flat maxwidth75" name="search_societe" value="'.dol_escape_htmltag($search_societe).'"></td>';
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'"><input type="text" class="form-control" name="search_societe" value="'.dol_escape_htmltag($search_societe).'"></td>';
 		} elseif ($key == "datec" || $key == 'date_read' || $key == 'date_close'){
-			print '<td class="liste_titre center">';
+			print '<td class=" ">';
 			print '<div class="nowrap">';
 			switch ($key){
 				case 'datec':
@@ -714,11 +735,11 @@ foreach ($object->fields as $key => $val)
 			print '</td>';
 		}
 		else {
-			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
-			if (!empty($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) print $form->selectarray('search_'.$key, $val['arrayofkeyval'], $search[$key], $val['notnull'], 0, 0, '', 1, 0, 0, '', 'maxwidth100', 1);
+			print '<td class="'.($cssforfield ? ' '.$cssforfield : '').'">';
+			if (!empty($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) print $form->selectarray('search_'.$key, $val['arrayofkeyval'], $search[$key], $val['notnull'], 0, 0, '', 1, 0, 0, '', '', 1);
 			elseif (strpos($val['type'], 'integer:') === 0) {
 				print $object->showInputField($val, $key, $search[$key], '', '', 'search_', 'maxwidth150', 1);
-			} elseif (!preg_match('/^(date|timestamp)/', $val['type'])) print '<input type="text" class="flat maxwidth75" name="search_'.$key.'" value="'.dol_escape_htmltag($search[$key]).'">';
+			} elseif (!preg_match('/^(date|timestamp)/', $val['type'])) print '<input type="text" class="form-control" name="search_'.$key.'" value="'.dol_escape_htmltag($search[$key]).'">';
 			print '</td>';
 		}
 	}
@@ -731,7 +752,7 @@ $parameters = array('arrayfields'=>$arrayfields);
 $reshook = $hookmanager->executeHooks('printFieldListOption', $parameters, $object); // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
 // Action column
-print '<td class="liste_titre maxwidthsearch">';
+print '<td class="">';
 $searchpicto = $form->showFilterButtons();
 print $searchpicto;
 print '</td>';
@@ -740,12 +761,12 @@ print '</tr>'."\n";
 
 // Fields title label
 // --------------------------------------------------------------------
-print '<tr class="liste_titre">';
+print '<tr class="">';
 foreach ($object->fields as $key => $val)
 {
 	$cssforfield = (empty($val['css']) ? '' : $val['css']);
-	if ($key == 'fk_statut' || $key == 'severity_code') $cssforfield .= ($cssforfield ? ' ' : '').'center';
-	elseif (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'center';
+	if ($key == 'fk_statut' || $key == 'severity_code') $cssforfield .= ($cssforfield ? ' ' : '').'';
+	elseif (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'';
 	elseif (in_array($val['type'], array('timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'nowrap';
 	elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price')) && $val['label'] != 'TechnicalID') $cssforfield .= ($cssforfield ? ' ' : '').'right';
 	if (!empty($arrayfields['t.'.$key]['checked']))
@@ -759,7 +780,7 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
 $parameters = array('arrayfields'=>$arrayfields, 'param'=>$param, 'sortfield'=>$sortfield, 'sortorder'=>$sortorder);
 $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object); // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
-print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'maxwidthsearch center ')."\n";
+print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, ' ')."\n";
 print '</tr>'."\n";
 
 
@@ -772,6 +793,8 @@ if (is_array($extrafields->attributes[$object->table_element]['computed']) && co
 		if (preg_match('/\$object/', $val)) $needToFetchEachLine++; // There is at least one compute field that use $object
 	}
 }
+
+print '</thead><tbody>';
 
 
 // Loop on record
@@ -793,14 +816,14 @@ while ($i < min($num, $limit))
 	$langs->load("ticket");
 
 	// Show here line of result
-	print '<tr class="oddeven">';
+	print '<tr class="">';
 	foreach ($object->fields as $key => $val)
 	{
 		$cssforfield = '';
-		if (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'center';
-		if (in_array($val['type'], array('timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'nowrap';
-		if (in_array($key, array('ref', 'fk_project'))) $cssforfield .= ($cssforfield ? ' ' : '').'nowraponall';
-		if ($key == 'fk_statut' || $key == 'severity_code') $cssforfield .= ($cssforfield ? ' ' : '').'center';
+		if (in_array($val['type'], array('date', 'datetime', 'timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'';
+		if (in_array($val['type'], array('timestamp'))) $cssforfield .= ($cssforfield ? ' ' : '').'';
+		if (in_array($key, array('ref', 'fk_project'))) $cssforfield .= ($cssforfield ? ' ' : '').'';
+		if ($key == 'fk_statut' || $key == 'severity_code') $cssforfield .= ($cssforfield ? ' ' : '').'';
 		if (!empty($arrayfields['t.'.$key]['checked']))
 		{
 			print '<td';
@@ -869,7 +892,7 @@ while ($i < min($num, $limit))
 	$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters, $object); // Note that $action and $object may have been modified by hook
 	print $hookmanager->resPrint;
 	// Action column
-	print '<td class="nowrap center">';
+	print '<td class="">';
 	if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
 	{
 		$selected = 0;
@@ -903,7 +926,7 @@ $parameters = array('arrayfields'=>$arrayfields, 'sql'=>$sql);
 $reshook = $hookmanager->executeHooks('printFieldListFooter', $parameters, $object); // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
 
-print '</table>'."\n";
+print '</tbody></table>'."\n";
 print '</div>'."\n";
 
 print '</form>'."\n";
@@ -930,5 +953,14 @@ if (in_array('builddoc', $arrayofmassactions) && ($nbtotalofrecords === '' || $n
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

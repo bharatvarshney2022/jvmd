@@ -465,7 +465,7 @@ class FormTicket
 
 		$ticketstat->loadCacheTypesTickets();
 
-		print '<select id="select'.$htmlname.'" class="flat minwidth100'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($empty) {
 			print '<option value="">&nbsp;</option>';
 		}
@@ -560,7 +560,7 @@ class FormTicket
 
 		$ticketstat->loadCacheCategoriesTickets();
 
-		print '<select id="select'.$htmlname.'" class="flat minwidth100'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($empty) {
 			print '<option value="">&nbsp;</option>';
 		}
@@ -661,7 +661,7 @@ class FormTicket
 
 		$ticketstat->loadCacheSeveritiesTickets();
 
-		print '<select id="select'.$htmlname.'" class="flat minwidth100'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="select'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($empty) {
 			print '<option value="">&nbsp;</option>';
 		}
