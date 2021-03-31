@@ -73,7 +73,7 @@ $arrayofjs = array(
 );
 $arrayofcss = array('/includes/jquery/plugins/jquerytreeview/jquery.treeview.css');
 
-llxHeader('', $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView"), '', '', 0, 0, $arrayofjs, $arrayofcss);
+llxHeaderLayout('', $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView"), $langs->trans("ListOfUsers").' - '.$langs->trans("HierarchicView"), '', '', 0, 0, $arrayofjs, $arrayofcss);
 
 
 // Load hierarchy of users
@@ -172,67 +172,73 @@ if (!is_array($user_arbo) && $user_arbo < 0)
 	$param = array('morecss'=>'marginleftonly btnTitleSelected');
 	$morehtmlright .= dolGetButtonTitle($langs->trans("HierarchicView"), '', 'fa fa-stream paddingleft imgforviewmode', DOL_URL_ROOT.'/user/hierarchy.php'.(($search_statut != '' && $search_statut >= 0) ? '?search_statut='.$search_statut : ''), '', 1, $param);
 
-	print load_fiche_titre($title, $morehtmlright.' '.$newcardbutton, 'user');
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">';
 
-	print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
-	if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
-	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-	print '<input type="hidden" name="page" value="'.$page.'">';
-	print '<input type="hidden" name="mode" value="'.$mode.'">';
-	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+										print load_fiche_titre_layout($title, $morehtmlright.' '.$newcardbutton, '');
 
-	print '<table class="liste nohover centpercent">';
+										print '<div class="card-body">';
 
-	print '<tr class="liste_titre_filter">';
-	print '<td class="liste_titre">&nbsp;</td>';
-	print '<td class="liste_titre">&nbsp;</td>';
-	// Status
-	print '<td class="liste_titre right">';
-	print $form->selectarray('search_statut', array('-1'=>'', '1'=>$langs->trans('Enabled')), $search_statut);
-	print '</td>';
-	print '<td class="liste_titre maxwidthsearch">';
-	$searchpicto = $form->showFilterAndCheckAddButtons(0);
-	print $searchpicto;
-	print '</td>';
-	print '</tr>';
+										print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+										if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+										print '<input type="hidden" name="token" value="'.newToken().'">';
+										print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+										print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+										print '<input type="hidden" name="page" value="'.$page.'">';
+										print '<input type="hidden" name="mode" value="'.$mode.'">';
+										print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-	print '<tr class="liste_titre">';
-	print_liste_field_titre("HierarchicView");
-	print_liste_field_titre('<div id="iddivjstreecontrol"><a href="#">'.img_picto('', 'folder', 'class="paddingright"').$langs->trans("UndoExpandAll").'</a> | <a href="#">'.img_picto('', 'folder-open', 'class="paddingright"').$langs->trans("ExpandAll").'</a></div>', $_SERVER['PHP_SELF'], "", '', "", 'align="center"');
-	print_liste_field_titre("Status", $_SERVER['PHP_SELF'], "", '', "", 'align="right"');
-	print_liste_field_titre('', $_SERVER["PHP_SELF"], "", '', '', '', '', '', 'maxwidthsearch ');
-	print '</tr>';
+										print '<table class="table table-bordered">';
+
+										print '<tr class="">';
+										print '<td class="">&nbsp;</td>';
+										print '<td class="">&nbsp;</td>';
+										// Status
+										print '<td class="">';
+										print $form->selectarray('search_statut', array('-1'=>'', '1'=>$langs->trans('Enabled')), $search_statut);
+										
+										$searchpicto = $form->showFilterAndCheckAddButtons(0);
+										print $searchpicto;
+										print '</td>';
+										print '</tr>';
+
+										print '<tr class="">';
+										print_liste_field_titre_layout("HierarchicView");
+										print_liste_field_titre_layout('<div id="iddivjstreecontrol"><a href="#">'.img_picto('', 'folder', 'class="paddingright"').$langs->trans("UndoExpandAll").'</a> | <a href="#">'.img_picto('', 'folder-open', 'class="paddingright"').$langs->trans("ExpandAll").'</a></div>', $_SERVER['PHP_SELF'], "", '', "", 'align=""');
+										print_liste_field_titre_layout("Status", $_SERVER['PHP_SELF'], "", '', "", 'align=""');
+										print '</tr>';
 
 
-	$nbofentries = (count($data) - 1);
+										$nbofentries = (count($data) - 1);
 
 
-	if ($nbofentries > 0)
-	{
-		print '<tr><td colspan="3">';
-		tree_recur($data, $data[0], 0);
-		print '</td>';
-		print '<td></td>';
-		print '</tr>';
-	} else {
-		print '<tr class="oddeven">';
-		print '<td colspan="3">';
-		print '<table class="nobordernopadding"><tr class="nobordernopadding"><td>'.img_picto_common('', 'treemenu/branchbottom.gif').'</td>';
-		print '<td valign="middle">';
-		print $langs->trans("NoCategoryYet");
-		print '</td>';
-		print '<td>&nbsp;</td>';
-		print '</table>';
-		print '</td>';
-		print '<td></td>';
-		print '</tr>';
-	}
+										if ($nbofentries > 0)
+										{
+											print '<tr><td colspan="3">';
+											tree_recur($data, $data[0], 0);
+											print '</td>';
+											print '</tr>';
+										} else {
+											print '<tr class="">';
+											print '<td colspan="3">';
+											print '<table class=""><tr class=""><td>'.img_picto_common('', 'treemenu/branchbottom.gif').'</td>';
+											print '<td valign="">';
+											print $langs->trans("NoCategoryYet");
+											print '</td>';
+											print '<td>&nbsp;</td>';
+											print '</table>';
+											print '</td>';
+											print '</tr>';
+										}
 
-	print "</table>";
-	print "</form>\n";
-}
+										print "</table>";
+										print "</form>\n";
+									}
 
 //
 /*print '<script type="text/javascript" language="javascript">

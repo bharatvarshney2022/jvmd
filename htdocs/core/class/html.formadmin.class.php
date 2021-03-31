@@ -198,7 +198,7 @@ class FormAdmin
 		ksort($menuarray);
 
 		// Output combo list of menus
-		print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
+		print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
 		$oldprefix = '';
 		foreach ($menuarray as $key => $val)
 		{
@@ -275,7 +275,7 @@ class FormAdmin
 		ksort($menuarray);
 
 		// Affichage liste deroulante des menus
-		print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+		print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 		$oldprefix = '';
 		foreach ($menuarray as $key => $val)
 		{
