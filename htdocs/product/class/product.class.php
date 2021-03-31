@@ -1,20 +1,5 @@
 <?php
-/* Copyright (C) 2001-2007  Rodolphe Quiedeville    <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2014	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2005-2015	Regis Houssin			<regis.houssin@inodbox.com>
- * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
- * Copyright (C) 2007-2011	Jean Heimburger			<jean@tiaris.info>
- * Copyright (C) 2010-2018	Juanjo Menent			<jmenent@2byte.es>
- * Copyright (C) 2012       Cedric Salvador         <csalvador@gpcsolutions.fr>
- * Copyright (C) 2013-2014	Cedric GROSS			<c.gross@kreiz-it.fr>
- * Copyright (C) 2013-2016	Marcos García			<marcosgdf@gmail.com>
- * Copyright (C) 2011-2020	Alexandre Spangaro		<aspangaro@open-dsi.fr>
- * Copyright (C) 2014		Henry Florian			<florian.henry@open-concept.pro>
- * Copyright (C) 2014-2016	Philippe Grand			<philippe.grand@atoo-net.com>
- * Copyright (C) 2014		Ion agorria			    <ion@agorria.com>
- * Copyright (C) 2016-2018	Ferran Marcet			<fmarcet@2byte.es>
- * Copyright (C) 2017		Gustavo Novaro
- * 
+/* 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4822,6 +4807,40 @@ class Product extends CommonObject
 	 * @param  int $type 0=Sell, 1=Buy, 2=Batch Number management
 	 * @return string          Label of status
 	 */
+	public function getLibStatutLayout($mode = 0, $type = 0)
+	{
+		switch ($type)
+		{
+			case 0:
+			return $this->LibStatutLayout($this->status, $mode, $type);
+			case 1:
+			return $this->LibStatutLayout($this->status_buy, $mode, $type);
+			case 2:
+			return $this->LibStatutLayout($this->status_batch, $mode, $type);
+			default:
+				//Simulate previous behavior but should return an error string
+			return $this->LibStatutLayout($this->status_buy, $mode, $type);
+		}
+	}
+
+	public function LibStatutLayout($status, $mode = 0, $type = 0)
+	{
+		// phpcs:enable
+		global $langs;
+
+		$statusBtn = '';
+		if($status == 1 || $status == 2)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-success icon-md ml-2"></i>';
+		}
+		else if($status == 0)
+		{
+			$statusBtn = '<i class="flaticon2-correct text-danger icon-md ml-2"></i>';//Draft";
+		}
+
+		return $statusBtn;
+	}
+
 	public function getLibStatut($mode = 0, $type = 0)
 	{
 		switch ($type)

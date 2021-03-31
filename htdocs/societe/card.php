@@ -2230,10 +2230,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		if (!empty($object->id)) $res = $object->fetch_optionals();
 		//if ($res < 0) { dol_print_error($db); exit; }
 
+		print '<div class="d-flex flex-column-fluid">
+					<!--begin::Container-->
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-12">
+								<!--begin::Card-->
+								<div class="card card-custom gutter-b">
+									<div class="card-footer">';
+
 
 		$head = societe_prepare_head($object);
 
-		print dol_get_fiche_head($head, 'card', $langs->trans("ThirdParty"), -1, 'company');
+		print dol_get_fiche_head_layout($head, 'card', $langs->trans("ThirdParty"), -1, 'company');
+
+		print '</div>
+			<div class="card-body">';
 
 		// Confirm delete third party
 		if ($action == 'delete' || ($conf->use_javascript_ajax && empty($conf->dol_use_jmobile)))
@@ -2259,14 +2271,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 		$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-		dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
+		dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom');
 
+		print '</div>
+		</div>';
 
-		print '<div class="fichecenter">';
-		print '<div class="fichehalfleft">';
+		print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-		print '<div class="underbanner clearboth"></div>';
-		print '<table class="border tableforfield" width="100%">';
+		
+
+		print '<div class="row">';
+		print '<div class="col-sm-6">
+		<div class="table-responsive">';
+
+		print '<table class="table table-bordered">';
 
 		// Prospect/Customer
 		print '<tr><td class="titlefield">'.$langs->trans('ProspectCustomer').'</td><td>';
@@ -2503,12 +2521,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		print '<tr><td>'.$langs->trans("Workforce").'</td><td>'.$object->effectif.'</td></tr>';
 
 		print '</table>';
+
 		print '</div>';
+		print '</div>';
+		print '<div class="col-sm-6">
+		<table class="table-responsive">';
 
-		print '<div class="fichehalfright"><div class="ficheaddleft">';
-
-		print '<div class="underbanner clearboth"></div>';
-		print '<table class="border tableforfield" width="100%" >';
+		print '<table class="table table-bordered">';
 
 		// phone
 		print '<tr><td class="titlefield">'.$langs->trans('Phone').'</td><td>'.$object->phone.'</td></tr>';
@@ -2631,13 +2650,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 			print '<td class="nowrap">'.$langs->trans('WebServiceKey').'</td><td>'.$object->webservices_key.'</td></tr>';
 		}
 
-		print '</table>';
+		print "</table>\n";
 		print '</div>';
 
-		print '</div></div>';
-		print '<div style="clear:both"></div>';
+		print '</div>';
 
-		print dol_get_fiche_end();
+		//print dol_get_fiche_end();
 
 
 		/*
@@ -2773,6 +2791,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 		$trackid = 'thi'.$object->id;
 
 		include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+
+		print "</div>\n";
+		print "</div>\n";
 	}
 }
 
@@ -2782,8 +2803,6 @@ llxFooterLayout();
 print '<!--begin::Page Vendors(used by this page)-->
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
-<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
-<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
 <!--end::Page Vendors-->';
 
 print "	</body>\n";

@@ -1,12 +1,5 @@
 <?php
 /* 
- * Copyright (C) 2004-2015  Laurent Destailleur     <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2014  Regis Houssin           <regis.houssin@inodbox.com>
- * Copyright (C) 2014-2016  Charlie BENKE           <charlie@patas-monkey.com>
- * 
- * Copyright (C) 2019       Pierre Ardoin           <mapiolca@me.com>
- * 
- * Copyright (C) 2019       Nicolas ZABOURI         <info@inovea-conseil.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,13 +67,19 @@ if ((isset($_GET["type"]) && $_GET["type"] == 1) || empty($conf->product->enable
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
 
-llxHeader("", $langs->trans("ProductsAndServices"), $helpurl);
+llxHeaderLayout("", $langs->trans("ProductsAndServices"), $langs->trans("ProductsAndServices"), $helpurl);
+
+print '<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card card-custom">';
 
 $linkback = "";
-print load_fiche_titre($transAreaType, $linkback, 'product');
+print load_fiche_titre_layout($transAreaType, $linkback, '');
 
-
-print '<div class="fichecenter"><div class="fichethirdleft">';
+print '<div class="card-body"><div class="row"><div class="col-md-6">';
 
 
 if (!empty($conf->global->MAIN_SEARCH_FORM_ON_HOME_AREAS))     // This is useless due to the global search combo
@@ -96,7 +95,7 @@ if (!empty($conf->global->MAIN_SEARCH_FORM_ON_HOME_AREAS))     // This is useles
 		print '<form method="post" action="'.DOL_URL_ROOT.'/core/search.php">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder nohover centpercent">';
+		print '<table class="table table-bordered table-checkable gutter-t">';
 		$i = 0;
 		foreach ($listofsearchfields as $key => $value)
 		{
@@ -146,10 +145,11 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 
 	if ($conf->use_javascript_ajax)
 	{
-		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre"><th>'.$langs->trans("Statistics").'</th></tr>';
-		print '<tr><td class="center nopaddingleftimp nopaddingrightimp">';
+		print '<div class="card card-custom">
+		<div class="card-header"><h3 class="card-title">'.$langs->trans("Statistics").'</h3></div>
+			<div class="card-body">';
+		print '<table class="table table-bordered table-checkable gutter-t">';
+		print '<tr><td class="">';
 
 		$SommeA = $prodser[0]['sell'];
 		$SommeB = $prodser[0]['buy'];
@@ -188,6 +188,7 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 
 		print '</td></tr>';
 		print '</table>';
+		print '</div>';
 		print '</div>';
 	}
 }
@@ -262,7 +263,7 @@ if (!empty($conf->categorie->enabled) && !empty($conf->global->CATEGORY_GRAPHSTA
 	print '</table>';
 	print '</div>';
 }
-print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
+print '</div><div class="col-md-6">';
 
 
 /*
@@ -298,15 +299,32 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 			if (isset($_GET["type"]) && $_GET["type"] == 0) $transRecordedType = $langs->trans("LastRecordedProducts", $max);
 			if (isset($_GET["type"]) && $_GET["type"] == 1) $transRecordedType = $langs->trans("LastRecordedServices", $max);
 
-			print '<div class="div-table-responsive-no-min">';
-			print '<table class="noborder centpercent">';
+			//print '<div class="div-table-responsive-no-min">';
+			//print '<table class="noborder centpercent">';
 
 			$colnb = 2;
 			if (empty($conf->global->PRODUIT_MULTIPRICES)) $colnb++;
 
-			print '<tr class="liste_titre"><th colspan="'.$colnb.'">'.$transRecordedType.'</th>';
-			print '<th class="right" colspan="3"><a href="'.DOL_URL_ROOT.'/product/list.php?sortfield=p.tms&sortorder=DESC">'.$langs->trans("FullList").'</td>';
-			print '</tr>';
+			print '<div class="card card-custom">
+
+			<div class="card-header"><h3 class="card-title">'.$transRecordedType.'</h3><div class="card-toolbar"><div class="example-tools justify-content-center"><a class="" href="'.DOL_URL_ROOT.'/product/list.php?sortfield=p.tms&sortorder=DESC">'.$langs->trans("FullList").'</a></div></div>
+			</div>
+			<div class="card-body">';
+			print '<table class="table table-bordered table-checkable gutter-t">
+			<thead>
+					<tr>
+						<th>Code</th>
+						<th>Name</th>
+						<th>Created at</th>
+						<th>Price</th>
+						<th>Status Sell</th>
+						<th>Status Purchase</th>
+					</tr>
+				</thead>
+
+				<tbody>';
+
+
 
 			while ($i < $num)
 			{
@@ -338,9 +356,9 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 				}
 
 
-				print '<tr class="oddeven">';
-				print '<td class="nowrap">';
-				print $product_static->getNomUrl(1, '', 16);
+				print '<tr>';
+				print '<td>';
+				print $product_static->getNomUrl(0, '', 16);
 				print "</td>\n";
 				print '<td>'.dol_trunc($objp->label, 32).'</td>';
 				print "<td>";
@@ -359,16 +377,16 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 							$objp->price = $price_result;
 						}
 					}
-					print '<td class="nowrap right">';
+					print '<td class="">';
 					if (isset($objp->price_base_type) && $objp->price_base_type == 'TTC') print price($objp->price_ttc).' '.$langs->trans("TTC");
 					else print price($objp->price).' '.$langs->trans("HT");
 					print '</td>';
 				}
-				print '<td class="right nowrap width25"><span class="statusrefsell">';
-				print $product_static->LibStatut($objp->tosell, 3, 0);
+				print '<td class=""><span class="statusrefsell">';
+				print $product_static->LibStatutLayout($objp->tosell, 3, 0);
 				print "</span></td>";
-				print '<td class="right nowrap width25"><span class="statusrefbuy">';
-				print $product_static->LibStatut($objp->tobuy, 3, 1);
+				print '<td class=""><span class="statusrefbuy">';
+				print $product_static->LibStatutLayout($objp->tobuy, 3, 1);
 				print "</span></td>";
 				print "</tr>\n";
 				$i++;
@@ -376,9 +394,11 @@ if ((!empty($conf->product->enabled) || !empty($conf->service->enabled)) && ($us
 
 			$db->free($result);
 
+			print '</tbody>';
+
 			print "</table>";
 			print '</div>';
-			print '<br>';
+			print '</div>';
 		}
 	} else {
 		dol_print_error($db);
@@ -402,7 +422,18 @@ $parameters = array('type' => $type, 'user' => $user);
 $reshook = $hookmanager->executeHooks('dashboardProductsServices', $parameters, $object); // Note that $action and $object may have been modified by hook
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
 
 
