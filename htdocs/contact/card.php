@@ -861,12 +861,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			print "</table><br>";
 
-			print '<hr style="margin-bottom: 20px">';
 
 			// Add personnal information
 			print load_fiche_titre('<div class="comboperso">'.$langs->trans("PersonalInformations").'</div>', '', '');
 
-			print '<table class="border ">';
+			print '<table class="table table-bordered">';
 
 			// Date To Birth
 			print '<tr><td><label for="birthday">'.$langs->trans("DateOfBirth").'</label></td><td>';

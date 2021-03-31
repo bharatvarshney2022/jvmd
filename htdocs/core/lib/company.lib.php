@@ -1441,13 +1441,15 @@ function show_contacts_layout($conf, $langs, $db, $object, $backtopage = '')
 	$newcardbutton = '';
 	if ($user->rights->societe->contact->creer) {
 		$addcontact = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("AddContact") : $langs->trans("AddContactAddress"));
-		$newcardbutton .= dolGetButtonTitle($addcontact, '', 'fa fa-plus-circle', DOL_URL_ROOT.'/contact/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
+		$newcardbutton .= dolGetButtonTitleLayout($addcontact, '', 'fa fa-plus-circle', DOL_URL_ROOT.'/contact/card.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage));
 	}
 
 	print "\n";
 
 	$title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("ContactsForCompany") : $langs->trans("ContactsAddressesForCompany"));
 	print load_fiche_titre_layout($title, $newcardbutton, '');
+
+	print '<div class="card-body">';
 
 	print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'" name="formfilter">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -1683,6 +1685,7 @@ function show_contacts_layout($conf, $langs, $db, $object, $backtopage = '')
 	print "\n</tbody></table>\n";
 
 	print '</form>'."\n";
+	print '</div>'."\n";
 
 	return $i;
 }

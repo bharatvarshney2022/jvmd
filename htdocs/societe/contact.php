@@ -164,13 +164,7 @@ dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowi
 print '</div>
 </div>'; //card-custom
 
-print '<div class="card card-custom gutter-b"><div class="card-body">';
-
-
-
-print '<div class="row">';
-print '<div class="col-sm-12">
-<div class="table-responsive">';
+print '<div class="card card-custom gutter-b">';
 
 
 if ($action != 'presend')
@@ -182,11 +176,6 @@ if ($action != 'presend')
 	}
 }
 
-print "</div>\n";
-print "</div>\n";
-print "</div>\n"; // row
-
-print "</div>\n";
 print "</div>\n"; // Card
 
 print "</div>\n";

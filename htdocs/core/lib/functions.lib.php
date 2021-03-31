@@ -5097,15 +5097,17 @@ function load_fiche_titre_layout($titre, $morehtmlright = '', $picto = 'generic'
 	$return .= '<div class="card-header"><h3 class="card-title">';
 	if ($picto) $return .= img_picto('', $picto, 'class="valignmiddle widthpictotitle pictotitle"', $pictoisfullpath);
 	$return .= $titre.'</h3>';
-	$return .= '</div>';
+
 	if (dol_strlen($morehtmlcenter))
 	{
 		//$return .= '<td class="nobordernopadding center valignmiddle">'.$morehtmlcenter.'</td>';
 	}
 	if (dol_strlen($morehtmlright))
 	{
-		//$return .= '<td class="nobordernopadding titre_right wordbreakimp right valignmiddle">'.$morehtmlright.'</td>';
+		$return .= '<div class="card-toolbar">'.$morehtmlright.'</div>';
 	}
+	$return .= '</div>';
+	
 	//$return .= '</div>'."\n";
 
 	return $return;
