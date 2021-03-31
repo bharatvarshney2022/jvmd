@@ -482,7 +482,7 @@ class FormCompany extends Form
 	 *  @param	int		$addjscombo		Add js combo
 	 *  @return	string					String with HTML select
 	 */
-	public function select_civility($selected = '', $htmlname = 'civility_id', $morecss = 'maxwidth150', $addjscombo = 0)
+	public function select_civility($selected = '', $htmlname = 'civility_id', $morecss = '', $addjscombo = 0)
 	{
 		// phpcs:enable
 		global $conf, $langs, $user;
@@ -497,7 +497,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			$out .= '<select class="flat'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
+			$out .= '<select class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
 			$out .= '<option value="">&nbsp;</option>';
 			$num = $this->db->num_rows($resql);
 			$i = 0;

@@ -133,7 +133,7 @@ if ($socid > 0 && empty($object->id))
 $title = $langs->trans("ThirdParty");
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/thirdpartynameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->name." - ".$langs->trans('Card');
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 $countrynotdefined = $langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
@@ -141,28 +141,67 @@ $countrynotdefined = $langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("
 if (!empty($object->id)) $res = $object->fetch_optionals();
 //if ($res < 0) { dol_print_error($db); exit; }
 
+print '<div class="d-flex flex-column-fluid">
+<!--begin::Container-->
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<!--begin::Card-->
+			<div class="card card-custom gutter-b">
+				<div class="card-footer">';
 
 $head = societe_prepare_head($object);
 
-print dol_get_fiche_head($head, 'contact', $langs->trans("ThirdParty"), 0, 'company');
+print dol_get_fiche_head_layout($head, 'contact', $langs->trans("ThirdParty"), 0, 'company');
+
+print '</div>
+	<div class="card-body">';
 
 $linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom', '', '', 0, '', '', 'arearefnobottom');
+dol_banner_tab_layout($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom', '', '', 0, '', '', 'arearefnobottom');
 
-print dol_get_fiche_end();
+print '</div>
+</div>'; //card-custom
 
-print '<br>';
+print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+
+
+print '<div class="row">';
+print '<div class="col-sm-12">
+<div class="table-responsive">';
+
 
 if ($action != 'presend')
 {
 	// Contacts list
 	if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
 	{
-		$result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id);
+		$result = show_contacts_layout($conf, $langs, $db, $object, $_SERVER["PHP_SELF"].'?socid='.$object->id);
 	}
 }
 
+print "</div>\n";
+print "</div>\n";
+print "</div>\n"; // row
+
+print "</div>\n";
+print "</div>\n"; // Card
+
+print "</div>\n";
+print "</div>\n";
+print "</div>\n"; // 
+
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

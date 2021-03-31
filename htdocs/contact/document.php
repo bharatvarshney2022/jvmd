@@ -92,14 +92,27 @@ $form = new Form($db);
 $title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/contactnameonly/', $conf->global->MAIN_HTML_TITLE) && $object->lastname) $title = $object->lastname;
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $helpurl);
+llxHeaderLayout('', $title, $title, $helpurl);
 
 if ($object->id)
 {
 	$head = contact_prepare_head($object);
 	$title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
 
-	print dol_get_fiche_head($head, 'documents', $title, -1, 'contact');
+
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'documents', $title, -1, 'contact');
+
+	print '</div>
+		<div class="card-body">';
 
 
 	// Build file list
@@ -124,12 +137,16 @@ if ($object->id)
 	}
 	$morehtmlref .= '</div>';
 
-	dol_banner_tab($object, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
+	dol_banner_tab_layout($object, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
 
-	print '<div class="fichecenter">';
+	print '</div>
+	</div>'; // card
 
-	print '<div class="underbanner clearboth"></div>';
-	print '<table class="border tableforfield centpercent">';
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
+
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	// Company
 	/*
@@ -160,20 +177,42 @@ if ($object->id)
 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.dol_print_size($totalsize, 1, 1).'</td></tr>';
 	print '</table>';
 
-	print '</div>';
+	print '</div>
+		</div>'; // card
+	print '</div>
+	</div>'; // card
 
-	print dol_get_fiche_end();
+	print '<div class="card card-custom gutter-b">';
 
 	$modulepart = 'contact';
 	$permission = $user->rights->societe->contact->creer;
 	$permtoedit = $user->rights->societe->contact->creer;
 	$param = '&id='.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers_layout.tpl.php';
+
+	print '
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 } else {
 	print $langs->trans("ErrorUnknown");
 }
 
 
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
 
 $db->close();
