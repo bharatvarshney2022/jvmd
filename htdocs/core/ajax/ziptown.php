@@ -108,6 +108,7 @@ if (!empty($_GET['zipcode']) || !empty($_GET['town']))
 		$sql .= $db->plimit(100); // Avoid pb with bad criteria
 	}
 
+
 	$resql = $db->query($sql);
 	//var_dump($db);
 	if ($resql)
