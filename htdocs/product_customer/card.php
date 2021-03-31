@@ -1189,11 +1189,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 
 			// Date
 			print '<tr><td class="fieldrequired">'.$langs->trans("Product ODU").'</td><td>';
-			print '<input type="text" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
+			print '<input type="text" class="form-control" name="product_odu" value= "'.($object->product_odu ? $object->product_odu : "").'" />';
 			print '</td></tr>';
 			
 			print '</table>';
-			
+
 			$backurl = DOL_URL_ROOT.'/societe/products.php?socid='.GETPOST('fk_soc', 'int');
 			print '<div class="center">';
 			print '<input type="submit" class="btn btn-info" value="'.$langs->trans("Save").'">';

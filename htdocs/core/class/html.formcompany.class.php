@@ -371,7 +371,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -424,7 +424,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -585,7 +585,7 @@ class FormCompany extends Form
 		if ($resql)
 		{
 			$out .= '<div id="particulier2" class="visible">';
-			$out .= '<select class="flat minwidth200'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
+			$out .= '<select class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
 			if ($country_codeid) $out .= '<option value="0">&nbsp;</option>'; // When country_codeid is set, we force to add an empty line because it does not appears from select. When not set, we already get the empty line from select.
 
 			$num = $this->db->num_rows($resql);
@@ -765,7 +765,7 @@ class FormCompany extends Form
 			$resql = $this->db->query($sql);
 			if ($resql)
 			{
-				print '<select class="flat'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'"';
+				print '<select class="form-control'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'"';
 				if ($conf->use_javascript_ajax)
 				{
 					$javaScript = "window.location='".$_SERVER['PHP_SELF']."?".$var_id."=".($forceid > 0 ? $forceid : $object->id).$moreparam."&".$htmlname."=' + form.".$htmlname.".options[form.".$htmlname.".selectedIndex].value;";
@@ -826,7 +826,7 @@ class FormCompany extends Form
 		{
 			$lesTypes = $object->liste_type_contact($source, $sortorder, 0, 1);
 
-			print '<select class="flat valignmiddle'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
+			print '<select class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
 			if ($showempty) print '<option value="0"></option>';
 			foreach ($lesTypes as $key=>$value)
 			{
@@ -998,7 +998,7 @@ class FormCompany extends Form
 			if (count($valors) > 1)
 			{
 				//montar select
-				print '<select class="flat" name="'.$htmlname.'" id="'.$htmlname.'">';
+				print '<select class="form-control" name="'.$htmlname.'" id="'.$htmlname.'">';
 				while ($i <= (count($valors)) - 1)
 				{
 					if ($selected == $valors[$i])
@@ -1138,7 +1138,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 			print '<option value="0">Select any</option>';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
@@ -1234,7 +1234,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat categorylist" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control categorylist" id="'.$htmlname.'" name="'.$htmlname.'">';
 			echo $num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -1285,7 +1285,7 @@ class FormCompany extends Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 			echo $num = $this->db->num_rows($resql);
 			$i = 0;
 			if ($num)
@@ -1338,7 +1338,7 @@ class FormCompany extends Form
 		$result = $this->db->query($sql);
 		if ($result)
 		{
-			if (!empty($htmlname)) $out .= '<select id="'.$htmlname.'" class="flat maxwidth200onsmartphone minwidth300" name="'.$htmlname.'">';
+			if (!empty($htmlname)) $out .= '<select id="'.$htmlname.'" class="form-control" name="'.$htmlname.'">';
 			if ($country_codeid) $out .= '<option value="0">&nbsp;</option>';
 			$num = $this->db->num_rows($result);
 			$i = 0;
