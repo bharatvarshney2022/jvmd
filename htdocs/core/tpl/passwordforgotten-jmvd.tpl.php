@@ -276,7 +276,7 @@ $colorbackhmenu1 = join(',', colorStringToArray($colorbackhmenu1)); // Normalize
 				</div>
 				<!--end::Title-->
 				<!--begin::Image-->
-					<div class="content-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/new-login-visual-2.svg');")></div>
+					<div class="content-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-top bgi-position-x-center" style="background-image: url('<?php echo DOL_URL_ROOT.'/theme/oblyon/'; ?>media/new-login-visual-2.jpg');")></div>
 				<!--end::Image-->
 			</div>
 			<!--end::Content-->
