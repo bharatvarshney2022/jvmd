@@ -294,7 +294,7 @@ print '<!--begin::Entry-->
 			print '<tr class=""><td class="" colspan="2">'.$langs->trans("Filter").'</td></tr>';
 			// Company
 			print '<tr><td>'.$langs->trans("ThirdParty").'</td><td>';
-			print $form->select_company($socid, 'socid', '', 1, 0, 0, array(), 0, '', 'style="width: 95%"');
+			print $form->select_company($socid, 'socid', '', 1, 0, 0, array(), 0, '', '');
 			print '</td></tr>';
 			// User
 			/*print '<tr><td>'.$langs->trans("ProjectCommercial").'</td><td>';
