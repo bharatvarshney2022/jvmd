@@ -1125,7 +1125,7 @@ if ($id)
 	$title .= ' - '.$langs->trans($tablib[$id]);
 	$linkback = '<a href="'.$_SERVER['PHP_SELF'].'">'.$langs->trans("BackToDictionaryList").'</a>';
 }
-$titlepicto = 'title_setup';
+$titlepicto = '';
 if ($id == 10 && GETPOST('from') == 'accountancy')
 {
 	$title = $langs->trans("MenuVatAccounts");
