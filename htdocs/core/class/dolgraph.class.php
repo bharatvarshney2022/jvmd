@@ -723,7 +723,7 @@ class DolGraph
 		// Start the div that will contains all the graph
 		$dolxaxisvertical = '';
 		if (count($this->data) > 20) $dolxaxisvertical = 'dol-xaxis-vertical';
-		$this->stringtoshow .= '<div id="placeholder_' . $tag . '" style="width:' . $this->width . 'px;height:' . $this->height . 'px;" class="dolgraph' . (empty($dolxaxisvertical) ? '' : ' ' . $dolxaxisvertical) . (empty($this->cssprefix) ? '' : ' dolgraph' . $this->cssprefix) . ' center"></div>' . "\n";
+		$this->stringtoshow .= '<div id="placeholder_' . $tag . '" style="width:' . $this->width . 'px;height:' . $this->height . 'px;" class="dolgraph' . (empty($dolxaxisvertical) ? '' : ' ' . $dolxaxisvertical) . (empty($this->cssprefix) ? '' : ' dolgraph' . $this->cssprefix) . '"></div>' . "\n";
 
 		$this->stringtoshow .= '<script id="' . $tag . '">' . "\n";
 		$this->stringtoshow .= '$(function () {' . "\n";
@@ -1363,7 +1363,7 @@ class DolGraph
 
 		if ($direction == 'width')
 		{
-			if (empty($conf->dol_optimize_smallscreen)) return ($defaultsize ? $defaultsize : '500');
+			if (empty($conf->dol_optimize_smallscreen)) return ($defaultsize ? $defaultsize : '100%');
 			else return (empty($_SESSION['dol_screen_width']) ? '280' : ($_SESSION['dol_screen_width'] - 40));
 		}
 		if ($direction == 'height')
