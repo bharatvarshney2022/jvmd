@@ -642,7 +642,7 @@ if ($resql)
 										$picto = 'product';
 										if ($type == 1) $picto = 'service';
 
-										print_barre_liste_layout($texte, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, '', 0, '', '', $limit, 0, 0, 1);
+								print_barre_liste_layout($texte, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, '', 0, '', '', $limit, 0, 0, 1);
 
 										$topicmail = "Information";
 										$modelmail = "product";

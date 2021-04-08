@@ -707,19 +707,19 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
 	if (($total_projectlinesa_planned > 0 || $total_projectlinesa_spent > 0 || $total_projectlinesa_tobill > 0 || $total_projectlinesa_billed > 0)
 		&& $level <= 0)
 	{
-		print '<tr class="liste_total nodrag nodrop">';
-		print '<td class="liste_total">'.$langs->trans("Total").'</td>';
+		print '<tr class="">';
+		print '<td class="">'.$langs->trans("Total").'</td>';
 		if ($showproject) print '<td></td><td></td>';
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.label']['checked'])) print '<td></td>';
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.dateo']['checked'])) print '<td></td>';
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.datee']['checked'])) print '<td></td>';
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.planned_workload']['checked'])) {
-			print '<td class="nowrap liste_total right">';
+			print '<td class="">';
 			print convertSecondToTime($total_projectlinesa_planned, 'allhourmin');
 			print '</td>';
 		}
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.duration_effective']['checked'])) {
-			print '<td class="nowrap liste_total right">';
+			print '<td class="">';
 			if ($projectidfortotallink > 0)
 				print '<a href="'.DOL_URL_ROOT.'/projet/tasks/time.php?projectid='.$projectidfortotallink.($showproject ? '' : '&withproject=1').'">';
 			print convertSecondToTime($total_projectlinesa_spent, 'allhourmin');
@@ -752,13 +752,13 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
 		}
 
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.progress_calculated']['checked'])) {
-			print '<td class="nowrap liste_total right">';
+			print '<td class="">';
 			if ($total_projectlinesa_planned)
 				print $totalCalculatedProgress.' %';
 			print '</td>';
 		}
 		if (count($arrayfields) > 0 && !empty($arrayfields['t.progress']['checked'])) {
-			print '<td class="nowrap liste_total right">';
+			print '<td class="">';
 			if ($total_projectlinesa_planned)
 				print '<span class="'.$badgeClass.'" >'.$totalAverageDeclaredProgress.' %</span>';
 			print '</td>';
@@ -781,12 +781,12 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
 		if ($showbilltime)
 		{
 			if (count($arrayfields) > 0 && !empty($arrayfields['t.tobill']['checked'])) {
-				print '<td class="nowrap liste_total right">';
+				print '<td class="">';
 				print convertSecondToTime($total_projectlinesa_tobill, 'allhourmin');
 				print '</td>';
 			}
 			if (count($arrayfields) > 0 && !empty($arrayfields['t.billed']['checked'])) {
-				print '<td class="nowrap liste_total right">';
+				print '<td class="">';
 				print convertSecondToTime($total_projectlinesa_billed, 'allhourmin');
 				print '</td>';
 			}
@@ -2110,8 +2110,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 
 	$arrayidtypeofcontact = array();
 
-	print '<div class="div-table-responsive-no-min">';
-	print '<table class="noborder centpercent">';
+	print '<table class="table table-bordered">';
 
 	$sql = " FROM ".MAIN_DB_PREFIX."projet as p";
 	if ($mytasks)
@@ -2196,23 +2195,23 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 		$num = $db->num_rows($resql);
 		$i = 0;
 
-		print '<tr class="liste_titre">';
-		print_liste_field_titre($title.'<span class="badge marginleftonlyshort">'.$num.'</span>', $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder);
-		print_liste_field_titre("ThirdParty", $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder);
+		print '<thead><tr class="">';
+		print_liste_field_titre_layout($title.'<span class="badge marginleftonlyshort">'.$num.'</span>', $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder);
+		print_liste_field_titre_layout("ThirdParty", $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder);
 		if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 		{
-			if (!in_array('prospectionstatus', $hiddenfields)) print_liste_field_titre("OpportunityStatus", "", "", "", "", '', $sortfield, $sortorder, 'right ');
-			print_liste_field_titre("OpportunityAmount", "", "", "", "", 'align="right"', $sortfield, $sortorder);
+			if (!in_array('prospectionstatus', $hiddenfields)) print_liste_field_titre_layout("OpportunityStatus", "", "", "", "", '', $sortfield, $sortorder, ' ');
+			print_liste_field_titre_layout("OpportunityAmount", "", "", "", "", 'align="right"', $sortfield, $sortorder);
 			//print_liste_field_titre('OpportunityWeightedAmount', '', '', '', '', 'align="right"', $sortfield, $sortorder);
 		}
 		if (empty($conf->global->PROJECT_HIDE_TASKS))
 		{
-			print_liste_field_titre("Tasks", "", "", "", "", 'align="right"', $sortfield, $sortorder);
-			if (!in_array('plannedworkload', $hiddenfields))  print_liste_field_titre("PlannedWorkload", "", "", "", "", '', $sortfield, $sortorder, 'right ');
-			if (!in_array('declaredprogress', $hiddenfields)) print_liste_field_titre("ProgressDeclared", "", "", "", "", '', $sortfield, $sortorder, 'right ');
+			print_liste_field_titre_layout("Tasks", "", "", "", "", 'align="right"', $sortfield, $sortorder);
+			//if (!in_array('plannedworkload', $hiddenfields))  print_liste_field_titre_layout("PlannedWorkload", "", "", "", "", '', $sortfield, $sortorder, ' ');
+			if (!in_array('declaredprogress', $hiddenfields)) print_liste_field_titre_layout("Progress", "", "", "", "", '', $sortfield, $sortorder, ' ');
 		}
-		if (!in_array('projectstatus', $hiddenfields)) print_liste_field_titre("Status", "", "", "", "", '', $sortfield, $sortorder, 'right ');
-		print "</tr>\n";
+		if (!in_array('projectstatus', $hiddenfields)) print_liste_field_titre_layout("Status", "", "", "", "", '', $sortfield, $sortorder, ' ');
+		print "</tr></thead><tbody>\n";
 
 		$total_plannedworkload = 0;
 		$total_declaredprogressworkload = 0;
@@ -2234,14 +2233,14 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 				$projectstatic->datee = $db->jdate($objp->datee);
 				$projectstatic->dateo = $db->jdate($objp->dateo);
 
-				print '<tr class="oddeven">';
+				print '<tr class="">';
 
-				print '<td class="tdoverflowmax150">';
+				print '<td class="">';
 				print $projectstatic->getNomUrl(1, '', 0, '', '-', 0, -1, 'nowraponall');
 				if (!in_array('projectlabel', $hiddenfields)) print '<br><span class="opacitymedium">'.dol_trunc($objp->title, 24).'</span>';
 				print '</td>';
 
-				print '<td class="nowraponall tdoverflowmax100">';
+				print '<td class="">';
 				if ($objp->fk_soc > 0)
 				{
 					$thirdpartystatic->id = $objp->socid;
@@ -2263,7 +2262,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 				if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 				{
 					if (!in_array('prospectionstatus', $hiddenfields)) {
-						print '<td class="center tdoverflowmax75">';
+						print '<td class="">';
 						// Because color of prospection status has no meaning yet, it is used if hidden constant is set
 						if (empty($conf->global->USE_COLOR_FOR_PROSPECTION_STATUS)) {
 							$oppStatusCode = dol_getIdFromCode($db, $objp->opp_status, 'c_lead_status', 'rowid', 'code');
@@ -2289,7 +2288,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 						print '</td>';
 					}
 
-					print '<td class="right">';
+					print '<td class="">';
 					if ($objp->opp_percent && $objp->opp_amount) {
 						$opp_weighted_amount = $objp->opp_percent * $objp->opp_amount / 100;
 						$alttext = $langs->trans("OpportunityWeightedAmount").' '.price($opp_weighted_amount, 0, '', 1, -1, 0, $conf->currency);
@@ -2301,19 +2300,19 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 
 				if (empty($conf->global->PROJECT_HIDE_TASKS))
 				{
-					print '<td class="right">'.$objp->nb.'</td>';
+					print '<td class="">'.$objp->nb.'</td>';
 
 					$plannedworkload = $objp->planned_workload;
 					$total_plannedworkload += $plannedworkload;
 					if (!in_array('plannedworkload', $hiddenfields))
 					{
-						print '<td class="right">'.($plannedworkload ?convertSecondToTime($plannedworkload) : '').'</td>';
+						//print '<td class="">'.($plannedworkload ?convertSecondToTime($plannedworkload) : '').'</td>';
 					}
 					if (!in_array('declaredprogress', $hiddenfields))
 					{
 						$declaredprogressworkload = $objp->declared_progess_workload;
 						$total_declaredprogressworkload += $declaredprogressworkload;
-						print '<td class="right">';
+						print '<td class="">';
 						//print $objp->planned_workload.'-'.$objp->declared_progess_workload."<br>";
 						print ($plannedworkload ?round(100 * $declaredprogressworkload / $plannedworkload, 0).'%' : '');
 						print '</td>';
@@ -2321,7 +2320,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 				}
 
 				if (!in_array('projectstatus', $hiddenfields)) {
-					print '<td class="right">';
+					print '<td class="">';
 					print $projectstatic->getLibStatut(3);
 					print '</td>';
 				}
@@ -2335,26 +2334,26 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 			$i++;
 		}
 
-		print '<tr class="liste_total">';
+		print '</tbody><tfoot><tr class="">';
 		print '<td>'.$langs->trans("Total")."</td><td></td>";
 		if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
 		{
 			if (!in_array('prospectionstatus', $hiddenfields)) {
-				print '<td class="liste_total"></td>';
+				print '<td class=""></td>';
 			}
-			print '<td class="liste_total right">';
+			print '<td class="">';
 			//$form->textwithpicto(price($ponderated_opp_amount, 0, '', 1, -1, -1, $conf->currency), $langs->trans("OpportunityPonderatedAmountDesc"), 1);
 			print $form->textwithpicto(price($total_opp_amount, 0, '', 1, -1, 0, $conf->currency), $langs->trans("OpportunityPonderatedAmountDesc").' : '.price($ponderated_opp_amount, 0, '', 1, -1, 0, $conf->currency));
 			print '</td>';
 		}
 		if (empty($conf->global->PROJECT_HIDE_TASKS))
 		{
-			print '<td class="liste_total right">'.$total_task.'</td>';
-			if (!in_array('plannedworkload', $hiddenfields))  print '<td class="liste_total right">'.($total_plannedworkload ?convertSecondToTime($total_plannedworkload) : '').'</td>';
-			if (!in_array('declaredprogress', $hiddenfields)) print '<td class="liste_total right">'.($total_plannedworkload ?round(100 * $total_declaredprogressworkload / $total_plannedworkload, 0).'%' : '').'</td>';
+			print '<td class="">'.$total_task.'</td>';
+			//if (!in_array('plannedworkload', $hiddenfields))  print '<td class="">'.($total_plannedworkload ?convertSecondToTime($total_plannedworkload) : '').'</td>';
+			if (!in_array('declaredprogress', $hiddenfields)) print '<td class="">'.($total_plannedworkload ?round(100 * $total_declaredprogressworkload / $total_plannedworkload, 0).'%' : '').'</td>';
 		}
 		if (!in_array('projectstatus', $hiddenfields)) {
-			print '<td class="liste_total"></td>';
+			print '<td class=""></td>';
 		}
 		print '</tr>';
 
@@ -2363,8 +2362,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 		dol_print_error($db);
 	}
 
-	print "</table>";
-	print '</div>';
+	print "</tfoot></table>";
 
 	if (!empty($conf->global->PROJECT_LIMIT_YEAR_RANGE))
 	{

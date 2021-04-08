@@ -108,7 +108,7 @@ $projectset = ($mine ? $mine : (empty($user->rights->projet->all->lire) ? 0 : 2)
 $projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, $projectset, 1);
 //var_dump($projectsListId);
 
-llxHeader("", $langs->trans("Projects"), "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos");
+llxHeaderLayout("", $langs->trans("Projects"), $langs->trans("Projects"), "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos");
 
 $title = $langs->trans("ProjectsArea");
 //if ($mine) $title=$langs->trans("MyProjectsArea");
@@ -136,7 +136,26 @@ else {
 	else $tooltiphelp = $langs->trans("ProjectsPublicDesc");
 }
 
-print_barre_liste($form->textwithpicto($title, $tooltiphelp), 0, $_SERVER["PHP_SELF"], '', '', '', '', 0, -1, 'project', 0, $morehtml);
+print '<!--begin::Entry-->
+<div class="d-flex flex-column-fluid">
+	<!--begin::Container-->
+	<div class="container">
+		<!--begin::Card-->
+		<div class="card card-custom">
+			<div class="card-header py-3">
+				<div class="card-title">
+					<span class="card-icon">
+						<i class="flaticon2-shopping-cart text-primary"></i>
+					</span>
+					<h3 class="card-label">'.$title .'</h3>
+				</div>
+			</div>
+
+			<div class="card-body">'."\n";
+
+
+print_barre_liste_layout($title, $_SERVER["PHP_SELF"], '', '', '', '', 0, -1, 'project', 0, $morehtml);
+
 
 
 // Get list of ponderated percent and colors for each status
@@ -186,7 +205,7 @@ if ($resql)
 //var_dump($listofoppcode);
 
 
-print '<div class="fichecenter"><div class="fichethirdleft">';
+print '<div class="row"><div class="col-sm-6">';
 
 
 if (!empty($conf->global->MAIN_SEARCH_FORM_ON_HOME_AREAS))     // This is useless due to the global search combo
@@ -201,12 +220,11 @@ if (!empty($conf->global->MAIN_SEARCH_FORM_ON_HOME_AREAS))     // This is useles
 	{
 		print '<form method="post" action="'.DOL_URL_ROOT.'/core/search.php">';
 		print '<input type="hidden" name="token" value="'.newToken().'">';
-		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder nohover centpercent">';
+		print '<table class="table table-bordered">';
 		$i = 0;
 		foreach ($listofsearchfields as $key => $value)
 		{
-			if ($i == 0) print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("Search").'</td></tr>';
+			if ($i == 0) print '<tr class=""><td colspan="3">'.$langs->trans("Search").'</td></tr>';
 			print '<tr>';
 			print '<td class="nowrap"><label for="'.$key.'">'.$langs->trans($value["text"]).'</label></td><td><input type="text" class="flat inputsearch" name="'.$key.'" id="'.$key.'" size="18"></td>';
 			if ($i == 0) print '<td rowspan="'.count($listofsearchfields).'"><input type="submit" value="'.$langs->trans("Search").'" class="button"></td>';
@@ -214,7 +232,6 @@ if (!empty($conf->global->MAIN_SEARCH_FORM_ON_HOME_AREAS))     // This is useles
 			$i++;
 		}
 		print '</table>';
-		print '</div>';
 		print '</form>';
 		print '<br>';
 	}
@@ -231,7 +248,7 @@ include DOL_DOCUMENT_ROOT.'/projet/graph_opportunities.inc.php';
 print_projecttasks_array($db, $form, $socid, $projectsListId, 0, 0, $listofoppstatus, array('projectlabel', 'plannedworkload', 'declaredprogress', 'prospectionstatus', 'projectstatus'));
 
 
-print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
+print '</div><div class="col-sm-6">';
 
 // Latest modified projects
 $sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.tms as datem";
@@ -251,9 +268,8 @@ $sql .= $db->plimit($max, 0);
 $resql = $db->query($sql);
 if ($resql)
 {
-	print '<div class="div-table-responsive-no-min">';
-	print '<table class="noborder centpercent">';
-	print '<tr class="liste_titre">';
+	print '<table class="table table-bordered">';
+	print '<tr class="">';
 	print '<th colspan="4">'.$langs->trans("LatestModifiedProjects", $max).'</th>';
 	print '</tr>';
 
@@ -266,8 +282,8 @@ if ($resql)
 		{
 			$obj = $db->fetch_object($resql);
 
-			print '<tr class="oddeven">';
-			print '<td class="nowrap">';
+			print '<tr class="">';
+			print '<td class="">';
 
 			$projectstatic->id = $obj->rowid;
 			$projectstatic->ref = $obj->ref;
@@ -324,7 +340,7 @@ if ($resql)
 	} else {
 		print '<tr><td colspan="4"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
 	}
-	print "</table></div>";
+	print "</table>";
 } else dol_print_error($db);
 
 
@@ -358,9 +374,8 @@ if ($resql)
 		print '<br>';
 
 		// Open project per thirdparty
-		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre">';
+		print '<table class="table table-bordered">';
+		print '<tr class="">';
 		print_liste_field_titre("OpenedProjectsByThirdparties", $_SERVER["PHP_SELF"], "", "", "", '', $sortfield, $sortorder);
 		print_liste_field_titre("NbOfProjects", $_SERVER["PHP_SELF"], "nb", "", "", '', $sortfield, $sortorder, 'right ');
 		print "</tr>\n";
@@ -376,8 +391,8 @@ if ($resql)
 			continue;
 		}
 
-		print '<tr class="oddeven">';
-		print '<td class="nowraponall tdoverflowmax100">';
+		print '<tr class="">';
+		print '<td class="">';
 		if ($obj->socid > 0)
 		{
 			$companystatic->id = $obj->socid;
@@ -400,7 +415,7 @@ if ($resql)
 			print $langs->trans("OthersNotLinkedToThirdParty");
 		}
 		print '</td>';
-		print '<td class="right">';
+		print '<td class="">';
 		if ($obj->socid) print '<a href="'.DOL_URL_ROOT.'/projet/list.php?socid='.$obj->socid.'&search_status=1">'.$obj->nb.'</a>';
 		else print '<a href="'.DOL_URL_ROOT.'/projet/list.php?search_societe='.urlencode('^$').'&search_status=1">'.$obj->nb.'</a>';
 		print '</td>';
@@ -409,11 +424,11 @@ if ($resql)
 		$i++;
 	}
 	if ($othernb) {
-		print '<tr class="oddeven">';
-		print '<td class="nowrap">';
+		print '<tr class="">';
+		print '<td class="">';
 		print '<span class="opacitymedium">...</span>';
 		print '</td>';
-		print '<td class="nowrap right">';
+		print '<td class="">';
 		print $othernb;
 		print '</td>';
 		print "</tr>\n";
@@ -421,7 +436,6 @@ if ($resql)
 
 	if ($num) {
 		print "</table>";
-		print '</div>';
 	}
 
 	$db->free($resql);
@@ -439,11 +453,22 @@ if (empty($conf->global->PROJECT_HIDE_PROJECT_LIST_ON_PROJECT_AREA))
 	print_projecttasks_array($db, $form, $socid, $projectsListId, 0, 1, $listofoppstatus, array());
 }
 
-print '</div></div></div>';
+print '</div></div>';
 
 $parameters = array('user' => $user);
 $reshook = $hookmanager->executeHooks('dashboardProjects', $parameters, $projectstatic); // Note that $action and $object may have been modified by hook
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
