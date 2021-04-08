@@ -1117,7 +1117,7 @@ $formadmin = new FormAdmin($db);
 
 $title = $langs->trans("DictionarySetup");
 
-llxHeader('', $title);
+llxHeaderLayout('', $title, $title);
 
 $linkback = '';
 if ($id)
@@ -1137,14 +1137,26 @@ if ($id == 7 && GETPOST('from') == 'accountancy')
 	$titlepicto = 'accountancy';
 }
 
-print load_fiche_titre($title, $linkback, $titlepicto);
+print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">';
 
+print load_fiche_titre_layout($title, $linkback, $titlepicto);
+
+print '<div class="card-footer">';
 if (empty($id))
 {
-	print '<span class="opacitymedium">'.$langs->trans("DictionaryDesc");
+	print '<p><span class="opacitymedium">'.$langs->trans("DictionaryDesc");
 	print " ".$langs->trans("OnlyActiveElementsAreShown")."<br>\n";
-	print '</span><br>';
+	print '</span></p>';
 }
+
+print '</div>
+			<div class="card-body">';
 
 
 $param = '&id='.urlencode($id);
@@ -1169,6 +1181,8 @@ if ($action == 'delete')
  */
 if ($id)
 {
+	// Single form
+
 	// Complete search values request with sort criteria
 	$sql = $tabsql[$id];
 
@@ -1221,11 +1235,10 @@ if ($id)
 
 		$fieldlist = explode(',', $tabfield[$id]);
 
-		print '<div class="div-table-responsive-no-min">';
-		print '<table class="noborder centpercent">';
+		print '<table class="table table-bordered">';
 
 		// Line for title
-		$tdsoffields = '<tr class="liste_titre">';
+		$tdsoffields = '<tr class="">';
 		foreach ($fieldlist as $field => $value)
 		{
 			if ($fieldlist[$field] == 'entity') {
@@ -1238,7 +1251,7 @@ if ($id)
 			$valuetoshow = $langs->trans($valuetoshow); // try to translate
 			$class = '';
 
-			if ($fieldlist[$field] == 'pos') { $valuetoshow = $langs->trans("Position"); $class = 'maxwidth100'; }
+			if ($fieldlist[$field] == 'pos') { $valuetoshow = $langs->trans("Position"); $class = ''; }
 			if ($fieldlist[$field] == 'source') { $valuetoshow = $langs->trans("Contact"); }
 			if ($fieldlist[$field] == 'price') { $valuetoshow = $langs->trans("PriceUHT"); }
 			if ($fieldlist[$field] == 'taux') {
@@ -1256,7 +1269,7 @@ if ($id)
 				if ($tabname[$id] == MAIN_DB_PREFIX."c_paiement") $valuetoshow = $form->textwithtooltip($langs->trans("Type"), $langs->trans("TypePaymentDesc"), 2, 1, img_help(1, ''));
 				else $valuetoshow = $langs->trans("Type");
 			}
-			if ($fieldlist[$field] == 'code') { $valuetoshow = $langs->trans("Code"); $class = 'maxwidth100'; }
+			if ($fieldlist[$field] == 'code') { $valuetoshow = $langs->trans("Code"); $class = ''; }
 			if ($fieldlist[$field] == 'libelle' || $fieldlist[$field] == 'label')
 			{
 				$valuetoshow = $form->textwithtooltip($langs->trans("Label"), $langs->trans("LabelUsedByDefault"), 2, 1, img_help(1, ''));
@@ -1332,8 +1345,8 @@ if ($id)
 		if (!is_null($withentity))
 			$tdsoffields .= '<input type="hidden" name="entity" value="'.$withentity.'">';
 		$tdsoffields .= '</td>';
-		$tdsoffields .= '<td style="min-width: 26px;"></td>';
-		$tdsoffields .= '<td style="min-width: 26px;"></td>';
+		//$tdsoffields .= '<td style="min-width: 26px;"></td>';
+		//$tdsoffields .= '<td style="min-width: 26px;"></td>';
 		$tdsoffields .= '</tr>';
 
 		print $tdsoffields;
@@ -1359,7 +1372,7 @@ if ($id)
 
 		// Line to enter new values
 		print '<!-- line to add new entry -->';
-		print '<tr class="oddeven nodrag nodrop nohover">';
+		print '<tr class="">';
 
 		if (empty($reshook))
 		{
@@ -1367,17 +1380,16 @@ if ($id)
 		}
 
 		if ($id == 4) print '<td></td>';
-		print '<td colspan="3" class="center">';
+		print '<td class="center">';
 		if ($action != 'edit')
 		{
-			print '<input type="submit" class="button" name="actionadd" value="'.$langs->trans("Add").'">';
+			print '<input type="submit" class="btn btn-info" name="actionadd" value="'.$langs->trans("Add").'">';
 		}
 		print '</td>';
 
 		print "</tr>";
 
 		print '</table>';
-		print '</div>';
 	}
 
 	print '</form>';
@@ -1406,11 +1418,10 @@ if ($id)
 			print '<div class="clearboth"></div>';
 		}
 
-		print '<div class="div-table-responsive">';
-		print '<table class="noborder centpercent">';
+		print '<table class="table table-bordered">';
 
 		// Title line with search input fields
-		print '<tr class="liste_titre_filter">';
+		print '<tr class="">';
 		$filterfound = 0;
 		foreach ($fieldlist as $field => $value)
 		{
@@ -1424,25 +1435,25 @@ if ($id)
 			{
 				if ($value == 'country')
 				{
-					print '<td class="liste_titre">';
+					print '<td class="">';
 					print $form->select_country($search_country_id, 'search_country_id', '', 28, 'maxwidth150 maxwidthonsmartphone');
 					print '</td>';
 					$filterfound++;
 				} elseif ($value == 'code')
 				{
-					print '<td class="liste_titre">';
-					print '<input type="text" class="maxwidth100" name="search_code" value="'.dol_escape_htmltag($search_code).'">';
+					print '<td class="">';
+					print '<input type="text" class="form-control" name="search_code" value="'.dol_escape_htmltag($search_code).'">';
 					print '</td>';
 					$filterfound++;
 				} else {
-					print '<td class="liste_titre">';
+					print '<td class="">';
 					print '</td>';
 				}
 			}
 		}
 		if ($id == 4) print '<td></td>';
-		print '<td class="liste_titre"></td>';
-		print '<td class="liste_titre right" colspan="2">';
+		print '<td class=""></td>';
+		print '<td class="" colspan="2">';
 		if ($filterfound)
 		{
 			$searchpicto = $form->showFilterAndCheckAddButtons(0);
@@ -1452,7 +1463,7 @@ if ($id)
 		print '</tr>';
 
 		// Title of lines
-		print '<tr class="liste_titre">';
+		print '<tr class="">';
 		foreach ($fieldlist as $field => $value)
 		{
 			if ($fieldlist[$field] == 'entity') continue;
@@ -1539,15 +1550,15 @@ if ($id)
 				elseif (!empty($tabhelp[$id][$value])) $newvaluetoshow = $form->textwithpicto($valuetoshow, $tabhelp[$id][$value]);
 				else $newvaluetoshow = $valuetoshow;
 
-				print getTitleFieldOfList($newvaluetoshow, 0, $_SERVER["PHP_SELF"], ($sortable ? $fieldlist[$field] : ''), ($page ? 'page='.$page.'&' : ''), $param, '', $sortfield, $sortorder, $cssprefix);
+				print getTitleFieldOfListLayout($newvaluetoshow, 0, $_SERVER["PHP_SELF"], ($sortable ? $fieldlist[$field] : ''), ($page ? 'page='.$page.'&' : ''), $param, '', $sortfield, $sortorder, $cssprefix);
 			}
 		}
 		// Favorite - Only activated on country dictionary
-		if ($id == 4) print getTitleFieldOfList($langs->trans("Favorite"), 0, $_SERVER["PHP_SELF"], "favorite", ($page ? 'page='.$page.'&' : ''), $param, 'align="center"', $sortfield, $sortorder);
+		if ($id == 4) print getTitleFieldOfListLayout($langs->trans("Favorite"), 0, $_SERVER["PHP_SELF"], "favorite", ($page ? 'page='.$page.'&' : ''), $param, 'align="center"', $sortfield, $sortorder);
 
-		print getTitleFieldOfList($langs->trans("Status"), 0, $_SERVER["PHP_SELF"], "active", ($page ? 'page='.$page.'&' : ''), $param, 'align="center"', $sortfield, $sortorder);
-		print getTitleFieldOfList('');
-		print getTitleFieldOfList('');
+		print getTitleFieldOfListLayout($langs->trans("Status"), 0, $_SERVER["PHP_SELF"], "active", ($page ? 'page='.$page.'&' : ''), $param, 'align="center"', $sortfield, $sortorder);
+		print getTitleFieldOfListLayout('');
+		print getTitleFieldOfListLayout('');
 		print '</tr>';
 
 		if ($num)
@@ -1818,14 +1829,14 @@ if ($id)
 					print "</td>";
 
 					// Modify link
-					if ($canbemodified) print '<td align="center"><a class="reposition editfielda" href="'.$url.'action=edit&token='.newToken().'">'.img_edit().'</a></td>';
+					if ($canbemodified) print '<td align="center"><a class="reposition editfielda btn btn-info" href="'.$url.'action=edit&token='.newToken().'">'.img_edit().'</a></td>';
 					else print '<td>&nbsp;</td>';
 
 					// Delete link
 					if ($iserasable)
 					{
 						print '<td class="center">';
-						if ($user->admin) print '<a href="'.$url.'action=delete&token='.newToken().'">'.img_delete().'</a>';
+						if ($user->admin) print '<a class="btn btn-danger" href="'.$url.'action=delete&token='.newToken().'">'.img_delete().'</a>';
 						//else print '<a href="#">'.img_delete().'</a>';    // Some dictionary can be edited by other profile than admin
 						print '</td>';
 					} else print '<td>&nbsp;</td>';
@@ -1837,7 +1848,6 @@ if ($id)
 		}
 
 		print '</table>';
-		print '</div>';
 	} else {
 		dol_print_error($db);
 	}
@@ -1850,10 +1860,9 @@ if ($id)
 
 	$lastlineisempty = false;
 
-	print '<div class="div-table-responsive-no-min">';
-	print '<table class="noborder centpercent">';
-	print '<tr class="liste_titre">';
-	print '<td colspan="2">'.$langs->trans("Dictionary").'</td>';
+	print '<table class="table table-bordered">';
+	print '<tr class="">';
+	print '<td>'.$langs->trans("Dictionary").'</td>';
 	print '<td>'.$langs->trans("Table").'</td>';
 	print '</tr>';
 
@@ -1866,13 +1875,13 @@ if ($id)
 		{
 			if ($showemptyline)
 			{
-				print '<tr class="oddeven"><td width="50%">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+				print '<tr class=""><td width="50%">&nbsp;</td><td>&nbsp;</td></tr>';
 				$showemptyline = 0;
 			}
 
 
 			$value = $tabname[$i];
-			print '<tr class="oddeven"><td width="50%">';
+			print '<tr class=""><td width="50%">';
 			if (!empty($tabcond[$i]))
 			{
 				print '<a href="'.$_SERVER["PHP_SELF"].'?id='.$i.'">'.$langs->trans($tablib[$i]).'</a>';
@@ -1880,12 +1889,12 @@ if ($id)
 				print $langs->trans($tablib[$i]);
 			}
 			print '</td>';
-			print '<td>';
+			//print '<td>';
 			/*if (empty($tabcond[$i]))
              {
              print info_admin($langs->trans("DictionaryDisabledSinceNoModuleNeedIt"),1);
              }*/
-			print '</td>';
+			//print '</td>';
 			print '<td>'.$tabname[$i].'</td></tr>';
 			$lastlineisempty = false;
 		} else {
@@ -1897,13 +1906,23 @@ if ($id)
 		}
 	}
 	print '</table>';
-	print '</div>';
 }
 
-print '<br>';
+print '</div></div>';
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
 
 
@@ -2011,7 +2030,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			//print_r($obj);
 			print '<td>';
 			if($context == 'add'){
-				print '<select class="flat" id="category" name="category"><option value="">Select Brand</option></select>';
+				print '<select class="form-control" id="category" name="category"><option value="">Select Brand</option></select>';
 			}else{
 				$formcompany->select_family($family_id, $obj->fk_brand ,'category');
 			}
@@ -2058,7 +2077,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 	           // print_r($obj);
 			print '<td>';
 			if($context == 'add'){
-				print '<select class="flat" id="subcategory" name="subcategory"><option value="">Select Category</option></select>';
+				print '<select class="form-control" id="subcategory" name="subcategory"><option value="">Select Category</option></select>';
 			}else{
 				$formcompany->select_subfamily($obj->fk_subfamily, $obj->fk_brand, $obj->fk_family ,'subcategory');
 			}
@@ -2118,7 +2137,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			$class = "left";
 			if (in_array($fieldlist[$field], array('taux', 'localtax1', 'localtax2'))) $class = "center"; // Fields aligned on right
 			print '<td class="'.$class.'">';
-			print '<input type="text" class="flat" value="'.(isset($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]} : '').'" size="3" name="'.$fieldlist[$field].'">';
+			print '<input type="text" class="form-control" value="'.(isset($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]} : '').'" size="3" name="'.$fieldlist[$field].'">';
 			print '</td>';
 		} elseif (in_array($fieldlist[$field], array('libelle_facture'))) {
 			print '<td>';
@@ -2137,15 +2156,15 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			}
 			if (!$transfound)
 			{
-				print '<textarea cols="30" rows="'.ROWS_2.'" class="flat" name="'.$fieldlist[$field].'">'.(!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'</textarea>';
+				print '<textarea cols="30" rows="'.ROWS_2.'" class="form-control" name="'.$fieldlist[$field].'">'.(!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'</textarea>';
 			} else {
 				print '<input type="hidden" name="'.$fieldlist[$field].'" value="'.$transkey.'">';
 			}
 			print '</td>';
 		} elseif ($fieldlist[$field] == 'price' || preg_match('/^amount/i', $fieldlist[$field])) {
-			print '<td><input type="text" class="flat minwidth75" value="'.price((!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'')).'" name="'.$fieldlist[$field].'"></td>';
+			print '<td><input type="text" class="form-control" value="'.price((!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'')).'" name="'.$fieldlist[$field].'"></td>';
 		} elseif ($fieldlist[$field] == 'code' && isset($obj->{$fieldlist[$field]})) {
-			print '<td><input type="text" class="flat minwidth75 maxwidth100" value="'.(!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'" name="'.$fieldlist[$field].'"></td>';
+			print '<td><input type="text" class="form-control " value="'.(!empty($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'" name="'.$fieldlist[$field].'"></td>';
 		} elseif ($fieldlist[$field] == 'unit') {
 			print '<td>';
 			$units = array(
@@ -2173,7 +2192,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 				print $formaccounting->select_account($accountancy_account, '.'.$fieldlist[$field], 1, '', 1, 1, 'maxwidth200 maxwidthonsmartphone');
 			} else {
 				$fieldname = $fieldlist[$field];
-				print '<input type="text" size="10" class="flat" value="'.(isset($obj->$fieldname) ? $obj->$fieldname : '').'" name="'.$fieldlist[$field].'">';
+				print '<input type="text" size="10" class="form-control" value="'.(isset($obj->$fieldname) ? $obj->$fieldname : '').'" name="'.$fieldlist[$field].'">';
 			}
 			print '</td>';
 		} elseif ($fieldlist[$field] == 'fk_tva')
@@ -2200,7 +2219,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			}
 
 			$classtd = ''; $class = '';
-			if ($fieldlist[$field] == 'code') $class = 'maxwidth100';
+			if ($fieldlist[$field] == 'code') $class = '';
 			if (in_array($fieldlist[$field], array('dayrule', 'day', 'month', 'year', 'pos', 'use_default', 'affect', 'delay', 'position', 'sortorder', 'sens', 'category_type'))) {
 				$class = 'maxwidth50 center';
 			}
@@ -2229,7 +2248,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 			}
 			if (!$transfound)
 			{
-				print '<input type="text" class="flat'.($class ? ' '.$class : '').'" value="'.dol_escape_htmltag($fieldValue).'" name="'.$fieldlist[$field].'">';
+				print '<input type="text" class="form-control'.($class ? ' '.$class : '').'" value="'.dol_escape_htmltag($fieldValue).'" name="'.$fieldlist[$field].'">';
 			} else {
 				print '<input type="hidden" name="'.$fieldlist[$field].'" value="'.$transkey.'">';
 			}

@@ -1028,7 +1028,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 		{
 			print '<td>';
 			if ($user->admin) {
-				print $form->select_dolusers($obj->{$fieldlist[$field]}, 'fk_user', 1, null, 0, ($user->admin ? '' : 'hierarchyme'), null, 0, 0, 1, '', 0, '', 'maxwidth200');
+				print $form->select_dolusers($obj->{$fieldlist[$field]}, 'fk_user', 1, null, 0, ($user->admin ? '' : 'hierarchyme'), null, 0, 0, 1, '', 0, '', '');
 			} else {
 				if ($context == 'add')	// I am not admin and we show the add form
 				{
@@ -1105,7 +1105,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 					print $form->selectyesno($fieldlist[$field], (isset($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:''), 1);
 				}
 			} else {
-				print '<input type="text" '.$size.'class="flat'.($class ? ' '.$class : '').'" value="'.(isset($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'" name="'.$fieldlist[$field].'">';
+				print '<input type="text" '.$size.'class="form-control'.($class ? ' '.$class : '').'" value="'.(isset($obj->{$fieldlist[$field]}) ? $obj->{$fieldlist[$field]}:'').'" name="'.$fieldlist[$field].'">';
 			}
 			print '</td>';
 		}
