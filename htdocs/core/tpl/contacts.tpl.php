@@ -93,17 +93,19 @@ if ($user_group_id == 17){
 <?php
 if ($permission)
 {
-	print '<div class="underbanner clearboth"></div>'."\n";
+	//print '<div class="underbanner clearboth"></div>'."\n";
 
-	print '<div class="div-table-responsive-no-min" '.$displaycss.' >'."\n";
-	print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n";
+	//print '<div class="div-table-responsive-no-min" '.$displaycss.' >'."\n";
+	//print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n";
+
+	print '<div class="table-bordered d-none hide">';
 
 	?>
-	<form class="tagtr liste_titre">
-		<div class="tagtd liste_titre"><?php echo $langs->trans("NatureOfContact"); ?></div>
-		<div class="tagtd liste_titre"><?php echo $langs->trans("ThirdParty"); ?></div>
+	<form class="tagtr">
+		<div class="tagtd"><?php echo $langs->trans("NatureOfContact"); ?></div>
+		<div class="tagtd"><?php echo $langs->trans("ThirdParty"); ?></div>
 		
-		<div class="tagtd liste_titre"><?php 
+		<div class="tagtd"><?php 
 		if ($user_group_id == 17) 
 		{
 			echo $langs->trans("Vendors");
@@ -111,9 +113,9 @@ if ($permission)
 			echo $langs->trans("Users").'/'.$langs->trans("Contacts");
 		}
 		 ?></div>
-		<div class="tagtd liste_titre"><?php echo $langs->trans("ContactType"); ?></div>
-		<div class="tagtd liste_titre">&nbsp;</div>
-		<div class="tagtd liste_titre">&nbsp;</div>
+		<div class="tagtd"><?php echo $langs->trans("ContactType"); ?></div>
+		<div class="tagtd">&nbsp;</div>
+		<div class="tagtd">&nbsp;</div>
 	</form>
 
 	<?php
@@ -137,7 +139,7 @@ if ($permission)
 		$formcompany->selectTypeContact($tmpobject, '', 'type', 'internal');
 		?></div>
 		<div class="tagtd">&nbsp;</div>
-		<div class="tagtd center"><input type="submit" class="button" value="<?php echo $langs->trans("Add"); ?>"></div>
+		<div class="tagtd "><input type="submit" class="button" value="<?php echo $langs->trans("Add"); ?>"></div>
 	</form>
 
 	    <?php
@@ -185,7 +187,7 @@ if ($permission)
 			?>
 		</div>
 		<div class="tagtd noborderbottom">&nbsp;</div>
-		<div class="tagtd center noborderbottom">
+		<div class="tagtd  noborderbottom">
 			<input type="submit" id="add-customer-contact" class="button" value="<?php echo $langs->trans("Add"); ?>"<?php if (!$nbofcontacts) echo ' disabled'; ?>>
 		</div>
 	</form>
@@ -193,7 +195,6 @@ if ($permission)
         <?php
 	}
 
-	print "</div>";
 	print "</div>";
 
 	print '<br>';
@@ -255,9 +256,9 @@ foreach (array('internal', 'external') as $source)
 
 		if ($contact['source'] == 'internal')
 		{
-			$entry->status = $userstatic->LibStatut($contact['statuscontact'], 3);
+			$entry->status = $userstatic->LibStatutLayout($contact['statuscontact'], 3);
 		} elseif ($contact['source'] == 'external') {
-			$entry->status = $contactstatic->LibStatut($contact['statuscontact'], 3);
+			$entry->status = $contactstatic->LibStatutLayout($contact['statuscontact'], 3);
 		}
 
 		$list[] = $entry;
@@ -296,30 +297,30 @@ print '<input type="hidden" name="action" value="list">';
 print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 
-print '<div class="div-table-responsive-no-min">'."\n";
-print '<table class="tagtable nobottomiftotal liste">';
+//print '<div class="div-table-responsive-no-min">'."\n";
+print '<table class="table table-bordered">';
 
 //print '<tr class="liste_titre_filter">';
 //print '</tr>';
 
-print '<tr class="liste_titre">';
-print_liste_field_titre($arrayfields['nature']['label'], $_SERVER["PHP_SELF"], "nature", "", $param, "", $sortfield, $sortorder);
-print_liste_field_titre($arrayfields['thirdparty']['label'], $_SERVER["PHP_SELF"], "thirdparty_name", "", $param, "", $sortfield, $sortorder);
-print_liste_field_titre($arrayfields['contact']['label'], $_SERVER["PHP_SELF"], "contact_name", "", $param, "", $sortfield, $sortorder);
-print_liste_field_titre($arrayfields['type']['label'], $_SERVER["PHP_SELF"], "type", "", $param, "", $sortfield, $sortorder);
-print_liste_field_titre($arrayfields['status']['label'], $_SERVER["PHP_SELF"], "statut", "", $param, "", $sortfield, $sortorder, 'center ');
-print_liste_field_titre('', $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder, 'center maxwidthsearch ');
-print "</tr>";
+print '<thead><tr class="">';
+print_liste_field_titre_layout($arrayfields['nature']['label'], $_SERVER["PHP_SELF"], "nature", "", $param, "", $sortfield, $sortorder);
+print_liste_field_titre_layout($arrayfields['thirdparty']['label'], $_SERVER["PHP_SELF"], "thirdparty_name", "", $param, "", $sortfield, $sortorder);
+print_liste_field_titre_layout($arrayfields['contact']['label'], $_SERVER["PHP_SELF"], "contact_name", "", $param, "", $sortfield, $sortorder);
+print_liste_field_titre_layout($arrayfields['type']['label'], $_SERVER["PHP_SELF"], "type", "", $param, "", $sortfield, $sortorder);
+print_liste_field_titre_layout($arrayfields['status']['label'], $_SERVER["PHP_SELF"], "statut", "", $param, "", $sortfield, $sortorder, ' ');
+print_liste_field_titre_layout('', $_SERVER["PHP_SELF"], "", "", "", "", $sortfield, $sortorder, ' maxwidthsearch ');
+print "</tr></thead><tbody>";
 
 foreach ($list as $entry)
 {
-	print '<tr class="oddeven">';
+	print '<tr class="">';
 
-	print '<td class="nowrap">'.$entry->nature.'</td>';
-	print '<td class="tdoverflowmax200">'.$entry->thirdparty_html.'</td>';
-	print '<td class="tdoverflowmax200">'.$entry->contact_html.'</td>';
-	print '<td class="tdoverflowmax200">'.$entry->type.'</td>';
-	print '<td class="tdoverflowmax200 center">'.$entry->status.'</td>';
+	print '<td class="">'.$entry->nature.'</td>';
+	print '<td class="">'.$entry->thirdparty_html.'</td>';
+	print '<td class="">'.$entry->contact_html.'</td>';
+	print '<td class="">'.$entry->type.'</td>';
+	print '<td class=" ">'.$entry->status.'</td>';
 
 	if ($permission)
 	{
@@ -328,7 +329,7 @@ foreach ($list as $entry)
 		$href .= '&action=deletecontact&token='.newToken();
 		$href .= '&lineid='.$entry->id;
 
-		print "<td class='center'>";
+		print "<td class=''>";
 		print "<a href='$href'>";
 		print img_picto($langs->trans("Unlink"), "unlink");
 		print "</a>";
@@ -338,8 +339,7 @@ foreach ($list as $entry)
 	print "</tr>";
 }
 
-print "</table>";
-print '</div>';
+print "</tbody></table>";
 
 print "</form>";
 

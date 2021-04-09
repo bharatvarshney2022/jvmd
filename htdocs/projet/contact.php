@@ -278,11 +278,12 @@ if ($id > 0 || !empty($ref))
 	print '</table>';
 
 	print '</div>';
+	print '</div>';
 
 	// Other attributes
-	print '<div class="row"><div class="col-sm-6"><table class="table table-bordered"><tbody>';
+	print '<div class="row"><div class="col-sm-12"><table class="table table-bordered"><tbody>';
 	$cols = 2;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view_layout.tpl.php';
 	print '</tbody></table></div></div>';
 
 	// Contacts lines (modules that overwrite templates must declare this into descriptor)
