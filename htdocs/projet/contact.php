@@ -119,7 +119,7 @@ if (($action == 'deleteline' || $action == 'deletecontact') && $user->rights->pr
 $title = $langs->trans("ProjectContact").' - '.$object->ref.' '.$object->name;
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/projectnameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->ref.' '.$object->name.' - '.$langs->trans("ProjectContact");
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 $form = new Form($db);
 $formcompany = new FormCompany($db);
@@ -142,9 +142,19 @@ if ($id > 0 || !empty($ref))
 	//$userDelete = $object->restrictedProjectArea($user,'delete');
 	//print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
-	$head = project_prepare_head($object);
-	print dol_get_fiche_head($head, 'contact', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
 
+	$head = project_prepare_head($object);
+	print dol_get_fiche_head_layout($head, 'contact', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+
+	print '</div><div class="card-body">';
 
 	// Project card
 
@@ -167,14 +177,13 @@ if ($id > 0 || !empty($ref))
 		$object->next_prev_filter = " rowid in (".(count($objectsListId) ?join(',', array_keys($objectsListId)) : '0').")";
 	}
 
-	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+	dol_banner_tab_layout($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
 
-	print '<div class="fichecenter">';
-	print '<div class="fichehalfleft">';
-	print '<div class="underbanner clearboth"></div>';
+	print '<div class="row">';
+	print '<div class="col-sm-6">';
 
-	print '<table class="border tableforfield centpercent">';
+	print '<table class="table table-bordered">';
 
 	// Usage
 	print '<tr style="display:none;"><td class="tdtop">';
@@ -248,13 +257,11 @@ if ($id > 0 || !empty($ref))
 	
 
 	print "</table>";
-
 	print '</div>';
-	print '<div class="fichehalfright">';
-	print '<div class="ficheaddleft">';
-	print '<div class="underbanner clearboth"></div>';
 
-	print '<table class="border tableforfield" width="100%">';
+	print '<div class="col-sm-6">';
+
+	print '<table class="table table-bordered">';
 
 	// Description
 	print '<td class="titlefield tdtop">'.$langs->trans("Description").'</td><td>';
@@ -271,10 +278,6 @@ if ($id > 0 || !empty($ref))
 	print '</table>';
 
 	print '</div>';
-	print '</div>';
-	print '</div>';
-
-	print '<div class="clearboth"></div><hr />';
 
 	// Other attributes
 	print '<div class="fichecenter"><div class="underbanner clearboth"></div><table class="border tableforfield" width="100%"><tbody>';
@@ -296,5 +299,14 @@ if ($id > 0 || !empty($ref))
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
