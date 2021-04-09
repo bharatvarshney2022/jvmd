@@ -69,7 +69,7 @@
 			$trackid = '';
 			include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 */
-			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "".$isExist->fk_soc, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$user_mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
+			$json = array('status_code' => $status_code, 'message' => $messagetxt, 'user_id' => "".$isExist->fk_soc, 'row_id' => "".$isExist->rowid, 'email' => $isExist->email, 'fullname' => $isExist->firstname." ".$isExist->lastname, 'mobile' => "".$user_mobile, 'user_otp' => "".$otp, 'customer_type' => 'existing');
 		} else {
 			$status_code = '0';
 			$message = 'Customer not activated! Please contact support!!';
