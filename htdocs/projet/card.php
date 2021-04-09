@@ -233,6 +233,7 @@ if (empty($reshook))
 
 			/* 
 				Assign lead to vendor default by customer pincode
+				// added by Ashok
 			*/
 				
 				$sqlCustpincode = "Select se.fk_pincode as pincode from ".MAIN_DB_PREFIX."societe_extrafields as se, ".MAIN_DB_PREFIX."societe as s where s.rowid = se.fk_object and se.fk_object = '".$object->socid."' ";
@@ -2165,7 +2166,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Validate
-			if ($object->statut == 0 && $user->rights->projet->creer)
+			if (($object->statut == 0 || $object->statut == 3) && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
@@ -2197,7 +2198,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				}
 			}
 
-			if ($object->statut == 0 && $user->rights->projet->creer)
+			if (($object->statut == 0 || $object->statut == 1) && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
