@@ -455,7 +455,7 @@ $sql .= $db->order($sortfield, $sortorder);
 //print_r($_POST);
 if($search_smonth)
 {
-	echo $sql; exit;
+	//echo $sql; exit;
 }
 
 
