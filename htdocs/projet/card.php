@@ -1225,7 +1225,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	// Confirmation close
 	if ($action == 'close')
 	{
-		if($user_group_id == 4){
+		if($user_group_id == 4 || $user->admin == 1){
 			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
 			//$action = 'close_form';	
 		}else{
@@ -2042,7 +2042,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print '<div class="card-body"><div class="center">';
 		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
-		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '<input type="submit" class="btn btn-danger" name="cancel" value="'.$langs->trans("Cancel").'">';
 		print '</div>';
 		print '</div>';
 	}
@@ -2051,7 +2051,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print '<div class="card-body"><div class="center">';
 		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
-		print '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '<input type="submit" class="btn btn-danger" name="cancel" value="'.$langs->trans("Cancel").'">';
 		print '</div>';
 		print '</div>';
 	}
