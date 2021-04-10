@@ -1290,16 +1290,16 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print dol_get_fiche_head_layout($head, 'project', $langs->trans("Support Tickets"), 0, ($object->public ? 'projectpub' : 'project'));
 		print '<h3>'.$langs->trans("Close Support Tickets").'</h3>';
-		print '<table class="border centpercent">';
+		print '<table class="table table-bordered">';
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Lead Detail").'</h5></td></tr>';
 		// Ref
 		$suggestedref = $object->ref;
-		print '<tr><td>'.$langs->trans("Ref").'</td>';
-		print '<td>'.$suggestedref.'</td>';
+		print '<tr><td style="width:25%">'.$langs->trans("Ref").'</td>';
+		print '<td style="width:25%">'.$suggestedref.'</td>';
 
 		// Label
-		print '<td >'.$langs->trans("ProjectLabel").'</td>';
-		print '<td>'.dol_escape_htmltag($object->title).'</td></tr>';
+		print '<td style="width:25%" >'.$langs->trans("ProjectLabel").'</td>';
+		print '<td style="width:25%">'.dol_escape_htmltag($object->title).'</td></tr>';
 		
 
 		// Date start
@@ -1347,16 +1347,16 @@ if ($action == 'create' && $user->rights->projet->creer)
 			
 		// Problem
 		print '<tr><td class="tdtop">'.$langs->trans("Problem Detail").'</td>';
-		print '<td><textarea row="5" class="minwidth400" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
+		print '<td><textarea row="5" class="form-control" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
 		print '<td class="tdtop">'.$langs->trans("Problem Solution").'</td>';
-		print '<td><textarea row="5" class="minwidth400" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
+		print '<td><textarea row="5" class="form-control" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
 		print '</tr>';
 
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Detect Code").'</h5></td></tr>';
 			
 		// OTP
 		print '<tr><td class="tdtop">'.$langs->trans("OTP").'</td>';
-		print '<td><input type="text" class="minwidth400" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
+		print '<td><input type="text" class="form-control" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
 		print '<td class="tdtop">'.$langs->trans("Signature").'</td>';
 		print '<td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
@@ -1368,14 +1368,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Response
 		print '<tr><td class="tdtop">'.$langs->trans("Ticket Customer Response").'</td>';
-		print '<td><select name="customer_response">
+		print '<td><select class="form-control" name="customer_response">
 					<option value="Satisfied">Satisfied</option>
 					<option value="UnSatisfied">Un-Satisfied</option>
 					<option value="OK">OK</option>
 				</select>
 		</td>';
 		print '<td class="tdtop">'.$langs->trans("Customer Remark").'</td>';
-		print '<td><textarea row="5" class="minwidth400" name="customer_remark">'.dol_escape_htmltag($object->customer_remark).'</textarea></td>';
+		print '<td><textarea row="5" class="form-control" name="customer_remark">'.dol_escape_htmltag($object->customer_remark).'</textarea></td>';
 		print '</tr>';
 	
 		print '</table>';
@@ -1431,7 +1431,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// Label
 		print '<td class="fieldrequired">'.$langs->trans("ProjectLabel").'</td>';
-		print '<td><input class="form-control" '.$readonly.' class="minwidth400" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
+		print '<td><input class="form-control" '.$readonly.' class="form-control" name="title" value="'.dol_escape_htmltag($object->title).'"></td></tr>';
 		if($user_group_id == 4){
 			$disabled = 'disabled';
 		}else{
