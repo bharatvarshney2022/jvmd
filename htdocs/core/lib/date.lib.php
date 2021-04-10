@@ -297,6 +297,17 @@ function dolSqlDateFilter($datefield, $day_date, $month_date, $year_date, $exclu
 	return $sqldate;
 }
 
+function dolSqlDateFilterLayout($datefield, $month_date, $excludefirstand = 0)
+{
+	global $db;
+	$sqldate = "";
+	if ($month_date != "") {
+		$sqldate .= ($excludefirstand ? "" : " AND ")." date( ".$datefield.") = '".$db->escape($month_date)."'";
+	}
+
+	return $sqldate;
+}
+
 /**
  *	Convert a string date into a GM Timestamps date
  *	Warning: YYYY-MM-DDTHH:MM:SS+02:00 (RFC3339) is not supported. If parameter gm is 1, we will use no TZ, if not we will use TZ of server, not the one inside string.

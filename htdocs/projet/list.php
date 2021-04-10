@@ -68,6 +68,8 @@ $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
+//print_r($_POST);
+
 $search_all = GETPOST('search_all', 'alphanohtml') ? GETPOST('search_all', 'alphanohtml') : GETPOST('sall', 'alphanohtml');
 $search_ref = GETPOST("search_ref", 'alpha');
 $search_label = GETPOST("search_label", 'alpha');
@@ -88,12 +90,12 @@ $optioncss = GETPOST('optioncss', 'alpha');
 $mine = $_REQUEST['mode'] == 'mine' ? 1 : 0;
 if ($mine) { $search_project_user = $user->id; $mine = 0; }
 
-$search_sday	= GETPOST('search_sday', 'int');
-$search_smonth	= GETPOST('search_smonth', 'int');
-$search_syear	= GETPOST('search_syear', 'int');
-$search_eday	= GETPOST('search_eday', 'int');
-$search_emonth	= GETPOST('search_emonth', 'int');
-$search_eyear	= GETPOST('search_eyear', 'int');
+//$search_sday	= GETPOST('search_sday', 'int');
+$search_smonth	= GETPOST('search_smonth', 'alpha');
+//$search_syear	= GETPOST('search_syear', 'int');
+//$search_eday	= GETPOST('search_eday', 'int');
+$search_emonth	= GETPOST('search_emonth', 'alpha');
+//$search_eyear	= GETPOST('search_eyear', 'int');
 
 if ($search_status == '') $search_status = -1; // -1 or 1
 
@@ -193,12 +195,12 @@ if (empty($reshook))
 		$search_public = "";
 		$search_sale = "";
 		$search_project_user = '';
-		$search_sday = "";
+		//$search_sday = "";
 		$search_smonth = "";
-		$search_syear = "";
-		$search_eday = "";
+		//$search_syear = "";
+		//$search_eday = "";
 		$search_emonth = "";
-		$search_eyear = "";
+		//$search_eyear = "";
 		$search_usage_opportunity = '';
 		$search_usage_task = '';
 		$search_usage_bill_time = '';
@@ -361,8 +363,13 @@ if ($search_label) $sql .= natural_search('p.title', $search_label);
 if ($search_societe) $sql .= natural_search('s.nom', $search_societe);
 if ($search_opp_amount) $sql .= natural_search('p.opp_amount', $search_opp_amount, 1);
 if ($search_opp_percent) $sql .= natural_search('p.opp_percent', $search_opp_percent, 1);
-$sql .= dolSqlDateFilter('p.dateo', $search_sday, $search_smonth, $search_syear);
-$sql .= dolSqlDateFilter('p.datee', $search_eday, $search_emonth, $search_eyear);
+//$sql .= dolSqlDateFilter('p.dateo', $search_sday, $search_smonth, $search_syear);
+//$sql .= dolSqlDateFilter('p.datee', $search_eday, $search_emonth, $search_eyear);
+
+//echo $search_smonth.",".$search_emonth; exit;
+$sql .= dolSqlDateFilterLayout('p.dateo', $search_smonth);
+$sql .= dolSqlDateFilterLayout('p.datee', $search_emonth);
+
 if ($search_all) $sql .= natural_search(array_keys($fieldstosearchall), $search_all);
 if ($search_status >= 0)
 {
@@ -445,6 +452,8 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
 $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
+//print_r($_POST);
+//echo $sql; exit;
 
 
 
@@ -496,12 +505,12 @@ $param = '';
 if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param .= '&contextpage='.urlencode($contextpage);
 if ($limit > 0 && $limit != $conf->liste_limit) $param .= '&limit='.urlencode($limit);
 if ($search_all != '') 			$param .= '&search_all='.urlencode($search_all);
-if ($search_sday)              		    $param .= '&search_sday='.urlencode($search_sday);
+//if ($search_sday)              		    $param .= '&search_sday='.urlencode($search_sday);
 if ($search_smonth)              		$param .= '&search_smonth='.urlencode($search_smonth);
-if ($search_syear)               		$param .= '&search_syear='.urlencode($search_syear);
-if ($search_eday)               		$param .= '&search_eday='.urlencode($search_eday);
+//if ($search_syear)               		$param .= '&search_syear='.urlencode($search_syear);
+//if ($search_eday)               		$param .= '&search_eday='.urlencode($search_eday);
 if ($search_emonth)              		$param .= '&search_emonth='.urlencode($search_emonth);
-if ($search_eyear)               		$param .= '&search_eyear='.urlencode($search_eyear);
+//if ($search_eyear)               		$param .= '&search_eyear='.urlencode($search_eyear);
 if ($socid)				        $param .= '&socid='.urlencode($socid);
 if ($search_categ)              $param .= '&search_categ='.urlencode($search_categ);
 if ($search_ref != '') 			$param .= '&search_ref='.urlencode($search_ref);
@@ -596,9 +605,9 @@ print '<!--begin::Entry-->
 														</div>
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>Start Date:</label>
-															<input type="text" name="search_smonth" class="form-control datatable-input" placeholder="Start Date" data-col-index="4" />';
-															$search_syear_list = $formother->select_year($search_syear ? $search_syear : -1, 'search_syear', 1, 20, 5, 0, 0, '', '');
-															print $search_syear_list;
+															<input type="date" name="search_smonth" class="form-control datatable-input" placeholder="Start Date" value="'.$search_smonth.'"  data-col-index="4" />';
+															//$search_syear_list = $formother->select_year($search_syear ? $search_syear : -1, 'search_syear', 1, 20, 5, 0, 0, '', '');
+															//print $search_syear_list;
 
 															print '
 														</div>
@@ -606,9 +615,9 @@ print '<!--begin::Entry-->
 													<div class="row mb-8">
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>End Date:</label>
-															<input type="text" name="search_emonth" class="form-control datatable-input" placeholder="End Date" data-col-index="4" />';
-															$search_eyear_list = $formother->select_year($search_eyear ? $search_eyear : -1, 'search_eyear', 1, 20, 5, 0, 0, '', '');
-															print $search_eyear_list;
+															<input type="date" name="search_emonth" class="form-control datatable-input" placeholder="End Date" value="'.$search_emonth.'" data-col-index="4" />';
+															//$search_eyear_list = $formother->select_year($search_eyear ? $search_eyear : -1, 'search_eyear', 1, 20, 5, 0, 0, '', '');
+															//print $search_eyear_list;
 
 															print '
 														</div>
@@ -628,13 +637,13 @@ print '<!--begin::Entry-->
 													print '</div>
 													<div class="row mt-8">
 														<div class="col-lg-12">
-														<button class="btn btn-primary btn-primary--icon" id="kt_search">
+														<button class="btn btn-primary btn-primary--icon" type="submit" name="button_search_x" value="x" id="kt_search">
 															<span>
 																<i class="la la-search"></i>
 																<span>Search</span>
 															</span>
 														</button>&#160;&#160; 
-														<button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+														<button class="btn btn-secondary btn-secondary--icon" type="submit" name="button_removefilter_x" value="x" id="kt_reset">
 															<span>
 																<i class="la la-close"></i>
 																<span>Reset</span>
