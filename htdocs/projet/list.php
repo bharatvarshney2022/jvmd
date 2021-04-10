@@ -368,7 +368,7 @@ if ($search_opp_percent) $sql .= natural_search('p.opp_percent', $search_opp_per
 
 //echo $search_smonth.",".$search_emonth; exit;
 $sql .= dolSqlDateFilterLayout('p.dateo', $search_smonth);
-$sql .= dolSqlDateFilterLayout('p.datee', $search_emonth);
+$sql .= dolSqlDateFilterEndLayout('p.datee', $search_emonth);
 
 if ($search_all) $sql .= natural_search(array_keys($fieldstosearchall), $search_all);
 if ($search_status >= 0)

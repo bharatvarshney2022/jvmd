@@ -302,7 +302,18 @@ function dolSqlDateFilterLayout($datefield, $month_date, $excludefirstand = 0)
 	global $db;
 	$sqldate = "";
 	if ($month_date != "") {
-		$sqldate .= ($excludefirstand ? "" : " AND ")." date( ".$datefield.") = '".$db->escape($month_date)."'";
+		$sqldate .= ($excludefirstand ? "" : " AND ")." ".$datefield." >= '".$db->escape($month_date)."'";
+	}
+
+	return $sqldate;
+}
+
+function dolSqlDateFilterEndLayout($datefield, $month_date, $excludefirstand = 0)
+{
+	global $db;
+	$sqldate = "";
+	if ($month_date != "") {
+		$sqldate .= ($excludefirstand ? "" : " AND ")." ".$datefield." <= '".$db->escape($month_date)."'";
 	}
 
 	return $sqldate;
