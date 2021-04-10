@@ -368,7 +368,7 @@ if ($search_opp_percent) $sql .= natural_search('p.opp_percent', $search_opp_per
 
 //echo $search_smonth.",".$search_emonth; exit;
 $sql .= dolSqlDateFilterLayout('p.dateo', $search_smonth);
-$sql .= dolSqlDateFilterEndLayout('p.datee', $search_emonth);
+$sql .= dolSqlDateFilterLayout('p.datee', $search_emonth);
 
 if ($search_all) $sql .= natural_search(array_keys($fieldstosearchall), $search_all);
 if ($search_status >= 0)
@@ -453,7 +453,10 @@ $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $objec
 $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
 //print_r($_POST);
-//echo $sql; exit;
+if($search_smonth)
+{
+	echo $sql; exit;
+}
 
 
 
@@ -605,7 +608,7 @@ print '<!--begin::Entry-->
 														</div>
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>Start Date:</label>
-															<input type="date" name="search_smonth" class="form-control datatable-input" placeholder="Start Date" value="'.$search_smonth.'"  data-col-index="4" />';
+															<input type="text" id="kt_daterangepicker_1" name="search_smonth" class="form-control" placeholder="Start Date" value="'.$search_smonth.'"  data-col-index="4" />';
 															//$search_syear_list = $formother->select_year($search_syear ? $search_syear : -1, 'search_syear', 1, 20, 5, 0, 0, '', '');
 															//print $search_syear_list;
 
@@ -615,7 +618,7 @@ print '<!--begin::Entry-->
 													<div class="row mb-8">
 														<div class="col-lg-3 mb-lg-0 mb-6">
 															<label>End Date:</label>
-															<input type="date" name="search_emonth" class="form-control datatable-input" placeholder="End Date" value="'.$search_emonth.'" data-col-index="4" />';
+															<input type="text" id="kt_daterangepicker_2" name="search_emonth" class="form-control" placeholder="End Date" value="'.$search_emonth.'" data-col-index="4" />';
 															//$search_eyear_list = $formother->select_year($search_eyear ? $search_eyear : -1, 'search_eyear', 1, 20, 5, 0, 0, '', '');
 															//print $search_eyear_list;
 
@@ -1057,7 +1060,9 @@ print '<!--begin::Page Vendors(used by this page)-->
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
 <script src="'.DOL_URL_ROOT.'/theme/oblyon/js/cards-tools.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/bootstrap-daterangepicker.js?v=7.2.0"></script>
 <!--<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/advanced-search.js?v=7.2.0"></script>-->
+
 <!--end::Page Vendors-->';
 
 print "	</body>\n";
