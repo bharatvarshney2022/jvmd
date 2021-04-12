@@ -106,6 +106,28 @@
 			$objectProCust->title = $lead_title;
 			$objectProCust->description = $description;
 			$objectProCust->socid = $user_id;
+
+			$zipCode = 0;
+			$userZip = $userExists->zip;
+			if($userZip > 0)
+			{
+				$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1' AND zip LIKE '".$userZip."'";
+				$resqlZip = $db->query($sqlZip);
+				if ($resqlZip)
+				{
+					$row = $db->fetch_object($resqlZip);
+					$zipCode = $row->rowid;
+				}
+			}
+			
+			$objectProCust->address = $userExists->address;
+			$objectProCust->zip = $zipCode;
+			$objectProCust->town = $userExists->town;
+			$objectProCust->country_id = $userExists->country_id;
+			$objectProCust->state_id = $userExists->state_id;
+
+
+
 			$objectProCust->date_start = date('Y-m-d');
 			$objectProCust->date_end = '';
 			$objectProCust->public = '1';

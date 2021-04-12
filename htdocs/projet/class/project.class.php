@@ -279,6 +279,13 @@ class Project extends CommonObject
 		$sql .= ", title = '".$this->db->escape($this->title)."'";
 		$sql .= ", description = '".$this->db->escape($this->description)."'";
 		$sql .= ", fk_soc = '".(int)$this->socid."'";
+
+		$sql .= ", address = '".$this->db->escape($this->address)."'";
+		$sql .= ", zip = '".$this->db->escape($this->zip)."'";
+		$sql .= ", town = '".$this->db->escape($this->town)."'";
+		$sql .= ", fk_pays = ".($this->country_id > 0 ? $this->country_id : 'NULL');
+		$sql .= ", fk_departement = ".($this->state_id > 0 ? $this->state_id : 'NULL');
+
 		$sql .= ", fk_technician = '0'";
 		$sql .= ", fk_customer_product = '".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null")."'";
 		$sql .= ", fk_brand = '".$this->db->escape($this->fk_brand)."'";
