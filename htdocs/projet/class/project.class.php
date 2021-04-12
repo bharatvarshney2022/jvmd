@@ -611,10 +611,14 @@ class Project extends CommonObject
 	public function fetch($id, $ref = '', $ref_ext = '', $email_msgid = '')
 	{
 		global $conf;
+		global $langs;
 
 		if (empty($id) && empty($ref)) return -1;
 
 		$sql = "SELECT rowid, entity, ref, title, description, public, datec, opp_amount, budget_amount,";
+		$sql .= " address, zip, town,";
+		$sql .= " fk_pays as country_id,";
+		$sql .= " fk_departement as state_id,";
 		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, customer_sign, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
 		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid, problem, solution, ticket_otp, customer_response, customer_remark ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
@@ -657,6 +661,19 @@ class Project extends CommonObject
 				$this->note_private = $obj->note_private;
 				$this->note_public = $obj->note_public;
 				$this->socid = $obj->fk_soc;
+
+				// Address
+				$this->address = $obj->address;
+				$this->zip = $obj->zip;
+				$this->town = $obj->town;
+				$this->state_id = $obj->state_id;
+				$this->state_code = $obj->state_code;
+				$this->state = $obj->state;
+
+				$this->country_id = $obj->country_id;
+				$this->country_code = $obj->country_id ? $obj->country_code : '';
+				$this->country			= $obj->country_id ? ($langs->trans('Country'.$obj->country_code) != 'Country'.$obj->country_code ? $langs->transnoentities('Country'.$obj->country_code) : $obj->country) : '';
+
 				$this->fk_technician = $obj->fk_technician;
 				$this->tech_assigndatetime = $this->db->jdate($obj->tech_assigndatetime); // TODO deprecated
 				$this->reponse_schedule = $this->db->jdate($obj->reponse_schedule); // TODO deprecated

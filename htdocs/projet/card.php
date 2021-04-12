@@ -26,11 +26,13 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/fcm_notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'companies'));
@@ -201,6 +203,14 @@ if (empty($reshook))
 			$object->title           = GETPOST('title', 'alphanohtml');
 			
 			$object->socid           = GETPOST('socid', 'int');
+
+			// Address Data
+			$object->address = (string) GETPOST("address", 'alpha');
+			$object->zip = (string) GETPOST("zipcode", 'alpha');
+			$object->town = (string) GETPOST("town", 'alpha');
+			$object->country_id = (int) GETPOST("country_id", 'int');
+			$object->state_id = (int) GETPOST("state_id", 'int');
+
 			$object->fk_technician      = '0';
 			$object->fk_customer_product  = GETPOST('fk_customer_product', 'int');
 			$object->fk_brand      = GETPOST('fk_brand', 'int');
@@ -345,6 +355,14 @@ if (empty($reshook))
 				$object->statut       = GETPOST('status', 'int');
 			}
 			$object->socid        = GETPOST('socid', 'int');
+
+			// Address Data
+			$object->address = (string) GETPOST("address", 'alpha');
+			$object->zip = (string) GETPOST("zipcode", 'alpha');
+			$object->town = (string) GETPOST("town", 'alpha');
+			$object->country_id = (int) GETPOST("country_id", 'int');
+			$object->state_id = (int) GETPOST("state_id", 'int');
+
 			$object->fk_technician        = GETPOST('fk_technician', 'int');
 			/*if($object->fk_technician > 0){
 				$object->tech_assigndatetime   = dol_now();
@@ -777,6 +795,8 @@ if (empty($reshook))
  */
 
 $form = new Form($db);
+$formcompany = new FormCompany($db);
+
 $formfile = new FormFile($db);
 $formproject = new FormProjets($db);
 $userstatic = new User($db);
@@ -807,6 +827,17 @@ if ($action == 'create' && $user->rights->projet->creer)
 	$thirdparty = new Societe($db);
 	if ($socid > 0) $thirdparty->fetch($socid);
 
+	$object->state_id = GETPOST("state_id");
+	// We set country_id, country_code and label for the selected country
+	$object->country_id = $_POST["country_id"] ?GETPOST("country_id") : (empty($objsoc->country_id) ? $mysoc->country_id : $objsoc->country_id);
+	if ($object->country_id)
+	{
+		$tmparray = getCountry($object->country_id, 'all');
+		$object->country_code = $tmparray['code'];
+		$object->country      = $tmparray['label'];
+	}
+
+
 	print '<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
@@ -819,7 +850,30 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 										'<div class="card-body">';
 
-										print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+										if ($conf->use_javascript_ajax)
+										{
+											print "\n".'<script type="text/javascript" language="javascript">'."\n";
+											print 'jQuery(document).ready(function () {
+														jQuery("#selectcountry_id").change(function() {
+															document.formsoc.action.value="create";
+															document.formsoc.submit();
+														});
+
+														$("#copyaddressfromsoc").click(function() {
+															$(\'textarea[name="address"]\').val("'.dol_escape_js($objsoc->address).'");
+															$(\'input[name="zipcode"]\').val("'.dol_escape_js($objsoc->zip).'");
+															$(\'input[name="town"]\').val("'.dol_escape_js($objsoc->town).'");
+															console.log("Set state_id to '.dol_escape_js($objsoc->state_id).'");
+															$(\'select[name="state_id"]\').val("'.dol_escape_js($objsoc->state_id).'").trigger("change");
+															/* set country at end because it will trigger page refresh */
+															console.log("Set country id to '.dol_escape_js($objsoc->country_id).'");
+															$(\'select[name="country_id"]\').val("'.dol_escape_js($objsoc->country_id).'").trigger("change");   /* trigger required to update select2 components */
+							                            });
+													})'."\n";
+											print '</script>'."\n";
+										}
+
+										print '<form action="'.$_SERVER["PHP_SELF"].'" name="formsoc" method="POST">';
 										print '<input type="hidden" name="token" value="'.newToken().'">';
 										print '<input type="hidden" name="action" value="add">';
 										print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
@@ -1034,6 +1088,57 @@ if ($action == 'create' && $user->rights->projet->creer)
 										print $object->LibStatut($status, 4);
 										print '</td></tr>';
 									}
+
+									// Address
+									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $objsoc->address; // Predefined with third party
+									print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
+									print '<td colspan="'.$colspan.'"><textarea class="form-control" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
+
+									if ($conf->use_javascript_ajax && $socid > 0)
+									{
+										$rowspan = 0;
+										if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
+
+										print '<td class="" rowspan="'.$rowspan.'">';
+										print '<a href="#" id="copyaddressfromsoc">'.$langs->trans('CopyAddressFromSoc').'</a>';
+										print '</td>';
+									}
+									print '</tr>';
+
+									// Zip / Town
+									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $objsoc->zip; // Predefined with third party
+									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $objsoc->town; // Predefined with third party
+									print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
+									print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
+									print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
+									print $formcompany->select_ziptown((GETPOST("town", 'alpha') ? GETPOST("town", 'alpha') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+									print '</td></tr>';
+
+									// Country
+									print '<tr><td><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="">';
+									print img_picto('', 'globe-americas', 'class=""');
+									print $form->select_country((GETPOST("country_id", 'alpha') ? GETPOST("country_id", 'alpha') : $object->country_id), 'country_id');
+									/*if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);*/
+									print '</td>';
+									// State
+									if (empty($conf->global->SOCIETE_DISABLE_STATE))
+									{
+										if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
+										{
+											print '<td><label for="state_id">'.$langs->trans('Region-State').'</label></td><td class="">';
+										} else {
+											print '<td><label for="state_id">'.$langs->trans('State').'</label></td><td class="">';
+										}
+
+										if ($object->country_id)
+										{
+											print $formcompany->select_state(GETPOST("state_id", 'alpha') ? GETPOST("state_id", 'alpha') : $object->state_id, $object->country_code, 'state_id');
+										} else {
+											print $countrynotdefined;
+										}
+										print '</td>';
+									}
+									print '</tr>';
 
 									// Visibility
 									print '<tr style="display:none;"><td>'.$langs->trans("Visibility").'</td><td class="maxwidthonsmartphone">';
@@ -1447,9 +1552,9 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</select>';
 		print '</td>';
 		// fetch optionals attributes and labels
-				$leadextrafields = new ExtraFields($db);
-				$leadextrafields = $extrafields->fetch_name_optionals_label($object->table_element);
-				$modelid = $object->fetch_optionals($object->id,$leadextrafields);
+		$leadextrafields = new ExtraFields($db);
+		$leadextrafields = $extrafields->fetch_name_optionals_label($object->table_element);
+		$modelid = $object->fetch_optionals($object->id,$leadextrafields);
 		
 		print '<script>';
 		print '
@@ -1713,6 +1818,58 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print '</select>';
 			print '</td></tr>';
 		}
+
+		// Address
+		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $objsoc->address; // Predefined with third party
+		print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
+		print '<td colspan="'.$colspan.'"><textarea class="form-control" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
+
+		if ($conf->use_javascript_ajax && $socid > 0)
+		{
+			$rowspan = 0;
+			if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
+
+			print '<td class="" rowspan="'.$rowspan.'">';
+			print '<a href="#" id="copyaddressfromsoc">'.$langs->trans('CopyAddressFromSoc').'</a>';
+			print '</td>';
+		}
+		print '</tr>';
+
+		// Zip / Town
+		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $objsoc->zip; // Predefined with third party
+		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $objsoc->town; // Predefined with third party
+		print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
+		print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
+		print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
+		print $formcompany->select_ziptown((GETPOST("town", 'alpha') ? GETPOST("town", 'alpha') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+		print '</td></tr>';
+
+		// Country
+		print '<tr><td><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="">';
+		print img_picto('', 'globe-americas', 'class=""');
+		print $form->select_country((GETPOST("country_id", 'alpha') ? GETPOST("country_id", 'alpha') : $object->country_id), 'country_id');
+		/*if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);*/
+		print '</td>';
+		// State
+		if (empty($conf->global->SOCIETE_DISABLE_STATE))
+		{
+			if (!empty($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT) && ($conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 1 || $conf->global->MAIN_SHOW_REGION_IN_STATE_SELECT == 2))
+			{
+				print '<td><label for="state_id">'.$langs->trans('Region-State').'</label></td><td class="">';
+			} else {
+				print '<td><label for="state_id">'.$langs->trans('State').'</label></td><td class="">';
+			}
+
+			if ($object->country_id)
+			{
+				print $formcompany->select_state(GETPOST("state_id", 'alpha') ? GETPOST("state_id", 'alpha') : $object->state_id, $object->country_code, 'state_id');
+			} else {
+				print $countrynotdefined;
+			}
+			print '</td>';
+		}
+		print '</tr>';
+
 		// Scheduled Time
 		print '<tr><td>'.$langs->trans("Scheduled Time").'</td><td>';
 		print $form->selectDate($object->tech_assigndatetime ? $object->tech_assigndatetime : -1, 'tech_assigndatetime', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
