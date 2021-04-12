@@ -360,6 +360,13 @@ class Project extends CommonObject
 		$sql .= ", title";
 		$sql .= ", description";
 		$sql .= ", fk_soc";
+
+		$sql .= ", address";
+		$sql .= ", zip";
+		$sql .= ", town";
+		$sql .= ", fk_pays";
+		$sql .= ", fk_departement";
+
 		$sql .= ", fk_technician";
 		$sql .= ", fk_customer_product";
 		$sql .= ", fk_brand";
@@ -390,6 +397,11 @@ class Project extends CommonObject
 		$sql .= ", '".$this->db->escape($this->title)."'";
 		$sql .= ", '".$this->db->escape($this->description)."'";
 		$sql .= ", ".($this->socid > 0 ? $this->socid : "null");
+
+		$sql .= ", '".$this->db->escape($this->address)."'";
+		$sql .= ", '".$this->db->escape($this->zip)."'";
+		$sql .= ", ".($this->country_id > 0 ? $this->country_id : 'NULL');
+		$sql .= ", ".($this->state_id > 0 ? $this->state_id : 'NULL');
 		$sql .= ", ".($this->technician > 0 ? $this->technician : "null");
 		$sql .= ", ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
 		$sql .= ", ".($this->fk_brand > 0 ? $this->fk_brand : "null");
@@ -498,6 +510,12 @@ class Project extends CommonObject
 			$sql .= ", title = '".$this->db->escape($this->title)."'";
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 			$sql .= ", fk_soc = ".($this->socid > 0 ? $this->socid : "null");
+			$sql .= ", address='".$this->db->escape($this->address)."'";
+			$sql .= ", zip='".$this->db->escape($this->zip)."'";
+			$sql .= ", town='".$this->db->escape($this->town)."'";
+			$sql .= ", fk_pays=".($this->country_id > 0 ? $this->country_id : 'NULL');
+			$sql .= ", fk_departement=".($this->state_id > 0 ? $this->state_id : 'NULL');
+
 			$sql .= ", fk_technician = '".(int)($this->fk_technician ? $this->fk_technician : "null")."'";
 			$sql .= ", tech_assigndatetime = ".($this->tech_assigndatetime != '' ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
 			$sql .= ", reponse_schedule = ".($this->tech_assigndatetime > 0 ? "'".$this->db->idate($this->tech_assigndatetime)."'" : "null");
