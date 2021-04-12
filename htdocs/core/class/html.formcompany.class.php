@@ -912,11 +912,7 @@ class FormCompany extends Form
 		}
 
 		$out = '';
-		if ($conf->use_javascript_ajax && empty($disableautocomplete))
-		{
-			//$out = ajax_multiautocompleter_select($htmlname, $fields, DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
-			//$moreattrib .= ' autocomplete="off"';
-		}
+		
 
 		$out .= '<select id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" '.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'">';
 
