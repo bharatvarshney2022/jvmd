@@ -33,7 +33,20 @@ $socid = GETPOST('socid');
 $objsoc = new Societe($db);
 $objsoc->fetch($socid);
 
-$json = array('address' => $objsoc->address, 'zip' => $objsoc->zip, 'town' => $objsoc->town, 'state_id' => $objsoc->state_id, 'country_id' => $objsoc->country_id);
+$zipCode = 0;
+$userZip = $objsoc->zip;
+if($userZip > 0)
+{
+	$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1' AND zip LIKE '".$userZip."'";
+	$resqlZip = $db->query($sqlZip);
+	if ($resqlZip)
+	{
+		$row = $db->fetch_object($resqlZip);
+		$zipCode = $row->rowid;
+	}
+}
+
+$json = array('address' => $objsoc->address, 'zip' => $zipCode, 'town' => $objsoc->town, 'state_id' => $objsoc->state_id, 'country_id' => $objsoc->country_id);
 
 $headers = 'Content-type: application/json';
 header($headers);

@@ -895,6 +895,59 @@ class FormCompany extends Form
 	 *    @param    string      $morecss                More css
 	 *    @return	string
 	 */
+	public function select_ziptown_dropdown($selected = '', $htmlname = 'zipcode', $fields = '', $fieldsize = 0, $disableautocomplete = 0, $moreattrib = '', $morecss = '')
+	{
+		// phpcs:enable
+		global $conf;
+
+		$zipCode = array();
+		$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1'";
+		$resqlZip = $this->db->query($sqlZip);
+		if ($resqlZip)
+		{
+			while ($objZip = $this->db->fetch_object($resqlZip))
+			{
+				$zipCode[$objZip->rowid] = $objZip->zip;
+			}
+		}
+
+		$out = '<select id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" '.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'">';
+
+		$size = '';
+		if (!empty($fieldsize)) $size = 'size="'.$fieldsize.'"';
+
+		if ($conf->use_javascript_ajax && empty($disableautocomplete))
+		{
+			//$out .= ajax_multiautocompleter($htmlname, $fields, DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
+			//$moreattrib .= ' autocomplete="off"';
+		}
+		
+		$out .= '<option value="">&nbsp;</option>'."\n";
+
+		foreach($zipCode as $rowid => $zip)
+		{
+			$selectedVal = "";
+			if($rowid == $selected)
+			{
+				$selectedVal = "selected='selected'";
+			}
+
+			$out .= '<option value="'.$rowid.'" '.$selectedVal.' data-html="'.dol_escape_htmltag($zip).'">';
+			$out .= $zip;
+			$out .= '</option>';
+		}
+		//$out .= '<input id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" type="text"'.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'" '.$size.' value="'.$selected.'">'."\n";
+
+		$out .= '</select>';
+
+		$out .= '
+		<script>
+			$("#'.$htmlname.'").select2();
+		</script>';
+
+		return $out;
+	}
+
 	public function select_ziptown($selected = '', $htmlname = 'zipcode', $fields = '', $fieldsize = 0, $disableautocomplete = 0, $moreattrib = '', $morecss = '')
 	{
 		// phpcs:enable

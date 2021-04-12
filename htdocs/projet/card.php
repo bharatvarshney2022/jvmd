@@ -247,29 +247,17 @@ if (empty($reshook))
 			*/
 				
 				
-			$soc_zipcode = $object->zip;
-			// Get ID from Zipcode
-			$sqlZip = "SELECT rowid FROM ".MAIN_DB_PREFIX."c_pincodes WHERE zip = '".$soc_zipcode."'";
-			$resqlZip = $db->query($sqlZip);
-
-			$ret = 0;
-
-			if ($resqlZip)
-			{
-				$zipRow = $db->fetch_array($resqlZip);
-				$ret = $zipRow[0];
-
+			$ret = $object->zip;
 				
-				$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
-				$resqlVendor = $db->query($sqlVendors);
-				$numvendor = $db->num_rows($resqlVendor);
-				$objvendor = $resqlVendor->fetch_all();
-				if($numvendor > 0){
-					foreach ($objvendor as $rsvendor) {
-						$vendorid = $rsvendor[0];
-						$typeid = '160';
-						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
-					}
+			$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+			$resqlVendor = $db->query($sqlVendors);
+			$numvendor = $db->num_rows($resqlVendor);
+			$objvendor = $resqlVendor->fetch_all();
+			if($numvendor > 0){
+				foreach ($objvendor as $rsvendor) {
+					$vendorid = $rsvendor[0];
+					$typeid = '160';
+					$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
 				}
 			}
 
@@ -464,29 +452,17 @@ if (empty($reshook))
 
 				// Update Vendor
 
-				$soc_zipcode = $object->zip;
-				// Get ID from Zipcode
-				$sqlZip = "SELECT rowid FROM ".MAIN_DB_PREFIX."c_pincodes WHERE zip = '".$soc_zipcode."'";
-				$resqlZip = $db->query($sqlZip);
-
-				$ret = 0;
-
-				if ($resqlZip)
-				{
-					$zipRow = $db->fetch_array($resqlZip);
-					$ret = $zipRow[0];
-
-					
-					$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
-					$resqlVendor = $db->query($sqlVendors);
-					$numvendor = $db->num_rows($resqlVendor);
-					$objvendor = $resqlVendor->fetch_all();
-					if($numvendor > 0){
-						foreach ($objvendor as $rsvendor) {
-							$vendorid = $rsvendor[0];
-							$typeid = '160';
-							$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
-						}
+				$ret = $object->zip;
+				
+				$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+				$resqlVendor = $db->query($sqlVendors);
+				$numvendor = $db->num_rows($resqlVendor);
+				$objvendor = $resqlVendor->fetch_all();
+				if($numvendor > 0){
+					foreach ($objvendor as $rsvendor) {
+						$vendorid = $rsvendor[0];
+						$typeid = '160';
+						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
 					}
 				}
 
@@ -1010,7 +986,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 														  success: function(response) {
 														  	//alert(html);
 															$("#address").val(response.address);
-															$("#zipcode").val(response.zip);
+															$("select[name=\"zipcode\"]").val(response.zip).trigger("change");
+															//$("#zipcode").val(response.zip);
 															$("#town").val(response.town);
 															$("select[name=\"state_id\"]").val(response.state_id).trigger("change");
 															$("select[name=\"country_id\"]").val(response.country_id).trigger("change");
@@ -1159,8 +1136,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 									// Zip / Town
 									if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $thirdparty->zip; // Predefined with third party
 									if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $thirdparty->town; // Predefined with third party
-									print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
-									print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
+									print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td class="">';
+									print $formcompany->select_ziptown_dropdown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
 									print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
 									print $formcompany->select_ziptown((GETPOST("town", 'alpha') ? GETPOST("town", 'alpha') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 									print '</td></tr>';
@@ -1890,7 +1867,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $thirdparty->zip; // Predefined with third party
 		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $thirdparty->town; // Predefined with third party
 		print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
-		print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
+		print $formcompany->select_ziptown_dropdown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
 		print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
 		print $formcompany->select_ziptown((GETPOST("town", 'alpha') ? GETPOST("town", 'alpha') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 		print '</td></tr>';
