@@ -246,23 +246,18 @@ if (empty($reshook))
 				// added by Ashok
 			*/
 				
-				$sqlCustpincode = "Select se.fk_pincode as pincode from ".MAIN_DB_PREFIX."societe_extrafields as se, ".MAIN_DB_PREFIX."societe as s where s.rowid = se.fk_object and se.fk_object = '".$object->socid."' ";
-				$resqlSociate = $db->query($sqlCustpincode);
-				$numSociate = $db->num_rows($resqlSociate);
-				if($numSociate > 0){
-					$pinobj = $db->fetch_object($resqlSociate);
-					$ret = $pinobj->pincode;
+				
+				$ret = $object->zip;
 					
-					$sqlVendors = "Select u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
-					$resqlVendor = $db->query($sqlVendors);
-					$numvendor = $db->num_rows($resqlVendor);
-					$objvendor = $resqlVendor->fetch_all();
-					if($numvendor > 0){
-						foreach ($objvendor as $rsvendor) {
-							$vendorid = $rsvendor[0];
-							$typeid = '160';
-							$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
-						}
+				$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+				$resqlVendor = $db->query($sqlVendors);
+				$numvendor = $db->num_rows($resqlVendor);
+				$objvendor = $resqlVendor->fetch_all();
+				if($numvendor > 0){
+					foreach ($objvendor as $rsvendor) {
+						$vendorid = $rsvendor[0];
+						$typeid = '160';
+						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
 					}
 				}
 				//print_r($objvendor);
@@ -965,7 +960,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 												// get customer data
 												$("#copyaddressfromsoc").click(function() {
 													var socid = jQuery("#socid").val();
-													
+
 													$.ajax({
 														  dataType: "html",
 														  url: "customer_info.php",
