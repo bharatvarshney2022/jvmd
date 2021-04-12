@@ -400,8 +400,10 @@ class Project extends CommonObject
 
 		$sql .= ", '".$this->db->escape($this->address)."'";
 		$sql .= ", '".$this->db->escape($this->zip)."'";
+		$sql .= ", '".$this->db->escape($this->town)."'";
 		$sql .= ", ".($this->country_id > 0 ? $this->country_id : 'NULL');
 		$sql .= ", ".($this->state_id > 0 ? $this->state_id : 'NULL');
+
 		$sql .= ", ".($this->technician > 0 ? $this->technician : "null");
 		$sql .= ", ".($this->fk_customer_product > 0 ? $this->fk_customer_product : "null");
 		$sql .= ", ".($this->fk_brand > 0 ? $this->fk_brand : "null");
