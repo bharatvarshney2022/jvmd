@@ -829,7 +829,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	$object->state_id = GETPOST("state_id");
 	// We set country_id, country_code and label for the selected country
-	$object->country_id = $_POST["country_id"] ?GETPOST("country_id") : (empty($objsoc->country_id) ? $mysoc->country_id : $objsoc->country_id);
+	$object->country_id = $_POST["country_id"] ?GETPOST("country_id") : (empty($thirdparty->country_id) ? $mysoc->country_id : $thirdparty->country_id);
 	if ($object->country_id)
 	{
 		$tmparray = getCountry($object->country_id, 'all');
@@ -859,16 +859,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 															document.formsoc.submit();
 														});
 
-														$("#copyaddressfromsoc").click(function() {
-															$(\'textarea[name="address"]\').val("'.dol_escape_js($objsoc->address).'");
-															$(\'input[name="zipcode"]\').val("'.dol_escape_js($objsoc->zip).'");
-															$(\'input[name="town"]\').val("'.dol_escape_js($objsoc->town).'");
-															console.log("Set state_id to '.dol_escape_js($objsoc->state_id).'");
-															$(\'select[name="state_id"]\').val("'.dol_escape_js($objsoc->state_id).'").trigger("change");
-															/* set country at end because it will trigger page refresh */
-															console.log("Set country id to '.dol_escape_js($objsoc->country_id).'");
-															$(\'select[name="country_id"]\').val("'.dol_escape_js($objsoc->country_id).'").trigger("change");   /* trigger required to update select2 components */
-							                            });
+														
 													})'."\n";
 											print '</script>'."\n";
 										}
@@ -971,6 +962,28 @@ if ($action == 'create' && $user->rights->projet->creer)
 									print '<script>';
 										print '$( document ).ready(function() {
 
+												// get customer data
+												$("#copyaddressfromsoc").click(function() {
+													var socid = jQuery("#socid").val();
+													
+													$.ajax({
+														  dataType: "html",
+														  url: "customer_info.php",
+														  data: {socid: socid},
+														  dataType: "json",
+														  success: function(response) {
+														  	//alert(html);
+															$("#address").val(response.address);
+															$("#zipcode").val(response.zip);
+															$("#town").val(response.town);
+															$("select[name=\"state_id\"]").val(response.state_id).trigger("change");
+															$("select[name=\"country_id\"]").val(response.country_id).trigger("change");
+														  }
+													});
+					                            });
+
+												
+
 												jQuery("#socid").change(function() {
 													var socid = $(this).val();
 								                	$.ajax({
@@ -982,6 +995,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 															$("#fk_brand").html(html);
 														  }
 													});
+
+													
 												});
 
 
@@ -1090,11 +1105,11 @@ if ($action == 'create' && $user->rights->projet->creer)
 									}
 
 									// Address
-									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $objsoc->address; // Predefined with third party
+									if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $thirdparty->address; // Predefined with third party
 									print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
 									print '<td colspan="'.$colspan.'"><textarea class="form-control" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
 
-									if ($conf->use_javascript_ajax && $socid > 0)
+									if ($conf->use_javascript_ajax)
 									{
 										$rowspan = 0;
 										if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
@@ -1106,8 +1121,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 									print '</tr>';
 
 									// Zip / Town
-									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $objsoc->zip; // Predefined with third party
-									if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $objsoc->town; // Predefined with third party
+									if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $thirdparty->zip; // Predefined with third party
+									if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $thirdparty->town; // Predefined with third party
 									print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
 									print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
 									print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
@@ -1820,11 +1835,11 @@ if ($action == 'create' && $user->rights->projet->creer)
 		}
 
 		// Address
-		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $objsoc->address; // Predefined with third party
+		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $thirdparty->address; // Predefined with third party
 		print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
 		print '<td colspan="'.$colspan.'"><textarea class="form-control" name="address" id="address" rows="'.ROWS_2.'">'.(GETPOST("address", 'alpha') ?GETPOST("address", 'alpha') : $object->address).'</textarea></td>';
 
-		if ($conf->use_javascript_ajax && $socid > 0)
+		if ($conf->use_javascript_ajax)
 		{
 			$rowspan = 0;
 			if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
@@ -1836,8 +1851,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</tr>';
 
 		// Zip / Town
-		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $objsoc->zip; // Predefined with third party
-		if (($objsoc->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $objsoc->town; // Predefined with third party
+		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $thirdparty->zip; // Predefined with third party
+		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $thirdparty->town; // Predefined with third party
 		print '<tr><td><label for="zipcode">'.$langs->trans("Zip").'</label></td><td  class="">';
 		print $formcompany->select_ziptown((GETPOST("zipcode", 'alpha') ? GETPOST("zipcode", 'alpha') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6).'&nbsp;';
 		print '</td><td><label for="town">'.$langs->trans("Town").'</label></td><td  class="">';
