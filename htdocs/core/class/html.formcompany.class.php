@@ -911,16 +911,19 @@ class FormCompany extends Form
 			}
 		}
 
-		$out = '<select id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" '.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'">';
+		$out = '';
+		if ($conf->use_javascript_ajax && empty($disableautocomplete))
+		{
+			//$out = ajax_multiautocompleter_select($htmlname, $fields, DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
+			//$moreattrib .= ' autocomplete="off"';
+		}
+
+		$out .= '<select id="'.$htmlname.'" class="form-control'.($morecss ? ' '.$morecss : '').'" '.($moreattrib ? ' '.$moreattrib : '').' name="'.$htmlname.'">';
 
 		$size = '';
 		if (!empty($fieldsize)) $size = 'size="'.$fieldsize.'"';
 
-		if ($conf->use_javascript_ajax && empty($disableautocomplete))
-		{
-			//$out .= ajax_multiautocompleter($htmlname, $fields, DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
-			//$moreattrib .= ' autocomplete="off"';
-		}
+		
 		
 		$out .= '<option value="">&nbsp;</option>'."\n";
 
@@ -942,7 +945,36 @@ class FormCompany extends Form
 
 		$out .= '
 		<script>
-			$("#'.$htmlname.'").select2();
+			$("#'.$htmlname.'").select2({
+
+			});
+
+			$("#'.$htmlname.'").on("change", function() {
+				var data = $("#'.$htmlname.' option:selected").text();
+
+				var fields = '.json_encode($fields).';
+				var nboffields = fields.length;
+				var autoselect = 1;
+
+				jQuery.getJSON( "'.DOL_URL_ROOT.'/core/ajax/ziptown.php'.'", { '.$htmlname.': data }, function(data){
+					jQuery.map( data, function( item ) {
+						if (autoselect == 1 && data.length == 1) {
+							// TODO move this to specific request
+							if (item.states) {
+								jQuery("#state_id").html(item.states);
+							}
+							for (i=0;i<nboffields;i++) {
+								if (item[fields[i]]) {   // If defined
+                                	//alert(item[fields[i]]);
+									jQuery("#" + fields[i]).val(item[fields[i]]);
+								}
+							}
+						}
+						return item
+					});
+				});
+		      	//alert(data);
+		    });
 		</script>';
 
 		return $out;
