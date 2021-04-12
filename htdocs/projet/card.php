@@ -247,19 +247,32 @@ if (empty($reshook))
 			*/
 				
 				
-			$ret = $object->zip;
+			$soc_zipcode = $object->zip;
+			// Get ID from Zipcode
+			$sqlZip = "SELECT rowid FROM ".MAIN_DB_PREFIX."c_pincodes WHERE zip = '".$soc_zipcode."'";
+			$resqlZip = $db->query($sqlZip);
+
+			$ret = 0;
+
+			if ($resqlZip)
+			{
+				$zipRow = $db->fetch_array($resqlZip);
+				$ret = $zipRow[0];
+
 				
-			$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
-			$resqlVendor = $db->query($sqlVendors);
-			$numvendor = $db->num_rows($resqlVendor);
-			$objvendor = $resqlVendor->fetch_all();
-			if($numvendor > 0){
-				foreach ($objvendor as $rsvendor) {
-					$vendorid = $rsvendor[0];
-					$typeid = '160';
-					$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+				$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+				$resqlVendor = $db->query($sqlVendors);
+				$numvendor = $db->num_rows($resqlVendor);
+				$objvendor = $resqlVendor->fetch_all();
+				if($numvendor > 0){
+					foreach ($objvendor as $rsvendor) {
+						$vendorid = $rsvendor[0];
+						$typeid = '160';
+						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+					}
 				}
 			}
+
 				//print_r($objvendor);
 				//echo $selected_input_value = $societetmp->fk_pincode;
 				//exit;
@@ -450,22 +463,30 @@ if (empty($reshook))
 				}
 
 				// Update Vendor
-				// Remove old entry
 
-				$ret = $object->zip;
-				
-				$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
-				$resqlVendor = $db->query($sqlVendors);
-				$numvendor = $db->num_rows($resqlVendor);
-				$objvendor = $resqlVendor->fetch_all();
-				if($numvendor > 0){
-					foreach ($objvendor as $rsvendor) {
-						$vendorid = $rsvendor[0];
-						//$sqlCustpincode1 = "DELETE from ".MAIN_DB_PREFIX."element_contact WHERE fk_socpeople = '".$vendorid."' ";
-						//$db->query($sqlCustpincode1);
+				$soc_zipcode = $object->zip;
+				// Get ID from Zipcode
+				$sqlZip = "SELECT rowid FROM ".MAIN_DB_PREFIX."c_pincodes WHERE zip = '".$soc_zipcode."'";
+				$resqlZip = $db->query($sqlZip);
 
-						$typeid = '160';
-						$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+				$ret = 0;
+
+				if ($resqlZip)
+				{
+					$zipRow = $db->fetch_array($resqlZip);
+					$ret = $zipRow[0];
+
+					
+					$sqlVendors = "SELECT u.rowid as rowid, u.firstname  from ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."usergroup_user as u1, ".MAIN_DB_PREFIX."user_extrafields as uex where u.rowid = u1.fk_user and u.rowid = uex.fk_object and u1.fk_usergroup = '4' and u.statut = 1 and FIND_IN_SET('".$ret."',uex.apply_zipcode) > 0 ";
+					$resqlVendor = $db->query($sqlVendors);
+					$numvendor = $db->num_rows($resqlVendor);
+					$objvendor = $resqlVendor->fetch_all();
+					if($numvendor > 0){
+						foreach ($objvendor as $rsvendor) {
+							$vendorid = $rsvendor[0];
+							$typeid = '160';
+							$addvendor = $object->add_contact($vendorid, $typeid, 'internal');
+						}
 					}
 				}
 

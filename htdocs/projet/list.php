@@ -332,8 +332,9 @@ if (is_array($extrafields->attributes[$object->table_element]['label']) && count
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s on p.fk_soc = s.rowid";
 if($user_group_id == 4)
 {
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as esf on (p.fk_soc = esf.fk_object)";
+	//$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_extrafields as esf on (p.fk_soc = esf.fk_object)";
 }
+
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_lead_status as cls on p.fk_opp_status = cls.rowid";
 // We'll need this table joined to the select in order to filter by sale
 // No check is done on company permission because readability is managed by public status of project and assignement.
@@ -413,7 +414,7 @@ if($user_group_id == 17){
 }
 if($user_group_id == 4)
 {
-	$sql .= " AND FIND_IN_SET(esf.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+	$sql .= " AND FIND_IN_SET(p.zip, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
 }
 /*if($user_group_id == 4)
 {
@@ -453,6 +454,7 @@ $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $objec
 $sql .= $hookmanager->resPrint;
 $sql .= $db->order($sortfield, $sortorder);
 //print_r($_POST);
+//echo $sql; exit;
 if($search_smonth)
 {
 	//echo $sql; exit;
