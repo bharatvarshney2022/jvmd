@@ -2338,7 +2338,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Modify
-			if ($object->statut != 2 && $object->statut != 3 && $user->rights->projet->creer)
+			if ($object->statut == 1 && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
@@ -2383,7 +2383,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 				}
 			}
 
-			if (($object->statut == 0 || $object->statut == 1) && $user->rights->projet->creer)
+			if (($object->statut == 0) && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
