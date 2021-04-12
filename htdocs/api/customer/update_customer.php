@@ -106,8 +106,8 @@
 					if($numvendor > 0){
 						foreach ($objvendor as $rsvendor) {
 							$vendorid = $rsvendor[0];
-							$sqlCustpincode1 = "DELETE from ".MAIN_DB_PREFIX."element_contact WHERE fk_socpeople = '".$vendorid."' ";
-							$db->query($sqlCustpincode1);
+							//$sqlCustpincode1 = "DELETE from ".MAIN_DB_PREFIX."element_contact WHERE fk_socpeople = '".$vendorid."' ";
+							//$db->query($sqlCustpincode1);
 
 							
 							$typeid = '160';
