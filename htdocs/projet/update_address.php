@@ -43,13 +43,25 @@ if($numProjet > 0){
 		$projObj1 = $db->fetch_array($resqlProjet1);
 
 		$address = $projObj1['address'];
-		$zip = $projObj1['zip'];
 		$town = $projObj1['town'];
 		$fk_departement = $projObj1['fk_departement'];
 		$fk_pays = $projObj1['fk_pays'];
 
+		$zipCode = 0;
+		$userZip = $projObj1['zip'];
+		if($userZip > 0)
+		{
+			$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1' AND zip LIKE '".$userZip."'";
+			$resqlZip = $db->query($sqlZip);
+			if ($resqlZip)
+			{
+				$row = $db->fetch_object($resqlZip);
+				$zipCode = $row->rowid;
+			}
+		}
 
-		$sqlProjet2 = "UPDATE ".MAIN_DB_PREFIX."projet SET address = '".$db->escape($address)."', zip = '".$db->escape($zip)."', town = '".$db->escape($town)."', fk_departement = '".$db->escape($fk_departement)."', fk_pays = '".$db->escape($fk_pays)."' WHERE rowid = '".$proj_id."'";
+
+		$sqlProjet2 = "UPDATE ".MAIN_DB_PREFIX."projet SET address = '".$db->escape($address)."', zip = '".$db->escape($zipCode)."', town = '".$db->escape($town)."', fk_departement = '".$db->escape($fk_departement)."', fk_pays = '".$db->escape($fk_pays)."' WHERE rowid = '".$proj_id."'";
 		$db->query($sqlProjet2);
 	}
 }
