@@ -547,6 +547,7 @@ $massactionbutton = $form->selectMassActionLayout('', $arrayofmassactions);
 
 $url = DOL_URL_ROOT.'/projet/card.php?action=create';
 if (!empty($socid)) $url .= '&socid='.$socid;
+
 $newcardbutton = dolGetButtonTitleLayout($langs->trans('New Support Ticket'), '', 'fa fa-plus-circle', $url, '', $user->rights->projet->creer);
 
 print '<!--begin::Entry-->

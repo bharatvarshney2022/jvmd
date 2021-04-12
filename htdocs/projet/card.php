@@ -1802,51 +1802,6 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print '</tr>';
 		}
 
-		// Date start
-		print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-		if($user_group_id == '4'){
-			print dol_print_date($object->date_c, 'dayhoursec');
-		}else{
-			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
-			//print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
-			
-		}
-
-		/*print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
-		if ($comefromclone) {print ' checked '; }
-		print '/> '.$langs->trans("ProjectReportDate");*/
-		print '</td>';
-
-		// Technician 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-		$user_group_id = 0;
-		$usergroup = new UserGroup($db);
-		$groupslist = $usergroup->listGroupsForUser($user->id);
-
-		if ($groupslist != '-1')
-		{
-			foreach ($groupslist as $groupforuser)
-			{
-				$user_group_id = $groupforuser->id;
-			}
-		}
-		if($user_group_id == '4'){
-			print '<td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td>';
-			print '<select class="form-control" name="fk_technician"><option value="">Select </option>';
-			
-			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
-			$resqlTech = $db->query($sqlTechnician);
-			$numtech = $db->num_rows($resqlTech);
-			if($numtech > 0){
-				while ($objtech = $db -> fetch_object($resqlTech))
-				{
-					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('fk_technician') ?GETPOST('fk_technician') : $object->fk_technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
-				}
-			}	
-			print '</select>';
-			print '</td></tr>';
-		}
-
 		// Address
 		if (($thirdparty->typent_code == 'TE_PRIVATE' || !empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->address)) == 0) $object->address = $thirdparty->address; // Predefined with third party
 		print '<tr><td><label for="address">'.$langs->trans("Address").'</label></td>';
@@ -1897,6 +1852,51 @@ if ($action == 'create' && $user->rights->projet->creer)
 			print '</td>';
 		}
 		print '</tr>';
+
+		// Date start
+		print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
+		if($user_group_id == '4'){
+			print dol_print_date($object->date_c, 'dayhoursec');
+		}else{
+			print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', 0, 0, 0, '', 1, 0);
+			//print $form->selectDate($object->date_start ? $object->date_start : -1, 'projectstart', ($conf->browser->layout == 'phone' ? 2 : 1), 1, 2, "timespent_date", 1, 0);
+			
+		}
+
+		/*print ' &nbsp; &nbsp; <input type="checkbox" class="valignmiddle" name="reportdate" value="yes" ';
+		if ($comefromclone) {print ' checked '; }
+		print '/> '.$langs->trans("ProjectReportDate");*/
+		print '</td>';
+
+		// Technician 
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
+			{
+				$user_group_id = $groupforuser->id;
+			}
+		}
+		if($user_group_id == '4'){
+			print '<td class="fieldrequired">'.$langs->trans("Assign Technician").'</td><td>';
+			print '<select class="form-control" name="fk_technician"><option value="">Select </option>';
+			
+			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+			$resqlTech = $db->query($sqlTechnician);
+			$numtech = $db->num_rows($resqlTech);
+			if($numtech > 0){
+				while ($objtech = $db -> fetch_object($resqlTech))
+				{
+					print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('fk_technician') ?GETPOST('fk_technician') : $object->fk_technician) == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->firstname." ".$objtech->lastname.'</option>';
+				}
+			}	
+			print '</select>';
+			print '</td></tr>';
+		}
 
 		// Scheduled Time
 		print '<tr><td>'.$langs->trans("Scheduled Time").'</td><td>';
