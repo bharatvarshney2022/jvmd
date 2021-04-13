@@ -1250,6 +1250,54 @@ class FormCompany extends Form
 		}
 	}
 
+	public function select_defect($selected = '', $country_codeid = 0, $htmlname = 'brand')
+	{
+				// phpcs:enable
+		global $conf, $langs;
+		$langs->load("dict");
+
+		//echo $selected; exit;
+
+		$sql = "SELECT rowid, label";
+		$sql .= " FROM ".MAIN_DB_PREFIX."c_defect ";
+		$sql .= " WHERE active = 1";
+		$sql .= " ORDER BY label ASC";
+
+		dol_syslog(get_class($this)."::select_brand", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			print '<select class="defect form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
+			print '<option value="0">Select Defect</option>';
+			echo $num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				$country = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+					if ($obj->rowid == 0) {
+						print '<option value="0">&nbsp;</option>';
+					} else {
+						
+						if ($selected > 0 && $selected == $obj->rowid)
+						{
+							print '<option value="'.$obj->rowid.'" selected>'.$obj->label.'</option>';
+						} else {
+							print '<option value="'.$obj->rowid.'">'.$obj->label.'</option>';
+						}
+					}
+					$i++;
+				}
+			}
+			print '</select>';
+			print ajax_combobox($htmlname);
+		} else {
+			dol_print_error($this->db);
+		}
+	}
+
 	public function select_brand($selected = '', $country_codeid = 0, $htmlname = 'brand')
 	{
 				// phpcs:enable
