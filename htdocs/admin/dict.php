@@ -1620,8 +1620,8 @@ if ($id)
 					print '<input type="hidden" name="rowid" value="'.dol_escape_htmltag($rowid).'">';
 					if (!is_null($withentity))
 						print '<input type="hidden" name="entity" value="'.$withentity.'">';
-					print '<input type="submit" class="button" name="actionmodify" value="'.$langs->trans("Modify").'">';
-					print '<input type="submit" class="button button-cancel" name="actioncancel" value="'.$langs->trans("Cancel").'">';
+					print '<input type="submit" class="btn btn-info" name="actionmodify" value="'.$langs->trans("Modify").'">';
+					print '<input type="submit" class="btn btn-danger button-cancel" name="actioncancel" value="'.$langs->trans("Cancel").'">';
 					print '</td>';
 				} else {
 				  	$tmpaction = 'view';
