@@ -4495,6 +4495,7 @@ class Form
 	 */	
 	public function formconfirmLayout($page, $title, $question, $action, $formquestion = '', $selectedchoice = '', $useajax = 0, $height = 0, $width = 500, $disableformtag = 0)
 	{
+		//echo "Action:".$action; exit;
 		global $langs, $conf;
 
 		$more = '<!-- formconfirm for page='.dol_escape_htmltag($page).' -->';
@@ -4679,8 +4680,18 @@ class Form
                     modal: true,
                     closeOnEscape: false,
                     buttons: {
-                        "'.dol_escape_js($langs->transnoentities("Yes")).'": function() {
-                        	var options = "&token='.urlencode(newToken()).'";
+                        "'.dol_escape_js($langs->transnoentities("Yes")).'": function() {';
+
+                        	if($action == "close_form")
+                        	{
+                        		$formconfirm .= 'var options = ""';
+                        	}
+                        	else
+                        	{
+                        		$formconfirm .= 'var options = "&token='.urlencode(newToken()).'"';
+                        	}
+
+                        	$formconfirm .= '
                         	var inputok = '.json_encode($inputok).';	/* List of fields into form */
                          	var pageyes = "'.dol_escape_js(!empty($pageyes) ? $pageyes : '').'";
                          	if (inputok.length>0) {
