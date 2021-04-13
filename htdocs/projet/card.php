@@ -536,6 +536,8 @@ if (empty($reshook))
 
 	if ($action == 'close_form_update' && !$_POST["cancel"] && $user->rights->projet->creer)
 	{
+		echo '<pre>'; print_r($_POST); print_r($_FILES); exit;
+
 		$error = 0;
 		$ticket_otp = GETPOST('ticket_otp');
 		if (empty($ref))
@@ -1519,6 +1521,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print '<form action="'.$_SERVER["PHP_SELF"].'" enctype="multipart/form-data" method="POST">';
 
+		print '<input type="hidden" name="action" value="close_form_update">';
+
 		print '<input type="hidden" name="close_action" value="close_form">';
 		print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 		print '<input type="hidden" name="title" value="'.$object->title.'">';
@@ -1587,7 +1591,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		// upload files
 		print '<tr><td class="tdtop">'.$langs->trans("Attachment").'</td>';
-		print '<td colspan="3"><input type="file" class="form-control" name="bill_photo[]" multiple /></td>';
+		print '<td colspan="3"><input type="file" class="form-control" name="bill_photo[]" multiple accept="image/*" /></td>';
 		print '</tr>';
 
 		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Defect").'</td>';
@@ -1614,6 +1618,98 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '</select>
 		</td>';
+		print '</tr>';
+
+		print '</table>';
+
+		print '<h1>Parts</h1>';
+		print '<table class="table table-bordered">';
+		print '<thead><tr><th>Order Type</th><th>Part No.</th><th>Qty.</th><th>MR</th><th>MR No.</th><th>Action</th></tr></thead>';
+
+		print '<tbody id="more_parts">
+			<tr>
+				<td>
+					<input type="text" class="form-control" value="advanced" name="part_order_type[]" readonly />
+				</td>
+				<td>
+					<select name="part_order_no[]" class="part_order_no form-control">
+				<option value="">Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_product_part WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print '<option value="'.$objtech->rowid.'">'.$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select>
+				</td>
+				<td>
+					<input type="number" class="form-control" value="" name="part_order_qty[]"  />
+				</td>
+				<td>
+					<input type="text" class="form-control" value="" name="part_order_mr[]"  />
+				</td>
+				<td>
+					<input type="text" class="form-control" value="" name="part_order_mr_no[]"  />
+				</td>
+				<td>
+					<a href="javascript: addPart();" data-count="1" class="btn btn-primary btn-add btn-small"><i class="fa fa-plus"></i></a>
+				</td>
+			</tr>
+		</tbody></table>';
+
+		print '<h1>Other Type</h1>';
+		print '<table class="table table-bordered">';
+		print '<thead><tr><th>Type</th><th>Qty.</th><th>UOM</th><th>Amount</th><th>Action</th></tr></thead>';
+
+		print '<tbody id="more_other_type">
+			<tr>
+				<td>
+					<select name="other_type_other[]" class="other_type_other form-control">
+				<option value="">Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_other_type WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print '<option value="'.$objtech->rowid.'">'.$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select>
+				</td>
+				<td>
+					<input type="number" class="form-control" value="" name="other_type_qty[]"  />
+				</td>
+				<td>
+					<select name="other_type_uom[]" class="other_type_uom form-control">
+						<option value="Each">Each</option>
+						<option value="Kg.">Kg.</option>
+						<option value="Ltr.">Ltr.</option>
+					</select>
+				</td>
+				<td>
+					<input type="text" class="form-control" value="" name="other_type_amount[]"  />
+				</td>
+				<td>
+					<a href="javascript: addOtherType();" data-count="1" class="btn btn-primary btn-add-other btn-small"><i class="fa fa-plus"></i></a>
+				</td>
+			</tr>
+		</tbody></table>';
+
+		print '<h1>Attachment</h1>';
+		print '<table class="table table-bordered">';
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Attachment").'</h5></td></tr>';
+
+		// upload files
+		print '<tr><td class="tdtop">'.$langs->trans("Attachment").'</td>';
+		print '<td colspan="3"><input type="file" class="form-control" name="user_files[]" multiple /></td>';
 		print '</tr>';
 
 		print '</table>';
@@ -1672,7 +1768,72 @@ if ($action == 'create' && $user->rights->projet->creer)
 			
 		 }
 	});
-}'."\n";
+}
+
+
+function removeOther(count1)
+{
+	$(".other_container"+count1).remove();
+}
+
+function addOtherType()
+{
+	var count = $(".btn-add-other").attr("data-count");
+	console.log(count);
+
+	more_parts_html1 = "<tr class=\'other_container"+count+"\'><td><select name=\'other_type_other[]\' class=\'other_type_other form-control\'><option value=\'\'>Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_other_type WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print "<option value='".$objtech->rowid."'>".$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select></td><td><input type=\'number\' class=\'form-control\' value=\'\' name=\'other_type_qty[]\'  /></td><td><select name=\'other_type_uom[]\' class=\'other_type_uom form-control\'><option value=\'Each\'>Each</option><option value=\'Kg.\'>Kg.</option><option value=\'Ltr.\'>Ltr.</option></select></td><td><input type=\'text\' class=\'form-control\' value=\'\' name=\'other_type_amount[]\'  /></td></td><td><a href=\'javascript: removeOther("+count+");\' class=\'btn btn-primary btn-remove btn-small\'><i class=\'fa fa-times\'></i></a></td></tr>";
+
+
+	$("#more_other_type").append(more_parts_html1);
+
+	$(".btn-add-other").attr("data-count", ++count);
+
+}
+
+
+function removePart(count1)
+{
+	$(".part_container"+count1).remove();
+}
+
+function addPart()
+{
+	var count = $(".btn-add").attr("data-count");
+	console.log(count);
+
+	more_parts_html = "<tr class=\'part_container"+count+"\'><td><input type=\'text\' class=\'form-control\' value=\'advanced\' name=\'part_order_type[]\' readonly /></td><td><select name=\'part_order_no[]\' class=\'part_order_no form-control\'><option value=\'\'>Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_product_part WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print "<option value='".$objtech->rowid."'>".$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select></td><td><input type=\'number\' class=\'form-control\' value=\'\' name=\'part_order_qty[]\' /></td><td><input type=\'text\' class=\'form-control\' value=\'\' name=\'part_order_mr[]\' /></td><td>	<input type=\'text\' class=\'form-control\' value=\'\' name=\'part_order_mr_no[]\'  /></td><td><a href=\'javascript: removePart("+count+");\' class=\'btn btn-primary btn-remove btn-small\'><i class=\'fa fa-times\'></i></a></td></tr>";
+
+
+	$("#more_parts").append(more_parts_html);
+
+	$(".btn-add").attr("data-count", ++count);
+
+}
+'."\n";
 
 		print '</script>';				
 	
