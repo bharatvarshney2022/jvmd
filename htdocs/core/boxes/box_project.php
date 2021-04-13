@@ -112,8 +112,8 @@ class box_project extends ModeleBoxes
 			$projectsListId = '';
 			if (!$user->rights->projet->all->lire) $projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1, $socid);
 
-			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, p.address, p.town, p.zip";
-			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s";
+			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, p.address, p.town, cp.zip";
+			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."c_pincodes as cp";
 			if($user_group_id == 4)
 			{
 				$sql .= ",  ".MAIN_DB_PREFIX."societe_extrafields as esf ";
@@ -123,6 +123,7 @@ class box_project extends ModeleBoxes
 				$sql .= ", ".MAIN_DB_PREFIX."element_contact as ecp";
 			}
 			$sql .= " WHERE  p.entity IN (".getEntity('project').")"; // Only current entity or severals if permission ok
+			$sql .= " AND p.zip = cp.rowid";
 			if($user_group_id == 4)
 			{
 				$sql .= " AND p.fk_soc = esf.fk_object AND p.fk_soc = s.rowid AND p.fk_statut IN (0,1)"; // Only pending projects
