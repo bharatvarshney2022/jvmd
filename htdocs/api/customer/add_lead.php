@@ -71,6 +71,8 @@
 	$userExists = $object->fetch($user_id);
 	$slider = array();
 
+	echo '<pre>'; print_r($userExists); exit;
+
 	if($userExists)
 	{
 		$contactData = $object->societe_contact($user_id);
