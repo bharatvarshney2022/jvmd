@@ -490,6 +490,18 @@ class Project extends CommonObject
 	 * @param  int		$notrigger  1=Disable all triggers
 	 * @return int                  <=0 if KO, >0 if OK
 	 */
+	public function updateTechAssign($rowid, $fk_technician, $tech_assigndatetime)
+	{
+		$sql = "UPDATE ".MAIN_DB_PREFIX."projet SET";
+		$sql .= " fk_technician = '".(int)($fk_technician ? $fk_technician : "null")."'";
+		$sql .= ", tech_assigndatetime = ".($tech_assigndatetime != '' ? "'".$this->db->idate($tech_assigndatetime)."'" : "null");
+		$sql .= " WHERE rowid = '".(int)$rowid."'";
+		
+		dol_syslog(get_class($this)."::assign tech", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+
+	}
+
 	public function update($user, $notrigger = 0)
 	{
 		global $langs, $conf;

@@ -678,6 +678,17 @@ if (empty($reshook))
 	if ($action == 'confirm_assign_lead' && $confirm == 'yes' && $user->rights->projet->creer)
 	{
 		// TO DO
+		$start_date = GETPOST('start_date', 'alpha') ? GETPOST('start_date', 'alpha') : '';
+		$fk_technician        = GETPOST('fk_technician', 'int');
+		/*if($object->fk_technician > 0){
+			$object->tech_assigndatetime   = dol_now();
+		}*/
+		$tech_assigndatetime   =  dol_mktime(GETPOST("tech_assigndatetimehour"), GETPOST("tech_assigndatetimemin"), date('s'), GETPOST("tech_assigndatetimemonth"), GETPOST("tech_assigndatetimeday"), GETPOST("tech_assigndatetimeyear"));
+		//echo $tech_assigndatetime; exit;
+
+		$object->updateTechAssign($object->id, $fk_technician, $tech_assigndatetime);
+
+		$action = 'view';
 
 	}
 
@@ -1389,7 +1400,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 			$formquestion = array(
 				'text' => $langs->trans("ConfirmAssignLeadProject"),
-				array('type' => 'text', 'name' => 'start_date', 'label' => $langs->trans("Start Date"), 'value' => dol_print_date($object->date_c, 'dayhoursec'), 'start_date', '', "", 0, 0, null, 0, 'form-control'),
+				array('type' => 'text', 'name' => 'start_date', 'label' => $langs->trans("Start Date"), 'moreattr' => 'readonly', 'value' => dol_print_date($object->date_c, 'dayhoursec'), 'start_date', '', "", 0, 0, null, 0, 'form-control'),
 				//print ;
 				array('type' => 'datetime', 'name' => 'tech_assigndatetime', 'label' => $langs->trans("Scheduled Time"), 'value' => GETPOST('tech_assigndatetime', 'alpha'), 'tech_assigndatetime', '', "", 0, 0, null, 0, 'form-control'),
 				array('type' => 'select', 'name' => 'fk_technician', 'label' => $langs->trans("Assign Technician"), 'values' => $technicianData, 'value' => GETPOST('fk_technician', 'int'), 'fk_technician', '', "", 0, 0, null, 0, 'form-control'),
@@ -2410,7 +2421,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Assign / Close
-			if (($object->statut == 1) && $user->rights->projet->creer)
+			if (($object->statut == 1) && $object->fk_technician == "" && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
