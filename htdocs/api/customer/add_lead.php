@@ -71,7 +71,7 @@
 	$userExists = $object->fetch($user_id);
 	$slider = array();
 
-	echo '<pre>'; print_r($object); exit;
+	//echo '<pre>'; print_r($object); exit;
 
 	if($userExists)
 	{
