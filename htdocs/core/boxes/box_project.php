@@ -112,7 +112,7 @@ class box_project extends ModeleBoxes
 			$projectsListId = '';
 			if (!$user->rights->projet->all->lire) $projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1, $socid);
 
-			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, s.address, s.town, s.zip";
+			$sql = "SELECT p.rowid, p.ref, p.title, p.fk_statut as status, p.public, s.nom as s_nom, p.address, p.town, p.zip";
 			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s";
 			if($user_group_id == 4)
 			{
