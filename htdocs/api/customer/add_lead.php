@@ -125,7 +125,7 @@
 			}
 			
 			$objectProCust->address = $object->address;
-			$objectProCust->zip = $object;
+			$objectProCust->zip = $zipCode;
 			$objectProCust->town = $object->town;
 			$objectProCust->country_id = $object->country_id;
 			$objectProCust->state_id = $object->state_id;
