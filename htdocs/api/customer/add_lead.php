@@ -71,7 +71,7 @@
 	$userExists = $object->fetch($user_id);
 	$slider = array();
 
-	echo '<pre>'; print_r($userExists); exit;
+	echo '<pre>'; print_r($object); exit;
 
 	if($userExists)
 	{
@@ -110,7 +110,7 @@
 			$objectProCust->socid = $user_id;
 
 			$zipCode = 0;
-			$userZip = $userExists->zip;
+			$userZip = $object->zip;
 			if($userZip > 0)
 			{
 				$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1' AND zip LIKE '".$userZip."'";
@@ -122,11 +122,11 @@
 				}
 			}
 			
-			$objectProCust->address = $userExists->address;
-			$objectProCust->zip = $zipCode;
-			$objectProCust->town = $userExists->town;
-			$objectProCust->country_id = $userExists->country_id;
-			$objectProCust->state_id = $userExists->state_id;
+			$objectProCust->address = $object->address;
+			$objectProCust->zip = $object;
+			$objectProCust->town = $object->town;
+			$objectProCust->country_id = $object->country_id;
+			$objectProCust->state_id = $object->state_id;
 
 
 
