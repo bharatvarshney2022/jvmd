@@ -1722,6 +1722,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 		</td>';
 		print '</tr>';
 
+		// Problem
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Description").'</td>';
+		print '<td style="width:25%"><textarea row="5" class="form-control" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
+		print '<td style="width:25%" class="tdtop">'.$langs->trans("Description").'</td>';
+		print '<td style="width:25%"><textarea row="5" class="form-control" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
+		print '</tr>';
+
 		print '</table>';
 
 		print '<h1>Parts</h1>';
@@ -1817,23 +1824,14 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</table>';
 
 		print '<h1>Action</h1>';
-		print '<table class="table table-bordered">';
-		print '<tr><td colspan="4"><h5>'.$langs->trans("Action Taking").'</h5></td></tr>';
-			
-		// Problem
-		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Problem Detail").'</td>';
-		print '<td style="width:25%"><textarea row="5" class="form-control" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
-		print '<td style="width:25%" class="tdtop">'.$langs->trans("Problem Solution").'</td>';
-		print '<td style="width:25%"><textarea row="5" class="form-control" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
-		print '</tr>';
-
+		print '<table class="table table-bordered">';			
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Detect Code").'</h5></td></tr>';
 			
 		// OTP
-		print '<tr><td class="tdtop">'.$langs->trans("OTP").'</td>';
-		print '<td><input type="text" class="form-control" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
-		print '<td class="tdtop">'.$langs->trans("Signature").'</td>';
-		print '<td>';
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("OTP").'</td>';
+		print '<td style="width:25%"><input type="text" class="form-control" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
+		print '<td style="width:25%" class="tdtop">'.$langs->trans("Signature").'</td>';
+		print '<td style="width:25%">';
 		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 		$doleditor = new DolEditor('customer_sign', GETPOST('customer_sign', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, true, empty($conf->global->FCKEDITOR_ENABLE_USERSIGN) ? 0 : 1, ROWS_4, '90%');
 		print $doleditor->Create(1);
