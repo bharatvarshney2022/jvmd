@@ -2467,11 +2467,11 @@ if ($action == 'create' && $user->rights->projet->creer)
 			//echo $object->fk_technician; exit;
 			if (($object->statut == 1) && ($object->fk_technician == "" || $object->fk_technician == "0") && $user->rights->projet->creer)
 			{
-				if ($userWrite > 0)
+				if ($userWrite > 0 && $user_group_id == 4)
 				{
 					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&amp;action=assign_lead">'.$langs->trans("Assign").'</a> &nbsp;&nbsp;';
 				} else {
-					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Assign').'</a>';
+					//print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Assign').'</a>';
 				}
 			}
 

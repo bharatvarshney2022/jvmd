@@ -145,11 +145,11 @@ function project_prepare_head(Project $project)
 	$upload_dir = $conf->projet->dir_output."/".dol_sanitizeFileName($project->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $project->element, $project->id);
-	/*$head[$h][0] = DOL_URL_ROOT.'/projet/document.php?id='.$project->id;
+	$head[$h][0] = DOL_URL_ROOT.'/projet/document.php?id='.$project->id;
 	$head[$h][1] = $langs->trans('Documents');
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 	$head[$h][2] = 'document';
-	$h++;*/
+	$h++;
 
 	// Manage discussion
 	if (!empty($conf->global->PROJECT_ALLOW_COMMENT_ON_PROJECT))

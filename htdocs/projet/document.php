@@ -1,9 +1,5 @@
 <?php
-/* Copyright (C) 2010 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2013 Cédric Salvador      <csalvador@gpcsolutions.fr>
- *
- * This program is free software; you can redistribute it and/or modify
+/* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -87,7 +83,7 @@ $title = $langs->trans("Project").' - '.$langs->trans("Document").' - '.$object-
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/projectnameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->ref.' '.$object->name.' - '.$langs->trans("Document");
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 
-llxHeader('', $title, $help_url);
+llxHeaderLayout('', $title, $title, $help_url);
 
 $form = new Form($db);
 
@@ -101,8 +97,20 @@ if ($object->id > 0)
 	//$userDelete = $object->restrictedProjectArea($user,'delete');
 	//print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
 	$head = project_prepare_head($object);
-	print dol_get_fiche_head($head, 'document', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+	print dol_get_fiche_head_layout($head, 'document', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+
+	print '</div>
+		<div class="card-body">';
 
 	// Files list constructor
 	$filearray = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ?SORT_DESC:SORT_ASC), 1);
@@ -134,33 +142,58 @@ if ($object->id > 0)
 		$object->next_prev_filter = " rowid in (".(count($objectsListId) ?join(',', array_keys($objectsListId)) : '0').")";
 	}
 
-	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+	dol_banner_tab_layout($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
+	print '</div>
+	</div>'; // card
 
-	print '<div class="fichecenter">';
-	print '<div class="underbanner clearboth"></div>';
+	print '<div class="card card-custom gutter-b"><div class="card-body">';
 
-	print '<table class="border tableforfield centpercent">';
+	print '<div class="row">';
+	print '<div class="col-sm-12">';
+	print '<table class="table table-bordered">';
 
 	// Files infos
 	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td>'.count($filearray).'</td></tr>';
 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td>'.dol_print_size($totalsize, 1, 1).'</td></tr>';
 
-	print "</table>\n";
-
+	print '</table>';
+	print '</div>';
 	print '</div>';
 
+	print '</div>
+	</div>'; // card
 
-	print dol_get_fiche_end();
+	print '<div class="card card-custom gutter-b">';
 
 	$modulepart = 'project';
 	$permission = ($userWrite > 0);
 	$permtoedit = ($userWrite > 0);
-	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers_layout.tpl.php';
+
+	print '
+		</div>'; // card
+	print '</div>
+	</div>'; // card
+
+	print '</div>';
+	print '</div>';
+	print '</div>';
+	print '</div>';
 } else {
 	dol_print_error('', 'NoRecordFound');
 }
 
 // End of page
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print '<!--begin::Page Vendors(used by this page)-->
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.bundle.js?v=7.2.0"></script>
+<script src="'.DOL_URL_ROOT.'/theme/oblyon/js/datatables.buttons.js?v=7.2.0"></script>
+<!--end::Page Vendors-->';
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();
