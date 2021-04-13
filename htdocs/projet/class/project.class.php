@@ -311,6 +311,8 @@ class Project extends CommonObject
 		$sql .= ", note_private = '".$this->db->escape($this->note_private)."'";
 		$sql .= ", note_public = '".$this->db->escape($this->note_public)."'";
 		$sql .= ", entity = '".$this->db->escape($entity)."'";
+
+		echo $sql; exit;
 		
 		
 		//dol_syslog(get_class($this)."::Create Customer Product", LOG_DEBUG);
