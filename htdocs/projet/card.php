@@ -688,6 +688,40 @@ if (empty($reshook))
 
 		$object->updateTechAssign($object->id, $fk_technician, $tech_assigndatetime);
 
+		// Notification
+		$objectSoc = new Societe($db);
+		$contactData = $objectSoc->societe_contact($object->socid);
+
+		$contactRow = array_keys($contactData);
+
+		$contact_id = 0;
+		if($contactRow)
+		{
+			$contact_id = $contactRow[0];
+		}
+
+
+		// Create Notification
+		$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+		$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 110, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
+		$resqlVendor = $db->query($sqlNotify);
+
+		$sqlNotify = "INSERT INTO ".MAIN_DB_PREFIX."fcm_notify_def (datec, fk_action, fk_soc, fk_contact, fk_user, fk_projet)";
+		$sqlNotify .= " VALUES ('".$db->idate(dol_now())."', 111, ".$object->socid.", ".$contact_id.", '".$user->id."', '".$object->id."')";
+		$resqlVendor = $db->query($sqlNotify);
+
+		$objectNot = new FCMNotify($db);
+
+		$notifyData = $objectNot->getNotificationsArray('', $object->socid, $objectNot, 0);
+		
+		if($notifyData)
+		{
+			foreach($notifyData as $rowid => $notifyRow)
+			{
+				$objectNot->send($notifyRow['code'], $object);	
+			}
+		}
+
 		header("Location:card.php?id=".$object->id);
 		exit;
 
