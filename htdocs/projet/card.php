@@ -731,6 +731,9 @@ if (empty($reshook))
 		{
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
+
+		header("Location:card.php?id=".$object->id);
+		exit;
 	}
 
 	if ($action == 'confirm_invalidate' && $confirm == 'yes')
@@ -740,6 +743,9 @@ if (empty($reshook))
 		{
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
+
+		header("Location:card.php?id=".$object->id);
+		exit;
 	}
 
 	
@@ -2422,7 +2428,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Assign / Close
-			if (($object->statut == 1) && $object->fk_technician == "" && $user->rights->projet->creer)
+			if (($object->statut == 1) && $object->fk_technician == "0" && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{
