@@ -1459,10 +1459,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 	if ($action == 'close')
 	{
 		if($user_group_id == 4 || $user->admin == 1){
-			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
+			print $form->formconfirmLayout($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "close_form", '', '', 1);
 			//$action = 'close_form';	
 		}else{
-			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);	
+			print $form->formconfirmLayout($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("CloseAProject"), $langs->trans("ConfirmCloseAProject"), "confirm_close", '', '', 1);	
 		}
 		
 	}
@@ -1577,6 +1577,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<td>'.$langs->trans("AC Capacity").'</td><td>'.dol_escape_htmltag($prdarr->ac_capacity).'</td></tr>';
 
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Action Taking").'</h5></td></tr>';
+
+		// TO DO
 			
 		// Problem
 		print '<tr><td class="tdtop">'.$langs->trans("Problem Detail").'</td>';
@@ -1592,10 +1594,10 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<td><input type="text" class="form-control" name="ticket_otp" value="'.dol_escape_htmltag($object->ticket_otp).'" /></td>';
 		print '<td class="tdtop">'.$langs->trans("Signature").'</td>';
 		print '<td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('customer_sign', GETPOST('customer_sign', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, true, empty($conf->global->FCKEDITOR_ENABLE_USERSIGN) ? 0 : 1, ROWS_4, '90%');
-	print $doleditor->Create(1);
-	print '</td></tr>';
+		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		$doleditor = new DolEditor('customer_sign', GETPOST('customer_sign', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, true, empty($conf->global->FCKEDITOR_ENABLE_USERSIGN) ? 0 : 1, ROWS_4, '90%');
+		print $doleditor->Create(1);
+		print '</td></tr>';
 
 
 
@@ -2462,7 +2464,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 			}
 
 			// Assign / Close
-			if (($object->statut == 1) && $object->fk_technician == "0" && $user->rights->projet->creer)
+			//echo $object->fk_technician; exit;
+			if (($object->statut == 1) && ($object->fk_technician == "" || $object->fk_technician == "0") && $user->rights->projet->creer)
 			{
 				if ($userWrite > 0)
 				{

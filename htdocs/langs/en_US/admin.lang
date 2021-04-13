@@ -2099,3 +2099,6 @@ DictionaryProductModel=Product Model
 DictionaryCommanDepartment=Departments
 DictionarySourceCall=Source of Call
 DictionaryServiceType=Service Type
+DictionaryDefect=Defect
+DictionaryDefectAction=Defect Action
+DictionaryProductPart=Product Parts

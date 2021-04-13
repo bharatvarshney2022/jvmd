@@ -80,7 +80,7 @@ $hookmanager->initHooks(array('admin'));
 
 // Sort order to show dictionary (0 is space). All other dictionaries (added by modules) will be at end of this.
 //$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,48,  0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
-$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 49, 0, 45, 46, 47,48, 52, 0, 50, 51, 0, 39, 40, 38, 0, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
+$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 49, 0, 45, 46, 47,48, 52, 0, 53, 54, 55, 0, 50, 51, 0, 39, 40, 38, 0, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
 
 // Name of SQL tables of dictionaries
 $tabname = array();
@@ -136,7 +136,9 @@ $tabname[49] = MAIN_DB_PREFIX."c_comman_departments";
 $tabname[50] = MAIN_DB_PREFIX."c_call_source";
 $tabname[51] = MAIN_DB_PREFIX."c_service_type";
 $tabname[52] = MAIN_DB_PREFIX."c_product_capacity";
-
+$tabname[53] = MAIN_DB_PREFIX."c_defect";
+$tabname[54] = MAIN_DB_PREFIX."c_defect_action";
+$tabname[55] = MAIN_DB_PREFIX."c_product_part";
 
 // Dictionary labels
 $tablib = array();
@@ -192,6 +194,9 @@ $tablib[49] = "DictionaryCommanDepartment";
 $tablib[50] = "DictionarySourceCall";
 $tablib[51] = "DictionaryServiceType";
 $tablib[52] = "DictionaryProductCapacity";
+$tablib[53] = "DictionaryDefect";
+$tablib[54] = "DictionaryDefectAction";
+$tablib[55] = "DictionaryProductPart";
 
 // Requests to extract data
 $tabsql = array();
@@ -255,6 +260,10 @@ $tabsql[49] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX.
 $tabsql[50] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_call_source";
 $tabsql[51] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_service_type";
 $tabsql[52] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_product_capacity";
+$tabsql[53] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_defect";
+$tabsql[54] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_defect_action";
+$tabsql[55] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_product_part";
+
 
 
 // Criteria to sort dictionaries
@@ -311,6 +320,9 @@ $tabsqlsort[49] = "rowid DESC";
 $tabsqlsort[50] = "rowid DESC";
 $tabsqlsort[51] = "rowid DESC";
 $tabsqlsort[52] = "rowid DESC";
+$tabsqlsort[53] = "rowid DESC";
+$tabsqlsort[54] = "rowid DESC";
+$tabsqlsort[55] = "rowid DESC";
 
 // Field names in select result for dictionary display
 $tabfield = array();
@@ -366,6 +378,9 @@ $tabfield[49] = "code,label";
 $tabfield[50] = "code,label";
 $tabfield[51] = "code,label";
 $tabfield[52] = "code,nom";
+$tabfield[53] = "code,label";
+$tabfield[54] = "code,label";
+$tabfield[55] = "code,label";
 
 // Edit field names for editing a record
 $tabfieldvalue = array();
@@ -421,6 +436,9 @@ $tabfieldvalue[49] = "code,label";
 $tabfieldvalue[50] = "code,label";
 $tabfieldvalue[51] = "code,label";
 $tabfieldvalue[52] = "code,nom";
+$tabfieldvalue[53] = "code,label";
+$tabfieldvalue[54] = "code,label";
+$tabfieldvalue[55] = "code,label";
 
 // Field names in the table for inserting a record
 $tabfieldinsert = array();
@@ -477,6 +495,9 @@ $tabfieldinsert[49] = "code,label";
 $tabfieldinsert[50] = "code,label";
 $tabfieldinsert[51] = "code,label";
 $tabfieldinsert[52] = "code,nom";
+$tabfieldinsert[53] = "code,label";
+$tabfieldinsert[54] = "code,label";
+$tabfieldinsert[55] = "code,label";
 
 // Rowid name of field depending if field is autoincrement on or off..
 // Use "" if id field is "rowid" and has autoincrement on
@@ -534,6 +555,9 @@ $tabrowid[49] = "rowid";
 $tabrowid[50] = "rowid";
 $tabrowid[51] = "rowid";
 $tabrowid[52] = "rowid";
+$tabrowid[53] = "rowid";
+$tabrowid[54] = "rowid";
+$tabrowid[55] = "rowid";
 
 // Condition to show dictionary in setup page
 $tabcond = array();
@@ -589,6 +613,9 @@ $tabcond[49] = true;
 $tabcond[50] = true;
 $tabcond[51] = true;
 $tabcond[52] = true;
+$tabcond[53] = true;
+$tabcond[54] = true;
+$tabcond[55] = true;
 
 // List of help for fields
 $tabhelp = array();
@@ -644,6 +671,9 @@ $tabhelp[49]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[50]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[51]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[52]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[53]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[54]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[55]  = array('code'=>$langs->trans("EnterAnyCode"));
 
 // List of check for fields (NOT USED YET)
 $tabfieldcheck = array();
@@ -699,6 +729,9 @@ $tabfieldcheck[49]  = array();
 $tabfieldcheck[50]  = array();
 $tabfieldcheck[51]  = array();
 $tabfieldcheck[52]  = array();
+$tabfieldcheck[53]  = array();
+$tabfieldcheck[54]  = array();
+$tabfieldcheck[55]  = array();
 
 // Complete all arrays with entries found into modules
 complete_dictionary_with_modules($taborder, $tabname, $tablib, $tabsql, $tabsqlsort, $tabfield, $tabfieldvalue, $tabfieldinsert, $tabrowid, $tabcond, $tabhelp, $tabfieldcheck);
