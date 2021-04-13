@@ -105,6 +105,8 @@ class box_project extends ModeleBoxes
 			include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 			$projectstatic = new Project($this->db);
 
+			//echo $user_group_id; exit;
+
 			$socid = 0;
 			//if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignement.
 
@@ -116,7 +118,7 @@ class box_project extends ModeleBoxes
 			$sql .= " FROM ".MAIN_DB_PREFIX."projet as p, ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."c_pincodes as cp";
 			if($user_group_id == 4)
 			{
-				$sql .= ",  ".MAIN_DB_PREFIX."societe_extrafields as esf ";
+				//$sql .= ",  ".MAIN_DB_PREFIX."societe_extrafields as esf ";
 			}
 			if ($user_group_id == 17) 
 			{
@@ -126,7 +128,7 @@ class box_project extends ModeleBoxes
 			$sql .= " AND p.zip = cp.rowid";
 			if($user_group_id == 4)
 			{
-				$sql .= " AND p.fk_soc = esf.fk_object AND p.fk_soc = s.rowid AND p.fk_statut IN (0,1)"; // Only pending projects
+				$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut IN (0,1)"; // Only pending projects //p.fk_soc = esf.fk_object AND 
 			}else{
 				$sql .= " AND p.fk_soc = s.rowid AND p.fk_statut IN (0,3)"; // Only pending projects
 			}
@@ -136,7 +138,7 @@ class box_project extends ModeleBoxes
 			{
 				if($user_group_id == 4)
 				{
-					$sql .= "  AND FIND_IN_SET(esf.fk_pincode, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
+					$sql .= "  AND FIND_IN_SET(p.zip, (select apply_zipcode from ".MAIN_DB_PREFIX."user_extrafields where fk_object = '".$user->id."')) ";
 
 					/*$apply_zipcode = $user->array_options['options_apply_zipcode'];
 					if($apply_zipcode != "")
@@ -189,7 +191,7 @@ class box_project extends ModeleBoxes
 			}	
 			$sql.= $this->db->plimit($max, 0);
 			
-			//echo $sql;
+			//echo $sql; exit;
 			$result = $this->db->query($sql);
 
 			if ($result) {

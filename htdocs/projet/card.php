@@ -2568,12 +2568,12 @@ function addPart()
 			print '</td></tr>';
 		}
 		if($object->problem){
-			print '<tr><td class="titlefield tdtop">'.$langs->trans("Problem").'</td><td>';
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Description").'</td><td>';
 			print $object->problem;
 			print '</td></tr>';
 		}
 		if($object->solution){
-			print '<tr><td class="titlefield tdtop">'.$langs->trans("Solution").'</td><td>';
+			print '<tr><td class="titlefield tdtop">'.$langs->trans("Detect Description").'</td><td>';
 			print $object->solution;
 			print '</td></tr>';
 		}
