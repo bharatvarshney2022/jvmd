@@ -1517,6 +1517,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	
 	if ($action == 'close_form' && $userWrite > 0)
 	{
+		print '<form action="'.$_SERVER["PHP_SELF"].'" enctype="multipart/form-data" method="POST">';
+
 		print '<input type="hidden" name="close_action" value="close_form">';
 		print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 		print '<input type="hidden" name="title" value="'.$object->title.'">';
@@ -1576,15 +1578,55 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// Ac Capacity
 		print '<td>'.$langs->trans("AC Capacity").'</td><td>'.dol_escape_htmltag($prdarr->ac_capacity).'</td></tr>';
 
-		print '<tr><td colspan="4"><h5>'.$langs->trans("Action Taking").'</h5></td></tr>';
+		
+		print '</table>';
 
-		// TO DO
+		print '<h1>Service</h1>';
+		print '<table class="table table-bordered">';
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Attachment").'</h5></td></tr>';
+
+		// upload files
+		print '<tr><td class="tdtop">'.$langs->trans("Attachment").'</td>';
+		print '<td colspan="3"><input type="file" class="form-control" name="bill_photo[]" multiple /></td>';
+		print '</tr>';
+
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Defect").'</td>';
+		print '<td style="width:25%">
+			<select name="project_defect" onchange="getDefectAction(this.value);" class="form-control">
+				<option value="">Select</option>';
+
+		$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_defect WHERE active = '1'";
+		$resqlDetect = $db->query($sqlDetect);
+		$numtech = $db->num_rows($resqlDetect);
+		if($numtech > 0){
+			while ($objtech = $db->fetch_object($resqlDetect))
+			{
+				print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('project_defect') ?GETPOST('project_defect') : '') == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->label.'</option>';
+			}
+		}	
+
+		print '</select>
+		</td>';
+		print '<td style="width:25%" class="tdtop">'.$langs->trans("Defect Action").'</td>';
+		print '<td style="width:25%">
+			<select name="project_defect_action" class="project_defect_action form-control">
+				<option value="">Select</option>';
+
+		print '</select>
+		</td>';
+		print '</tr>';
+
+		print '</table>';
+
+		print '<h1>Action</h1>';
+		print '<table class="table table-bordered">';
+		print '<tr><td colspan="4"><h5>'.$langs->trans("Action Taking").'</h5></td></tr>';
 			
 		// Problem
-		print '<tr><td class="tdtop">'.$langs->trans("Problem Detail").'</td>';
-		print '<td><textarea row="5" class="form-control" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
-		print '<td class="tdtop">'.$langs->trans("Problem Solution").'</td>';
-		print '<td><textarea row="5" class="form-control" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Problem Detail").'</td>';
+		print '<td style="width:25%"><textarea row="5" class="form-control" name="problem">'.dol_escape_htmltag($object->problem).'</textarea></td>';
+		print '<td style="width:25%" class="tdtop">'.$langs->trans("Problem Solution").'</td>';
+		print '<td style="width:25%"><textarea row="5" class="form-control" name="solution">'.dol_escape_htmltag($object->solution).'</textarea></td>';
 		print '</tr>';
 
 		print '<tr><td colspan="4"><h5>'.$langs->trans("Detect Code").'</h5></td></tr>';
@@ -1614,6 +1656,25 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</tr>';
 	
 		print '</table>';
+		print '</form>'."\n";
+
+		print '<script>'."\n";
+		
+
+		print 'function getDefectAction(val1)
+{
+	$.ajax({
+		  dataType: "html",
+		  url: "defect_action.php",
+		  data: {fk_defect: val1},
+		  success: function(html) {
+		  	$(".project_defect_action").html(html);
+			
+		 }
+	});
+}'."\n";
+
+		print '</script>';				
 	
 	}elseif ($action == 'edit' && $userWrite > 0)
 	{
@@ -1717,7 +1778,21 @@ if ($action == 'create' && $user->rights->projet->creer)
 			jQuery("#fk_model").val('.$object->fk_model.');
 			';	
 		}
-		print '	jQuery("#socid").change(function() {
+		print '	
+				function getDefectAction(val1)
+				{
+					$.ajax({
+						  dataType: "html",
+						  url: "defect_action.php?fk_defect="+val1,
+						  data: {socid: socid},
+						  success: function(html) {
+						  	$(".project_defect_action").html(html);
+							
+						 }
+					});
+				}
+
+				jQuery("#socid").change(function() {
 					var socid = $(this).val();
 					//alert(socid);
                 	$.ajax({
