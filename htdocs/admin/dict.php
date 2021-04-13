@@ -80,7 +80,7 @@ $hookmanager->initHooks(array('admin'));
 
 // Sort order to show dictionary (0 is space). All other dictionaries (added by modules) will be at end of this.
 //$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 45, 46, 47,48,  0, 1, 8, 19, 16, 39, 27, 40, 38, 0, 5, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 23, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
-$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 49, 0, 45, 46, 47,48, 52, 0, 53, 54, 55, 0, 50, 51, 0, 39, 40, 38, 0, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
+$taborder = array(9, 0, 4, 3, 2, 43, 44, 0, 49, 0, 45, 46, 47,48, 52, 0, 53, 54, 55, 56, 0, 50, 51, 0, 39, 40, 38, 0, 11, 0, 32, 33, 34, 0, 6, 0, 29, 0, 7, 24, 28, 17, 35, 36, 0, 10, 12, 13, 0, 14, 0, 22, 20, 18, 21, 41, 0, 15, 30, 0, 37, 42, 0, 25, 0);
 
 // Name of SQL tables of dictionaries
 $tabname = array();
@@ -139,6 +139,7 @@ $tabname[52] = MAIN_DB_PREFIX."c_product_capacity";
 $tabname[53] = MAIN_DB_PREFIX."c_defect";
 $tabname[54] = MAIN_DB_PREFIX."c_defect_action";
 $tabname[55] = MAIN_DB_PREFIX."c_product_part";
+$tabname[56] = MAIN_DB_PREFIX."c_other_type";
 
 // Dictionary labels
 $tablib = array();
@@ -197,6 +198,7 @@ $tablib[52] = "DictionaryProductCapacity";
 $tablib[53] = "DictionaryDefect";
 $tablib[54] = "DictionaryDefectAction";
 $tablib[55] = "DictionaryProductPart";
+$tablib[56] = "DictionaryOtherType";
 
 // Requests to extract data
 $tabsql = array();
@@ -263,6 +265,7 @@ $tabsql[52] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c
 $tabsql[53] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_defect";
 $tabsql[54] = "SELECT pp.rowid as rowid, d.label as defect, pp.fk_defect, pp.code, pp.label, pp.active FROM ".MAIN_DB_PREFIX."c_defect_action pp,".MAIN_DB_PREFIX."c_defect as d WHERE pp.fk_defect = d.rowid";
 $tabsql[55] = "SELECT rowid as rowid, code, label, price, active FROM ".MAIN_DB_PREFIX."c_product_part";
+$tabsql[56] = "SELECT rowid as rowid, code, label, price, active FROM ".MAIN_DB_PREFIX."c_other_type";
 //
 
 
@@ -324,6 +327,7 @@ $tabsqlsort[52] = "rowid DESC";
 $tabsqlsort[53] = "rowid DESC";
 $tabsqlsort[54] = "rowid DESC";
 $tabsqlsort[55] = "rowid DESC";
+$tabsqlsort[56] = "rowid DESC";
 
 // Field names in select result for dictionary display
 $tabfield = array();
@@ -382,6 +386,7 @@ $tabfield[52] = "code,nom";
 $tabfield[53] = "code,label";
 $tabfield[54] = "defect,code,label";
 $tabfield[55] = "code,label,price";
+$tabfield[56] = "code,label,price";
 
 // Edit field names for editing a record
 $tabfieldvalue = array();
@@ -440,6 +445,7 @@ $tabfieldvalue[52] = "code,nom";
 $tabfieldvalue[53] = "code,label";
 $tabfieldvalue[54] = "code,label,defect";
 $tabfieldvalue[55] = "code,label,price";
+$tabfieldvalue[56] = "code,label,price";
 
 // Field names in the table for inserting a record
 $tabfieldinsert = array();
@@ -499,6 +505,7 @@ $tabfieldinsert[52] = "code,nom";
 $tabfieldinsert[53] = "code,label";
 $tabfieldinsert[54] = "code,label,fk_defect";
 $tabfieldinsert[55] = "code,label,price";
+$tabfieldinsert[56] = "code,label,price";
 
 // Rowid name of field depending if field is autoincrement on or off..
 // Use "" if id field is "rowid" and has autoincrement on
@@ -559,6 +566,7 @@ $tabrowid[52] = "rowid";
 $tabrowid[53] = "rowid";
 $tabrowid[54] = "rowid";
 $tabrowid[55] = "rowid";
+$tabrowid[56] = "rowid";
 
 // Condition to show dictionary in setup page
 $tabcond = array();
@@ -617,6 +625,7 @@ $tabcond[52] = true;
 $tabcond[53] = true;
 $tabcond[54] = true;
 $tabcond[55] = true;
+$tabcond[56] = true;
 
 // List of help for fields
 $tabhelp = array();
@@ -675,6 +684,7 @@ $tabhelp[52]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[53]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[54]  = array('code'=>$langs->trans("EnterAnyCode"));
 $tabhelp[55]  = array('code'=>$langs->trans("EnterAnyCode"));
+$tabhelp[56]  = array('code'=>$langs->trans("EnterAnyCode"));
 
 // List of check for fields (NOT USED YET)
 $tabfieldcheck = array();
@@ -733,6 +743,7 @@ $tabfieldcheck[52]  = array();
 $tabfieldcheck[53]  = array();
 $tabfieldcheck[54]  = array();
 $tabfieldcheck[55]  = array();
+$tabfieldcheck[56]  = array();
 
 // Complete all arrays with entries found into modules
 complete_dictionary_with_modules($taborder, $tabname, $tablib, $tabsql, $tabsqlsort, $tabfield, $tabfieldvalue, $tabfieldinsert, $tabrowid, $tabcond, $tabhelp, $tabfieldcheck);
