@@ -111,7 +111,8 @@
 
 			$zipCode = 0;
 			$userZip = $object->zip;
-			echo $userZip; exit;
+			//echo $userZip; exit;
+			
 			if($userZip > 0)
 			{
 				$sqlZip = "SELECT rowid, zip FROM ".MAIN_DB_PREFIX."c_pincodes WHERE active = '1' AND zip LIKE '".$userZip."'";
