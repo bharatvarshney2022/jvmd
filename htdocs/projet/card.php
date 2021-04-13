@@ -1,3 +1,4 @@
+
 <?php
 /* 
  * This program is free software; you can redistribute it and/or modify
@@ -674,6 +675,33 @@ if (empty($reshook))
 		}
 	}
 
+	// Assign LEad
+	if ($action == 'confirm_assign_lead' && $confirm == 'yes' && $user->rights->projet->creer)
+	{
+		$clone_contacts = GETPOST('clone_contacts') ? 1 : 0;
+		$clone_tasks = GETPOST('clone_tasks') ? 1 : 0;
+		$clone_project_files = GETPOST('clone_project_files') ? 1 : 0;
+		$clone_task_files = GETPOST('clone_task_files') ? 1 : 0;
+		$clone_notes = GETPOST('clone_notes') ? 1 : 0;
+		$move_date = GETPOST('move_date') ? 1 : 0;
+		$clone_thirdparty = GETPOST('socid', 'int') ?GETPOST('socid', 'int') : 0;
+
+		$result = $object->createFromClone($user, $object->id, $clone_contacts, $clone_tasks, $clone_project_files, $clone_task_files, $clone_notes, $move_date, 0, $clone_thirdparty);
+		if ($result <= 0)
+		{
+			setEventMessages($object->error, $object->errors, 'errors');
+		} else {
+			// Load new object
+			$newobject = new Project($db);
+			$newobject->fetch($result);
+			$newobject->fetch_optionals();
+			$newobject->fetch_thirdparty(); // Load new object
+			$object = $newobject;
+			$action = 'edit';
+			$comefromclone = true;
+		}
+	}
+
 
 	if ($action == 'confirm_validate' && $confirm == 'yes')
 	{
@@ -766,6 +794,8 @@ if (empty($reshook))
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	}
+
+
 
 	if ($action == 'confirm_clone' && $user->rights->projet->creer && $confirm == 'yes')
 	{
@@ -1351,6 +1381,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ValidateProject'), $langs->trans('ConfirmValidateProject'), 'confirm_validate', '', 0, 1);
 	}
+
+	if ($action == 'assign_lead')
+	{
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('AssignLeadProject'), $langs->trans('ConfirmAssignLeadProject'), 'confirm_assign_lead', '', 0, 1);
+	}
+
 	if ($action == 'invalidate')
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('InValidateProject'), $langs->trans('ConfirmInValidateProject'), 'confirm_invalidate', '', 0, 1);
@@ -2361,6 +2397,17 @@ if ($action == 'create' && $user->rights->projet->creer)
 				}
 			}
 
+			// Assign / Close
+			if (($object->statut == 1) && $user->rights->projet->creer)
+			{
+				if ($userWrite > 0)
+				{
+					print '<a class="btn btn-info" href="card.php?id='.$object->id.'&amp;action=assign_lead">'.$langs->trans("Assign").'</a> &nbsp;&nbsp;';
+				} else {
+					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Assign').'</a>';
+				}
+			}
+
 			// Close
 			if ($object->statut == 1 && $user->rights->projet->creer)
 			{
@@ -2392,6 +2439,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 					print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('Reject').'</a>';
 				}
 			}
+
+			
 
 			// Add button to create objects from project
 			if (!empty($conf->global->PROJECT_SHOW_CREATE_OBJECT_BUTTON))

@@ -117,6 +117,10 @@ TaskHasChild=Task has child
 NotOwnerOfProject=Not owner of this private support ticket
 AffectedTo=Allocated to
 CantRemoveProject=This Support Ticket can't be removed as it is referenced by some other objects (invoice, orders or other). See tab '%s'.
+
+AssignLeadProject=Assign support ticket
+ConfirmAssignLeadProject=Are you sure you want to assign this support ticket?
+
 ValidateProject=Validate projet
 InValidateProject=In-Validate projet
 ConfirmValidateProject=Are you sure you want to validate this support ticket?
