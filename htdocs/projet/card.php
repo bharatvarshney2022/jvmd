@@ -688,7 +688,8 @@ if (empty($reshook))
 
 		$object->updateTechAssign($object->id, $fk_technician, $tech_assigndatetime);
 
-		$action = 'view';
+		header("Location:card.php?id=".$object->id);
+		exit;
 
 	}
 
