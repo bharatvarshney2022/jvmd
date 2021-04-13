@@ -262,7 +262,7 @@ $tabsql[51] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX.
 $tabsql[52] = "SELECT rowid as rowid, code, nom, active FROM ".MAIN_DB_PREFIX."c_product_capacity";
 $tabsql[53] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_defect";
 $tabsql[54] = "SELECT pp.rowid as rowid, d.label as defect, pp.fk_defect, pp.code, pp.label, pp.active FROM ".MAIN_DB_PREFIX."c_defect_action pp,".MAIN_DB_PREFIX."c_defect as d WHERE pp.fk_defect = d.rowid";
-$tabsql[55] = "SELECT rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_product_part";
+$tabsql[55] = "SELECT rowid as rowid, code, label, price, active FROM ".MAIN_DB_PREFIX."c_product_part";
 //
 
 
@@ -381,7 +381,7 @@ $tabfield[51] = "code,label";
 $tabfield[52] = "code,nom";
 $tabfield[53] = "code,label";
 $tabfield[54] = "defect,code,label";
-$tabfield[55] = "code,label";
+$tabfield[55] = "code,label,price";
 
 // Edit field names for editing a record
 $tabfieldvalue = array();
@@ -439,7 +439,7 @@ $tabfieldvalue[51] = "code,label";
 $tabfieldvalue[52] = "code,nom";
 $tabfieldvalue[53] = "code,label";
 $tabfieldvalue[54] = "code,label,defect";
-$tabfieldvalue[55] = "code,label";
+$tabfieldvalue[55] = "code,label,price";
 
 // Field names in the table for inserting a record
 $tabfieldinsert = array();
@@ -498,7 +498,7 @@ $tabfieldinsert[51] = "code,label";
 $tabfieldinsert[52] = "code,nom";
 $tabfieldinsert[53] = "code,label";
 $tabfieldinsert[54] = "code,label,fk_defect";
-$tabfieldinsert[55] = "code,label";
+$tabfieldinsert[55] = "code,label,price";
 
 // Rowid name of field depending if field is autoincrement on or off..
 // Use "" if id field is "rowid" and has autoincrement on
