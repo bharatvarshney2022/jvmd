@@ -1364,27 +1364,40 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	if ($action == 'assign_lead')
 	{
-		$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
-		$resqlTech = $db->query($sqlTechnician);
-		$numtech = $db->num_rows($resqlTech);
-		$technicianData = array();
-		if($numtech > 0){
-			while ($objtech = $db -> fetch_object($resqlTech))
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+		$user_group_id = 0;
+		$usergroup = new UserGroup($db);
+		$groupslist = $usergroup->listGroupsForUser($user->id);
+
+		if ($groupslist != '-1')
+		{
+			foreach ($groupslist as $groupforuser)
 			{
-				$technicianData[$objtech->rowid] = $objtech->firstname." ".$objtech->lastname;
+				$user_group_id = $groupforuser->id;
 			}
 		}
+		if($user_group_id == '4'){
+			$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+			$resqlTech = $db->query($sqlTechnician);
+			$numtech = $db->num_rows($resqlTech);
+			$technicianData = array();
+			if($numtech > 0){
+				while ($objtech = $db -> fetch_object($resqlTech))
+				{
+					$technicianData[$objtech->rowid] = $objtech->firstname." ".$objtech->lastname;
+				}
+			}
 
+			$formquestion = array(
+				'text' => $langs->trans("ConfirmAssignLeadProject"),
+				array('type' => 'text', 'name' => 'start_date', 'label' => $langs->trans("Start Date"), 'value' => dol_print_date($object->date_c, 'dayhoursec'), 'start_date', '', "", 0, 0, null, 0, 'form-control'),
+				//print ;
+				array('type' => 'datetime', 'name' => 'tech_assigndatetime', 'label' => $langs->trans("Scheduled Time"), 'value' => GETPOST('tech_assigndatetime', 'alpha'), 'tech_assigndatetime', '', "", 0, 0, null, 0, 'form-control'),
+				array('type' => 'select', 'name' => 'fk_technician', 'label' => $langs->trans("Assign Technician"), 'values' => $technicianData, 'value' => GETPOST('fk_technician', 'int'), 'fk_technician', '', "", 0, 0, null, 0, 'form-control'),
+			);
 
-		$formquestion = array(
-			'text' => $langs->trans("ConfirmAssignLeadProject"),
-			array('type' => 'text', 'name' => 'start_date', 'label' => $langs->trans("Start Date"), 'value' => dol_print_date($object->date_c, 'dayhoursec'), 'start_date', '', "", 0, 0, null, 0, 'form-control'),
-			//print ;
-			array('type' => 'datetime', 'name' => 'tech_assigndatetime', 'label' => $langs->trans("Scheduled Time"), 'value' => GETPOST('tech_assigndatetime', 'alpha'), 'tech_assigndatetime', '', "", 0, 0, null, 0, 'form-control'),
-			array('type' => 'select', 'name' => 'fk_technician', 'label' => $langs->trans("Assign Technician"), 'values' => $technicianData, 'value' => GETPOST('fk_technician', 'int'), 'fk_technician', '', "", 0, 0, null, 0, 'form-control'),
-		);
-
-		print $form->formconfirmLayout($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("AssignLeadProject"), $langs->trans("ConfirmAssignLeadProject"), "confirm_assign_lead", $formquestion, '', 1, 400, 590);
+			print $form->formconfirmLayout($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("AssignLeadProject"), $langs->trans("ConfirmAssignLeadProject"), "confirm_assign_lead", $formquestion, '', 1, 400, 590);
+		}
 	}
 
 	if ($action == 'invalidate')
