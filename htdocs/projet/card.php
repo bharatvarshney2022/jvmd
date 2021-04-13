@@ -543,7 +543,7 @@ if (empty($reshook))
 		$other_type_other = GETPOST('other_type_other');
 
 		$upload_dir = $conf->projet->dir_output."/".dol_sanitizeFileName($object->ref);
-		$savingdocmask = $upload_dir."-__file__";
+		$savingdocmask = dol_sanitizeFileName($object->ref)."-__file__";
 
 
 		//echo '<pre>'; print_r($_FILES); exit;
@@ -601,8 +601,8 @@ if (empty($reshook))
 						$sql .= ", part_order_qty = '".$_POST['part_order_qty'][$k]."'";
 						$sql .= ", part_order_mr = '".$_POST['part_order_mr'][$k]."'";
 						$sql .= ", part_order_mr_no = '".$_POST['part_order_mr_no'][$k]."'";
-						dol_syslog(get_class($this)."::update", LOG_DEBUG);
-						$resql = $this->db->query($sql);
+						//dol_syslog(get_class($this)."::update", LOG_DEBUG);
+						$resql = $db->query($sql);
 					}
 				}
 
@@ -616,8 +616,8 @@ if (empty($reshook))
 						$sql .= ", other_type_qty = '".$_POST['other_type_qty'][$k]."'";
 						$sql .= ", other_type_uom = '".$_POST['other_type_uom'][$k]."'";
 						$sql .= ", other_type_amount = '".$_POST['other_type_amount'][$k]."'";
-						dol_syslog(get_class($this)."::update", LOG_DEBUG);
-						$resql = $this->db->query($sql);
+						//dol_syslog(get_class($this)."::update", LOG_DEBUG);
+						$resql = $db->query($sql);
 					}
 				}
 
@@ -628,6 +628,7 @@ if (empty($reshook))
 
 					if (is_array($_FILES['bill_photo']['tmp_name'])) $userfiles = $_FILES['bill_photo']['tmp_name'];
 					else $userfiles = array($_FILES['bill_photo']['tmp_name']);
+
 					foreach ($userfiles as $key => $bill_photo)
 					{
 						if (empty($_FILES['bill_photo']['tmp_name'][$key]))
@@ -656,18 +657,16 @@ if (empty($reshook))
 						}
 					}
 
+					//echo $upload_dirold.",".$upload_dir.">"; 
+					//echo $savingdocmask; exit;
+
 					if (!$error1)
 					{
 						// Define if we have to generate thumbs or not
 						$generatethumbs = 1;
-						if (GETPOST('section_dir', 'alpha')) $generatethumbs = 0;
-						$allowoverwrite = (GETPOST('overwritefile', 'int') ? 1 : 0);
+						$allowoverwrite = 0;
 
-						if (!empty($upload_dirold) && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
-						{
-							$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'bill_photo', $savingdocmask, null, '', $generatethumbs, $object);
-							$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'user_files', $savingdocmask, null, '', $generatethumbs, $object);
-						} elseif (!empty($upload_dir))
+						if (!empty($upload_dir))
 						{
 							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'bill_photo', $savingdocmask, null, '', $generatethumbs, $object);
 							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'user_files', $savingdocmask, null, '', $generatethumbs, $object);
