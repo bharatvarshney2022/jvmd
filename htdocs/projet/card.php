@@ -27,12 +27,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/fcm_notify.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'companies'));
@@ -536,7 +539,14 @@ if (empty($reshook))
 
 	if ($action == 'close_form_update' && !$_POST["cancel"] && $user->rights->projet->creer)
 	{
-		echo '<pre>'; print_r($_POST); print_r($_FILES); exit;
+		$part_order_type = GETPOST('part_order_type');
+		$other_type_other = GETPOST('other_type_other');
+
+		$upload_dir = $conf->projet->dir_output."/".dol_sanitizeFileName($object->ref);
+		$savingdocmask = $upload_dir."-__file__";
+
+
+		//echo '<pre>'; print_r($_FILES); exit;
 
 		$error = 0;
 		$ticket_otp = GETPOST('ticket_otp');
@@ -566,6 +576,9 @@ if (empty($reshook))
 			$object->customer_response     = GETPOST('customer_response', 'alphanohtml');
 			$object->customer_sign     = GETPOST('customer_sign', 'restricthtml');
 			$object->customer_remark     = GETPOST('customer_remark', 'alphanohtml');
+
+			$object->project_defect     = GETPOST('project_defect', 'int');
+			$object->project_defect_action     = GETPOST('project_defect_action', 'int');
 			
 			$result1 = $object->close_form_update($user);
 
@@ -576,12 +589,100 @@ if (empty($reshook))
 				if ($result == -4) setEventMessages($langs->trans("ErrorRefAlreadyExists"), null, 'errors');
 				else setEventMessages($object->error, $object->errors, 'errors');
 			} else {
+				// Save Part / Others
+				if($part_order_type)
+				{
+					foreach($part_order_type as $k => $order_type)
+					{
+						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_parts SET";
+						$sql .= " fk_projet = ".$object->id;
+						$sql .= ", part_order_type = '".$order_type."'";
+						$sql .= ", part_order_no = '".$_POST['part_order_no'][$k]."'";
+						$sql .= ", part_order_qty = '".$_POST['part_order_qty'][$k]."'";
+						$sql .= ", part_order_mr = '".$_POST['part_order_mr'][$k]."'";
+						$sql .= ", part_order_mr_no = '".$_POST['part_order_mr_no'][$k]."'";
+						dol_syslog(get_class($this)."::update", LOG_DEBUG);
+						$resql = $this->db->query($sql);
+					}
+				}
+
+				if($other_type_other)
+				{
+					foreach($other_type_other as $k => $type_other)
+					{
+						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_other_types SET";
+						$sql .= " fk_projet = ".$object->id;
+						$sql .= ", other_type_other = '".$type_other."'";
+						$sql .= ", other_type_qty = '".$_POST['other_type_qty'][$k]."'";
+						$sql .= ", other_type_uom = '".$_POST['other_type_uom'][$k]."'";
+						$sql .= ", other_type_amount = '".$_POST['other_type_amount'][$k]."'";
+						dol_syslog(get_class($this)."::update", LOG_DEBUG);
+						$resql = $this->db->query($sql);
+					}
+				}
+
+				// Uploads
+				if (!empty($_FILES))
+				{
+					$error1 = 0;
+
+					if (is_array($_FILES['bill_photo']['tmp_name'])) $userfiles = $_FILES['bill_photo']['tmp_name'];
+					else $userfiles = array($_FILES['bill_photo']['tmp_name']);
+					foreach ($userfiles as $key => $bill_photo)
+					{
+						if (empty($_FILES['bill_photo']['tmp_name'][$key]))
+						{
+							$error1++;
+							if ($_FILES['bill_photo']['error'][$key] == 1 || $_FILES['bill_photo']['error'][$key] == 2) {
+								setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+							} else {
+								setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+							}
+						}
+					}
+
+					if (is_array($_FILES['user_files']['tmp_name'])) $user_files = $_FILES['user_files']['tmp_name'];
+					else $user_files = array($_FILES['user_files']['tmp_name']);
+					foreach ($user_files as $key => $bill_photo)
+					{
+						if (empty($_FILES['user_files']['tmp_name'][$key]))
+						{
+							$error1++;
+							if ($_FILES['user_files']['error'][$key] == 1 || $_FILES['user_files']['error'][$key] == 2) {
+								setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+							} else {
+								setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+							}
+						}
+					}
+
+					if (!$error1)
+					{
+						// Define if we have to generate thumbs or not
+						$generatethumbs = 1;
+						if (GETPOST('section_dir', 'alpha')) $generatethumbs = 0;
+						$allowoverwrite = (GETPOST('overwritefile', 'int') ? 1 : 0);
+
+						if (!empty($upload_dirold) && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+						{
+							$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'bill_photo', $savingdocmask, null, '', $generatethumbs, $object);
+							$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'user_files', $savingdocmask, null, '', $generatethumbs, $object);
+						} elseif (!empty($upload_dir))
+						{
+							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'bill_photo', $savingdocmask, null, '', $generatethumbs, $object);
+							$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'user_files', $savingdocmask, null, '', $generatethumbs, $object);
+						}
+					}
+				}
+
+
 				$resclose = $object->setClose($user);
 				if ($resclose < 0)
 				{
 					$error++;
 					setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
 				}
+
 				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
 				header("Location: ".$backurl);
 				exit;*/
@@ -1521,6 +1622,8 @@ if ($action == 'create' && $user->rights->projet->creer)
 	{
 		print '<form action="'.$_SERVER["PHP_SELF"].'" enctype="multipart/form-data" method="POST">';
 
+		print '<input type="hidden" name="token" value="'.newToken().'">';
+
 		print '<input type="hidden" name="action" value="close_form_update">';
 
 		print '<input type="hidden" name="close_action" value="close_form">';
@@ -1752,6 +1855,13 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '</tr>';
 	
 		print '</table>';
+
+		print '<div class="card-body"><div class="center">';
+		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
+		print '<input type="submit" class="btn btn-danger" name="cancel" value="'.$langs->trans("Cancel").'">';
+		print '</div>';
+		print '</div>';
+
 		print '</form>'."\n";
 
 		print '<script>'."\n";
@@ -2570,15 +2680,7 @@ function addPart()
 		print '</div>';
 	}
 
-	if ($action == 'close_form' && $userWrite > 0)
-	{
-		print '<div class="card-body"><div class="center">';
-		print '<input name="update" class="btn btn-info" type="submit" value="'.$langs->trans("Modify").'">&nbsp; &nbsp; &nbsp;';
-		print '<input type="submit" class="btn btn-danger" name="cancel" value="'.$langs->trans("Cancel").'">';
-		print '</div>';
-		print '</div>';
-	}
-
+	
 	print '</form>';
 
 	print "</div>\n";

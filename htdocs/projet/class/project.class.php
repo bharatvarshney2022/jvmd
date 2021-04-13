@@ -2686,6 +2686,8 @@ class Project extends CommonObject
 			$sql .= ", customer_response = ".($this->customer_response != '' ? "'".$this->customer_response."'" : "null");
 			$sql .= ", customer_sign = ".($this->customer_sign != '' ? "'".$this->customer_sign."'" : "null");
 			$sql .= ", customer_remark = ".($this->customer_remark != '' ? "'".$this->customer_remark."'" : "null");
+			$sql .= ", project_defect = ".($this->project_defect != '' ? "'".$this->project_defect."'" : "null");
+			$sql .= ", project_defect_action = ".($this->project_defect_action != '' ? "'".$this->project_defect_action."'" : "null");
 			$sql .= " WHERE rowid = ".$this->id;
 			dol_syslog(get_class($this)."::update", LOG_DEBUG);
 			$resql = $this->db->query($sql);
