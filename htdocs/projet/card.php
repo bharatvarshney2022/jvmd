@@ -678,28 +678,8 @@ if (empty($reshook))
 	// Assign LEad
 	if ($action == 'confirm_assign_lead' && $confirm == 'yes' && $user->rights->projet->creer)
 	{
-		$clone_contacts = GETPOST('clone_contacts') ? 1 : 0;
-		$clone_tasks = GETPOST('clone_tasks') ? 1 : 0;
-		$clone_project_files = GETPOST('clone_project_files') ? 1 : 0;
-		$clone_task_files = GETPOST('clone_task_files') ? 1 : 0;
-		$clone_notes = GETPOST('clone_notes') ? 1 : 0;
-		$move_date = GETPOST('move_date') ? 1 : 0;
-		$clone_thirdparty = GETPOST('socid', 'int') ?GETPOST('socid', 'int') : 0;
+		// TO DO
 
-		$result = $object->createFromClone($user, $object->id, $clone_contacts, $clone_tasks, $clone_project_files, $clone_task_files, $clone_notes, $move_date, 0, $clone_thirdparty);
-		if ($result <= 0)
-		{
-			setEventMessages($object->error, $object->errors, 'errors');
-		} else {
-			// Load new object
-			$newobject = new Project($db);
-			$newobject->fetch($result);
-			$newobject->fetch_optionals();
-			$newobject->fetch_thirdparty(); // Load new object
-			$object = $newobject;
-			$action = 'edit';
-			$comefromclone = true;
-		}
 	}
 
 
@@ -1384,7 +1364,27 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 	if ($action == 'assign_lead')
 	{
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('AssignLeadProject'), $langs->trans('ConfirmAssignLeadProject'), 'confirm_assign_lead', '', 0, 1);
+		$sqlTechnician = "SELECT rowid, firstname,lastname FROM ".MAIN_DB_PREFIX."user WHERE fk_user = '".$user->id."'  ";
+		$resqlTech = $db->query($sqlTechnician);
+		$numtech = $db->num_rows($resqlTech);
+		$technicianData = array();
+		if($numtech > 0){
+			while ($objtech = $db -> fetch_object($resqlTech))
+			{
+				$technicianData[$objtech->rowid] = $objtech->firstname." ".$objtech->lastname;
+			}
+		}
+
+
+		$formquestion = array(
+			'text' => $langs->trans("ConfirmAssignLeadProject"),
+			array('type' => 'text', 'name' => 'start_date', 'label' => $langs->trans("Start Date"), 'value' => dol_print_date($object->date_c, 'dayhoursec'), 'start_date', '', "", 0, 0, null, 0, 'form-control'),
+			//print ;
+			array('type' => 'datetime', 'name' => 'tech_assigndatetime', 'label' => $langs->trans("Scheduled Time"), 'value' => GETPOST('tech_assigndatetime', 'alpha'), 'tech_assigndatetime', '', "", 0, 0, null, 0, 'form-control'),
+			array('type' => 'select', 'name' => 'fk_technician', 'label' => $langs->trans("Assign Technician"), 'values' => $technicianData, 'value' => GETPOST('fk_technician', 'int'), 'fk_technician', '', "", 0, 0, null, 0, 'form-control'),
+		);
+
+		print $form->formconfirmLayout($_SERVER["PHP_SELF"]."?id=".$object->id, $langs->trans("AssignLeadProject"), $langs->trans("ConfirmAssignLeadProject"), "confirm_assign_lead", $formquestion, '', 1, 400, 590);
 	}
 
 	if ($action == 'invalidate')

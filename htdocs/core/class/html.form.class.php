@@ -649,7 +649,7 @@ class Form
 
 
 		$disabled = 0;
-		$ret .= '<select class="flat'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'select valignmiddle alignstart" id="'.$name.'" name="'.$name.'"'.($disabled ? ' disabled="disabled"' : '').'>';
+		$ret .= '<select class="form-control'.(empty($conf->use_javascript_ajax) ? '' : ' hideobject').' '.$name.' '.$name.'select valignmiddle alignstart" id="'.$name.'" name="'.$name.'"'.($disabled ? ' disabled="disabled"' : '').'>';
 
 		// Complete list with data from external modules. THe module can use $_SERVER['PHP_SELF'] to know on which page we are, or use the $parameters['currentcontext'] completed by executeHooks.
 		$parameters = array();
@@ -1172,7 +1172,7 @@ class Form
 			|| (empty($forceall) && empty($conf->product->enabled) && empty($conf->service->enabled)))
 		{
 			if (empty($hidetext)) print $langs->trans("Type").': ';
-			print '<select class="flat" id="select_'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="select_'.$htmlname.'" name="'.$htmlname.'">';
 			if ($showempty)
 			{
 				print '<option value="-1"';
@@ -1272,7 +1272,7 @@ class Form
 
 		$this->load_cache_types_fees();
 
-		print '<select id="select_'.$htmlname.'" class="flat" name="'.$htmlname.'">';
+		print '<select id="select_'.$htmlname.'" class="form-control" name="'.$htmlname.'">';
 		if ($showempty)
 		{
 			print '<option value="-1"';
@@ -1576,7 +1576,7 @@ class Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select id="select_'.$htmlname.'" class="flat maxwidthonsmartphone" name="'.$htmlname.'">';
+			print '<select id="select_'.$htmlname.'" class="form-control maxwidthonsmartphone" name="'.$htmlname.'">';
 			$num = $this->db->num_rows($resql);
 
 			$qualifiedlines = $num;
@@ -1716,7 +1716,7 @@ class Form
 			}
 
 			if ($htmlname != 'none' && !$options_only) {
-				$out .= '<select class="flat'.($moreclass ? ' '.$moreclass : '').'" id="'.$htmlid.'" name="'.$htmlname.(($num || empty($disableifempty)) ? '' : ' disabled').($multiple ? '[]' : '').'" '.($multiple ? 'multiple' : '').' '.(!empty($moreparam) ? $moreparam : '').'>';
+				$out .= '<select class="form-control'.($moreclass ? ' '.$moreclass : '').'" id="'.$htmlid.'" name="'.$htmlname.(($num || empty($disableifempty)) ? '' : ' disabled').($multiple ? '[]' : '').'" '.($multiple ? 'multiple' : '').' '.(!empty($moreparam) ? $moreparam : '').'>';
 			}
 
 			if (($showempty == 1 || ($showempty == 3 && $num > 1)) && !$multiple) $out .= '<option value="0"'.(in_array(0, $selected) ? ' selected' : '').'>&nbsp;</option>';
@@ -2073,7 +2073,7 @@ class Form
 					$i++;
 				}
 			} else {
-				$out .= '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'" disabled>';
+				$out .= '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'" disabled>';
 				$out .= '<option value="">'.$langs->trans("None").'</option>';
 			}
 			$out .= '</select>';
@@ -2572,7 +2572,7 @@ class Form
 				$out .= ajax_combobox($htmlname, $events, $conf->global->PRODUIT_USE_SEARCH_TO_SELECT);
 			}
 
-			$out .= '<select class="flat'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
+			$out .= '<select class="form-control'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'" id="'.$htmlname.'">';
 
 			$textifempty = '';
 			// Do not use textifempty = ' ' or '&nbsp;' here, or search on key will search on ' key'.
@@ -3080,7 +3080,7 @@ class Form
 			$num = $this->db->num_rows($result);
 
 			//$out.='<select class="flat" id="select'.$htmlname.'" name="'.$htmlname.'">';	// remove select to have id same with combo and ajax
-			$out .= '<select class="flat maxwidthonsmartphone'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'">';
+			$out .= '<select class="form-control maxwidthonsmartphone'.($morecss ? ' '.$morecss : '').'" id="'.$htmlname.'" name="'.$htmlname.'">';
 			if (!$selected) $out .= '<option value="0" selected>&nbsp;</option>';
 			else $out .= '<option value="0">&nbsp;</option>';
 
@@ -3360,7 +3360,7 @@ class Form
 		{
 			$num = $this->db->num_rows($result);
 
-			$form = '<select class="flat" id="select_'.$htmlname.'" name="'.$htmlname.'">';
+			$form = '<select class="form-control" id="select_'.$htmlname.'" name="'.$htmlname.'">';
 
 			if (!$num)
 			{
@@ -3455,7 +3455,7 @@ class Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			print '<select class="flat" id="select_'.$htmlname.'" name="'.$htmlname.'">';
+			print '<select class="form-control" id="select_'.$htmlname.'" name="'.$htmlname.'">';
 			if ($showempty) print '<option value="0">&nbsp;</option>';
 			$num = $this->db->num_rows($resql);
 			$i = 0;
@@ -3593,7 +3593,7 @@ class Form
 
 		dol_syslog(__METHOD__." selected=".$selected.", htmlname=".$htmlname, LOG_DEBUG);
 
-		print '<select id="'.$htmlname.'" class="flat" name="'.$htmlname.'">';
+		print '<select id="'.$htmlname.'" class="form-control" name="'.$htmlname.'">';
 		if ($addempty) print '<option value="0">&nbsp;</option>';
 		foreach ($this->cache_availability as $id => $arrayavailability)
 		{
@@ -3674,7 +3674,7 @@ class Form
 
 		$this->loadCacheInputReason();
 
-		print '<select class="flat" id="select_'.$htmlname.'" name="'.$htmlname.'">';
+		print '<select class="form-control" id="select_'.$htmlname.'" name="'.$htmlname.'">';
 		if ($addempty) print '<option value="0"'.(empty($selected) ? ' selected' : '').'>&nbsp;</option>';
 		foreach ($this->cache_demand_reason as $id => $arraydemandreason)
 		{
@@ -3773,7 +3773,7 @@ class Form
 		// Set default value if not already set by caller
 		if (empty($selected) && !empty($conf->global->MAIN_DEFAULT_PAYMENT_TERM_ID)) $selected = $conf->global->MAIN_DEFAULT_PAYMENT_TERM_ID;
 
-		print '<select id="'.$htmlname.'" class="flat selectpaymentterms'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="'.$htmlname.'" class="form-control selectpaymentterms'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($addempty) print '<option value="0">&nbsp;</option>';
 		foreach ($this->cache_conditions_paiements as $id => $arrayconditions)
 		{
@@ -3825,7 +3825,7 @@ class Form
 		// Set default value if not already set by caller
 		if (empty($selected) && !empty($conf->global->MAIN_DEFAULT_PAYMENT_TYPE_ID)) $selected = $conf->global->MAIN_DEFAULT_PAYMENT_TYPE_ID;
 
-		print '<select id="select'.$htmlname.'" class="flat selectpaymenttypes'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="select'.$htmlname.'" class="form-control selectpaymenttypes'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($empty) print '<option value="">&nbsp;</option>';
 		foreach ($this->cache_types_paiements as $id => $arraytypes)
 		{
@@ -3874,7 +3874,7 @@ class Form
 	{
 		global $langs;
 
-		$return = '<select class="flat maxwidth100" id="select_'.$htmlname.'" name="'.$htmlname.'">';
+		$return = '<select class="form-control maxwidth100" id="select_'.$htmlname.'" name="'.$htmlname.'">';
 		$options = array(
 			'HT'=>$langs->trans("HT"),
 			'TTC'=>$langs->trans("TTC")
@@ -3967,7 +3967,7 @@ class Form
 
 		$this->load_cache_transport_mode();
 
-		print '<select id="select'.$htmlname.'" class="flat selectmodetransport'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
+		print '<select id="select'.$htmlname.'" class="form-control selectmodetransport'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'">';
 		if ($empty) print '<option value="">&nbsp;</option>';
 		foreach ($this->cache_transport_mode as $id => $arraytypes)
 		{
@@ -4025,7 +4025,7 @@ class Form
 			$num = $this->db->num_rows($result);
 			$i = 0;
 			if ($num) {
-				print '<select id="select'.$htmlname.'" class="flat selectshippingmethod" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
+				print '<select id="select'.$htmlname.'" class="form-control selectshippingmethod" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
 				if ($useempty == 1 || ($useempty == 2 && $num > 1)) {
 					print '<option value="-1">&nbsp;</option>';
 				}
@@ -4153,7 +4153,7 @@ class Form
 
 		$langs->load('products');
 
-		$return = '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">';
+		$return = '<select class="form-control" id="'.$htmlname.'" name="'.$htmlname.'">';
 
 		$sql = 'SELECT rowid, label, code from '.MAIN_DB_PREFIX.'c_units';
 		$sql .= ' WHERE active > 0';
@@ -4223,7 +4223,7 @@ class Form
 			$i = 0;
 			if ($num)
 			{
-				$out .= '<select id="select'.$htmlname.'" class="flat selectbankaccount'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
+				$out .= '<select id="select'.$htmlname.'" class="form-control selectbankaccount'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
 				if ($useempty == 1 || ($useempty == 2 && $num > 1))
 				{
 					$out .= '<option value="-1">&nbsp;</option>';
@@ -4295,7 +4295,7 @@ class Form
 			$i = 0;
 			if ($num)
 			{
-				print '<select id="select'.$htmlname.'" class="flat selectestablishment" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
+				print '<select id="select'.$htmlname.'" class="form-control selectestablishment" name="'.$htmlname.'"'.($moreattrib ? ' '.$moreattrib : '').'>';
 				if ($useempty == 1 || ($useempty == 2 && $num > 1))
 				{
 					print '<option value="-1">&nbsp;</option>';
@@ -4541,10 +4541,10 @@ class Form
 
 					if ($input['type'] == 'text')
 					{
-						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="text" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="text" class="form-control'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
 					} elseif ($input['type'] == 'password')
 					{
-						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="password" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="password" class="form-control'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
 					} elseif ($input['type'] == 'select')
 					{
 						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">';
@@ -4555,7 +4555,7 @@ class Form
 					{
 						$more .= '<div class="tagtr">';
 						$more .= '<div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].' </div><div class="tagtd">';
-						$more .= '<input type="checkbox" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$moreattr;
+						$more .= '<input type="checkbox" class="form-control'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$moreattr;
 						if (!is_bool($input['value']) && $input['value'] != 'false' && $input['value'] != '0') $more .= ' checked';
 						if (is_bool($input['value']) && $input['value']) $more .= ' checked';
 						if (isset($input['disabled'])) $more .= ' disabled';
@@ -4569,7 +4569,7 @@ class Form
 							$more .= '<div class="tagtr">';
 							if ($i == 0) $more .= '<div class="tagtd'.(empty($input['tdclass']) ? ' tdtop' : (' tdtop '.$input['tdclass'])).'">'.$input['label'].'</div>';
 							else $more .= '<div clas="tagtd'.(empty($input['tdclass']) ? '' : (' "'.$input['tdclass'])).'">&nbsp;</div>';
-							$more .= '<div class="tagtd'.($i == 0 ? ' tdtop' : '').'"><input type="radio" class="flat'.$morecss.'" id="'.$input['name'].$selkey.'" name="'.$input['name'].'" value="'.$selkey.'"'.$moreattr;
+							$more .= '<div class="tagtd'.($i == 0 ? ' tdtop' : '').'"><input type="radio" class="form-control'.$morecss.'" id="'.$input['name'].$selkey.'" name="'.$input['name'].'" value="'.$selkey.'"'.$moreattr;
 							if ($input['disabled']) $more .= ' disabled';
 							if (isset($input['default']) && $input['default'] === $selkey) $more .= ' checked="checked"';
 							$more .= ' /> ';
@@ -4582,6 +4582,17 @@ class Form
 						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div>';
 						$more .= '<div class="tagtd">';
 						$more .= $this->selectDate($input['value'], $input['name'], 0, 0, 0, '', 1, 0);
+						$more .= '</div></div>'."\n";
+						$formquestion[] = array('name'=>$input['name'].'day');
+						$formquestion[] = array('name'=>$input['name'].'month');
+						$formquestion[] = array('name'=>$input['name'].'year');
+						$formquestion[] = array('name'=>$input['name'].'hour');
+						$formquestion[] = array('name'=>$input['name'].'min');
+					} elseif ($input['type'] == 'datetime')
+					{
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div>';
+						$more .= '<div class="tagtd">';
+						$more .= $this->selectDate($input['value'], $input['name'], 2, 1, 2, 'timespent_date', 1, 0);
 						$more .= '</div></div>'."\n";
 						$formquestion[] = array('name'=>$input['name'].'day');
 						$formquestion[] = array('name'=>$input['name'].'month');
@@ -4838,10 +4849,10 @@ class Form
 
 					if ($input['type'] == 'text')
 					{
-						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="text" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="text" class="form-control'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
 					} elseif ($input['type'] == 'password')
 					{
-						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="password" class="flat'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
+						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">'.$input['label'].'</div><div class="tagtd"><input type="password" class="form-control'.$morecss.'" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'"'.$moreattr.' /></div></div>'."\n";
 					} elseif ($input['type'] == 'select')
 					{
 						$more .= '<div class="tagtr"><div class="tagtd'.(empty($input['tdclass']) ? '' : (' '.$input['tdclass'])).'">';
@@ -6302,9 +6313,9 @@ class Form
 				// Year
 				if ($emptydate || $set_time == -1)
 				{
-					$retstring .= '<input'.($disabled ? ' disabled' : '').' placeholder="'.dol_escape_htmltag($langs->trans("Year")).'" class="flat maxwidth50imp valignmiddle" type="number" min="0" max="3000" maxlength="4" id="'.$prefix.'year" name="'.$prefix.'year" value="'.$syear.'">';
+					$retstring .= '<input'.($disabled ? ' disabled' : '').' placeholder="'.dol_escape_htmltag($langs->trans("Year")).'" class="form-control maxwidth50" type="number" min="0" max="3000" maxlength="4" id="'.$prefix.'year" name="'.$prefix.'year" value="'.$syear.'">';
 				} else {
-					$retstring .= '<select'.($disabled ? ' disabled' : '').' class="flat valignmiddle maxwidth75imp" id="'.$prefix.'year" name="'.$prefix.'year">';
+					$retstring .= '<select'.($disabled ? ' disabled' : '').' class="form-control maxwidth75imp" id="'.$prefix.'year" name="'.$prefix.'year">';
 
 					for ($year = $syear - 10; $year < $syear + 10; $year++)
 					{
