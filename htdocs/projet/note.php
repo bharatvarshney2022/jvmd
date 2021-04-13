@@ -63,7 +63,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be include, 
 $title = $langs->trans("Project").' - '.$langs->trans("Note").' - '.$object->ref.' '.$object->name;
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/projectnameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->ref.' '.$object->name.' - '.$langs->trans("Note");
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("", $title, $help_url);
+llxHeaderLayout("", $title, $title, $help_url);
 
 $form = new Form($db);
 $userstatic = new User($db);
@@ -79,8 +79,20 @@ if ($id > 0 || !empty($ref))
 	//print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
 	$head = project_prepare_head($object);
-	print dol_get_fiche_head($head, 'notes', $langs->trans('Project'), -1, ($object->public ? 'projectpub' : 'project'));
 
+	print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
+
+	print dol_get_fiche_head_layout($head, 'notes', $langs->trans('Project'), -1, ($object->public ? 'projectpub' : 'project'));
+
+	print '</div>
+		<div class="card-body">';
 
 	// Project card
 
@@ -103,22 +115,21 @@ if ($id > 0 || !empty($ref))
 		$object->next_prev_filter = " rowid in (".(count($objectsListId) ?join(',', array_keys($objectsListId)) : '0').")";
 	}
 
-	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
-
-
-	print '<div class="fichecenter">';
-	print '<div class="underbanner clearboth"></div>';
+	dol_banner_tab_layout($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
 	$cssclass = "titlefield";
 	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
 	print '</div>';
-
-	print '<div class="clearboth"></div>';
-
-	print dol_get_fiche_end();
+	print '</div>';
+	print '</div>';
+	print '</div>';
 }
 
 // End of page
-llxFooter();
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

@@ -102,12 +102,23 @@ if ($id > 0 || !empty($ref))
 $title = $langs->trans("Project").' - '.$object->ref.' '.$object->name;
 if (!empty($conf->global->MAIN_HTML_TITLE) && preg_match('/projectnameonly/', $conf->global->MAIN_HTML_TITLE) && $object->name) $title = $object->ref.' '.$object->name.' - '.$langs->trans("Info");
 $help_url = "EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("", $title, $help_url);
+llxHeaderLayout("", $title, $title, $help_url);
 
 $head = project_prepare_head($object);
 
-print dol_get_fiche_head($head, 'agenda', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+print '<div class="d-flex flex-column-fluid">
+						<!--begin::Container-->
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-footer">';
 
+print dol_get_fiche_head_layout($head, 'agenda', $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
+
+print '</div>
+		<div class="card-body">';
 
 // Project card
 
@@ -130,19 +141,16 @@ if (!$user->rights->projet->all->lire)
 	$object->next_prev_filter = " rowid in (".(count($objectsListId) ?join(',', array_keys($objectsListId)) : '0').")";
 }
 
-dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+dol_banner_tab_layout($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
 
-print '<div class="fichecenter">';
-print '<div class="underbanner clearboth"></div>';
+print '<div class="row"><div class="col-sm-12">';
 
 dol_print_object_info($object, 1);
 
 print '</div>';
+print '</div>';
 
-print '<div class="clearboth"></div>';
-
-print dol_get_fiche_end();
 
 
 // Actions buttons
@@ -160,15 +168,13 @@ $morehtmlcenter = '';
 if (!empty($conf->agenda->enabled))
 {
 	$addActionBtnRight = !empty($user->rights->agenda->myactions->create) || !empty($user->rights->agenda->allactions->create);
-    $morehtmlcenter .= dolGetButtonTitle($langs->trans('AddAction'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/comm/action/card.php?action=create'.$out.'&socid='.$object->socid.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?id='.$object->id), '', $addActionBtnRight);
+    $morehtmlcenter .= dolGetButtonTitleLayout($langs->trans('AddAction'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/comm/action/card.php?action=create'.$out.'&socid='.$object->socid.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?id='.$object->id), '', $addActionBtnRight);
 }
 
 //print '</div>';
 
 if (!empty($object->id))
 {
-	print '<br>';
-
 	$param = '&id='.$object->id;
 	if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param .= '&contextpage='.$contextpage;
 	if ($limit > 0 && $limit != $conf->liste_limit) $param .= '&limit='.$limit;
@@ -182,5 +188,10 @@ if (!empty($object->id))
 }
 
 // End of page
-llxFooter();
+// End of page
+llxFooterLayout();
+
+print "	</body>\n";
+print "</html>\n";
+
 $db->close();

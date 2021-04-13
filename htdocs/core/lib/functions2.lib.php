@@ -204,12 +204,12 @@ function dol_print_object_info($object, $usetable = 0)
 	$deltadateforuser = round($deltadateforclient - $deltadateforserver);
 	//print "x".$deltadateforserver." - ".$deltadateforclient." - ".$deltadateforuser;
 
-	if ($usetable) print '<table class="border tableforfield centpercent">';
+	if ($usetable) print '<table class="table table-bordered">';
 
 	// Import key
 	if (!empty($object->import_key))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ImportedWithSet");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -221,7 +221,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User creation (old method using already loaded object and not id is kept for backward compatibility)
 	if (!empty($object->user_creation) || !empty($object->user_creation_id))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("CreatedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -242,7 +242,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date creation
 	if (!empty($object->date_creation))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateCreation");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -255,7 +255,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User change (old method using already loaded object and not id is kept for backward compatibility)
 	if (!empty($object->user_modification) || !empty($object->user_modification_id))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ModifiedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -276,7 +276,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date change
 	if (!empty($object->date_modification))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateLastModification");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -289,7 +289,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User validation (old method using already loaded object and not id is kept for backward compatibility)
 	if (!empty($object->user_validation) || !empty($object->user_validation_id))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ValidatedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -310,7 +310,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date validation
 	if (!empty($object->date_validation))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateValidation");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -323,7 +323,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User approve (old method using already loaded object and not id is kept for backward compatibility)
 	if (!empty($object->user_approve) || !empty($object->user_approve_id))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ApprovedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -344,7 +344,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date approve
 	if (!empty($object->date_approve))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateApprove");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -357,7 +357,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User approve
 	if (!empty($object->user_approve_id2))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ApprovedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -372,7 +372,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date approve
 	if (!empty($object->date_approve2))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateApprove2");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -386,7 +386,7 @@ function dol_print_object_info($object, $usetable = 0)
 	if (!empty($object->user_cloture) || !empty($object->user_closing))
 	{
 		if (isset($object->user_cloture) && !empty($object->user_cloture)) $object->user_closing = $object->user_cloture;
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ClosedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -408,7 +408,7 @@ function dol_print_object_info($object, $usetable = 0)
 	if (!empty($object->date_cloture) || !empty($object->date_closing))
 	{
 		if (isset($object->date_cloture) && !empty($object->date_cloture)) $object->date_closing = $object->date_cloture;
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateClosing");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -421,7 +421,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// User conciliate
 	if (!empty($object->user_rappro))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("ConciliatedBy");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -442,7 +442,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date conciliate
 	if (!empty($object->date_rappro))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateConciliating");
 		if ($usetable) print '</td><td>';
 		else print ': ';
@@ -455,7 +455,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Date send
 	if (!empty($object->date_envoi))
 	{
-		if ($usetable) print '<tr><td class="titlefield">';
+		if ($usetable) print '<tr><td class="">';
 		print $langs->trans("DateLastSend");
 		if ($usetable) print '</td><td>';
 		else print ': ';

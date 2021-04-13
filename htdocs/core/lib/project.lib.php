@@ -128,7 +128,7 @@ function project_prepare_head(Project $project)
 	//complete_head_from_modules($conf, $langs, $project, $head, $h, 'project');
 
 
-	/*if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
+	if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
 	{
 		$nbNote = 0;
 		if (!empty($project->note_private)) $nbNote++;
@@ -138,7 +138,7 @@ function project_prepare_head(Project $project)
 		if ($nbNote > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'notes';
 		$h++;
-	}*/
+	}
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
@@ -162,7 +162,7 @@ function project_prepare_head(Project $project)
 		$h++;
 	}
 
-	/*$head[$h][0] = DOL_URL_ROOT.'/projet/info.php?id='.$project->id;
+	$head[$h][0] = DOL_URL_ROOT.'/projet/info.php?id='.$project->id;
 	$head[$h][1] .= $langs->trans("Events");
 	if (!empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read)))
 	{
@@ -170,7 +170,7 @@ function project_prepare_head(Project $project)
 		$head[$h][1] .= $langs->trans("Agenda");
 	}
 	$head[$h][2] = 'agenda';
-	$h++;*/
+	$h++;
 
 	complete_head_from_modules($conf, $langs, $project, $head, $h, 'project', 'remove');
 
