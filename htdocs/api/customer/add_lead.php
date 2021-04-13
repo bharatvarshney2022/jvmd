@@ -119,8 +119,6 @@
 					$zipCode = $row->rowid;
 				}
 			}
-
-			echo $zipCode; exit;
 			
 			$objectProCust->address = $userExists->address;
 			$objectProCust->zip = $zipCode;
