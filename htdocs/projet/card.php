@@ -577,6 +577,10 @@ if (empty($reshook))
 			$object->customer_sign     = GETPOST('customer_sign', 'restricthtml');
 			$object->customer_remark     = GETPOST('customer_remark', 'alphanohtml');
 
+			$object->incoming_voltage     = GETPOST('incoming_voltage', 'aplha');
+			$object->system_ampere     = GETPOST('system_ampere', 'aplha');
+			$object->grille_temperature     = GETPOST('grille_temperature', 'aplha');
+
 			$object->project_defect     = GETPOST('project_defect', 'int');
 			$object->project_defect_action     = GETPOST('project_defect_action', 'int');
 			
@@ -1699,6 +1703,21 @@ if ($action == 'create' && $user->rights->projet->creer)
 		// upload files
 		print '<tr><td class="tdtop">'.$langs->trans("Attachment").'</td>';
 		print '<td colspan="3"><input type="file" class="form-control" name="bill_photo[]" multiple accept="image/*" /></td>';
+		print '</tr>';
+
+		//	$object->     = GETPOST('grille_temperature', 'aplha');
+
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Incoming Voltage").'</td>';
+		print '<td style="width:25%"><input type="text" class="form-control" name="incoming_voltage" />';
+		print '</td>';
+		print '<td style="width:25%" class="tdtop">'.$langs->trans("System Ampere").'</td>';
+		print '<td style="width:25%"><input type="text" class="form-control" name="system_ampere" />';
+		print '</td>';
+		print '</tr>';
+
+		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Grille Temperature").'</td>';
+		print '<td style="width:25%"><input type="text" class="form-control" name="grille_temperature" />';
+		print '</td>';
 		print '</tr>';
 
 		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Defect").'</td>';
