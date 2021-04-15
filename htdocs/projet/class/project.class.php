@@ -1231,6 +1231,58 @@ class Project extends CommonObject
 	 * 		@param		User	$user		User that close project
 	 * 		@return		int					<0 if KO, 0 if already closed, >0 if OK
 	 */
+	public function setPending($user)
+	{
+		global $langs, $conf;
+
+		$now = dol_now();
+
+		$error = 0;
+
+		if ($this->statut != self::STATUS_VALIDATED)
+		{
+			$this->db->begin();
+
+			$sql = "UPDATE ".MAIN_DB_PREFIX."projet";
+			$sql .= " SET fk_statut = ".self::STATUS_VALIDATED.", fk_user_close = ".$user->id.", date_close = '".$this->db->idate($now)."', call_resolved = '".$this->db->idate($now)."' ";
+			$sql .= " WHERE rowid = ".$this->id;
+			$sql .= " AND fk_statut = ".self::STATUS_VALIDATED;
+
+			if (!empty($conf->global->PROJECT_USE_OPPORTUNITIES))
+			{
+				// TODO What to do if fk_opp_status is not code 'WON' or 'LOST'
+			}
+
+			dol_syslog(get_class($this)."::setClose", LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			if ($resql)
+			{
+				// Call trigger
+				$result = $this->call_trigger('PROJECT_CLOSE', $user);
+				if ($result < 0) { $error++; }
+				// End call triggers
+
+				if (!$error)
+				{
+					$this->statut = 2;
+					$this->db->commit();
+					return 1;
+				} else {
+					$this->db->rollback();
+					$this->error = join(',', $this->errors);
+					dol_syslog(get_class($this)."::setClose ".$this->error, LOG_ERR);
+					return -1;
+				}
+			} else {
+				$this->db->rollback();
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+		}
+
+		return 0;
+	}
+	
 	public function setClose($user)
 	{
 		global $langs, $conf;

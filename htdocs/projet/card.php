@@ -587,6 +587,8 @@ if (empty($reshook))
 			$result1 = $object->close_form_update($user);
 
 
+			//echo '<pre>'; print_r($part_order_type); exit;
+
 			if ($result1 < 0)
 			{
 				$error++;
@@ -678,8 +680,14 @@ if (empty($reshook))
 					}
 				}
 
-				if($part_order_type)
+				if(!isset($part_order_type[1]))
 				{
+					$resclose = $object->setPending($user);
+					if ($resclose < 0)
+					{
+						$error++;
+						setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
+					}
 				}
 				else
 				{
