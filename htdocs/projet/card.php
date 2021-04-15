@@ -674,12 +674,17 @@ if (empty($reshook))
 					}
 				}
 
-
-				$resclose = $object->setClose($user);
-				if ($resclose < 0)
+				if($part_order_type)
 				{
-					$error++;
-					setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
+				}
+				else
+				{
+					$resclose = $object->setClose($user);
+					if ($resclose < 0)
+					{
+						$error++;
+						setEventMessages($langs->trans("FailedToCloseProject").':'.$object->error, $object->errors, 'errors');
+					}
 				}
 
 				/*$backurl = DOL_URL_ROOT.'/projet/card.php?id='.$id;
