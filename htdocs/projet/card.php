@@ -680,7 +680,7 @@ if (empty($reshook))
 					}
 				}
 
-				if(!isset($part_order_type[1]))
+				if(isset($part_order_type[1]))
 				{
 					$resclose = $object->setPending($user);
 					if ($resclose < 0)
