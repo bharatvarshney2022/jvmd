@@ -2103,3 +2103,7 @@ DictionaryDefect=Defect
 DictionaryDefectAction=Defect Action
 DictionaryProductPart=Product Parts
 DictionaryOtherType=Other Type
+
+part_price=Part Price
+part_mr=Part MR
+part_mr_no=Part MR No.
