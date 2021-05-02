@@ -660,7 +660,7 @@ class Project extends CommonObject
 		$sql .= " fk_pays as country_id,";
 		$sql .= " fk_departement as state_id,";
 		$sql .= " tms, dateo, datee, date_close, fk_soc, fk_customer_product, fk_technician, fk_brand, fk_category, fk_sub_category, fk_model, fk_product, tech_assigndatetime, reponse_schedule, call_responded, call_dispatched, call_resolved, customer_sign, call_rejected_date, response_reschedule, fk_user_creat, fk_user_modif, fk_user_close, fk_statut as status, fk_opp_status, opp_percent,";
-		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid, problem, solution, ticket_otp, customer_response, customer_remark ";
+		$sql .= " note_private, note_public, model_pdf, usage_opportunity, usage_task, usage_bill_time, usage_organize_event, email_msgid, problem, solution, ticket_otp, customer_response, customer_remark, incoming_voltage, system_ampere, grille_temperature, project_defect, project_defect_action  ";
 		$sql .= " FROM ".MAIN_DB_PREFIX."projet";
 		if (!empty($id))
 		{
@@ -753,6 +753,11 @@ class Project extends CommonObject
 				$this->customer_response = $obj->customer_response;
 				$this->customer_remark = $obj->customer_remark;
 				$this->customer_sign = $obj->customer_sign;
+				$this->incoming_voltage = $obj->incoming_voltage;
+				$this->system_ampere = $obj->system_ampere;
+				$this->grille_temperature = $obj->grille_temperature;
+				$this->project_defect = $obj->project_defect;
+				$this->project_defect_action = $obj->project_defect_action;
 				
 
 				$this->db->free($resql);

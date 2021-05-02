@@ -598,6 +598,10 @@ if (empty($reshook))
 				// Save Part / Others
 				if($part_order_type)
 				{
+					/*Remove projects part before add */
+						$removePartSql = "Delete from ".MAIN_DB_PREFIX."projet_parts where fk_projet = ".$object->id;
+						$rePartsql = $db->query($removePartSql);
+					/* End */
 					foreach($part_order_type as $k => $order_type)
 					{
 						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_parts SET";
@@ -614,6 +618,10 @@ if (empty($reshook))
 
 				if($other_type_other)
 				{
+					/*Remove projects part before add */
+						$removeOthrTypeSql = "Delete from ".MAIN_DB_PREFIX."projet_other_types where fk_projet = ".$object->id;
+						$reOthrTypetsql = $db->query($removeOthrTypeSql);
+					/* End */
 					foreach($other_type_other as $k => $type_other)
 					{
 						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_other_types SET";
@@ -1716,15 +1724,15 @@ if ($action == 'create' && $user->rights->projet->creer)
 		//	$object->     = GETPOST('grille_temperature', 'aplha');
 
 		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Incoming Voltage").'</td>';
-		print '<td style="width:25%"><input type="text" class="form-control" name="incoming_voltage" />';
+		print '<td style="width:25%"><input type="text" class="form-control" name="incoming_voltage" value="'.$object->incoming_voltage.'" />';
 		print '</td>';
 		print '<td style="width:25%" class="tdtop">'.$langs->trans("System Ampere").'</td>';
-		print '<td style="width:25%"><input type="text" class="form-control" name="system_ampere" />';
+		print '<td style="width:25%"><input type="text" class="form-control" name="system_ampere" value="'.$object->system_ampere.'" />';
 		print '</td>';
 		print '</tr>';
 
 		print '<tr><td class="tdtop" style="width:25%">'.$langs->trans("Grille Temperature").'</td>';
-		print '<td style="width:25%"><input type="text" class="form-control" name="grille_temperature" />';
+		print '<td style="width:25%"><input type="text" class="form-control" name="grille_temperature" value="'.$object->grille_temperature.'" />';
 		print '</td>';
 		print '</tr>';
 
@@ -1739,7 +1747,7 @@ if ($action == 'create' && $user->rights->projet->creer)
 		if($numtech > 0){
 			while ($objtech = $db->fetch_object($resqlDetect))
 			{
-				print '<option value="'.$objtech->rowid.'"'.((GETPOSTISSET('project_defect') ?GETPOST('project_defect') : '') == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->label.'</option>';
+				print '<option value="'.$objtech->rowid.'"'.(($object->project_defect ? $object->project_defect : '') == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->label.'</option>';
 			}
 		}	
 
@@ -1767,8 +1775,49 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<table class="table table-bordered">';
 		print '<thead><tr><th>Order Type</th><th>Part No.</th><th>Qty.</th><th>MR</th><th>MR No.</th><th>Action</th></tr></thead>';
 
-		print '<tbody id="more_parts">
-			<tr>
+		print '<tbody id="more_parts">';
+		$sqlAddedPart = "SELECT * FROM ".MAIN_DB_PREFIX."projet_parts WHERE fk_projet = '".$object->id."'";
+		$resqlAddedPart = $db->query($sqlAddedPart);
+		$numAddedpart = $db->num_rows($resqlAddedPart);
+		if($numAddedpart > 0){
+			while ($objAddedParts = $db->fetch_object($resqlAddedPart))
+			{
+				print '<tr id = "parts_'.$objAddedParts->rowid.'">
+				<td>
+					<input type="text" class="form-control" value="advanced" name="part_order_type[]" readonly />
+				</td>
+				<td>
+					<select name="part_order_no[]" class="part_order_no form-control">
+				<option value="">Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_product_part WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print '<option value="'.$objtech->rowid.'" '.(($objAddedParts->part_order_no ? $objAddedParts->part_order_no : '') == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select>
+				</td>
+				<td>
+					<input type="number" class="form-control" name="part_order_qty[]" value="'.$objAddedParts->part_order_qty.'" />
+				</td>
+				<td>
+					<input type="text" class="form-control" name="part_order_mr[]" value="'.$objAddedParts->part_order_mr.'" />
+				</td>
+				<td>
+					<input type="text" class="form-control" name="part_order_mr_no[]" value="'.$objAddedParts->part_order_mr_no.'" />
+				</td>
+				<td>
+					<a href="javascript: removeAddedPart('.$objAddedParts->rowid.');" class="btn btn-danger btn-remove btn-small"><i class="fa fa-close"></i></a>
+				</td>
+			</tr>';
+			}
+		}		
+		print '<tr>
 				<td>
 					<input type="text" class="form-control" value="advanced" name="part_order_type[]" readonly />
 				</td>
@@ -1807,8 +1856,52 @@ if ($action == 'create' && $user->rights->projet->creer)
 		print '<table class="table table-bordered">';
 		print '<thead><tr><th>Type</th><th>Qty.</th><th>UOM</th><th>Amount</th><th>Action</th></tr></thead>';
 
-		print '<tbody id="more_other_type">
-			<tr>
+		print '<tbody id="more_other_type">';
+
+		$sqlAddedOthrType = "SELECT * FROM ".MAIN_DB_PREFIX."projet_other_types WHERE fk_projet = '".$object->id."'";
+		$resqlOthrType = $db->query($sqlAddedOthrType);
+		$numOthrType = $db->num_rows($resqlOthrType);
+		if($numOthrType > 0){
+			while ($objOthrType = $db->fetch_object($resqlOthrType))
+			{
+				print '<tr id="otherType_'.$objOthrType->rowid.'">
+				<td>
+					<select name="other_type_other[]" class="other_type_other form-control">
+				<option value="">Select</option>';
+
+				$sqlDetect = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."c_other_type WHERE active = '1'";
+				$resqlDetect = $db->query($sqlDetect);
+				$numtech = $db->num_rows($resqlDetect);
+				if($numtech > 0){
+					while ($objtech = $db->fetch_object($resqlDetect))
+					{
+						print '<option value="'.$objtech->rowid.'" '.(($objOthrType->other_type_other ? $objOthrType->other_type_other : '') == $objtech->rowid ? ' selected="selected"' : '').'>'.$objtech->label.'</option>';
+					}
+				}	
+
+		print '</select>
+				</td>
+				<td>
+					<input type="number" class="form-control" value="'.$objOthrType->other_type_qty.'" name="other_type_qty[]"  />
+				</td>
+				<td>
+					<select name="other_type_uom[]" class="other_type_uom form-control">
+						<option value="Each" '.(($objOthrType->other_type_uom ? $objOthrType->other_type_uom : '') == 'Each' ? ' selected="selected"' : '').'>Each</option>
+						<option value="Kg." '.(($objOthrType->other_type_uom ? $objOthrType->other_type_uom : '') == 'Kg.' ? ' selected="selected"' : '').'>Kg.</option>
+						<option value="Ltr." '.(($objOthrType->other_type_uom ? $objOthrType->other_type_uom : '') == 'Ltr.' ? ' selected="selected"' : '').'>Ltr.</option>
+					</select>
+				</td>
+				<td> 
+					<input type="text" class="form-control" value="'.$objOthrType->other_type_qty.'" name="other_type_amount[]"  />
+				</td>
+				<td>
+					<a href="javascript: removeAdedOtherType('.$objOthrType->rowid.');" class="btn btn-danger btn-add-other btn-small"><i class="fa fa-close"></i></a>
+				</td>
+			</tr>';
+			}
+		}		
+
+			print '<tr>
 				<td>
 					<select name="other_type_other[]" class="other_type_other form-control">
 				<option value="">Select</option>';
@@ -1895,20 +1988,60 @@ if ($action == 'create' && $user->rights->projet->creer)
 
 		print '<script>'."\n";
 		
+		if($object->project_defect > 0){
+			print 'getDefectAction('.$object->project_defect.');';
 
+		}
 		print 'function getDefectAction(val1)
 {
+
 	$.ajax({
 		  dataType: "html",
 		  url: "defect_action.php",
 		  data: {fk_defect: val1},
 		  success: function(html) {
 		  	$(".project_defect_action").html(html);
-			
+		  	';
+		  	if($object->project_defect_action > 0){
+				print '$(".project_defect_action").val('.$object->project_defect_action.');';
+			}
+			print '
 		 }
 	});
 }
 
+
+function removeAddedPart(partId)
+{
+	var r = confirm("Are You Sure!");
+	if (r == true) {
+		$.ajax({
+			  dataType: "html",
+			  url: "remove_parts.php",
+			  data: {part_id: partId},
+			  success: function(html) {
+			  	$("#parts_"+partId).remove();
+			  	return false;
+			 }
+		});
+	}
+}
+
+function removeAdedOtherType(otherTypeId)
+{
+	var r = confirm("Are You Sure!");
+	if (r == true) {
+		$.ajax({
+			  dataType: "html",
+			  url: "remove_other_type.php",
+			  data: {otherType_id: otherTypeId},
+			  success: function(html) {
+			  	$("#otherType_"+otherTypeId).remove();
+			  	return false;
+			 }
+		});
+	}
+}
 
 function removeOther(count1)
 {
@@ -2078,9 +2211,12 @@ function addPart()
 			jQuery("#fk_model").val('.$object->fk_model.');
 			';	
 		}
+		
+		
 		print '	
 				function getDefectAction(val1)
 				{
+					alert(val1);
 					$.ajax({
 						  dataType: "html",
 						  url: "defect_action.php?fk_defect="+val1,
