@@ -604,15 +604,17 @@ if (empty($reshook))
 					/* End */
 					foreach($part_order_type as $k => $order_type)
 					{
-						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_parts SET";
-						$sql .= " fk_projet = ".$object->id;
-						$sql .= ", part_order_type = '".$order_type."'";
-						$sql .= ", part_order_no = '".$_POST['part_order_no'][$k]."'";
-						$sql .= ", part_order_qty = '".$_POST['part_order_qty'][$k]."'";
-						$sql .= ", part_order_mr = '".$_POST['part_order_mr'][$k]."'";
-						$sql .= ", part_order_mr_no = '".$_POST['part_order_mr_no'][$k]."'";
-						//dol_syslog(get_class($this)."::update", LOG_DEBUG);
-						$resql = $db->query($sql);
+						if($order_type){
+							$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_parts SET";
+							$sql .= " fk_projet = ".$object->id;
+							$sql .= ", part_order_type = '".$order_type."'";
+							$sql .= ", part_order_no = '".$_POST['part_order_no'][$k]."'";
+							$sql .= ", part_order_qty = '".$_POST['part_order_qty'][$k]."'";
+							$sql .= ", part_order_mr = '".$_POST['part_order_mr'][$k]."'";
+							$sql .= ", part_order_mr_no = '".$_POST['part_order_mr_no'][$k]."'";
+							//dol_syslog(get_class($this)."::update", LOG_DEBUG);
+							$resql = $db->query($sql);
+						}
 					}
 				}
 
@@ -624,14 +626,16 @@ if (empty($reshook))
 					/* End */
 					foreach($other_type_other as $k => $type_other)
 					{
-						$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_other_types SET";
-						$sql .= " fk_projet = ".$object->id;
-						$sql .= ", other_type_other = '".$type_other."'";
-						$sql .= ", other_type_qty = '".$_POST['other_type_qty'][$k]."'";
-						$sql .= ", other_type_uom = '".$_POST['other_type_uom'][$k]."'";
-						$sql .= ", other_type_amount = '".$_POST['other_type_amount'][$k]."'";
-						//dol_syslog(get_class($this)."::update", LOG_DEBUG);
-						$resql = $db->query($sql);
+						if($type_other){
+							$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_other_types SET";
+							$sql .= " fk_projet = ".$object->id;
+							$sql .= ", other_type_other = '".$type_other."'";
+							$sql .= ", other_type_qty = '".$_POST['other_type_qty'][$k]."'";
+							$sql .= ", other_type_uom = '".$_POST['other_type_uom'][$k]."'";
+							$sql .= ", other_type_amount = '".$_POST['other_type_amount'][$k]."'";
+							//dol_syslog(get_class($this)."::update", LOG_DEBUG);
+							$resql = $db->query($sql);
+						}
 					}
 				}
 
