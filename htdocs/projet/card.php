@@ -604,7 +604,7 @@ if (empty($reshook))
 					/* End */
 					foreach($part_order_type as $k => $order_type)
 					{
-						if($order_type){
+						if($_POST['part_order_no'][$k] > 0){
 							$sql = "INSERT INTO ".MAIN_DB_PREFIX."projet_parts SET";
 							$sql .= " fk_projet = ".$object->id;
 							$sql .= ", part_order_type = '".$order_type."'";
